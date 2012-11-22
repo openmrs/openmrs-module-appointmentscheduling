@@ -118,6 +118,7 @@
 				<constraints nullable="true"/>
 			</column>
 
+
 			<column name="uuid" type="char(38)">
 				<constraints nullable="false" unique="true"/>
 			</column>
