@@ -13,16 +13,16 @@
  */
 package org.openmrs.module.appointment.api.impl;
 
-import org.openmrs.api.impl.BaseOpenmrsService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.module.appointment.api.AppointmentServiceService;
+import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.appointment.api.AppointmentService;
 import org.openmrs.module.appointment.api.db.AppointmentServiceDAO;
 
 /**
- * It is a default implementation of {@link AppointmentServiceService}.
+ * It is a default implementation of {@link AppointmentService}.
  */
-public class AppointmentServiceServiceImpl extends BaseOpenmrsService implements AppointmentServiceService {
+public class AppointmentServiceImpl extends BaseOpenmrsService implements AppointmentService {
 	
 	protected final Log log = LogFactory.getLog(this.getClass());
 	

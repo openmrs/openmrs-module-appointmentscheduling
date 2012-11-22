@@ -13,24 +13,18 @@
  */
 package org.openmrs.module.appointment.api;
 
-import org.openmrs.api.OpenmrsService;
-import org.springframework.transaction.annotation.Transactional;
+import static org.junit.Assert.*;
+import org.junit.Test;
+import org.openmrs.api.context.Context;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 /**
- * This service exposes module's core functionality. It is a Spring managed bean which is configured in moduleApplicationContext.xml.
- * <p>
- * It can be accessed only via Context:<br>
- * <code>
- * Context.getService(AppointmentServiceService.class).someMethod();
- * </code>
- * 
- * @see org.openmrs.api.context.Context
+ * Tests {@link ${AppointmentService}}.
  */
-@Transactional
-public interface AppointmentServiceService extends OpenmrsService {
-     
-	/*
-	 * Add service methods here
-	 * 
-	 */
+public class  AppointmentServiceTest extends BaseModuleContextSensitiveTest {
+	
+	@Test
+	public void shouldSetupContext() {
+		assertNotNull(Context.getService(AppointmentService.class));
+	}
 }

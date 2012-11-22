@@ -13,10 +13,9 @@
  */
 package org.openmrs.module.appointment.api.db;
 
-import org.openmrs.module.appointment.api.AppointmentServiceService;
 
 /**
- *  Database methods for {@link AppointmentServiceService}.
+ *  Database methods for {@link AppointmentService}.
  */
 public interface AppointmentServiceDAO {
 	
