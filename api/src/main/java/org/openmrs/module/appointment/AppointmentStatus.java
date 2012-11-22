@@ -13,34 +13,30 @@
  */
 package org.openmrs.module.appointment;
 
-import java.io.Serializable;
-import org.openmrs.BaseOpenmrsObject;
-import org.openmrs.BaseOpenmrsMetadata;
+import org.openmrs.BaseOpenmrsData;
 
-/**
- * It is a model class. It should extend either {@link BaseOpenmrsObject} or {@link BaseOpenmrsMetadata}.
- */
-public class Appointment extends BaseOpenmrsObject implements Serializable {
+
+public class AppointmentStatus extends BaseOpenmrsData {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Integer appointmentId;
-	
-    public Integer getAppointmentId() {
-    	return appointmentId;
-    }
+	private Integer appointmentStatusId;
 
 	
-    public void setAppointmentId(Integer appointmentId) {
-    	this.appointmentId = appointmentId;
+    public Integer getAppointmentStatusId() {
+    	return appointmentStatusId;
     }
 
+    public void setAppointmentStatusId(Integer appointmentStatusId) {
+    	this.appointmentStatusId = appointmentStatusId;
+    }
+    
     /**
 	 * @see org.openmrs.OpenmrsObject#getId()
 	 */
 	@Override
 	public Integer getId() {
-		return getAppointmentId();
+		return getAppointmentStatusId();
 	}
 	
 	/**
@@ -48,6 +44,6 @@ public class Appointment extends BaseOpenmrsObject implements Serializable {
 	 */
 	@Override
 	public void setId(Integer id) {
-		setAppointmentId(id);
+		setAppointmentStatusId(id);
 	}
 }

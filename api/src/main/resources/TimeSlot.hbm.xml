@@ -5,13 +5,14 @@
 
 <hibernate-mapping package="org.openmrs.module.appointment">
 
-	<class name="Appointment" table="${project.parent.artifactId}_appointment">
-		<id name="appointmentId" type="int" column="appointment_id" unsaved-value="0">
+	<class name="TimeSlot" table="${project.parent.artifactId}_time_slot">
+		<id name="timeSlotId" type="int" column="time_slot_id" unsaved-value="0">
 			<generator class="native" />
 		</id>
 		
-		<discriminator column="appointment_id" insert="false" />
+		<discriminator column="time_slot_id" insert="false" />
+		
 		<property name="uuid" type="java.lang.String" column="uuid" length="38" unique="true" />
-	</class>
+	</class> 
 
 </hibernate-mapping>
