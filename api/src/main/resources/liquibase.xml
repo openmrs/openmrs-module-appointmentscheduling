@@ -115,7 +115,7 @@
 				<constraints nullable="true"/>
 			</column>
 			<column name=patient_id type="int">
-				<constraints nullable="true"/>
+				<constraints nullable="false"/>
 			</column>
 
 
@@ -130,20 +130,20 @@
 			</column>
 			<column name="changed_by" type="int" />
 			<column name="date_changed" type="datetime" />
-			<column name="retired" type="tinyint" defaultValueNumeric="0">
+			<column name="voided" type="tinyint" defaultValueNumeric="0">
 				<constraints nullable="false"/>
 			</column>
-			<column name="retired_by" type="int" />
-			<column name="date_retired" type="datetime" />
-			<column name="retire_reason" type="varchar(255)" defaultValue="null"/>
+			<column name="voided_by" type="int" />
+			<column name="date_voided" type="datetime" />
+			<column name="void_reason" type="varchar(255)" defaultValue="null"/>
 			<addForeignKeyConstraint constraintName="appointment_creator"
 				baseTableName="appointment_appointment" baseColumnNames="creator"
 				referencedTableName="users" referencedColumnNames="user_id"/>
 			<addForeignKeyConstraint constraintName="appointment_changed_by" 
 				baseTableName="appointment_appointment" baseColumnNames="changed_by"
 				referencedTableName="users" referencedColumnNames="user_id"/>
-			<addForeignKeyConstraint constraintName="appointment_retired_by"
-				baseTableName="appointment_appointment" baseColumnNames="retired_by"
+			<addForeignKeyConstraint constraintName="appointment_voided_by"
+				baseTableName="appointment_appointment" baseColumnNames="voided_by"
 				referencedTableName="users" referencedColumnNames="user_id"/>
 			<addForeignKeyConstraint constraintName="appointment_time_slot_id"
 				baseTableName="appointment_appointment" baseColumnNames="time_slot_id"
