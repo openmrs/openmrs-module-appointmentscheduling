@@ -53,5 +53,106 @@
 			referencedTableName="users" referencedColumnNames="user_id"/>
 	</changeSet>
 	
-    
+    	<changeSet id="10000000-1000-appointment-status" author="yony258">
+		<preConditions onFail="MARK_RAN">
+			<not><tableExists tableName="appointment_appointment_status"/></not>
+		</preConditions>
+		<comment>
+			Create appointment status table
+		</comment>
+		<createTable tableName="appointment_appointment_status">
+			<column name="appointment_status_id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="name" type="varchar(255)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="description" type="varchar(1024)" />
+			<column name="uuid" type="char(38)">
+				<constraints nullable="false" unique="true"/>
+			</column>
+			<column name="creator" type="int" >
+				<constraints nullable="false" />
+			</column>
+			<column name="date_created" type="datetime" >
+				<constraints nullable="false"/>
+			</column>
+			<column name="changed_by" type="int" />
+			<column name="date_changed" type="datetime" />
+			<column name="retired" type="tinyint" defaultValueNumeric="0">
+				<constraints nullable="false"/>
+			</column>
+			<column name="retired_by" type="int" />
+			<column name="date_retired" type="datetime" />
+			<column name="retire_reason" type="varchar(255)" defaultValue="null"/>
+			<addForeignKeyConstraint constraintName="appointment_status_creator"
+				baseTableName="appointment_appointment_status" baseColumnNames="creator"
+				referencedTableName="users" referencedColumnNames="user_id"/>
+			<addForeignKeyConstraint constraintName="appointment_status_changed_by" 
+				baseTableName="appointment_appointment_status" baseColumnNames="changed_by"
+				referencedTableName="users" referencedColumnNames="user_id"/>
+			<addForeignKeyConstraint constraintName="appointment_status_retired_by"
+				baseTableName="appointment_appointment_status" baseColumnNames="retired_by"
+				referencedTableName="users" referencedColumnNames="user_id"/>
+		</createTable>
+	</changeSet>
+
+    	<changeSet id="10000000-1000-appointment-appointment" author="yony258">
+		<preConditions onFail="MARK_RAN">
+			<not><tableExists tableName="appointment_appointment"/></not>
+		</preConditions>
+		<comment>
+			Create the appointment table
+		</comment>
+		<createTable tableName="appointment_appointment">
+			<column name="appointment_id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name=time_slot_id type="int">
+				<constraints nullable="false"/>
+			</column>
+			<column name=visit_id type="int">
+				<constraints nullable="true"/>
+			</column>
+			<column name=patient_id type="int">
+				<constraints nullable="true"/>
+			</column>
+
+			<column name="uuid" type="char(38)">
+				<constraints nullable="false" unique="true"/>
+			</column>
+			<column name="creator" type="int" >
+				<constraints nullable="false" />
+			</column>
+			<column name="date_created" type="datetime" >
+				<constraints nullable="false"/>
+			</column>
+			<column name="changed_by" type="int" />
+			<column name="date_changed" type="datetime" />
+			<column name="retired" type="tinyint" defaultValueNumeric="0">
+				<constraints nullable="false"/>
+			</column>
+			<column name="retired_by" type="int" />
+			<column name="date_retired" type="datetime" />
+			<column name="retire_reason" type="varchar(255)" defaultValue="null"/>
+			<addForeignKeyConstraint constraintName="appointment_creator"
+				baseTableName="appointment_appointment" baseColumnNames="creator"
+				referencedTableName="users" referencedColumnNames="user_id"/>
+			<addForeignKeyConstraint constraintName="appointment_changed_by" 
+				baseTableName="appointment_appointment" baseColumnNames="changed_by"
+				referencedTableName="users" referencedColumnNames="user_id"/>
+			<addForeignKeyConstraint constraintName="appointment_retired_by"
+				baseTableName="appointment_appointment" baseColumnNames="retired_by"
+				referencedTableName="users" referencedColumnNames="user_id"/>
+			<addForeignKeyConstraint constraintName="appointment_time_slot_id"
+				baseTableName="appointment_appointment" baseColumnNames="time_slot_id"
+				referencedTableName="appointment_time_slot" referencedColumnNames="time_slot_id"/>
+			<addForeignKeyConstraint constraintName="appointment_visit_id"
+				baseTableName="appointment_appointment" baseColumnNames="visit_id"
+				referencedTableName="visit" referencedColumnNames="visit_id"/>
+			<addForeignKeyConstraint constraintName="appointment_patient_id"
+				baseTableName="appointment_appointment" baseColumnNames="patient_id"
+				referencedTableName="patient" referencedColumnNames="patient_id"/>
+		</createTable>
+	</changeSet>
 </databaseChangeLog>
