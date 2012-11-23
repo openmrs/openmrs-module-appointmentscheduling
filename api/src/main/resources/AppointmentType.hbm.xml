@@ -25,9 +25,9 @@
 		<property name="retired" type="boolean" length="1" not-null="true" />
 		<property name="retireReason" type="java.lang.String" column="retire_reason" length="255" />
 		
-		<many-to-one name="creator" class="User" not-null="true" />	
-		<many-to-one name="changedBy" class="User" column="changed_by"/>
-		<many-to-one name="retiredBy" class="User" column="retired_by" />
+		<many-to-one name="creator" class="org.openmrs.User" not-null="true" />	
+		<many-to-one name="changedBy" class="org.openmrs.User" column="changed_by"/>
+		<many-to-one name="retiredBy" class="org.openmrs.User" column="retired_by" />
 		
 	</class>
 </hibernate-mapping>

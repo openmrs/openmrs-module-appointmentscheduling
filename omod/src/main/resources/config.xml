@@ -27,10 +27,9 @@
 	</extension>
 	
 	<!-- Maps hibernate file's, if present -->
-	<mappingFiles>
-				
+	<mappingFiles>		
 		Appointment.hbm.xml
-				
+		AppointmentType.hbm.xml		
 	</mappingFiles>
 
 	<!-- Internationalization -->
