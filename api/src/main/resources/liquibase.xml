@@ -107,9 +107,6 @@
 		<addForeignKeyConstraint constraintName="appointment_block_provider_id"
 			baseTableName="appointment_appointment_block" baseColumnNames="provider_id"
 			referencedTableName="provider" referencedColumnNames="provider_id"/>
-		<addForeignKeyConstraint constraintName="appointment_block_patient_id"
-			baseTableName="appointment_appointment_block" baseColumnNames="patient_id"
-			referencedTableName="patient" referencedColumnNames="patient_id"/>	
 	</changeSet>
     	<changeSet id="10000000-1000-appointment-time-slot" author="yony258">
 		<preConditions onFail="MARK_RAN">
@@ -172,11 +169,14 @@
 			Create the link table "appointment_appointment_block_has_type" that links appointment_block table and appointment_type table
 		</comment>
 		<createTable tableName="appointment_appointment_block_has_type">
-			<column name="appointment_type_id" type="int">
+			<column name="appointment_block_has_type_id" type="int">
 				<constraints primaryKey="true" nullable="false"/>
 			</column>
+			<column name="appointment_type_id" type="int">
+				<constraints nullable="false"/>
+			</column>
 			<column name="appointment_block_id" type="int">
-				<constraints primaryKey="true" nullable="false"/>
+				<constraints nullable="false"/>
 			</column>
 			<column name="uuid" type="char(38)">
 				<constraints nullable="false" unique="true"/>
@@ -321,11 +321,14 @@
 			Create the link table "appointment_appointment_has_status" that links appointment table and appointment_status table
 		</comment>
 		<createTable tableName="appointment_appointment_has_status">
-			<column name="appointment_id" type="int">
+			<column name="appointment_has_status_id" type="int">
 				<constraints primaryKey="true" nullable="false"/>
 			</column>
+			<column name="appointment_id" type="int">
+				<constraints nullable="false"/>
+			</column>
 			<column name="appointment_status_id" type="int">
-				<constraints primaryKey="true" nullable="false"/>
+				<constraints nullable="false"/>
 			</column>
 			<column name="start_date" type="datetime">
 				<constraints nullable="false"/>
