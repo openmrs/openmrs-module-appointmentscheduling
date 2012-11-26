@@ -21,7 +21,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.api.AppointmentService;
-import org.openmrs.module.appointment.api.db.AppointmentDAO;
+import org.openmrs.module.appointment.api.db.AppointmentTypeDAO;
 import org.openmrs.validator.ValidateUtil;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,20 +32,20 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	
 	protected final Log log = LogFactory.getLog(this.getClass());
 	
-	private AppointmentDAO dao;
+	private AppointmentTypeDAO appointmentTypeDAO;
 	
 	/**
-     * @param dao the dao to set
+     * @param dao the appointment type dao to set
      */
-    public void setDao(AppointmentDAO dao) {
-	    this.dao = dao;
+    public void setAppointmentTypeDAO(AppointmentTypeDAO appointmentTypeDAO) {
+	    this.appointmentTypeDAO = appointmentTypeDAO;
     }
     
     /**
-     * @return the dao
+     * @return the appointment type dao
      */
-    public AppointmentDAO getDao() {
-	    return dao;
+    public AppointmentTypeDAO getAppointmentTypeDAO() {
+	    return appointmentTypeDAO;
     }
 	
 	/**
@@ -53,7 +53,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	 */
 	@Transactional(readOnly = true)
 	public List<AppointmentType> getAllAppointmentTypes() {
-		return getDao().getAllAppointmentTypes();
+		return getAppointmentTypeDAO().getAll();
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Override
 	@Transactional(readOnly = true)
 	public List<AppointmentType> getAllAppointmentTypes(boolean includeRetired) {
-		return dao.getAllAppointmentTypes(includeRetired);
+		return getAppointmentTypeDAO().getAll(includeRetired);
 	}
 	
 	/**
@@ -70,7 +70,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	 */
 	@Transactional(readOnly = true)
 	public AppointmentType getAppointmentType(Integer appointmentTypeId) {
-		return getDao().getAppointmentType(appointmentTypeId);
+		return (AppointmentType)getAppointmentTypeDAO().getById(appointmentTypeId);
 	}
 	
 	/**
@@ -78,7 +78,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	 */
 	@Transactional(readOnly = true)
 	public AppointmentType getAppointmentTypeByUuid(String uuid) {
-		return getDao().getAppointmentTypeByUuid(uuid);
+		return (AppointmentType)getAppointmentTypeDAO().getByUuid(uuid);
 	}
 	
 	/**
@@ -86,7 +86,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	 */
 	@Transactional(readOnly = true)
 	public List<AppointmentType> getAppointmentTypes(String fuzzySearchPhrase) {
-		return getDao().getAppointmentTypes(fuzzySearchPhrase);
+		return getAppointmentTypeDAO().getAll(fuzzySearchPhrase);
 	}
 	
 	/**
@@ -94,7 +94,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	 */
 	public AppointmentType saveAppointmentType(AppointmentType appointmentType) throws APIException {
 		ValidateUtil.validate(appointmentType);
-		return getDao().saveAppointmentType(appointmentType);
+		return (AppointmentType)getAppointmentTypeDAO().saveOrUpdate(appointmentType);
 	}
 	
 	/**
@@ -115,6 +115,6 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	 * @see org.openmrs.module.appointment.api.AppointmentService#purgeAppointmentType(org.openmrs.AppointmentType)
 	 */
 	public void purgeAppointmentType(AppointmentType appointmentType) {
-		getDao().purgeAppointmentType(appointmentType);
+		getAppointmentTypeDAO().delete(appointmentType);
 	}
 }

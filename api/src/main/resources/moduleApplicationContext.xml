@@ -32,8 +32,8 @@
 					</property>
 					<property name="target">
 						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.AppointmentServiceImpl">
-							<property name="dao">
-								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateAppointmentServiceDAO">
+							<property name="appointmentTypeDAO">
+								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateAppointmentTypeDAO">
 									<property name="sessionFactory">
 										<ref bean="sessionFactory" />
 									</property>
