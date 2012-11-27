@@ -13,7 +13,11 @@
  */
 package org.openmrs.module.appointment;
 
+import java.util.Date;
+
 import org.openmrs.BaseOpenmrsData;
+import org.openmrs.Location;
+import org.openmrs.Provider;
 
 
 public class AppointmentBlock extends BaseOpenmrsData {
@@ -21,7 +25,10 @@ public class AppointmentBlock extends BaseOpenmrsData {
 	private static final long serialVersionUID = 1L;
 	
 	private Integer appointmentBlockId;
-
+	private Date startDate;
+	private Date endDate;
+	private Provider provider;
+	private Location location;
 	
     public Integer getAppointmentBlockId() {
     	return appointmentBlockId;
@@ -47,4 +54,46 @@ public class AppointmentBlock extends BaseOpenmrsData {
 	public void setId(Integer id) {
 		setAppointmentBlockId(id);
 	}
+
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
+
+	public Provider getProvider() {
+		return provider;
+	}
+
+
+	public void setProvider(Provider provider) {
+		this.provider = provider;
+	}
+
+
+	public Location getLocation() {
+		return location;
+	}
+
+
+	public void setLocation(Location location) {
+		this.location = location;
+	}
+	
+	
 }
