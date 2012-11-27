@@ -15,12 +15,13 @@ package org.openmrs.module.appointment;
 
 import org.openmrs.BaseOpenmrsMetadata;
 
-
 public class AppointmentType extends BaseOpenmrsMetadata {
-
+	
 	private static final long serialVersionUID = 1L;
 	
 	private Integer appointmentTypeId;
+	
+	private int duration;
 	
 	public AppointmentType() {
 		
@@ -31,15 +32,14 @@ public class AppointmentType extends BaseOpenmrsMetadata {
 		setDescription(description);
 	}
 	
-    public Integer getAppointmentTypeId() {
-    	return appointmentTypeId;
-    }
-
+	public Integer getAppointmentTypeId() {
+		return appointmentTypeId;
+	}
 	
-    public void setAppointmentTypeId(Integer appointmentTypeId) {
-    	this.appointmentTypeId = appointmentTypeId;
-    }
-
+	public void setAppointmentTypeId(Integer appointmentTypeId) {
+		this.appointmentTypeId = appointmentTypeId;
+	}
+	
 	/**
 	 * @see org.openmrs.OpenmrsObject#getId()
 	 */
@@ -55,4 +55,13 @@ public class AppointmentType extends BaseOpenmrsMetadata {
 	public void setId(Integer id) {
 		setAppointmentTypeId(id);
 	}
+	
+	public int getDuration() {
+		return duration;
+	}
+	
+	public void setDuration(int duration) {
+		this.duration = duration;
+	}
+	
 }

@@ -15,23 +15,33 @@ package org.openmrs.module.appointment;
 
 import org.openmrs.BaseOpenmrsData;
 
-
 public class AppointmentStatus extends BaseOpenmrsData {
-
+	
 	private static final long serialVersionUID = 1L;
 	
 	private Integer appointmentStatusId;
-
 	
-    public Integer getAppointmentStatusId() {
-    	return appointmentStatusId;
-    }
-
-    public void setAppointmentStatusId(Integer appointmentStatusId) {
-    	this.appointmentStatusId = appointmentStatusId;
-    }
-    
-    /**
+	private boolean createdGroup;
+	
+	private boolean changedGroup;
+	
+	private boolean canceledGroup;
+	
+	private boolean inProgressGroup;
+	
+	private boolean missedGroup;
+	
+	private boolean finishedGroup;
+	
+	public Integer getAppointmentStatusId() {
+		return appointmentStatusId;
+	}
+	
+	public void setAppointmentStatusId(Integer appointmentStatusId) {
+		this.appointmentStatusId = appointmentStatusId;
+	}
+	
+	/**
 	 * @see org.openmrs.OpenmrsObject#getId()
 	 */
 	@Override
@@ -46,4 +56,53 @@ public class AppointmentStatus extends BaseOpenmrsData {
 	public void setId(Integer id) {
 		setAppointmentStatusId(id);
 	}
+	
+	public boolean isCreatedGroup() {
+		return createdGroup;
+	}
+	
+	public void setCreatedGroup(boolean createdGroup) {
+		this.createdGroup = createdGroup;
+	}
+	
+	public boolean isChangedGroup() {
+		return changedGroup;
+	}
+	
+	public void setChangedGroup(boolean changedGroup) {
+		this.changedGroup = changedGroup;
+	}
+	
+	public boolean isCanceledGroup() {
+		return canceledGroup;
+	}
+	
+	public void setCanceledGroup(boolean canceledGroup) {
+		this.canceledGroup = canceledGroup;
+	}
+	
+	public boolean isInProgressGroup() {
+		return inProgressGroup;
+	}
+	
+	public void setInProgressGroup(boolean inProgressGroup) {
+		this.inProgressGroup = inProgressGroup;
+	}
+	
+	public boolean isMissedGroup() {
+		return missedGroup;
+	}
+	
+	public void setMissedGroup(boolean missedGroup) {
+		this.missedGroup = missedGroup;
+	}
+	
+	public boolean isFinishedGroup() {
+		return finishedGroup;
+	}
+	
+	public void setFinishedGroup(boolean finishedGroup) {
+		this.finishedGroup = finishedGroup;
+	}
+	
 }

@@ -14,39 +14,39 @@
 package org.openmrs.module.appointment;
 
 import java.util.Date;
+import java.util.List;
 
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.Location;
 import org.openmrs.Provider;
 
-
 public class AppointmentBlock extends BaseOpenmrsData {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private Integer appointmentBlockId;
 	private Date startDate;
 	private Date endDate;
 	private Provider provider;
 	private Location location;
-	
-    public Integer getAppointmentBlockId() {
-    	return appointmentBlockId;
-    }
+	private List<AppointmentType> types;
 
-	
-    public void setAppointmentBlockId(Integer appointmentBlockId) {
-    	this.appointmentBlockId = appointmentBlockId;
-    }
-	
-    /**
+	public Integer getAppointmentBlockId() {
+		return appointmentBlockId;
+	}
+
+	public void setAppointmentBlockId(Integer appointmentBlockId) {
+		this.appointmentBlockId = appointmentBlockId;
+	}
+
+	/**
 	 * @see org.openmrs.OpenmrsObject#getId()
 	 */
 	@Override
 	public Integer getId() {
 		return getAppointmentBlockId();
 	}
-	
+
 	/**
 	 * @see org.openmrs.OpenmrsObject#setId(java.lang.Integer)
 	 */
@@ -55,45 +55,48 @@ public class AppointmentBlock extends BaseOpenmrsData {
 		setAppointmentBlockId(id);
 	}
 
-
 	public Date getStartDate() {
 		return startDate;
 	}
-
 
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
 
-
 	public Date getEndDate() {
 		return endDate;
 	}
-
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
 
-
 	public Provider getProvider() {
 		return provider;
 	}
-
 
 	public void setProvider(Provider provider) {
 		this.provider = provider;
 	}
 
-
 	public Location getLocation() {
 		return location;
 	}
 
-
 	public void setLocation(Location location) {
 		this.location = location;
 	}
+
+	
+    public List<AppointmentType> getTypes() {
+    	return types;
+    }
+
+	
+    public void setTypes(List<AppointmentType> types) {
+    	this.types = types;
+    }
 	
 	
+
 }

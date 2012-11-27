@@ -13,37 +13,68 @@
  */
 package org.openmrs.module.appointment;
 
+import java.util.Date;
+
 import org.openmrs.BaseOpenmrsData;
 
-
 public class TimeSlot extends BaseOpenmrsData {
-
+	
 	private static final long serialVersionUID = 1L;
 	
 	private Integer timeSlotId;
-
 	
-    public Integer getTimeSlotId() {
-    	return timeSlotId;
-    }
+	private AppointmentBlock appointmentBlock;
 	
-    public void setTimeSlotId(Integer timeSlotId) {
-    	this.timeSlotId = timeSlotId;
-    }
+	private Date startDate;
 	
-    /**
+	private Date endDate;
+	
+	public Integer getTimeSlotId() {
+		return timeSlotId;
+	}
+	
+	public void setTimeSlotId(Integer timeSlotId) {
+		this.timeSlotId = timeSlotId;
+	}
+	
+	/**
 	 * @see org.openmrs.OpenmrsObject#getId()
 	 */
-    @Override
+	@Override
 	public Integer getId() {
 		return getTimeSlotId();
 	}
 	
-    /**
+	/**
 	 * @see org.openmrs.OpenmrsObject#setId(java.lang.Integer)
 	 */
 	@Override
 	public void setId(Integer id) {
 		setTimeSlotId(id);
 	}
+	
+	public AppointmentBlock getAppointmentBlock() {
+		return appointmentBlock;
+	}
+	
+	public void setAppointmentBlock(AppointmentBlock appointmentBlock) {
+		this.appointmentBlock = appointmentBlock;
+	}
+	
+	public Date getStartDate() {
+		return startDate;
+	}
+	
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+	
+	public Date getEndDate() {
+		return endDate;
+	}
+	
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+	
 }

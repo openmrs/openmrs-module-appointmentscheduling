@@ -11,7 +11,21 @@
 		</id>
 		
 		<discriminator column="appointment_id" insert="false" />
+		<many-to-one name="timeSlot" column="time_slot_id" class="TimeSlot" not-null="true" />
+		<many-to-one name="visit" column="visit_id" class="org.openmrs.Visit" not-null="false" />
+		<many-to-one name="patient" column="patient_id" class="org.openmrs.Patient" not-null="true" />
+		
 		<property name="uuid" type="java.lang.String" column="uuid" length="38" unique="true" />
+		<property name="dateCreated" type="java.util.Date" column="date_created" not-null="true" length="19" />
+		<property name="dateChanged" type="java.util.Date" column="date_changed" length="19"/>
+		<property name="dateVoided" type="java.util.Date" column="date_voided" length="19" />	
+		
+		<property name="voided" type="boolean" length="1" not-null="true" />
+		<property name="voidReason" type="java.lang.String" column="retire_reason" length="255" />
+		
+		<many-to-one name="creator" class="org.openmrs.User" not-null="true" />	
+		<many-to-one name="changedBy" class="org.openmrs.User" column="changed_by"/>
+		<many-to-one name="voidedBy" class="org.openmrs.User" column="voided_by" />
 	</class>
 
 </hibernate-mapping>
