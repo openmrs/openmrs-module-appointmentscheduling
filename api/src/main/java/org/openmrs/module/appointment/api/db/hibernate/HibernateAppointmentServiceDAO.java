@@ -24,6 +24,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.APIException;
 import org.openmrs.api.db.DAOException;
+import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.api.db.AppointmentDAO;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +50,6 @@ public class HibernateAppointmentServiceDAO implements AppointmentDAO {
     public SessionFactory getSessionFactory() {
 	    return sessionFactory;
     }
-    
     /**
 	 * @see org.openmrs.module.appointment.api.db.AppointmentDAO#getAllAppointmentTypes()
 	 */
@@ -112,5 +112,69 @@ public class HibernateAppointmentServiceDAO implements AppointmentDAO {
 	@Transactional
 	public void purgeAppointmentType(AppointmentType appointmentType) {
 		sessionFactory.getCurrentSession().delete(appointmentType);
+	}
+	
+    /**
+	 * @see org.openmrs.module.appointment.api.db.AppointmentDAO#getAllAppointmentBlocks()
+	 */
+	@SuppressWarnings("unchecked")
+	@Transactional(readOnly = true)
+	public List<AppointmentBlock> getAllAppointmentBlocks() throws APIException {
+		return getSessionFactory().getCurrentSession().createCriteria(AppointmentBlock.class).list();
+	}
+	
+	/**
+	 * @see org.openmrs.module.appointment.api.db.AppointmentDAO#getAllAppointmentBlocks(boolean)
+	 */
+	@Override
+	public List<AppointmentBlock> getAllAppointmentBlocks(boolean includeVoided) throws DAOException {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(AppointmentBlock.class);
+		return includeVoided ? criteria.list() : criteria.add(Restrictions.eq("voided", includeVoided)).list();
+	}
+	
+	/**
+	 * @see org.openmrs.module.appointment.api.db.AppointmentDAO#getAppointmentBlock(java.lang.Integer)
+	 */
+	@Transactional(readOnly = true)
+	public AppointmentBlock getAppointmentBlock(Integer appointmentBlockId) {
+		return (AppointmentBlock) sessionFactory.getCurrentSession().get(AppointmentBlock.class, appointmentBlockId);
+	}
+	
+	/**
+	 * @see org.openmrs.module.appointment.api.db.AppointmentDAO#getAppointmentBlockByUuid(java.lang.String)
+	 */
+	@Transactional(readOnly = true)
+	public AppointmentBlock getAppointmentBlockByUuid(String uuid) {
+		return (AppointmentBlock) sessionFactory.getCurrentSession().createQuery("from AppointmentBlock at where at.uuid = :uuid")
+		        .setString("uuid", uuid).uniqueResult();
+	}
+	
+	/**
+	 * @see org.openmrs.module.appointment.api.db.AppointmentDAO#getAppointmentBlocks(java.lang.String)
+	 */
+	@SuppressWarnings("unchecked")
+	@Transactional(readOnly = true)
+	public List<AppointmentBlock> getAppointmentBlocks(String fuzzySearchPhrase) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(AppointmentBlock.class);
+		criteria.add(Restrictions.ilike("name", fuzzySearchPhrase, MatchMode.ANYWHERE));
+		criteria.addOrder(Order.asc("name"));
+		return criteria.list();
+	}
+	
+	/**
+	 * @see org.openmrs.module.appointment.api.db.AppointmentDAO#saveAppointmentBlock(org.openmrs.AppointmentBlock)
+	 */
+	@Transactional
+	public AppointmentBlock saveAppointmentBlock(AppointmentBlock appointmentBlock) {
+		sessionFactory.getCurrentSession().saveOrUpdate(appointmentBlock);
+		return appointmentBlock;
+	}
+	
+	/**
+	 * @see org.openmrs.module.appointment.api.db.AppointmentDAO#purgeAppointmentBlock(org.openmrs.AppointmentBlock)
+	 */
+	@Transactional
+	public void purgeAppointmentBlock(AppointmentBlock appointmentBlock) {
+		sessionFactory.getCurrentSession().delete(appointmentBlock);
 	}
 }

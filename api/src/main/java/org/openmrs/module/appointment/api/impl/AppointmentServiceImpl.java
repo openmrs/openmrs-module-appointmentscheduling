@@ -19,8 +19,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.api.AppointmentService;
+import org.openmrs.module.appointment.api.db.AppointmentBlockDAO;
 import org.openmrs.module.appointment.api.db.AppointmentTypeDAO;
 import org.openmrs.validator.ValidateUtil;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +35,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	protected final Log log = LogFactory.getLog(this.getClass());
 	
 	private AppointmentTypeDAO appointmentTypeDAO;
+	private AppointmentBlockDAO appointmentBlockDAO;
 	
 	/**
      * @param dao the appointment type dao to set
@@ -117,4 +120,91 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	public void purgeAppointmentType(AppointmentType appointmentType) {
 		getAppointmentTypeDAO().delete(appointmentType);
 	}
+	
+	//Appointment Block
+	
+	/**
+     * @param dao the appointment block dao to set
+     */
+    public void setAppointmentBlockDAO(AppointmentBlockDAO appointmentBlockDAO) {
+	    this.appointmentBlockDAO = appointmentBlockDAO;
+    }
+    
+    /**
+     * @return the appointment block dao
+     */
+    public AppointmentBlockDAO getAppointmentBlockDAO() {
+	    return appointmentBlockDAO;
+    }
+	
+	/**
+	 * @see org.openmrs.module.appointment.api.AppointmentService#getAllAppointmentBlocks()
+	 */
+	@Transactional(readOnly = true)
+	public List<AppointmentBlock> getAllAppointmentBlocks() {
+		return getAppointmentBlockDAO().getAll();
+	}
+	
+	/**
+	 * @see org.openmrs.module.appointment.api.AppointmentService#getAllAppointmentBlocks(boolean)
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public List<AppointmentBlock> getAllAppointmentBlocks(boolean includeVoided) {
+		return getAppointmentBlockDAO().getAll(includeVoided);
+	}
+	
+	/**
+	 * @see org.openmrs.module.appointment.api.AppointmentService#getAppointmentBlock(java.lang.Integer)
+	 */
+	@Transactional(readOnly = true)
+	public AppointmentBlock getAppointmentBlock(Integer appointmentBlockId) {
+		return (AppointmentBlock)getAppointmentBlockDAO().getById(appointmentBlockId);
+	}
+	
+	/**
+	 * @see org.openmrs.module.appointment.api.AppointmentService#getAppointmentBlockByUuid(java.lang.String)
+	 */
+	@Transactional(readOnly = true)
+	public AppointmentBlock getAppointmentBlockByUuid(String uuid) {
+		return (AppointmentBlock)getAppointmentBlockDAO().getByUuid(uuid);
+	}
+	
+	/**
+	 * @see org.openmrs.module.appointment.api.AppointmentService#getAppointmentBlocks(java.lang.String)
+	 */
+	@Transactional(readOnly = true)
+	public List<AppointmentBlock> getAppointmentBlocks(String fuzzySearchPhrase) {
+		return getAppointmentBlockDAO().getAll(fuzzySearchPhrase);
+	}
+	
+	/**
+	 * @see org.openmrs.module.appointment.api.AppointmentService#saveAppointmentBlock(org.openmrs.AppointmentBlock)
+	 */
+	public AppointmentBlock saveAppointmentBlock(AppointmentBlock appointmentBlock) throws APIException {
+		ValidateUtil.validate(appointmentBlock);
+		return (AppointmentBlock)getAppointmentBlockDAO().saveOrUpdate(appointmentBlock);
+	}
+	
+	/**
+	 * @see org.openmrs.module.appointment.api.AppointmentService#voidAppointmentBlock(org.openmrs.AppointmentBlock, java.lang.String)
+	 */
+	public AppointmentBlock voidAppointmentBlock(AppointmentBlock appointmentBlock, String reason) {
+		return saveAppointmentBlock(appointmentBlock);
+	}
+	
+	/**
+	 * @see org.openmrs.module.appointment.api.AppointmentService#unvoidAppointmentBlock(org.openmrs.AppointmentBlock)
+	 */
+	public AppointmentBlock unvoidAppointmentBlock(AppointmentBlock appointmentBlock) {
+		return saveAppointmentBlock(appointmentBlock);
+	}
+	
+	/**
+	 * @see org.openmrs.module.appointment.api.AppointmentService#purgeAppointmentBlock(org.openmrs.AppointmentBlock)
+	 */
+	public void purgeAppointmentBlock(AppointmentBlock appointmentBlock) {
+		getAppointmentBlockDAO().delete(appointmentBlock);
+	}
+
 }

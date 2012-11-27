@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.AppointmentType;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -120,4 +121,95 @@ public interface AppointmentService extends OpenmrsService {
 	 * @should delete given appointment type
 	 */
 	void purgeAppointmentType(AppointmentType appointmentType);
+	
+	//AppointmentBlock	
+	/**
+	 * Gets all appointment blocks.
+	 * 
+	 * @return a list of appointment block objects.
+	 * @should get all appointment blocks
+	 */
+	@Transactional(readOnly=true)
+	List<AppointmentBlock> getAllAppointmentBlocks();
+	
+	/**
+	 * Get all appointment blocks based on includeVoided flag
+	 * 
+	 * @param includeVoided
+	 * @return List of all appointment blocks
+	 * @should get all appointment blocks based on include voided flag.
+	 */
+	@Transactional(readOnly=true)
+	public List<AppointmentBlock> getAllAppointmentBlocks(boolean includeVoided);
+	
+	/**
+	 * Gets an appointment block by its appointment block id.
+	 * 
+	 * @param appointmentBlockId the appointment block id.
+	 * @return the appointment block object found with the given id, else null.
+	 * @should get correct appointment block
+	 */
+	@Transactional(readOnly=true)
+	AppointmentBlock getAppointmentBlock(Integer appointmentBlockId);
+	
+	/**
+	 * Gets an appointment block by its UUID.
+	 * 
+	 * @param uuid the appointment block UUID.
+	 * @return the appointment block object found with the given uuid, else null.
+	 * @should get correct appointment block
+	 */
+	@Transactional(readOnly=true)
+	AppointmentBlock getAppointmentBlockByUuid(String uuid);
+	
+	/**
+	 * Gets all appointment blocks whose names are similar to or contain the given search phrase.
+	 * 
+	 * @param fuzzySearchPhrase the search phrase to use.
+	 * @return a list of all appointment blocks with names similar to or containing the given phrase
+	 * @should get correct appointment blocks
+	 */
+	@Transactional(readOnly=true)
+	List<AppointmentBlock> getAppointmentBlocks(String fuzzySearchPhrase);
+	
+	/**
+	 * Creates or updates the given appointment block in the database.
+	 * 
+	 * @param appointmentBlock the appointment block to create or update.
+	 * @return the created or updated appointment block.
+	 * @should save new appointment block
+	 * @should save edited appointment block
+	 * @should throw error when name is null
+	 * @should throw error when name is empty string
+	 */	
+	AppointmentBlock saveAppointmentBlock(AppointmentBlock appointmentBlock) throws APIException;
+	
+	/**
+	 * Voids a given appointment block.
+	 * 
+	 * @param appointmentBlock the appointment block to void.
+	 * @param reason the reason why the appointment block is voided.
+	 * @return the appointment block that has been voided.
+	 * @should void given appointment block
+	 */
+	AppointmentBlock voidAppointmentBlock(AppointmentBlock appointmentBlock, String reason);
+	
+	/**
+	 * Unvoids an appointment block.
+	 * 
+	 * @param appointmentType the appointment block to unvoid.
+	 * @return the unvoided appointment block
+	 * @should unvoided given appointment block
+	 */
+	AppointmentBlock unvoidAppointmentBlock(AppointmentBlock appointmentBlock);
+	
+	/**
+	 * Completely removes an appointment block from the database. This is not reversible.
+	 * 
+	 * @param appointmentBlock the appointment block to delete from the database.
+	 * @should delete given appointment block
+	 */
+	void purgeAppointmentBlock(AppointmentBlock appointmentBlock);
+	
+	
 }
