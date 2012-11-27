@@ -48,6 +48,7 @@ public class AppointmentBlockValidator implements Validator {
 	 * @should fail validation if name is null or empty or whitespace
 	 * @should pass validation if all required fields have proper values
 	 */
+
 	public void validate(Object obj, Errors errors) {
 		AppointmentBlock appointmentBlock = (AppointmentBlock) obj;
 		if (appointmentBlock == null) {

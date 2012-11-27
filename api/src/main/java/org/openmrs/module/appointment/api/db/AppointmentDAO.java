@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.openmrs.api.APIException;
 import org.openmrs.api.db.DAOException;
-import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.api.AppointmentService;
 
@@ -61,38 +60,5 @@ public interface AppointmentDAO {
 	 */
 	void purgeAppointmentType(AppointmentType appointmentType);
 	
-	/**
-	 * @see org.openmrs.module.appointment.api.AppointmentService#getAllAppointmentBlocks()
-	 */
-	List<AppointmentBlock> getAllAppointmentBlocks() throws APIException;
-	
-	/**
-	 * @see org.openmrs.module.appointment.api.AppointmentService#getAllAppointmentBlocks(boolean)
-	 */
-	public List<AppointmentBlock> getAllAppointmentBlocks(boolean includeVoided) throws DAOException;
-	
-	/**
-	 * @see org.openmrs.module.appointment.api.AppointmentService#getAppointmentBlock(java.lang.Integer)
-	 */
-	AppointmentBlock getAppointmentBlock(Integer appointmentBlockId);
-	
-	/**
-	 * @see org.openmrs.module.appointment.api.AppointmentService#getAppointmentBlockByUuid(java.lang.String)
-	 */
-	AppointmentBlock getAppointmentBlockByUuid(String uuid);
-	
-	/**
-	 * @see org.openmrs.module.appointment.api.AppointmentService#getAppointmentBlocks(java.lang.String)
-	 */
-	List<AppointmentBlock> getAppointmentBlocks(String fuzzySearchPhrase);
-	
-	/**
-	 * @see org.openmrs.module.appointment.api.AppointmentService#saveAppointmentBlock(org.openmrs.AppointmentBlock)
-	 */
-	AppointmentBlock saveAppointmentBlock(AppointmentBlock appointmentBlock);
-	
-	/**
-	 * @see org.openmrs.module.appointment.api.AppointmentService#purgeAppointmentBlock(org.openmrs.AppointmentBlock)
-	 */
-	void purgeAppointmentBlock(AppointmentBlock appointmentBlock);
+
 }
