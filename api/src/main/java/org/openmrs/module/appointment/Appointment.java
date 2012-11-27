@@ -14,28 +14,35 @@
 package org.openmrs.module.appointment;
 
 import java.io.Serializable;
-import org.openmrs.BaseOpenmrsObject;
+
 import org.openmrs.BaseOpenmrsMetadata;
+import org.openmrs.BaseOpenmrsObject;
 
 /**
- * It is a model class. It should extend either {@link BaseOpenmrsObject} or {@link BaseOpenmrsMetadata}.
+ * It is a model class. It should extend either {@link BaseOpenmrsObject} or
+ * {@link BaseOpenmrsMetadata}.
  */
 public class Appointment extends BaseOpenmrsObject implements Serializable {
-
+	
 	private static final long serialVersionUID = 1L;
 	
 	private Integer appointmentId;
 	
-    public Integer getAppointmentId() {
-    	return appointmentId;
-    }
-
+	private TimeSlot timeSlot;
 	
-    public void setAppointmentId(Integer appointmentId) {
-    	this.appointmentId = appointmentId;
-    }
-
-    /**
+	private org.openmrs.Visit visit;
+	
+	private org.openmrs.Patient patient;
+	
+	public Integer getAppointmentId() {
+		return appointmentId;
+	}
+	
+	public void setAppointmentId(Integer appointmentId) {
+		this.appointmentId = appointmentId;
+	}
+	
+	/**
 	 * @see org.openmrs.OpenmrsObject#getId()
 	 */
 	@Override
@@ -50,4 +57,29 @@ public class Appointment extends BaseOpenmrsObject implements Serializable {
 	public void setId(Integer id) {
 		setAppointmentId(id);
 	}
+	
+	public TimeSlot getTimeSlot() {
+		return timeSlot;
+	}
+	
+	public void setTimeSlot(TimeSlot timeSlot) {
+		this.timeSlot = timeSlot;
+	}
+	
+	public org.openmrs.Visit getVisit() {
+		return visit;
+	}
+	
+	public void setVisit(org.openmrs.Visit visit) {
+		this.visit = visit;
+	}
+	
+	public org.openmrs.Patient getPatient() {
+		return patient;
+	}
+	
+	public void setPatient(org.openmrs.Patient patient) {
+		this.patient = patient;
+	}
+	
 }

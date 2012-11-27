@@ -15,18 +15,22 @@
 		<property name="endDate" type="java.util.Date" column="end_date" not-null="true" length="19" />
 		<many-to-one name="provider" column="provider_id" class="org.openmrs.Provider" not-null="true" />
 		<many-to-one name="location" column="location_id" class="org.openmrs.Location" not-null="true" />
+		<set name="types" table="appointment_block_type_map" cascade="save-update">
+			<key column="appointment_block_id"/>
+			<many-to-many class="AppointmentType" column="appintment_type_id"/>
+		</set>
 		
 		<property name="uuid" type="java.lang.String" column="uuid" length="38" unique="true" />
 		<property name="dateCreated" type="java.util.Date" column="date_created" not-null="true" length="19" />
 		<property name="dateChanged" type="java.util.Date" column="date_changed" length="19"/>
-		<property name="datevoided" type="java.util.Date" column="date_retired" length="19" />	
+		<property name="dateVoided" type="java.util.Date" column="date_voided" length="19" />	
 		
 		<property name="voided" type="boolean" length="1" not-null="true" />
 		<property name="voidReason" type="java.lang.String" column="retire_reason" length="255" />
 		
 		<many-to-one name="creator" class="org.openmrs.User" not-null="true" />	
 		<many-to-one name="changedBy" class="org.openmrs.User" column="changed_by"/>
-		<many-to-one name="voidedBy" class="org.openmrs.User" column="retired_by" />
+		<many-to-one name="voidedBy" class="org.openmrs.User" column="voided_by" />
 	</class> 
 
 </hibernate-mapping>
