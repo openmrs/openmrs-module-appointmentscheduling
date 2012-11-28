@@ -15,14 +15,18 @@ package org.openmrs.module.appointment.api;
 
 import java.util.List;
 
+import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.AppointmentType;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * This service exposes module's core functionality. It is a Spring managed bean which is configured in moduleApplicationContext.xml.
+ * This service exposes module's core functionality. It is a Spring managed bean which is configured
+ * in moduleApplicationContext.xml.
  * <p>
  * It can be accessed only via Context:<br>
  * <code>
@@ -33,14 +37,14 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public interface AppointmentService extends OpenmrsService {
-     
+	
 	/**
 	 * Gets all appointment types.
 	 * 
 	 * @return a list of appointment type objects.
 	 * @should get all appointment types
 	 */
-	@Transactional(readOnly=true)
+	@Transactional(readOnly = true)
 	List<AppointmentType> getAllAppointmentTypes();
 	
 	/**
@@ -50,7 +54,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return List of all appointment types
 	 * @should get all appointment types based on include retired flag.
 	 */
-	@Transactional(readOnly=true)
+	@Transactional(readOnly = true)
 	public List<AppointmentType> getAllAppointmentTypes(boolean includeRetired);
 	
 	/**
@@ -60,7 +64,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the appointment type object found with the given id, else null.
 	 * @should get correct appointment type
 	 */
-	@Transactional(readOnly=true)
+	@Transactional(readOnly = true)
 	AppointmentType getAppointmentType(Integer appointmentTypeId);
 	
 	/**
@@ -70,7 +74,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the appointment type object found with the given uuid, else null.
 	 * @should get correct appointment type
 	 */
-	@Transactional(readOnly=true)
+	@Transactional(readOnly = true)
 	AppointmentType getAppointmentTypeByUuid(String uuid);
 	
 	/**
@@ -80,7 +84,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return a list of all appointment types with names similar to or containing the given phrase
 	 * @should get correct appointment types
 	 */
-	@Transactional(readOnly=true)
+	@Transactional(readOnly = true)
 	List<AppointmentType> getAppointmentTypes(String fuzzySearchPhrase);
 	
 	/**
@@ -129,7 +133,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return a list of appointment block objects.
 	 * @should get all appointment blocks
 	 */
-	@Transactional(readOnly=true)
+	@Transactional(readOnly = true)
 	List<AppointmentBlock> getAllAppointmentBlocks();
 	
 	/**
@@ -139,7 +143,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return List of all appointment blocks
 	 * @should get all appointment blocks based on include voided flag.
 	 */
-	@Transactional(readOnly=true)
+	@Transactional(readOnly = true)
 	public List<AppointmentBlock> getAllAppointmentBlocks(boolean includeVoided);
 	
 	/**
@@ -149,7 +153,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the appointment block object found with the given id, else null.
 	 * @should get correct appointment block
 	 */
-	@Transactional(readOnly=true)
+	@Transactional(readOnly = true)
 	AppointmentBlock getAppointmentBlock(Integer appointmentBlockId);
 	
 	/**
@@ -159,7 +163,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the appointment block object found with the given uuid, else null.
 	 * @should get correct appointment block
 	 */
-	@Transactional(readOnly=true)
+	@Transactional(readOnly = true)
 	AppointmentBlock getAppointmentBlockByUuid(String uuid);
 	
 	/**
@@ -169,7 +173,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return a list of all appointment blocks with names similar to or containing the given phrase
 	 * @should get correct appointment blocks
 	 */
-	@Transactional(readOnly=true)
+	@Transactional(readOnly = true)
 	List<AppointmentBlock> getAppointmentBlocks(String fuzzySearchPhrase);
 	
 	/**
@@ -181,7 +185,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @should save edited appointment block
 	 * @should throw error when name is null
 	 * @should throw error when name is empty string
-	 */	
+	 */
 	AppointmentBlock saveAppointmentBlock(AppointmentBlock appointmentBlock) throws APIException;
 	
 	/**
@@ -197,7 +201,7 @@ public interface AppointmentService extends OpenmrsService {
 	/**
 	 * Unvoids an appointment block.
 	 * 
-	 * @param appointmentType the appointment block to unvoid.
+	 * @param appointmentBlock the appointment block to unvoid.
 	 * @return the unvoided appointment block
 	 * @should unvoided given appointment block
 	 */
@@ -211,5 +215,99 @@ public interface AppointmentService extends OpenmrsService {
 	 */
 	void purgeAppointmentBlock(AppointmentBlock appointmentBlock);
 	
+	//Appointment
+	/**
+	 * Gets all appointments.
+	 * 
+	 * @return a list of appointment objects.
+	 * @should get all appointment
+	 */
+	@Transactional(readOnly = true)
+	List<Appointment> getAllAppointments();
 	
+	/**
+	 * Get all appointments based on includeVoided flag
+	 * 
+	 * @param includeVoided
+	 * @return List of all appointments
+	 * @should get all appointments based on include voided flag.
+	 */
+	@Transactional(readOnly = true)
+	public List<Appointment> getAllAppointments(boolean includeVoided);
+	
+	/**
+	 * Gets an appointment by its appointment id.
+	 * 
+	 * @param appointmentId the appointment id.
+	 * @return the appointment object found with the given id, else null.
+	 * @should get correct appointment
+	 */
+	@Transactional(readOnly = true)
+	Appointment getAppointment(Integer appointmentId);
+	
+	/**
+	 * Gets an appointment by its UUID.
+	 * 
+	 * @param uuid the appointment UUID.
+	 * @return the appointment object found with the given uuid, else null.
+	 * @should get correct appointment
+	 */
+	@Transactional(readOnly = true)
+	Appointment getAppointmentByUuid(String uuid);
+	
+	/**
+	 * Creates or updates the given appointment in the database.
+	 * 
+	 * @param appointment the appointment to create or update.
+	 * @return the created or updated appointment.
+	 * @should save new appointment
+	 * @should save edited appointment
+	 * @should throw error when name is null
+	 * @should throw error when name is empty string
+	 */
+	Appointment saveAppointment(Appointment appointment) throws APIException;
+	
+	/**
+	 * Voids a given appointment.
+	 * 
+	 * @param appointment the appointment to void.
+	 * @param reason the reason why the appointment is voided.
+	 * @return the appointment that has been voided.
+	 * @should void given appointment
+	 */
+	Appointment voidAppointment(Appointment appointment, String reason);
+	
+	/**
+	 * Unvoids an appointment.
+	 * 
+	 * @param appointment the appointment to unvoid.
+	 * @return the unvoided appointment
+	 * @should unvoided given appointment
+	 */
+	Appointment unvoidAppointment(Appointment appointment);
+	
+	/**
+	 * Completely removes an appointment from the database. This is not reversible.
+	 * 
+	 * @param appointment the appointment to delete from the database.
+	 * @should delete given appointment
+	 */
+	void purgeAppointment(Appointment appointment);
+	
+	/**
+	 * Returns all Appointments for a given Patient
+	 * 
+	 * @param patientId the patient id to search by.
+	 * @return all the appointments for the given patient id.
+	 * @should return all of the appointments for the given patient.
+	 */
+	List<Appointment> getAppointmentsOfPatient(Integer patientId);
+	
+	/**
+	 * Returns the appointment corresponding to the given visit.
+	 * 
+	 * @param visitId the visit id to search by.
+	 * @return the appointment that is related to this visit, null if there isnt any.
+	 */
+	Appointment getAppointmentByVisit(Integer visitId);
 }
