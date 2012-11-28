@@ -262,8 +262,6 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the created or updated appointment.
 	 * @should save new appointment
 	 * @should save edited appointment
-	 * @should throw error when name is null
-	 * @should throw error when name is empty string
 	 */
 	Appointment saveAppointment(Appointment appointment) throws APIException;
 	
@@ -281,8 +279,8 @@ public interface AppointmentService extends OpenmrsService {
 	 * Unvoids an appointment.
 	 * 
 	 * @param appointment the appointment to unvoid.
-	 * @return the unvoided appointment
-	 * @should unvoided given appointment
+	 * @return the unvoid appointment
+	 * @should unvoid given appointment
 	 */
 	Appointment unvoidAppointment(Appointment appointment);
 	

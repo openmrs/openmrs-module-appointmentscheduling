@@ -30,11 +30,12 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 	@Transactional(readOnly = true)
 	public List<Appointment> getAppointmentsByPatient(Integer patientId) {
 		return super.sessionFactory.getCurrentSession().createCriteria(Appointment.class)
-		        .add(Restrictions.like("patient_id", patientId)).list();
+		        .add(Restrictions.eq("patient_id", patientId)).list();
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public Appointment getAppointmentByVisit(Integer visitId) {
-		return (Appointment)super.sessionFactory.getCurrentSession().createQuery("from " + mappedClass.getSimpleName() + " where at.visit_id = :visitId").setParameter(0, visitId).uniqueResult();
+		return (Appointment)super.sessionFactory.getCurrentSession().createQuery("from " + mappedClass.getSimpleName() + " where at.visitId = :visitId").setParameter(0, visitId).uniqueResult();
 	}
 }

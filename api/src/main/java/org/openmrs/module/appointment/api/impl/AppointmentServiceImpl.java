@@ -272,11 +272,13 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public List<Appointment> getAppointmentsOfPatient(Integer patientId) {
 		return getAppointmentDAO().getAppointmentsByPatient(patientId);
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public Appointment getAppointmentByVisit(Integer visitId) {
 		return getAppointmentDAO().getAppointmentByVisit(visitId);
 	}
