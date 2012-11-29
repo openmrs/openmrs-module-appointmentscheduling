@@ -5,7 +5,7 @@
 
 <hibernate-mapping package="org.openmrs.module.appointment">
 
-	<class name="AppointmentBlock" table="${project.parent.artifactId}_appointment_block">
+	<class name="AppointmentBlock" table="${project.parent.artifactId}_block">
 		<id name="appointmentBlockId" type="int" column="appointment_block_id" unsaved-value="0">
 			<generator class="native" />
 		</id>

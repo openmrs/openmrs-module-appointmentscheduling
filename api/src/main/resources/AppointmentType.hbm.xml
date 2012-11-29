@@ -3,7 +3,7 @@
     "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">  
 <hibernate-mapping package="org.openmrs.module.appointment">
-	<class name="AppointmentType" table="${project.parent.artifactId}_appointment_type">
+	<class name="AppointmentType" table="${project.parent.artifactId}_type">
 
 		<id name="appointmentTypeId" type="java.lang.Integer"	column="appointment_type_id" unsaved-value="0">
 			<generator class="native">
