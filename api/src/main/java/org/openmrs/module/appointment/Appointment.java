@@ -17,6 +17,8 @@ import java.io.Serializable;
 
 import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.BaseOpenmrsObject;
+import org.openmrs.Patient;
+import org.openmrs.Visit;
 
 /**
  * It is a model class. It should extend either {@link BaseOpenmrsObject} or
@@ -66,19 +68,19 @@ public class Appointment extends BaseOpenmrsObject implements Serializable {
 		this.timeSlot = timeSlot;
 	}
 	
-	public org.openmrs.Visit getVisit() {
+	public Visit getVisit() {
 		return visit;
 	}
 	
-	public void setVisit(org.openmrs.Visit visit) {
+	public void setVisit(Visit visit) {
 		this.visit = visit;
 	}
 	
-	public org.openmrs.Patient getPatient() {
+	public Patient getPatient() {
 		return patient;
 	}
 	
-	public void setPatient(org.openmrs.Patient patient) {
+	public void setPatient(Patient patient) {
 		this.patient = patient;
 	}
 	

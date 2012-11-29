@@ -21,7 +21,7 @@ public class AppointmentType extends BaseOpenmrsMetadata {
 	
 	private Integer appointmentTypeId;
 	
-	private int duration;
+	private Integer duration;
 	
 	public AppointmentType() {
 		

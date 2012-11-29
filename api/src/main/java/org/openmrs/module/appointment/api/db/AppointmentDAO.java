@@ -15,50 +15,15 @@ package org.openmrs.module.appointment.api.db;
 
 import java.util.List;
 
-import org.openmrs.api.APIException;
-import org.openmrs.api.db.DAOException;
-import org.openmrs.module.appointment.AppointmentType;
+import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.api.AppointmentService;
 
-
 /**
- *  Database methods for {@link AppointmentService}.
+ * Database methods for {@link AppointmentService}.
  */
-public interface AppointmentDAO {
-	/**
-	 * @see org.openmrs.module.appointment.api.AppointmentService#getAllAppointmentTypes()
-	 */
-	List<AppointmentType> getAllAppointmentTypes() throws APIException;
+public interface AppointmentDAO extends SingleClassDAO {
 	
-	/**
-	 * @see org.openmrs.module.appointment.api.AppointmentService#getAllAppointmentTypes(boolean)
-	 */
-	public List<AppointmentType> getAllAppointmentTypes(boolean includeRetired) throws DAOException;
+	List<Appointment> getAppointmentsByPatient(Integer patientId);
 	
-	/**
-	 * @see org.openmrs.module.appointment.api.AppointmentService#getAppointmentType(java.lang.Integer)
-	 */
-	AppointmentType getAppointmentType(Integer appointmentTypeId);
-	
-	/**
-	 * @see org.openmrs.module.appointment.api.AppointmentService#getAppointmentTypeByUuid(java.lang.String)
-	 */
-	AppointmentType getAppointmentTypeByUuid(String uuid);
-	
-	/**
-	 * @see org.openmrs.module.appointment.api.AppointmentService#getAppointmentTypes(java.lang.String)
-	 */
-	List<AppointmentType> getAppointmentTypes(String fuzzySearchPhrase);
-	
-	/**
-	 * @see org.openmrs.module.appointment.api.AppointmentService#saveAppointmentType(org.openmrs.AppointmentType)
-	 */
-	AppointmentType saveAppointmentType(AppointmentType appointmentType);
-	
-	/**
-	 * @see org.openmrs.module.appointment.api.AppointmentService#purgeAppointmentType(org.openmrs.AppointmentType)
-	 */
-	void purgeAppointmentType(AppointmentType appointmentType);
-	
-
+	Appointment getAppointmentByVisit(Integer visitId);
 }
