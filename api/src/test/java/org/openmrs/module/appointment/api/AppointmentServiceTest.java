@@ -75,15 +75,15 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	public void getAppointmentByUuid_shouldGetCorrectAppointment() throws Exception {
 		Appointment appointment = service.getAppointmentByUuid("c0c579b0-8e59-401d-8a4a-976a0b183601");
 		assertNotNull(appointment);
-		assertEquals("1", appointment.getId());
+		assertEquals((Integer)1, appointment.getId());
 		
 		appointment = service.getAppointmentByUuid("c0c579b0-8e59-401d-8a4a-976a0b183602");
 		assertNotNull(appointment);
-		assertEquals("2", appointment.getId());
+		assertEquals((Integer)2, appointment.getId());
 		
 		appointment = service.getAppointmentByUuid("c0c579b0-8e59-401d-8a4a-976a0b183603");
 		assertNotNull(appointment);
-		assertEquals("3", appointment.getId());
+		assertEquals((Integer)3, appointment.getId());
 		
 		appointment = service.getAppointmentByUuid("c0c579b0-8e59-401d-8a4a-976a0b183700");
 		Assert.assertNull(appointment);
@@ -96,7 +96,8 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		service.saveAppointment(appointment);
 		
 		//Should create a new appointment type row.
-		assertEquals(4, service.getAllAppointments().size());
+		List<Appointment> appointments = service.getAllAppointments();
+		assertEquals(4, appointments.size());
 	}
 	
 	@Test
@@ -104,7 +105,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	public void saveAppointment_shouldSaveEditedAppointment() throws Exception {
 		Appointment appointment = service.getAppointment(1);
 		assertNotNull(appointment);
-		assertEquals("1", appointment.getId());
+		assertEquals((Integer)1, appointment.getId());
 		
 		appointment.setStatus("TEST_CHANGED");
 		service.saveAppointment(appointment);
