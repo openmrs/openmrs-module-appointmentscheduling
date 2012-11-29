@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.appointment;
 
+import java.util.Date;
+
 import org.openmrs.BaseOpenmrsData;
 
 public class AppointmentStatus extends BaseOpenmrsData {
@@ -21,17 +23,11 @@ public class AppointmentStatus extends BaseOpenmrsData {
 	
 	private Integer appointmentStatusId;
 	
-	private boolean createdGroup;
+	private String status;
 	
-	private boolean changedGroup;
+	private Date startDate;
 	
-	private boolean canceledGroup;
-	
-	private boolean inProgressGroup;
-	
-	private boolean missedGroup;
-	
-	private boolean finishedGroup;
+	private Date endDate;
 	
 	public Integer getAppointmentStatusId() {
 		return appointmentStatusId;
@@ -57,52 +53,28 @@ public class AppointmentStatus extends BaseOpenmrsData {
 		setAppointmentStatusId(id);
 	}
 	
-	public boolean isCreatedGroup() {
-		return createdGroup;
+	public String getStatus() {
+		return status;
 	}
 	
-	public void setCreatedGroup(boolean createdGroup) {
-		this.createdGroup = createdGroup;
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	
-	public boolean isChangedGroup() {
-		return changedGroup;
+	public Date getStartDate() {
+		return startDate;
 	}
 	
-	public void setChangedGroup(boolean changedGroup) {
-		this.changedGroup = changedGroup;
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
 	}
 	
-	public boolean isCanceledGroup() {
-		return canceledGroup;
+	public Date getEndDate() {
+		return endDate;
 	}
 	
-	public void setCanceledGroup(boolean canceledGroup) {
-		this.canceledGroup = canceledGroup;
-	}
-	
-	public boolean isInProgressGroup() {
-		return inProgressGroup;
-	}
-	
-	public void setInProgressGroup(boolean inProgressGroup) {
-		this.inProgressGroup = inProgressGroup;
-	}
-	
-	public boolean isMissedGroup() {
-		return missedGroup;
-	}
-	
-	public void setMissedGroup(boolean missedGroup) {
-		this.missedGroup = missedGroup;
-	}
-	
-	public boolean isFinishedGroup() {
-		return finishedGroup;
-	}
-	
-	public void setFinishedGroup(boolean finishedGroup) {
-		this.finishedGroup = finishedGroup;
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 	
 }

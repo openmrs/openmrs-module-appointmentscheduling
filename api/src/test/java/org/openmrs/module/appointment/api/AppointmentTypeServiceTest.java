@@ -31,7 +31,7 @@ import org.openmrs.test.Verifies;
 /**
  * Tests {@link ${AppointmentService}}.
  */
-public class  AppointmentServiceTest extends BaseModuleContextSensitiveTest {
+public class  AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest {
 	
 	private AppointmentService service;
 	

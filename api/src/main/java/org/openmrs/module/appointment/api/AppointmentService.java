@@ -308,4 +308,8 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the appointment that is related to this visit, null if there isnt any.
 	 */
 	Appointment getAppointmentByVisit(Integer visitId);
+	
+	/*
+	 * TODO: add status to appointment.
+	 */
 }

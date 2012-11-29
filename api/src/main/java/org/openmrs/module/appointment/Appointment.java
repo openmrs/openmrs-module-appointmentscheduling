@@ -15,6 +15,7 @@ package org.openmrs.module.appointment;
 
 import java.io.Serializable;
 
+import org.openmrs.BaseOpenmrsData;
 import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.Patient;
@@ -24,7 +25,7 @@ import org.openmrs.Visit;
  * It is a model class. It should extend either {@link BaseOpenmrsObject} or
  * {@link BaseOpenmrsMetadata}.
  */
-public class Appointment extends BaseOpenmrsObject implements Serializable {
+public class Appointment extends BaseOpenmrsData implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -32,9 +33,19 @@ public class Appointment extends BaseOpenmrsObject implements Serializable {
 	
 	private TimeSlot timeSlot;
 	
-	private org.openmrs.Visit visit;
+	private Visit visit;
 	
-	private org.openmrs.Patient patient;
+	private Patient patient;
+	
+	private String status;
+	
+	public Appointment(Integer appointmentId, TimeSlot timeSlot, Visit visit, Patient patient, String status){
+		setId(appointmentId);
+		setTimeSlot(timeSlot);
+		setVisit(visit);
+		setPatient(patient);
+		setStatus(status);
+	}
 	
 	public Integer getAppointmentId() {
 		return appointmentId;
@@ -83,5 +94,15 @@ public class Appointment extends BaseOpenmrsObject implements Serializable {
 	public void setPatient(Patient patient) {
 		this.patient = patient;
 	}
+
+	
+    public String getStatus() {
+    	return status;
+    }
+
+	
+    public void setStatus(String status) {
+    	this.status = status;
+    }
 	
 }

@@ -36,6 +36,8 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 	@Override
 	@Transactional(readOnly = true)
 	public Appointment getAppointmentByVisit(Integer visitId) {
-		return (Appointment)super.sessionFactory.getCurrentSession().createQuery("from " + mappedClass.getSimpleName() + " where at.visitId = :visitId").setParameter(0, visitId).uniqueResult();
+		return (Appointment) super.sessionFactory.getCurrentSession()
+		        .createQuery("from " + mappedClass.getSimpleName() + "at where at.visitId = :visitId")
+		        .setParameter(0, visitId).uniqueResult();
 	}
 }

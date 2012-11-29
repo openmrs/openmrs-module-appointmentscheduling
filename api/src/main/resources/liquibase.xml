@@ -265,7 +265,7 @@
 			<column name="patient_id" type="int">
 				<constraints nullable="false"/>
 			</column>
-			<column name="stats" type="varchar(255)">
+			<column name="status" type="varchar(255)">
 				<constraints nullable="false"/>
 			</column>
 			<column name="uuid" type="char(38)">
