@@ -173,14 +173,11 @@
 			Create the link table "appointment_block_type_map" that links appointment_block table and appointment_type table
 		</comment>
 		<createTable tableName="appointment_block_type_map">
-			<column name="appointment_block_has_type_id" type="int">
+			<column name="appointment_type_id" type="int">
 				<constraints primaryKey="true" nullable="false"/>
 			</column>
-			<column name="appointment_type_id" type="int">
-				<constraints nullable="false"/>
-			</column>
 			<column name="appointment_block_id" type="int">
-				<constraints nullable="false"/>
+				<constraints primaryKey="true" nullable="false"/>
 			</column>
 			<column name="uuid" type="char(38)">
 				<constraints nullable="false" unique="true"/>

@@ -23,21 +23,21 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.TimeSlot;
-import org.openmrs.Patient;
-import org.openmrs.Visit;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 /**
- * Tests {@link ${AppointmentService}}.
+ * Tests {@link $ AppointmentService} .
  */
-public class  AppointmentServiceTest extends BaseModuleContextSensitiveTest {
+public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	
 	private AppointmentService service;
-
+	
 	@Before
 	public void before() throws Exception {
 		service = Context.getService(AppointmentService.class);
@@ -89,11 +89,10 @@ public class  AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		Assert.assertNull(appointment);
 	}
 	
-	
 	@Test
 	@Verifies(value = "should save new appointment", method = "saveAppointment(Appointment)")
-	public void saveAppointment_shouldSaveNewAppointment() throws Exception {		
-		Appointment appointment = new Appointment(4,new TimeSlot(), new Visit(), new Patient(), "SCHEDULED");
+	public void saveAppointment_shouldSaveNewAppointment() throws Exception {
+		Appointment appointment = new Appointment(4, new TimeSlot(), new Visit(), new Patient(), "SCHEDULED");
 		service.saveAppointment(appointment);
 		
 		//Should create a new appointment type row.
@@ -173,7 +172,7 @@ public class  AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	
 	@Test
 	@Verifies(value = "should get all appointments of patient", method = "getAppointmentsOfPatient(Integer patientId")
-	public void getAppointmentsOfPatient_shouldGetAllAppointmentsOfPatient() throws Exception{
+	public void getAppointmentsOfPatient_shouldGetAllAppointmentsOfPatient() throws Exception {
 		List<Appointment> appointments = service.getAppointmentsOfPatient(1);
 		Assert.assertEquals(2, appointments.size());
 		
@@ -182,11 +181,11 @@ public class  AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	@Test
-	@Verifies(value="should get appointment corresponding to visit", method = "getAppointmentByVisit(Integer visitId)")
-	public void getAppointmentByVisit_shouldGetCorrectAppointment(){
+	@Verifies(value = "should get appointment corresponding to visit", method = "getAppointmentByVisit(Integer visitId)")
+	public void getAppointmentByVisit_shouldGetCorrectAppointment() {
 		Appointment appointment = service.getAppointmentByVisit(1);
 		Assert.assertNotNull(appointment);
-	
+		
 		appointment = service.getAppointmentByVisit(13);
 		Assert.assertNull(appointment);
 	}
