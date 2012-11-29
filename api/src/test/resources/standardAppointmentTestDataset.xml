@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-	<appointment_appointment_type appointment_type_id="1" name="Initial HIV Clinic Appointment" description="Initial HIV Clinic Appointment Description" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c0c579b0-8e59-401d-8a4a-976a0b183519"/>
-	<appointment_appointment_type appointment_type_id="2" name="Return TB Clinic Appointment" description="Return TB Clinic Appointment Description" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="759799ab-c9a5-435e-b671-77773ada74e4"/>
-	<appointment_appointment_type appointment_type_id="3" name="Hospitalization" description="Hospitalization Description" creator="1" date_created="2005-01-01 00:00:00.0" retired="true" retire_reason="Some Retire Reason" uuid="759799ab-c9a5-435e-b671-77773ada74e6"/>
+	<appointment_type appointment_type_id="1" name="Initial HIV Clinic Appointment" description="Initial HIV Clinic Appointment Description" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c0c579b0-8e59-401d-8a4a-976a0b183519"/>
+	<appointment_type appointment_type_id="2" name="Return TB Clinic Appointment" description="Return TB Clinic Appointment Description" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="759799ab-c9a5-435e-b671-77773ada74e4"/>
+	<appointment_type appointment_type_id="3" name="Hospitalization" description="Hospitalization Description" creator="1" date_created="2005-01-01 00:00:00.0" retired="true" retire_reason="Some Retire Reason" uuid="759799ab-c9a5-435e-b671-77773ada74e6"/>
 
-	<appointment_appointment_block appointment_block_id="1" start_date="2005-01-01 00:00:00.0" end_date="2005-01-02 00:00:00.0" provider="1" location="1"  uuid="c0c579b0-8e59-401d-8a4a-976a0b183599" date_created="2005-01-01 00:00:00.0" date_changed="2005-01-01 00:00:00.0" date_voided="2005-01-01 00:00:00.0" voided="false" voided_reason="" creator="1" changed_by="1" voided_by="1"/>
-	<appointment_appointment_block appointment_block_id="2" start_date="2005-01-02 00:00:00.0" end_date="2005-01-03 00:00:00.0" provider="2" location="1"  uuid="759799ab-c9a5-435e-b671-77773ada99e9" date_created="2005-01-01 00:00:00.0" date_changed="2005-01-01 00:00:00.0" date_voided="2005-01-01 00:00:00.0" voided="true" voided_reason="Some void reason" creator="1" changed_by="" voided_by="1"/>
-	<appointment_appointment_block appointment_block_id="3" start_date="2005-01-03 00:00:00.0" end_date="2005-01-04 00:00:00.0" provider="3" location="1"  uuid="759799ab-c9a5-435e-b671-77773ada7499" date_created="2005-01-01 00:00:00.0" date_changed="2005-01-01 00:00:00.0" date_voided="2005-01-01 00:00:00.0" voided="true" voided_reason="Some void reason" creator="1" changed_by="1" voided_by="1"/>
+	<appointment_block appointment_block_id="1" start_date="2005-01-01 00:00:00.0" end_date="2005-01-02 00:00:00.0" provider="1" location="1"  uuid="c0c579b0-8e59-401d-8a4a-976a0b183599" date_created="2005-01-01 00:00:00.0" date_changed="2005-01-01 00:00:00.0" date_voided="2005-01-01 00:00:00.0" voided="false" voided_reason="" creator="1" changed_by="1" voided_by="1"/>
+	<appointment_block appointment_block_id="2" start_date="2005-01-02 00:00:00.0" end_date="2005-01-03 00:00:00.0" provider="2" location="1"  uuid="759799ab-c9a5-435e-b671-77773ada99e9" date_created="2005-01-01 00:00:00.0" date_changed="2005-01-01 00:00:00.0" date_voided="2005-01-01 00:00:00.0" voided="true" voided_reason="Some void reason" creator="1" changed_by="" voided_by="1"/>
+	<appointment_block appointment_block_id="3" start_date="2005-01-03 00:00:00.0" end_date="2005-01-04 00:00:00.0" provider="3" location="1"  uuid="759799ab-c9a5-435e-b671-77773ada7499" date_created="2005-01-01 00:00:00.0" date_changed="2005-01-01 00:00:00.0" date_voided="2005-01-01 00:00:00.0" voided="true" voided_reason="Some void reason" creator="1" changed_by="1" voided_by="1"/>
 			
 	<appointment_block_type_map appointment_block_id="1"  appoitnemnt_type_id="1"/>
 	<appointment_block_type_map appointment_block_id="1" appoitnemnt_type_id="2"/>
@@ -22,6 +22,6 @@
 	
 	<appointment appointment_id="1" time_slot_id="1" patient_id="1" uuid="c0c579b0-8e59-401d-8a4a-976a0b183601" date_created="2005-01-01 00:00:00.0" voided="false" creator="1"/>
 	<appointment appointment_id="2" time_slot_id="2" patient_id="2" visit_id="1" uuid="c0c579b0-8e59-401d-8a4a-976a0b183602" date_created="2005-01-01 00:00:00.0" voided="false" creator="1"/>
-	<appointment appointment_id="3" time_slot_id="3" patient_id="3" uuid="c0c579b0-8e59-401d-8a4a-976a0b183603" date_created="2005-01-01 00:00:00.0" voided="true" creator="1" void_reason="some void reason"/>
+	<appointment appointment_id="3" time_slot_id="3" patient_id="1" uuid="c0c579b0-8e59-401d-8a4a-976a0b183603" date_created="2005-01-01 00:00:00.0" voided="true" creator="1" void_reason="some void reason"/>
 	
  </dataset>
