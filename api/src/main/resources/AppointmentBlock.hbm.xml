@@ -26,7 +26,7 @@
 		<property name="dateVoided" type="java.util.Date" column="date_voided" length="19" />	
 		
 		<property name="voided" type="boolean" length="1" not-null="true" />
-		<property name="voidReason" type="java.lang.String" column="retire_reason" length="255" />
+		<property name="voidReason" type="java.lang.String" column="void_reason" length="255" />
 		
 		<many-to-one name="creator" class="org.openmrs.User" not-null="true" />	
 		<many-to-one name="changedBy" class="org.openmrs.User" column="changed_by"/>
