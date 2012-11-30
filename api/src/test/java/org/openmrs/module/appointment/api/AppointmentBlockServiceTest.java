@@ -102,14 +102,15 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 	@Verifies(value = "should save new appointment block", method = "saveAppointmentBlock(AppointmentBlock)")
 	public void saveAppointmentBlock_shouldSaveNewAppointmentBlock() throws Exception {
 		List<AppointmentBlock> appointmentBlocks = service.getAllAppointmentBlocks(true);
-		assertEquals(2, appointmentBlocks.size());
+		assertEquals(3, appointmentBlocks.size());
 		
-		appointmentBlocks = service.getAllAppointmentBlocks(false);
-		assertEquals(1, appointmentBlocks.size());
+		appointmentBlocks = service.getAllAppointmentBlocks();
+		assertEquals(3, appointmentBlocks.size());
 		
+		Date started = new Date();
 		Set<AppointmentType> appointmentTypes = service.getAllAppointmentTypes();
-		AppointmentBlock appointmentBlock = new AppointmentBlock(4, new Date("2005-01-01 00:00:00.0"), new Date(
-		        "2005-01-01 00:00:00.0"), new Provider(), new Location(), appointmentTypes);
+		AppointmentBlock appointmentBlock = new AppointmentBlock(4, started, started, new Provider(), new Location(),
+		        appointmentTypes);
 		service.saveAppointmentBlock(appointmentBlock);
 		
 		appointmentBlock = service.getAppointmentBlock(4);
@@ -127,13 +128,13 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		AppointmentBlock appointmentBlock = service.getAppointmentBlock(1);
 		assertNotNull(appointmentBlock);
 		assertEquals("2005-01-01 00:00:00.0", appointmentBlock.getStartDate().toString());
-		
-		appointmentBlock.setStartDate(new Date("2006-01-01 00:00:00.0"));
+		Date startDate = new Date();
+		appointmentBlock.setStartDate(startDate);
 		service.saveAppointmentBlock(appointmentBlock);
 		
 		appointmentBlock = service.getAppointmentBlock(1);
 		assertNotNull(appointmentBlock);
-		assertEquals("2006-01-01 00:00:00.0", appointmentBlock.getStartDate().toString());
+		assertEquals(startDate, appointmentBlock.getStartDate());
 		
 		//Should not change the number of appointment types
 		assertEquals(3, service.getAllAppointmentBlocks().size());
