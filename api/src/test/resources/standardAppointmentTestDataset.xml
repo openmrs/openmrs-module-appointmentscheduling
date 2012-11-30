@@ -23,6 +23,8 @@
 	<appointment_time_slot time_slot_id="3" appointment_block_id="1" start_date="2006-01-01 00:00:00.0" end_date="2006-01-01 00:00:00.0" uuid="c0c579b0-8e59-401d-8a4a-976a0b183606" date_created="2005-01-01 00:00:00.0" voided="false" creator="1" />
 	
 	<visit visit_id="1" patient_id="2" date_started="2005-01-01 00:00:00.0" uuid="c0c579b0-8e59-401d-8a4a-976a0b183600" date_created="2005-01-01 00:00:00.0" voided="false" creator="1" />
+	<patient patient_id="1" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"/>
+	<patient patient_id="2" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"/>
 	
 	<appointment appointment_id="1" time_slot_id="1" patient_id="1" status="SCHEDULED" uuid="c0c579b0-8e59-401d-8a4a-976a0b183601" date_created="2005-01-01 00:00:00.0" voided="false" creator="1"/>
 	<appointment appointment_id="2" time_slot_id="2" patient_id="2" status="MISSED" visit_id="1" uuid="c0c579b0-8e59-401d-8a4a-976a0b183602" date_created="2005-01-01 00:00:00.0" voided="false" creator="1"/>

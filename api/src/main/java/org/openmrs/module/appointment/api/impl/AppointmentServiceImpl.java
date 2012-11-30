@@ -22,10 +22,12 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.AppointmentType;
+import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.AppointmentService;
 import org.openmrs.module.appointment.api.db.AppointmentBlockDAO;
 import org.openmrs.module.appointment.api.db.AppointmentDAO;
 import org.openmrs.module.appointment.api.db.AppointmentTypeDAO;
+import org.openmrs.module.appointment.api.db.TimeSlotDAO;
 import org.openmrs.validator.ValidateUtil;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +43,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	private AppointmentBlockDAO appointmentBlockDAO;
 	
 	private AppointmentDAO appointmentDAO;
+	
+	private TimeSlotDAO timeSlotDAO;
 	
 	/**
 	 * @param dao the appointment type dao to set
@@ -214,7 +218,6 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		getAppointmentBlockDAO().delete(appointmentBlock);
 	}
 	
-	
 	public void setAppointmentDAO(AppointmentDAO appointmentDAO) {
 		this.appointmentDAO = appointmentDAO;
 	}
@@ -241,19 +244,19 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Override
 	@Transactional(readOnly = true)
 	public Appointment getAppointment(Integer appointmentId) {
-		return (Appointment)getAppointmentDAO().getById(appointmentId);
+		return (Appointment) getAppointmentDAO().getById(appointmentId);
 	}
 	
 	@Override
 	@Transactional(readOnly = true)
 	public Appointment getAppointmentByUuid(String uuid) {
-		return (Appointment)getAppointmentDAO().getByUuid(uuid);
+		return (Appointment) getAppointmentDAO().getByUuid(uuid);
 	}
 	
 	@Override
 	public Appointment saveAppointment(Appointment appointment) throws APIException {
 		ValidateUtil.validate(appointment);
-		return (Appointment)getAppointmentDAO().saveOrUpdate(appointment);
+		return (Appointment) getAppointmentDAO().saveOrUpdate(appointment);
 	}
 	
 	@Override
@@ -283,4 +286,24 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		return getAppointmentDAO().getAppointmentByVisit(visitId);
 	}
 	
+	//TimeSlot
+	/**
+	 * @param dao the time slot dao to set
+	 */
+	public void setTimeSlotDAO(TimeSlotDAO timeSlotDAO) {
+		this.timeSlotDAO = timeSlotDAO;
+	}
+	
+	/**
+	 * @return the time slot dao
+	 */
+	public TimeSlotDAO getTimeSlotDAO() {
+		return timeSlotDAO;
+	}
+	
+	@Override
+	public TimeSlot saveTimeSlot(TimeSlot timeSlot) throws APIException {
+		ValidateUtil.validate(timeSlot);
+		return (TimeSlot) getTimeSlotDAO().saveOrUpdate(timeSlot);
+	}
 }

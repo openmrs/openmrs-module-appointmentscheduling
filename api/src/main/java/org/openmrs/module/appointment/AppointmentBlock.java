@@ -36,6 +36,10 @@ public class AppointmentBlock extends BaseOpenmrsData {
 	
 	private List<AppointmentType> types;
 	
+	public AppointmentBlock(){
+		
+	}
+	
 	public AppointmentBlock(Integer appointmentBlockId, Date startDate,Date endDate,Provider provider,Location location,List<AppointmentType> types)
 	{
 		setId(appointmentBlockId);

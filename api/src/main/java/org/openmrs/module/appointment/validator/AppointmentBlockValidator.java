@@ -54,7 +54,7 @@ public class AppointmentBlockValidator implements Validator {
 		if (appointmentBlock == null) {
 			errors.rejectValue("appointmentBlock", "error.general");
 		} else {
-			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "error.name");
+			//ADAM ADD more checks here
 		}
 	}
 }

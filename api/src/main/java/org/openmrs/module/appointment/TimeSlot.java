@@ -29,6 +29,10 @@ public class TimeSlot extends BaseOpenmrsData {
 	
 	private Date endDate;
 	
+	public TimeSlot(){
+		
+	}
+	
 	public Integer getTimeSlotId() {
 		return timeSlotId;
 	}

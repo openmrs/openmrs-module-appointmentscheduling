@@ -15,13 +15,12 @@ package org.openmrs.module.appointment.api;
 
 import java.util.List;
 
-import org.openmrs.Patient;
-import org.openmrs.Visit;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.AppointmentType;
+import org.openmrs.module.appointment.TimeSlot;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -312,4 +311,17 @@ public interface AppointmentService extends OpenmrsService {
 	/*
 	 * TODO: add status to appointment.
 	 */
+	
+	//TimeSlot
+	/**
+	 * Creates or updates the given time slot in the database.
+	 * 
+	 * @param timeSlot the time slot to create or update.
+	 * @return the created or updated time slot.
+	 * @should save new time slot
+	 * @should save edited time slot
+	 * @should throw error when name is null
+	 * @should throw error when name is empty string
+	 */
+	TimeSlot saveTimeSlot(TimeSlot timeSlot) throws APIException;
 }

@@ -17,6 +17,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
+import java.util.Date;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -27,6 +28,7 @@ import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
+import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
@@ -92,7 +94,12 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	@Verifies(value = "should save new appointment", method = "saveAppointment(Appointment)")
 	public void saveAppointment_shouldSaveNewAppointment() throws Exception {
-		Appointment appointment = new Appointment(4, new TimeSlot(), new Visit(), new Patient(), "SCHEDULED");
+		TimeSlot timeSlot = new TimeSlot();
+		timeSlot.setStartDate(new Date());
+		timeSlot.setEndDate(new Date());
+		timeSlot.setAppointmentBlock(service.getAppointmentBlock(1));
+		service.saveTimeSlot(timeSlot);
+		Appointment appointment = new Appointment(4, timeSlot, new Visit(), new Patient(), "SCHEDULED");
 		service.saveAppointment(appointment);
 		
 		//Should create a new appointment type row.
@@ -115,7 +122,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals("TEST_CHANGED", appointment.getStatus());
 		
 		//Should not change the number of appointment types.
-		assertEquals(3, service.getAllAppointmentTypes().size());
+		assertEquals(3, service.getAllAppointments().size());
 	}
 	
 	@Test
@@ -134,7 +141,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals("void reason", appointment.getVoidReason());
 		
 		//Should not change the number of appointment types.
-		assertEquals(3, service.getAllAppointmentTypes().size());
+		assertEquals(3, service.getAllAppointments().size());
 	}
 	
 	@Test

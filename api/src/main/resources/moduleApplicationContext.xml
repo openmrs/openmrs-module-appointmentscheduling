@@ -53,6 +53,13 @@
 									</property>
 								</bean>
 							</property>
+							<property name="timeSlotDAO">
+								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateTimeSlotDAO">
+									<property name="sessionFactory">
+										<ref bean="sessionFactory" />
+									</property>
+								</bean>
+							</property>
 						</bean>
 					</property>
 					<property name="preInterceptors">
