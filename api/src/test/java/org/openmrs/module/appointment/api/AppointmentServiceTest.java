@@ -99,7 +99,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		timeSlot.setEndDate(new Date());
 		timeSlot.setAppointmentBlock(service.getAppointmentBlock(1));
 		service.saveTimeSlot(timeSlot);
-		Appointment appointment = new Appointment(4, timeSlot, new Visit(), new Patient(), "SCHEDULED");
+		Appointment appointment = new Appointment(null, timeSlot, new Visit(1), new Patient(1), "SCHEDULED");
 		service.saveAppointment(appointment);
 		
 		//Should create a new appointment type row.
