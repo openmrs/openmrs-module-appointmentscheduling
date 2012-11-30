@@ -15,6 +15,7 @@ package org.openmrs.module.appointment;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.Location;
@@ -34,21 +35,22 @@ public class AppointmentBlock extends BaseOpenmrsData {
 	
 	private Location location;
 	
-	private List<AppointmentType> types;
+	private Set<AppointmentType> types;
 	
-	public AppointmentBlock(){
+	public AppointmentBlock() {
 		
 	}
 	
-	public AppointmentBlock(Integer appointmentBlockId, Date startDate,Date endDate,Provider provider,Location location,List<AppointmentType> types)
-	{
+	public AppointmentBlock(Integer appointmentBlockId, Date startDate, Date endDate, Provider provider, Location location,
+	    Set<AppointmentType> types) {
 		setId(appointmentBlockId);
 		setStartDate(startDate);
 		setEndDate(endDate);
 		setProvider(provider);
 		setLocation(location);
-		setTypes(types);	
+		setTypes(types);
 	}
+	
 	public Integer getAppointmentBlockId() {
 		return appointmentBlockId;
 	}
@@ -105,11 +107,11 @@ public class AppointmentBlock extends BaseOpenmrsData {
 		this.location = location;
 	}
 	
-	public List<AppointmentType> getTypes() {
+	public Set<AppointmentType> getTypes() {
 		return types;
 	}
 	
-	public void setTypes(List<AppointmentType> types) {
+	public void setTypes(Set<AppointmentType> types) {
 		this.types = types;
 	}
 	

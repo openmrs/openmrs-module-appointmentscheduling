@@ -13,8 +13,8 @@
  */
 package org.openmrs.module.appointment.web.controller;
 
-import java.util.List;
-import java.util.Vector;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,7 +38,7 @@ public class AppointmentTypeListController {
 	@RequestMapping(value = "/module/appointment/appointmentTypeList", method = RequestMethod.GET)
 	public void showForm(ModelMap model) {
 		//default empty Object
-		List<AppointmentType> appointmentTypeList = new Vector<AppointmentType>();
+		Set<AppointmentType> appointmentTypeList = new HashSet<AppointmentType>();
 		
 		//only fill the Object is the user has authenticated properly
 		if (Context.isAuthenticated()) {

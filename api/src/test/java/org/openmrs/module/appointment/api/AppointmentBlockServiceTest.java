@@ -19,6 +19,7 @@ import static junit.framework.Assert.assertTrue;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -106,7 +107,7 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		appointmentBlocks = service.getAllAppointmentBlocks(false);
 		assertEquals(1, appointmentBlocks.size());
 		
-		List<AppointmentType> appointmentTypes = service.getAllAppointmentTypes();
+		Set<AppointmentType> appointmentTypes = service.getAllAppointmentTypes();
 		AppointmentBlock appointmentBlock = new AppointmentBlock(4, new Date("2005-01-01 00:00:00.0"), new Date(
 		        "2005-01-01 00:00:00.0"), new Provider(), new Location(), appointmentTypes);
 		service.saveAppointmentBlock(appointmentBlock);

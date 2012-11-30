@@ -18,6 +18,7 @@ import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -44,7 +45,7 @@ public class  AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest 
 	@Test
 	@Verifies(value = "should get all appointment types", method = "getAllAppointmentTypes()")
 	public void getAllAppointmentTypes_shouldGetAllAppointmentTypes() throws Exception {
-		List<AppointmentType> appointmentTypes = service.getAllAppointmentTypes();
+		Set<AppointmentType> appointmentTypes = service.getAllAppointmentTypes();
 		assertEquals(4, appointmentTypes.size());
 	}
 	

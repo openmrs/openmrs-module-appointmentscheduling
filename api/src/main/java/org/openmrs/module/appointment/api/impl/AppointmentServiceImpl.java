@@ -13,7 +13,9 @@
  */
 package org.openmrs.module.appointment.api.impl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -64,8 +66,10 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	 * @see org.openmrs.module.appointment.api.AppointmentService#getAllAppointmentTypes()
 	 */
 	@Transactional(readOnly = true)
-	public List<AppointmentType> getAllAppointmentTypes() {
-		return getAppointmentTypeDAO().getAll();
+	public Set<AppointmentType> getAllAppointmentTypes() {
+		HashSet set = new HashSet();
+		set.addAll(getAppointmentTypeDAO().getAll());
+		return set;
 	}
 	
 	/**

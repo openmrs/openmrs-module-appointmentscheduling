@@ -14,6 +14,7 @@
 package org.openmrs.module.appointment.api;
 
 import java.util.List;
+import java.util.Set;
 
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
@@ -44,7 +45,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @should get all appointment types
 	 */
 	@Transactional(readOnly = true)
-	List<AppointmentType> getAllAppointmentTypes();
+	Set<AppointmentType> getAllAppointmentTypes();
 	
 	/**
 	 * Get all appointment types based on includeRetired flag
