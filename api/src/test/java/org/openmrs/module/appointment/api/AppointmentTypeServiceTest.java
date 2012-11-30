@@ -45,7 +45,7 @@ public class  AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest 
 	@Verifies(value = "should get all appointment types", method = "getAllAppointmentTypes()")
 	public void getAllAppointmentTypes_shouldGetAllAppointmentTypes() throws Exception {
 		List<AppointmentType> appointmentTypes = service.getAllAppointmentTypes();
-		assertEquals(3, appointmentTypes.size());
+		assertEquals(4, appointmentTypes.size());
 	}
 	
 	@Test
@@ -63,7 +63,7 @@ public class  AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest 
 		assertNotNull(appointmentType);
 		assertEquals("Hospitalization", appointmentType.getName());
 		
-		appointmentType = service.getAppointmentType(4);
+		appointmentType = service.getAppointmentType(5);
 		Assert.assertNull(appointmentType);
 	}
 	
@@ -111,14 +111,14 @@ public class  AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest 
 		List<AppointmentType> appointmentTypes = service.getAppointmentTypes("Some Name");
 		assertEquals(0, appointmentTypes.size());
 		
-		AppointmentType appointmentType = new AppointmentType("Some Name", "Description");
+		AppointmentType appointmentType = new AppointmentType("Some Name", "Description", 10);
 		service.saveAppointmentType(appointmentType);
 		
 		appointmentTypes = service.getAppointmentTypes("Some Name");
 		assertEquals(1, appointmentTypes.size());
 		
 		//Should create a new appointment type row.
-		assertEquals(4, service.getAllAppointmentTypes().size());
+		assertEquals(5, service.getAllAppointmentTypes().size());
 	}
 	
 	@Test
@@ -138,7 +138,7 @@ public class  AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest 
 		assertEquals("Edited Description", appointmentType.getDescription());
 		
 		//Should not change the number of appointment types.
-		assertEquals(3, service.getAllAppointmentTypes().size());
+		assertEquals(4, service.getAllAppointmentTypes().size());
 	}
 	
 	@Test
@@ -157,7 +157,7 @@ public class  AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest 
 		assertEquals("retire reason", appointmentType.getRetireReason());
 		
 		//Should not change the number of appointment types.
-		assertEquals(3, service.getAllAppointmentTypes().size());
+		assertEquals(4, service.getAllAppointmentTypes().size());
 	}
 	
 	@Test
@@ -176,21 +176,21 @@ public class  AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest 
 		Assert.assertNull(appointmentType.getRetireReason());
 		
 		//Should not change the number of appointment types.
-		assertEquals(3, service.getAllAppointmentTypes().size());
+		assertEquals(4, service.getAllAppointmentTypes().size());
 	}
 	
 	@Test
 	@Verifies(value = "should delete given appointment type", method = "purgeAppointmentType(AppointmentType)")
 	public void purgeAppointmentType_shouldDeleteGivenAppointmentType() throws Exception {
-		AppointmentType appointmentType = service.getAppointmentType(3);
+		AppointmentType appointmentType = service.getAppointmentType(4);
 		assertNotNull(appointmentType);
 		
 		service.purgeAppointmentType(appointmentType);
 		
-		appointmentType = service.getAppointmentType(3);
+		appointmentType = service.getAppointmentType(4);
 		Assert.assertNull(appointmentType);
 		
 		//Should reduce the existing number of appointment types.
-		assertEquals(2, service.getAllAppointmentTypes().size());
+		assertEquals(3, service.getAllAppointmentTypes().size());
 	}
 }

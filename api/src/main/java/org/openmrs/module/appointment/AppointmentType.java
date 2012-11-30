@@ -27,9 +27,10 @@ public class AppointmentType extends BaseOpenmrsMetadata {
 		
 	}
 	
-	public AppointmentType(String name, String description) {
+	public AppointmentType(String name, String description, Integer duration) {
 		setName(name);
 		setDescription(description);
+		setDuration(duration);
 	}
 	
 	public Integer getAppointmentTypeId() {
