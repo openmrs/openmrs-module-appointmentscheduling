@@ -169,16 +169,6 @@ public interface AppointmentService extends OpenmrsService {
 	AppointmentBlock getAppointmentBlockByUuid(String uuid);
 	
 	/**
-	 * Gets all appointment blocks whose names are similar to or contain the given search phrase.
-	 * 
-	 * @param fuzzySearchPhrase the search phrase to use.
-	 * @return a list of all appointment blocks with names similar to or containing the given phrase
-	 * @should get correct appointment blocks
-	 */
-	@Transactional(readOnly = true)
-	List<AppointmentBlock> getAppointmentBlocks(String fuzzySearchPhrase);
-	
-	/**
 	 * Creates or updates the given appointment block in the database.
 	 * 
 	 * @param appointmentBlock the appointment block to create or update.
@@ -316,6 +306,26 @@ public interface AppointmentService extends OpenmrsService {
 	 */
 	
 	//TimeSlot
+	
+	/**
+	 * Gets all time slots.
+	 * 
+	 * @return a list of time slot objects.
+	 * @should get all time slots
+	 */
+	@Transactional(readOnly = true)
+	List<TimeSlot> getAllTimeSlots();
+	
+	/**
+	 * Get all time slots based on includeVoided flag
+	 * 
+	 * @param includeVoided
+	 * @return List of all time slots
+	 * @should get all time slots based on include voided flag.
+	 */
+	@Transactional(readOnly = true)
+	public List<TimeSlot> getAllTimeSlots(boolean includeVoided);
+	
 	/**
 	 * Creates or updates the given time slot in the database.
 	 * 
@@ -323,8 +333,63 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the created or updated time slot.
 	 * @should save new time slot
 	 * @should save edited time slot
-	 * @should throw error when name is null
-	 * @should throw error when name is empty string
 	 */
 	TimeSlot saveTimeSlot(TimeSlot timeSlot) throws APIException;
+	
+	/**
+	 * Gets a a time slot by its id.
+	 * 
+	 * @param timeSlotId the time slot id.
+	 * @return the time slot object found with the given id, else null.
+	 * @should get correct time slot
+	 */
+	@Transactional(readOnly = true)
+	TimeSlot getTimeSlot(Integer timeSlotId);
+	
+	/**
+	 * Gets a time slot by its UUID.
+	 * 
+	 * @param uuid the time slot UUID.
+	 * @return the time slot object found with the given uuid, else null.
+	 * @should get correct time slot
+	 */
+	@Transactional(readOnly = true)
+	TimeSlot getTimeSlotByUuid(String uuid);
+	
+	/**
+	 * Voids a given time slot.
+	 * 
+	 * @param timeSlot the time slot to void.
+	 * @param reason the reason why the time slot is voided.
+	 * @return the time slot that has been voided.
+	 * @should void given time slot
+	 */
+	TimeSlot voidTimeSlot(TimeSlot timeSlot, String reason);
+	
+	/**
+	 * Unvoids a time slot.
+	 * 
+	 * @param timeSlot the time slot to unvoid.
+	 * @return the unvoided time slot
+	 * @should unvoid given time slot
+	 */
+	TimeSlot unvoidTimeSlot(TimeSlot timeSlot);
+	
+	/**
+	 * Completely removes a time slot from the database. This is not reversible.
+	 * 
+	 * @param timeSlot the time slot to delete from the database.
+	 * @should delete given time slot
+	 */
+	void purgeTimeSlot(TimeSlot timeSlot);
+
+	/**
+	 * 
+	 * Should retrieve all appointments in the given time slot.
+	 * 
+	 * @param timeSlot the time slot to search by.
+	 * @return the appointments in the given time slot.
+	 */
+    public List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot);
+	
 }

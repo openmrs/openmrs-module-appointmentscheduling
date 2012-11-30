@@ -20,12 +20,13 @@ import org.openmrs.module.appointment.AppointmentBlock;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
+import org.openmrs.module.appointment.TimeSlot;
 
 /**
- * Validates attributes on the {@link AppointmentBlock} object.
+ * Validates attributes on the {@link TimeSlot} object.
  */
-@Handler(supports = { AppointmentBlock.class }, order = 50)
-public class AppointmentBlockValidator implements Validator {
+@Handler(supports = { TimeSlot.class }, order = 50)
+public class TimeSlotValidator implements Validator {
 	
 	/** Log for this class and subclasses */
 	protected final Log log = LogFactory.getLog(getClass());
@@ -37,7 +38,7 @@ public class AppointmentBlockValidator implements Validator {
 	 */
 	@SuppressWarnings("unchecked")
 	public boolean supports(Class c) {
-		return c.equals(AppointmentBlock.class);
+		return c.equals(TimeSlot.class);
 	}
 	
 	/**
@@ -50,14 +51,13 @@ public class AppointmentBlockValidator implements Validator {
 	 */
 
 	public void validate(Object obj, Errors errors) {
-		AppointmentBlock appointmentBlock = (AppointmentBlock) obj;
-		if (appointmentBlock == null) {
-			errors.rejectValue("appointmentBlock", "error.general");
+		TimeSlot timeSlot = (TimeSlot) obj;
+		if (timeSlot == null) {
+			errors.rejectValue("timeSlot", "error.general");
 		} else {
 			ValidationUtils.rejectIfEmpty(errors, "startDate", "error.name");
 			ValidationUtils.rejectIfEmpty(errors, "endDate", "error.name");
-			//ValidationUtils.rejectIfEmpty(errors, "provider", "error.name");
-			ValidationUtils.rejectIfEmpty(errors, "location", "error.name");
+			ValidationUtils.rejectIfEmpty(errors, "appointmentBlock", "error.name");
 		}
 	}
 }

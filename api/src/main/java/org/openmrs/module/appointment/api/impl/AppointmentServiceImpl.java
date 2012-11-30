@@ -186,14 +186,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		return (AppointmentBlock) getAppointmentBlockDAO().getByUuid(uuid);
 	}
 	
-	/**
-	 * @see org.openmrs.module.appointment.api.AppointmentService#getAppointmentBlocks(java.lang.String)
-	 */
-	@Transactional(readOnly = true)
-	public List<AppointmentBlock> getAppointmentBlocks(String fuzzySearchPhrase) {
-		return getAppointmentBlockDAO().getAll(fuzzySearchPhrase);
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.appointment.api.AppointmentService#saveAppointmentBlock(org.openmrs.AppointmentBlock)
 	 */
@@ -312,4 +305,48 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		ValidateUtil.validate(timeSlot);
 		return (TimeSlot) getTimeSlotDAO().saveOrUpdate(timeSlot);
 	}
+
+	@Override
+    @Transactional(readOnly = true)
+    public List<TimeSlot> getAllTimeSlots() {
+	    return getTimeSlotDAO().getAll();
+    }
+
+	@Override
+    @Transactional(readOnly = true)
+    public List<TimeSlot> getAllTimeSlots(boolean includeVoided) {
+	    return getTimeSlotDAO().getAllData(includeVoided);
+    }
+
+	@Override
+    @Transactional(readOnly = true)
+    public TimeSlot getTimeSlot(Integer timeSlotId) {
+	    return (TimeSlot)getTimeSlotDAO().getById(timeSlotId);
+    }
+
+	@Override
+    @Transactional(readOnly = true)
+    public TimeSlot getTimeSlotByUuid(String uuid) {
+	    return (TimeSlot)getTimeSlotDAO().getByUuid(uuid);
+    }
+
+	@Override
+    public TimeSlot voidTimeSlot(TimeSlot timeSlot, String reason) {
+	    return saveTimeSlot(timeSlot);
+    }
+
+	@Override
+    public TimeSlot unvoidTimeSlot(TimeSlot timeSlot) {
+	    return saveTimeSlot(timeSlot);
+    }
+
+	@Override
+    public void purgeTimeSlot(TimeSlot timeSlot) {
+		getTimeSlotDAO().delete(timeSlot);
+    }
+
+	@Override
+    public List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot) {
+	    return getTimeSlotDAO().getAppointmentsInTimeSlot(timeSlot);
+    }
 }

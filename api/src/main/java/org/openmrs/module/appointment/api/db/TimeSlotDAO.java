@@ -13,8 +13,13 @@
  */
 package org.openmrs.module.appointment.api.db;
 
+import java.util.List;
 
+import org.openmrs.module.appointment.Appointment;
+import org.openmrs.module.appointment.AppointmentBlock;
+import org.openmrs.module.appointment.TimeSlot;
 
 public interface TimeSlotDAO extends SingleClassDAO {
-
+		
+	List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot);
 }
