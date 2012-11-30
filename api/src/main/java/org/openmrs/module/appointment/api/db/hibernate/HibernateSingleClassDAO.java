@@ -86,6 +86,14 @@ public abstract class HibernateSingleClassDAO<T> implements SingleClassDAO<T> {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(readOnly = true)
+	public List<T> getAllData(boolean includeVoided) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mappedClass);
+		return (List<T>) (includeVoided ? criteria.list() : criteria.add(Restrictions.eq("voided", includeVoided)).list());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(readOnly = true)
 	public List<T> getAll(String fuzzySearchPhrase) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mappedClass);
 		criteria.add(Restrictions.ilike("name", fuzzySearchPhrase, MatchMode.ANYWHERE));

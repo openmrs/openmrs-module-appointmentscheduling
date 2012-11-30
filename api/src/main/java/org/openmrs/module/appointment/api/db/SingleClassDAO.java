@@ -25,6 +25,8 @@ public interface SingleClassDAO<T> {
 	
 	List<T> getAll(boolean includeRetired);
 	
+	List<T> getAllData(boolean includeVoided);
+	
 	List<T> getAll(String fuzzySearchPhrase);
 	
 	T saveOrUpdate(T object);

@@ -165,7 +165,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Override
 	@Transactional(readOnly = true)
 	public List<AppointmentBlock> getAllAppointmentBlocks(boolean includeVoided) {
-		return getAppointmentBlockDAO().getAll(includeVoided);
+		return getAppointmentBlockDAO().getAllData(includeVoided);
 	}
 	
 	/**
@@ -242,7 +242,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Override
 	@Transactional(readOnly = true)
 	public List<Appointment> getAllAppointments(boolean includeVoided) {
-		return getAppointmentDAO().getAll(includeVoided);
+		return getAppointmentDAO().getAllData(includeVoided);
 	}
 	
 	@Override
