@@ -15,6 +15,8 @@ package org.openmrs.module.appointment.api.db;
 
 import java.util.List;
 
+import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.api.AppointmentService;
 
@@ -23,7 +25,7 @@ import org.openmrs.module.appointment.api.AppointmentService;
  */
 public interface AppointmentDAO extends SingleClassDAO {
 	
-	List<Appointment> getAppointmentsByPatient(Integer patientId);
+	List<Appointment> getAppointmentsByPatient(Patient patient);
 	
-	Appointment getAppointmentByVisit(Integer visitId);
+	Appointment getAppointmentByVisit(Visit visit);
 }

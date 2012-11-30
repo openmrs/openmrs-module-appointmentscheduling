@@ -19,6 +19,8 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.appointment.Appointment;
@@ -280,14 +282,14 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<Appointment> getAppointmentsOfPatient(Integer patientId) {
-		return getAppointmentDAO().getAppointmentsByPatient(patientId);
+	public List<Appointment> getAppointmentsOfPatient(Patient patient) {
+		return getAppointmentDAO().getAppointmentsByPatient(patient);
 	}
 	
 	@Override
 	@Transactional(readOnly = true)
-	public Appointment getAppointmentByVisit(Integer visitId) {
-		return getAppointmentDAO().getAppointmentByVisit(visitId);
+	public Appointment getAppointmentByVisit(Visit visit) {
+		return getAppointmentDAO().getAppointmentByVisit(visit);
 	}
 	
 	//TimeSlot

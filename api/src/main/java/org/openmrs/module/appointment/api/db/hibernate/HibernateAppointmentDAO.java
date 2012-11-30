@@ -16,6 +16,8 @@ package org.openmrs.module.appointment.api.db.hibernate;
 import java.util.List;
 
 import org.hibernate.criterion.Restrictions;
+import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.api.db.AppointmentDAO;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,16 +30,16 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<Appointment> getAppointmentsByPatient(Integer patientId) {
+	public List<Appointment> getAppointmentsByPatient(Patient patient) {
 		return super.sessionFactory.getCurrentSession().createCriteria(Appointment.class)
-		        .add(Restrictions.eq("patient", patientId)).list();
+		        .add(Restrictions.eq("patient", patient)).list();
 	}
 	
 	@Override
 	@Transactional(readOnly = true)
-	public Appointment getAppointmentByVisit(Integer visitId) {
+	public Appointment getAppointmentByVisit(Visit visit) {
 		return (Appointment) super.sessionFactory.getCurrentSession()
-		        .createQuery("from " + mappedClass.getSimpleName() + " at where at.visit = :visitId")
-		        .setParameter(0, visitId).uniqueResult();
+		        .createQuery("from " + mappedClass.getSimpleName() + " at where at.visit = :visit").setParameter("visit", visit)
+		        .uniqueResult();
 	}
 }

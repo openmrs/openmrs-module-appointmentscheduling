@@ -181,20 +181,20 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	@Verifies(value = "should get all appointments of patient", method = "getAppointmentsOfPatient(Integer patientId")
 	public void getAppointmentsOfPatient_shouldGetAllAppointmentsOfPatient() throws Exception {
-		List<Appointment> appointments = service.getAppointmentsOfPatient(1);
+		List<Appointment> appointments = service.getAppointmentsOfPatient(new Patient(1));
 		Assert.assertEquals(2, appointments.size());
 		
-		appointments = service.getAppointmentsOfPatient(40);
+		appointments = service.getAppointmentsOfPatient(new Patient(40));
 		Assert.assertEquals(0, appointments.size());
 	}
 	
 	@Test
 	@Verifies(value = "should get appointment corresponding to visit", method = "getAppointmentByVisit(Integer visitId)")
 	public void getAppointmentByVisit_shouldGetCorrectAppointment() {
-		Appointment appointment = service.getAppointmentByVisit(1);
+		Appointment appointment = service.getAppointmentByVisit(new Visit(1));
 		Assert.assertNotNull(appointment);
 		
-		appointment = service.getAppointmentByVisit(13);
+		appointment = service.getAppointmentByVisit(new Visit(13));
 		Assert.assertNull(appointment);
 	}
 }

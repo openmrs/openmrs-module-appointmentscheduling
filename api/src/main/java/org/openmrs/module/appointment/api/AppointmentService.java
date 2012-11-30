@@ -16,6 +16,8 @@ package org.openmrs.module.appointment.api;
 import java.util.List;
 import java.util.Set;
 
+import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.appointment.Appointment;
@@ -299,7 +301,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return all the appointments for the given patient id.
 	 * @should return all of the appointments for the given patient.
 	 */
-	List<Appointment> getAppointmentsOfPatient(Integer patientId);
+	List<Appointment> getAppointmentsOfPatient(Patient patient);
 	
 	/**
 	 * Returns the appointment corresponding to the given visit.
@@ -307,7 +309,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param visitId the visit id to search by.
 	 * @return the appointment that is related to this visit, null if there isnt any.
 	 */
-	Appointment getAppointmentByVisit(Integer visitId);
+	Appointment getAppointmentByVisit(Visit visit);
 	
 	/*
 	 * TODO: add status to appointment.
