@@ -163,7 +163,7 @@
 
 		<addForeignKeyConstraint constraintName="appointment_slot_appointment_block_id"
 			baseTableName="appointment_time_slot" baseColumnNames="appointment_block_id"
-			referencedTableName="appointment_appointment_block" referencedColumnNames="appointment_block_id"/>		
+			referencedTableName="appointment_block" referencedColumnNames="appointment_block_id"/>		
 	</changeSet>
 	<changeSet id="10000000-1000-appointment-block-type-map" author="dkayiwa">
 		<preConditions onFail="MARK_RAN">
@@ -213,36 +213,8 @@
 		<addForeignKeyConstraint constraintName="appointment_block_type_map_appointment_block_id"
 			baseTableName="appointment_block_type_map" baseColumnNames="appointment_block_id"
 			referencedTableName="appointment_block" referencedColumnNames="appointment_block_id"/>
-	</changeSet>	
-    	<changeSet id="10000000-1000-appointment-status" author="yony258">
-		<preConditions onFail="MARK_RAN">
-			<not><tableExists tableName="appointment_status_history"/></not>
-		</preConditions>
-		<comment>
-			Create appointment status history table
-		</comment>
-		<createTable tableName="appointment_status_history">
-			<column name="appointment_status_history_id" type="int" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false"/>
-			</column>
-			<column name="appointment_id" type="int">
-				<constraints nullable="false"/>
-			</column>
-			<column name="status" type="varchar(255)">
-				<constraints nullable="false"/>
-			</column>
-			<column name="start_date" type="datetime">
-				<constraints nullable="false"/>
-			</column>
-			<column name="end_date" type="datetime">
-				<constraints nullable="false"/>
-			</column>
-		</createTable>
-		<addForeignKeyConstraint constraintName="appointment_status_history_appointment"
-			baseTableName="appointment_status_history" baseColumnNames="appointment_id"
-			referencedTableName="appointment_id" referencedColumnNames="appointment"/>
 	</changeSet>
-    	<changeSet id="10000000-1000-appointment-appointment" author="yony258">
+	<changeSet id="10000000-1000-appointment-appointment" author="yony258">
 		<preConditions onFail="MARK_RAN">
 			<not><tableExists tableName="appointment"/></not>
 		</preConditions>
@@ -302,22 +274,22 @@
 		<addForeignKeyConstraint constraintName="appointment_patient_id"
 			baseTableName="appointment" baseColumnNames="patient_id"
 			referencedTableName="patient" referencedColumnNames="patient_id"/>		
-	</changeSet>
-    	<changeSet id="10000000-1000-appointment_status_map" author="yony258">
+	</changeSet>	
+    	<changeSet id="10000000-1000-appointment-status" author="yony258">
 		<preConditions onFail="MARK_RAN">
-			<not><tableExists tableName="appointment_status_map"/></not>
+			<not><tableExists tableName="appointment_status_history"/></not>
 		</preConditions>
 		<comment>
-			Create the link table "appointment_status_map" that links appointment table and appointment_status table
+			Create appointment status history table
 		</comment>
-		<createTable tableName="appointment_status_map">
-			<column name="appointment_status_map_id" type="int">
+		<createTable tableName="appointment_status_history">
+			<column name="appointment_status_history_id" type="int" autoIncrement="true">
 				<constraints primaryKey="true" nullable="false"/>
 			</column>
 			<column name="appointment_id" type="int">
 				<constraints nullable="false"/>
 			</column>
-			<column name="appointment_status_id" type="int">
+			<column name="status" type="varchar(255)">
 				<constraints nullable="false"/>
 			</column>
 			<column name="start_date" type="datetime">
@@ -326,39 +298,9 @@
 			<column name="end_date" type="datetime">
 				<constraints nullable="false"/>
 			</column>
-			<column name="uuid" type="char(38)">
-				<constraints nullable="false" unique="true"/>
-			</column>
-			<column name="creator" type="int" >
-				<constraints nullable="false" />
-			</column>
-			<column name="date_created" type="datetime" >
-				<constraints nullable="false"/>
-			</column>
-			<column name="changed_by" type="int" />
-			<column name="date_changed" type="datetime" />
-			<column name="retired" type="tinyint" defaultValueNumeric="0">
-				<constraints nullable="false"/>
-			</column>
-			<column name="retired_by" type="int" />
-			<column name="date_retired" type="datetime" />
-			<column name="retire_reason" type="varchar(255)" defaultValue="null"/>
 		</createTable>
-		<addForeignKeyConstraint constraintName="appointment_status_map_creator"
-			baseTableName="appointment_status_map" baseColumnNames="creator"
-			referencedTableName="users" referencedColumnNames="user_id"/>
-		<addForeignKeyConstraint constraintName="appointment_status_map_changed_by" 
-			baseTableName="appointment_status_map" baseColumnNames="changed_by"
-			referencedTableName="users" referencedColumnNames="user_id"/>
-		<addForeignKeyConstraint constraintName="appointment_status_map_retired_by"
-			baseTableName="appointment_status_map" baseColumnNames="retired_by"
-			referencedTableName="users" referencedColumnNames="user_id"/>
-
-		<addForeignKeyConstraint constraintName="appointment_status_map_appointment_id"
-			baseTableName="appointment_status_map" baseColumnNames="appointment_id"
+		<addForeignKeyConstraint constraintName="appointment_status_history_appointment"
+			baseTableName="appointment_status_history" baseColumnNames="appointment_id"
 			referencedTableName="appointment" referencedColumnNames="appointment_id"/>
-		<addForeignKeyConstraint constraintName="appointment_status_map_status_id"
-			baseTableName="appointment_status_map" baseColumnNames="appointment_status_id"
-			referencedTableName="appointment_status" referencedColumnNames="appointment_status_id"/>
 	</changeSet>
 </databaseChangeLog>
