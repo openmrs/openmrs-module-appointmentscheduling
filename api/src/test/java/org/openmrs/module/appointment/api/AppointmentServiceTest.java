@@ -28,7 +28,6 @@ import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
-import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
@@ -77,15 +76,15 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	public void getAppointmentByUuid_shouldGetCorrectAppointment() throws Exception {
 		Appointment appointment = service.getAppointmentByUuid("c0c579b0-8e59-401d-8a4a-976a0b183601");
 		assertNotNull(appointment);
-		assertEquals((Integer)1, appointment.getId());
+		assertEquals((Integer) 1, appointment.getId());
 		
 		appointment = service.getAppointmentByUuid("c0c579b0-8e59-401d-8a4a-976a0b183602");
 		assertNotNull(appointment);
-		assertEquals((Integer)2, appointment.getId());
+		assertEquals((Integer) 2, appointment.getId());
 		
 		appointment = service.getAppointmentByUuid("c0c579b0-8e59-401d-8a4a-976a0b183603");
 		assertNotNull(appointment);
-		assertEquals((Integer)3, appointment.getId());
+		assertEquals((Integer) 3, appointment.getId());
 		
 		appointment = service.getAppointmentByUuid("c0c579b0-8e59-401d-8a4a-976a0b183700");
 		Assert.assertNull(appointment);
@@ -112,7 +111,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	public void saveAppointment_shouldSaveEditedAppointment() throws Exception {
 		Appointment appointment = service.getAppointment(1);
 		assertNotNull(appointment);
-		assertEquals((Integer)1, appointment.getId());
+		assertEquals((Integer) 1, appointment.getId());
 		
 		appointment.setStatus("TEST_CHANGED");
 		service.saveAppointment(appointment);

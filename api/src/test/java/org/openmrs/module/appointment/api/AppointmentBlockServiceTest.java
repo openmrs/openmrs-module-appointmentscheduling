@@ -92,13 +92,6 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 	}
 	
 	@Test
-	@Verifies(value = "should get correct appointment blocks", method = "getAppointmentBlocks(String)")
-	public void getAppointmentBlocks_shouldGetCorrectAppointmentBlocks() throws Exception {
-		//I think we should delete it.
-	}
-	
-	@SuppressWarnings("deprecation")
-	@Test
 	@Verifies(value = "should save new appointment block", method = "saveAppointmentBlock(AppointmentBlock)")
 	public void saveAppointmentBlock_shouldSaveNewAppointmentBlock() throws Exception {
 		List<AppointmentBlock> appointmentBlocks = service.getAllAppointmentBlocks(true);
@@ -121,7 +114,6 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		assertEquals(4, service.getAllAppointmentBlocks().size());
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Test
 	@Verifies(value = "should save edited appointment block", method = "saveAppointmentBlock(AppointmentBlock)")
 	public void saveAppointmentBlock_shouldSaveEditedAppointmentBlock() throws Exception {

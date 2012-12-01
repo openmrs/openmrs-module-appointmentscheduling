@@ -117,7 +117,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 	
 	@Test
 	@Verifies(value = "get correct time slot by a given uuid", method = "getTimeSlotByUuid(String)")
-	public void getTimeSlot_shouldgetCorrectTimeSlot() {
+	public void getTimeSlotByUuid_shouldgetCorrectTimeSlot() {
 		TimeSlot timeSlot = service.getTimeSlotByUuid("c0c579b0-8e59-401d-8a4a-976a0b183604");
 		Date startDate = timeSlot.getStartDate();
 		assertNotNull(timeSlot);

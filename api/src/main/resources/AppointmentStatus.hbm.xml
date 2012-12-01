@@ -5,17 +5,17 @@
 
 <hibernate-mapping package="org.openmrs.module.appointment">
 
-	<class name="AppointmentStatus" table="${project.parent.artifactId}_status">
+	<class name="AppointmentStatus" table="${project.parent.artifactId}_status_history">
 		<id name="appointmentStatusId" type="int" column="appointment_status_history_id" unsaved-value="0">
 			<generator class="native" />
 		</id>
 		
 		<discriminator column="appointment_status_history_id" insert="false" />
-		<property name="status" type="java.lang.String" not-null="true" length="255" />
+		<property name="status" column="status" type="java.lang.String" not-null="true" length="255" />
 		<property name="startDate" column="start_date" type="java.util.Date" not-null="true" length="255" />
 		<property name="endDate" column="end_date" type="java.util.Date" not-null="true" length="255" />
 		
-		<many-to-one name="appointmentId" column="appointment_id" class="Appointment" not-null="true" />	
+		<many-to-one name="appointment" column="appointment_id" class="Appointment" not-null="true" />	
 	</class> 
 
 </hibernate-mapping>
