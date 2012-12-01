@@ -48,7 +48,6 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 	}
 	
 	public Appointment(TimeSlot timeSlot, Visit visit, Patient patient, String status) {
-		setId(null);
 		setTimeSlot(timeSlot);
 		setVisit(visit);
 		setPatient(patient);

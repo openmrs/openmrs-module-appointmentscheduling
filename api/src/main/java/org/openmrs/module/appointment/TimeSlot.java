@@ -38,7 +38,6 @@ public class TimeSlot extends BaseOpenmrsData {
 	}
 	
 	public TimeSlot(AppointmentBlock appointmentBlock, Date startDate, Date endDate) {
-		setId(null);
 		setAppointmentBlock(appointmentBlock);
 		setStartDate(startDate);
 		setEndDate(endDate);
