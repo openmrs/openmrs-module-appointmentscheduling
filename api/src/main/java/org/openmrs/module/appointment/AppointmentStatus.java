@@ -78,17 +78,13 @@ public class AppointmentStatus extends BaseOpenmrsData {
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-
 	
-    public Appointment getAppointment() {
-    	return appointment;
-    }
-
+	public Appointment getAppointment() {
+		return appointment;
+	}
 	
-    public void setAppointment(Appointment appointment) {
-    	this.appointment = appointment;
-    }
-	
-	
+	public void setAppointment(Appointment appointment) {
+		this.appointment = appointment;
+	}
 	
 }

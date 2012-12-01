@@ -22,13 +22,6 @@
       }
    }
 </script>
-
-<script type="text/javascript">
-   function forceInt(object) {
-      
-   }
-</script>
-
 <h2><spring:message code="appointment.AppointmentType.title"/></h2>
 
 <spring:hasBindErrors name="appointmentType">

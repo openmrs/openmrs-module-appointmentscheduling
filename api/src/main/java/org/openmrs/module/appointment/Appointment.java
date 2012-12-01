@@ -39,13 +39,16 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 	
 	private String status;
 	
-	public Appointment()
-	{
+	public Appointment() {
 		
 	}
 	
-	public Appointment(Integer appointmentId, TimeSlot timeSlot, Visit visit, Patient patient, String status){
+	public Appointment(Integer appointmentId) {
 		setId(appointmentId);
+	}
+	
+	public Appointment(TimeSlot timeSlot, Visit visit, Patient patient, String status) {
+		setId(null);
 		setTimeSlot(timeSlot);
 		setVisit(visit);
 		setPatient(patient);
@@ -99,15 +102,13 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 	public void setPatient(Patient patient) {
 		this.patient = patient;
 	}
-
 	
-    public String getStatus() {
-    	return status;
-    }
-
+	public String getStatus() {
+		return status;
+	}
 	
-    public void setStatus(String status) {
-    	this.status = status;
-    }
+	public void setStatus(String status) {
+		this.status = status;
+	}
 	
 }

@@ -29,12 +29,16 @@ public class TimeSlot extends BaseOpenmrsData {
 	
 	private Date endDate;
 	
-	public TimeSlot(){
+	public TimeSlot() {
 		
 	}
 	
-	public TimeSlot(Integer timeSlotId, AppointmentBlock appointmentBlock, Date startDate, Date endDate){
+	public TimeSlot(Integer timeSlotId) {
 		setId(timeSlotId);
+	}
+	
+	public TimeSlot(AppointmentBlock appointmentBlock, Date startDate, Date endDate) {
+		setId(null);
 		setAppointmentBlock(appointmentBlock);
 		setStartDate(startDate);
 		setEndDate(endDate);

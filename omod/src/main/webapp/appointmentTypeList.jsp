@@ -32,7 +32,7 @@
 					</a>
 				</td>
 				<td valign="top">${appointmentType.description}</td>
-				<td valign="top">${appointmentType.duration}</td>
+				<td valign="top">${appointmentType.textDuration}</td>
 			</tr>
 		</c:forEach>
 	</table>
