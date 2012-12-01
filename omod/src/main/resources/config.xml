@@ -29,7 +29,9 @@
 	<!-- Maps hibernate file's, if present -->
 	<mappingFiles>		
 		Appointment.hbm.xml
+		AppointmentBlock.hbm.xml
 		AppointmentType.hbm.xml		
+		TimeSlot.hbm.xml
 	</mappingFiles>
 
 	<!-- Internationalization -->
