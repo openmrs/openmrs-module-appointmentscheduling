@@ -15,6 +15,7 @@
 		<tr>
 			<th> <spring:message code="general.name"/> </th>
 			<th> <spring:message code="general.description"/> </th>
+			<th> <spring:message code="appointment.AppointmentType.duration"/> </th>
 		</tr>
 		<c:forEach var="appointmentType" items="${appointmentTypeList}">
 			<tr>
@@ -31,6 +32,7 @@
 					</a>
 				</td>
 				<td valign="top">${appointmentType.description}</td>
+				<td valign="top">${appointmentType.duration}</td>
 			</tr>
 		</c:forEach>
 	</table>

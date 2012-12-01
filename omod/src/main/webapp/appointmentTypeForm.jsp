@@ -23,6 +23,12 @@
    }
 </script>
 
+<script type="text/javascript">
+   function forceInt(object) {
+      
+   }
+</script>
+
 <h2><spring:message code="appointment.AppointmentType.title"/></h2>
 
 <spring:hasBindErrors name="appointmentType">
@@ -46,6 +52,15 @@
 		<td valign="top">
 			<spring:bind path="appointmentType.description">
 				<textarea name="description" rows="3" cols="40" onkeypress="return forceMaxLength(this, 1024);" >${status.value}</textarea>
+				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
+			</spring:bind>
+		</td>
+	</tr>
+	<tr>
+		<td valign="top"><spring:message code="appointment.AppointmentType.duration"/></td>
+		<td valign="top">
+			<spring:bind path="appointmentType.duration">
+				<input type="duration" name="name" value="${status.value}" size="35" />
 				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
 			</spring:bind>
 		</td>
