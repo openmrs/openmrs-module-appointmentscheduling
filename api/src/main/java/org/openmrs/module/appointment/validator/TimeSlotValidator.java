@@ -55,9 +55,9 @@ public class TimeSlotValidator implements Validator {
 		if (timeSlot == null) {
 			errors.rejectValue("timeSlot", "error.general");
 		} else {
-			ValidationUtils.rejectIfEmpty(errors, "startDate", "error.name");
-			ValidationUtils.rejectIfEmpty(errors, "endDate", "error.name");
-			ValidationUtils.rejectIfEmpty(errors, "appointmentBlock", "error.name");
+			ValidationUtils.rejectIfEmpty(errors, "startDate", "appointment.TimeSlot.startDate");
+			ValidationUtils.rejectIfEmpty(errors, "endDate", "appointment.TimeSlot.endDate");
+			ValidationUtils.rejectIfEmpty(errors, "appointmentBlock", "appointment.TimeSlot.block");
 		}
 	}
 }

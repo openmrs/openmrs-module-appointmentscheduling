@@ -53,8 +53,8 @@ public class AppointmentValidator implements Validator {
 		if (appointment == null) {
 			errors.rejectValue("appointment", "error.general");
 		} else {
-			ValidationUtils.rejectIfEmpty(errors, "timeSlot", "error.name");
-			ValidationUtils.rejectIfEmpty(errors, "patient", "error.name");
+			ValidationUtils.rejectIfEmpty(errors, "timeSlot", "appointment.Appointment.timeSlot");
+			ValidationUtils.rejectIfEmpty(errors, "patient", "appointment.Appointment.patient");
 		}
 	}
 }
