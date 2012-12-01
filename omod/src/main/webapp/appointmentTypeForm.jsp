@@ -57,10 +57,10 @@
 		</td>
 	</tr>
 	<tr>
-		<td valign="top"><spring:message code="appointment.AppointmentType.duration"/></td>
+		<td valign="top"><spring:message code="appointment.AppointmentType.enterDuration"/></td>
 		<td valign="top">
 			<spring:bind path="appointmentType.duration">
-				<input type="duration" name="name" value="${status.value}" size="35" />
+				<input type="text" name="duration" value="${status.value}" size="35" />
 				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
 			</spring:bind>
 		</td>

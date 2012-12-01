@@ -57,11 +57,11 @@ public class AppointmentType extends BaseOpenmrsMetadata {
 		setAppointmentTypeId(id);
 	}
 	
-	public int getDuration() {
+	public Integer getDuration() {
 		return duration;
 	}
 	
-	public void setDuration(int duration) {
+	public void setDuration(Integer duration) {
 		this.duration = duration;
 	}
 	
