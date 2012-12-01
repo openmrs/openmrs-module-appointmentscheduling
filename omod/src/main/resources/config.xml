@@ -29,16 +29,10 @@
 	<!-- Maps hibernate file's, if present -->
 	<mappingFiles>		
 		Appointment.hbm.xml
-<<<<<<< HEAD
 		AppointmentType.hbm.xml
 		AppointmentBlock.hbm.xml
 		TimeSlot.hbm.xml
 		AppointmentStatus.hbm.xml
-=======
-		AppointmentBlock.hbm.xml
-		AppointmentType.hbm.xml		
-		TimeSlot.hbm.xml
->>>>>>> 3b313b050bae6559cc62f3424d3b033fbc9a48e3
 	</mappingFiles>
 
 	<!-- Internationalization -->
