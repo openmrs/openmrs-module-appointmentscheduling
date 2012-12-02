@@ -72,7 +72,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 	public void saveTimeSlot_shouldSaveNewTimeSlot() {
 		
 		AppointmentBlock appointmentBlock = service.getAppointmentBlock(1);
-		TimeSlot timeSlot = new TimeSlot(null, appointmentBlock, new Date(), new Date());
+		TimeSlot timeSlot = new TimeSlot(appointmentBlock, new Date(), new Date());
 		timeSlot = service.saveTimeSlot(timeSlot);
 		List<TimeSlot> timeSlots = service.getAllTimeSlots();
 		
