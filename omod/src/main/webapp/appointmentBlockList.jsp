@@ -9,9 +9,7 @@
 <br /><br />
 <table>
 	<tr>
-		<td>BACK BTN</td>
 		<td><input type="text" name="Date" id="dateFilter" size="11" value="" onfocus="showCalendar(this,60)"/></td>
-		<td>NEXT BTN</td>
 	</tr>
 </table>
 <br/>
@@ -20,7 +18,7 @@
 <form method="post" class="box">
 	<table>
 		<tr>
-			<th> CHECK BOX TITLE</th>
+			<th> <spring:message code="appointment.AppointmentBlock.column.check"/></th>
 			<th> <spring:message code="appointment.AppointmentBlock.column.location"/> </th>
 			<th> <spring:message code="appointment.AppointmentBlock.column.user"/> </th>
 			<th> <spring:message code="appointment.AppointmentBlock.column.appointmentTypes"/> </th>
@@ -29,7 +27,7 @@
 		</tr>
 		<c:forEach var="appointmentBlock" items="${appointmentBlockList}">
 			<tr>
-				<td>Here will be checkBOX!</td>
+				<td><spring:message code="appointment.AppointmentBlock.column.checkbox"/></td>
 				<td valign="top">
 					<a href="appointmentBlockForm.form?appointmentBlockId=${appointmentBlock.appointmentBlockId}">
 						<c:choose>
