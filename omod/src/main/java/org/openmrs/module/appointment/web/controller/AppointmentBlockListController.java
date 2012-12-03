@@ -20,6 +20,7 @@ import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.AppointmentType;
@@ -43,14 +44,17 @@ public class AppointmentBlockListController {
 		//default empty Object
 		List<AppointmentBlock> appointmentBlockList = new Vector<AppointmentBlock>();
 		List<AppointmentType> appointmentTypeList = new Vector<AppointmentType>();
+		List<Location> locationList = new Vector<Location>();
 		//only fill the Object if the user has authenticated properly
 		if (Context.isAuthenticated()) {
 			AppointmentService appointmentService = Context.getService(AppointmentService.class);
 			appointmentBlockList = appointmentService.getAllAppointmentBlocks();
 			appointmentTypeList = new ArrayList<AppointmentType>(appointmentService.getAllAppointmentTypes());
+			locationList = Context.getLocationService().getAllLocations(false);
 		}
 		
 		model.addAttribute("appointmentBlockList", appointmentBlockList);
 		model.addAttribute("appointmentTypeList", appointmentTypeList);
+		model.addAttribute("locationList", locationList);
 	}
 }
