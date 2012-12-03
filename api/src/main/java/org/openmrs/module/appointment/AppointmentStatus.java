@@ -31,6 +31,17 @@ public class AppointmentStatus extends BaseOpenmrsData {
 	
 	private Date endDate;
 	
+	public AppointmentStatus() {
+		
+	}
+	
+	public AppointmentStatus(Appointment appointment, String status, Date startDate, Date endDate) {
+		setAppointment(appointment);
+		setStatus(status);
+		setStartDate(startDate);
+		setEndDate(endDate);
+	}
+	
 	public Integer getAppointmentStatusId() {
 		return appointmentStatusId;
 	}

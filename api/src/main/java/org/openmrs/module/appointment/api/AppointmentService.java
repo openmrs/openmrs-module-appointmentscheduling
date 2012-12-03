@@ -22,6 +22,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentBlock;
+import org.openmrs.module.appointment.AppointmentStatus;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
 import org.springframework.transaction.annotation.Transactional;
@@ -382,14 +383,56 @@ public interface AppointmentService extends OpenmrsService {
 	 * @should delete given time slot
 	 */
 	void purgeTimeSlot(TimeSlot timeSlot);
-
+	
 	/**
-	 * 
 	 * Should retrieve all appointments in the given time slot.
 	 * 
 	 * @param timeSlot the time slot to search by.
 	 * @return the appointments in the given time slot.
 	 */
-    public List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot);
+	public List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot);
+	
+	//Appointment Status
+	/**
+	 * Gets all appointment statuses.
+	 * 
+	 * @return a list of appointment status objects.
+	 * @should get all appointment statuses
+	 */
+	@Transactional(readOnly = true)
+	List<AppointmentStatus> getAllAppointmentStatuses();
+	
+
+	/**
+	 * Gets an appointment status by its appointment status id.
+	 * 
+	 * @param appointmentStatusId the appointment status id.
+	 * @return the appointment status object found with the given id, else null.
+	 * @should get correct appointment status
+	 */
+	@Transactional(readOnly = true)
+	AppointmentStatus getAppointmentStatus(Integer appointmentStatusId);
+	
+	/**
+	 * Gets all appointment statuses whose names(statuses) are similar to or contain the given
+	 * status.
+	 * 
+	 * @param status the search phrase to use.
+	 * @return a list of all appointment statuses with names identical to or containing the given
+	 *         status
+	 * @should get correct appointment statuses
+	 */
+	@Transactional(readOnly = true)
+	List<AppointmentStatus> getAppointmentStatuses(String status);
+	
+	/**
+	 * Creates or updates the given appointment status in the database.
+	 * 
+	 * @param AppointmentStatus the status to create or update.
+	 * @return the created or updated appointment status.
+	 * @should save new appointment status
+	 * @should save edited appointment status
+	 */
+	AppointmentStatus saveAppointmentStatus(AppointmentStatus appointmentStatus) throws APIException;
 	
 }
