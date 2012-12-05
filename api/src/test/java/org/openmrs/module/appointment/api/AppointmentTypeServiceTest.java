@@ -30,7 +30,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 /**
- * Tests {@link ${AppointmentService}}.
+ * Tests Appointment Type methods in the {@link ${AppointmentService}}.
  */
 public class  AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest {
 	

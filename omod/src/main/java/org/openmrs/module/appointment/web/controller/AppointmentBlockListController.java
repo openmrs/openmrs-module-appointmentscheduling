@@ -53,8 +53,6 @@ public class AppointmentBlockListController {
 		}	
 		model.addAttribute("appointmentBlockList", appointmentBlockList);
 		model.addAttribute("appointmentTypeList", appointmentTypeList);
-		//Setting the tree view to be default
-		Context.getAdministrationService().saveGlobalProperty(new GlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_LOCATION_WIDGET_TYPE, "tree"));
 	}
 	
 	
