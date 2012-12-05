@@ -17,11 +17,11 @@ import java.util.Date;
 
 import org.openmrs.BaseOpenmrsData;
 
-public class AppointmentStatus extends BaseOpenmrsData {
+public class AppointmentStatusHistory extends BaseOpenmrsData {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private Integer appointmentStatusId;
+	private Integer appointmentStatusHistoryId;
 	
 	private Appointment appointment;
 	
@@ -31,23 +31,23 @@ public class AppointmentStatus extends BaseOpenmrsData {
 	
 	private Date endDate;
 	
-	public AppointmentStatus() {
+	public AppointmentStatusHistory() {
 		
 	}
 	
-	public AppointmentStatus(Appointment appointment, String status, Date startDate, Date endDate) {
+	public AppointmentStatusHistory(Appointment appointment, String status, Date startDate, Date endDate) {
 		setAppointment(appointment);
 		setStatus(status);
 		setStartDate(startDate);
 		setEndDate(endDate);
 	}
 	
-	public Integer getAppointmentStatusId() {
-		return appointmentStatusId;
+	public Integer getAppointmentStatusHistoryId() {
+		return appointmentStatusHistoryId;
 	}
 	
-	public void setAppointmentStatusId(Integer appointmentStatusId) {
-		this.appointmentStatusId = appointmentStatusId;
+	public void setAppointmentStatusHistoryId(Integer appointmentStatusHistoryId) {
+		this.appointmentStatusHistoryId = appointmentStatusHistoryId;
 	}
 	
 	/**
@@ -55,7 +55,7 @@ public class AppointmentStatus extends BaseOpenmrsData {
 	 */
 	@Override
 	public Integer getId() {
-		return getAppointmentStatusId();
+		return getAppointmentStatusHistoryId();
 	}
 	
 	/**
@@ -63,7 +63,7 @@ public class AppointmentStatus extends BaseOpenmrsData {
 	 */
 	@Override
 	public void setId(Integer id) {
-		setAppointmentStatusId(id);
+		setAppointmentStatusHistoryId(id);
 	}
 	
 	public String getStatus() {

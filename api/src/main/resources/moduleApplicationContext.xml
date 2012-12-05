@@ -60,8 +60,8 @@
 									</property>
 								</bean>
 							</property>
-							<property name="appointmentStatusDAO">
-								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateAppointmentStatusDAO">
+							<property name="appointmentStatusHistoryDAO">
+								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateAppointmentStatusHistoryDAO">
 									<property name="sessionFactory">
 										<ref bean="sessionFactory" />
 									</property>

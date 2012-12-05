@@ -32,7 +32,7 @@
 		AppointmentType.hbm.xml
 		AppointmentBlock.hbm.xml
 		TimeSlot.hbm.xml
-		AppointmentStatus.hbm.xml
+		AppointmentStatusHistory.hbm.xml
 	</mappingFiles>
 
 	<!-- Internationalization -->

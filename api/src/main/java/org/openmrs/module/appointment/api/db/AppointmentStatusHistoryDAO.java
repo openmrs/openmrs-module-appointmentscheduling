@@ -15,10 +15,10 @@ package org.openmrs.module.appointment.api.db;
 
 import java.util.List;
 
-import org.openmrs.module.appointment.AppointmentStatus;
+import org.openmrs.module.appointment.AppointmentStatusHistory;
 import org.openmrs.module.appointment.api.AppointmentService;
 
 /**
  * Database methods for {@link AppointmentService}.
  */
-public interface AppointmentStatusDAO extends SingleClassDAO {}
+public interface AppointmentStatusHistoryDAO extends SingleClassDAO {}

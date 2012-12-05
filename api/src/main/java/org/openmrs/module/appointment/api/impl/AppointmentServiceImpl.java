@@ -25,13 +25,13 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentBlock;
-import org.openmrs.module.appointment.AppointmentStatus;
+import org.openmrs.module.appointment.AppointmentStatusHistory;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.AppointmentService;
 import org.openmrs.module.appointment.api.db.AppointmentBlockDAO;
 import org.openmrs.module.appointment.api.db.AppointmentDAO;
-import org.openmrs.module.appointment.api.db.AppointmentStatusDAO;
+import org.openmrs.module.appointment.api.db.AppointmentStatusHistoryDAO;
 import org.openmrs.module.appointment.api.db.AppointmentTypeDAO;
 import org.openmrs.module.appointment.api.db.TimeSlotDAO;
 import org.openmrs.validator.ValidateUtil;
@@ -52,7 +52,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	
 	private TimeSlotDAO timeSlotDAO;
 	
-	private AppointmentStatusDAO appointmentStatusDAO;
+	private AppointmentStatusHistoryDAO appointmentStatusHistoryDAO;
 	
 	/**
 	 * @param dao the appointment type dao to set
@@ -353,51 +353,51 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		return getTimeSlotDAO().getAppointmentsInTimeSlot(timeSlot);
 	}
 	
-	//AppointmentStatus
+	//AppointmentStatusHistory
 	/**
-	 * @param dao the appointment status dao to set
+	 * @param dao the appointment status history dao to set
 	 */
-	public void setAppointmentStatusDAO(AppointmentStatusDAO appointmentStatusDAO) {
-		this.appointmentStatusDAO = appointmentStatusDAO;
+	public void setAppointmentStatusHistoryDAO(AppointmentStatusHistoryDAO appointmentStatusHistoryDAO) {
+		this.appointmentStatusHistoryDAO = appointmentStatusHistoryDAO;
 	}
 	
 	/**
 	 * @return the appointment status dao
 	 */
-	public AppointmentStatusDAO getAppointmentStatusDAO() {
-		return appointmentStatusDAO;
+	public AppointmentStatusHistoryDAO getAppointmentStatusHistoryDAO() {
+		return appointmentStatusHistoryDAO;
 	}
 	
 	/**
-	 * @see org.openmrs.module.appointment.api.AppointmentService#getAllAppointmentStatuses()
+	 * @see org.openmrs.module.appointment.api.AppointmentService#getAllAppointmentStatusHistories()
 	 */
 	@Transactional(readOnly = true)
-	public List<AppointmentStatus> getAllAppointmentStatuses() {
-		return getAppointmentStatusDAO().getAll();
+	public List<AppointmentStatusHistory> getAllAppointmentStatusHistories() {
+		return getAppointmentStatusHistoryDAO().getAll();
 	}
 	
 	/**
-	 * @see org.openmrs.module.appointment.api.AppointmentService#getAppointmentStatus(java.lang.Integer)
+	 * @see org.openmrs.module.appointment.api.AppointmentService#getAppointmentStatusHistory(java.lang.Integer)
 	 */
 	@Transactional(readOnly = true)
-	public AppointmentStatus getAppointmentStatus(Integer appointmentStatusId) {
-		return (AppointmentStatus) getAppointmentStatusDAO().getById(appointmentStatusId);
+	public AppointmentStatusHistory getAppointmentStatusHistory(Integer appointmentStatusHistoryId) {
+		return (AppointmentStatusHistory) getAppointmentStatusHistoryDAO().getById(appointmentStatusHistoryId);
 	}
 	
 	/**
-	 * @see org.openmrs.module.appointment.api.AppointmentService#getAppointmentStatuses(java.lang.String)
+	 * @see org.openmrs.module.appointment.api.AppointmentService#getAppointmentStatusHistories(java.lang.String)
 	 */
 	@Transactional(readOnly = true)
-	public List<AppointmentStatus> getAppointmentStatuses(String status) {
-		return getAppointmentStatusDAO().getAll(status);
+	public List<AppointmentStatusHistory> getAppointmentStatusHistories(String status) {
+		return getAppointmentStatusHistoryDAO().getAll(status);
 	}
 	
 	/**
-	 * @see org.openmrs.module.appointment.api.AppointmentService#saveAppointmentStatus(org.openmrs.AppointmentStatus)
+	 * @see org.openmrs.module.appointment.api.AppointmentService#saveAppointmentStatusHistory(org.openmrs.AppointmentStatusHistory)
 	 */
-	public AppointmentStatus saveAppointmentStatus(AppointmentStatus appointmentStatus) throws APIException {
-		ValidateUtil.validate(appointmentStatus);
-		return (AppointmentStatus) getAppointmentStatusDAO().saveOrUpdate(appointmentStatus);
+	public AppointmentStatusHistory saveAppointmentStatusHistory(AppointmentStatusHistory appointmentStatusHistory) throws APIException {
+		ValidateUtil.validate(appointmentStatusHistory);
+		return (AppointmentStatusHistory) getAppointmentStatusHistoryDAO().saveOrUpdate(appointmentStatusHistory);
 	}
 	
 }

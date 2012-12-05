@@ -16,16 +16,16 @@ package org.openmrs.module.appointment.validator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.appointment.AppointmentStatus;
+import org.openmrs.module.appointment.AppointmentStatusHistory;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 /**
- * Validates attributes on the {@link AppointmentStatus} object.
+ * Validates attributes on the {@link AppointmentStatusHistory} object.
  */
-@Handler(supports = { AppointmentStatus.class }, order = 50)
-public class AppointmentStatusValidator implements Validator {
+@Handler(supports = { AppointmentStatusHistory.class }, order = 50)
+public class AppointmentStatusHistoryValidator implements Validator {
 	
 	/** Log for this class and subclasses */
 	protected final Log log = LogFactory.getLog(getClass());
@@ -37,7 +37,7 @@ public class AppointmentStatusValidator implements Validator {
 	 */
 	@SuppressWarnings("unchecked")
 	public boolean supports(Class c) {
-		return c.equals(AppointmentStatus.class);
+		return c.equals(AppointmentStatusHistory.class);
 	}
 	
 	/**
@@ -45,12 +45,11 @@ public class AppointmentStatusValidator implements Validator {
 	 * 
 	 * @see org.springframework.validation.Validator#validate(java.lang.Object,
 	 *      org.springframework.validation.Errors)
-	 * @should fail validation if name is null or empty or whitespace
 	 * @should pass validation if all required fields have proper values
 	 */
 	
 	public void validate(Object obj, Errors errors) {
-		AppointmentStatus appointmentStatus = (AppointmentStatus) obj;
+		AppointmentStatusHistory appointmentStatus = (AppointmentStatusHistory) obj;
 		if (appointmentStatus == null) {
 			errors.rejectValue("appointmentStatus", "error.general");
 		} else {

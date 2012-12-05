@@ -22,7 +22,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentBlock;
-import org.openmrs.module.appointment.AppointmentStatus;
+import org.openmrs.module.appointment.AppointmentStatusHistory;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
 import org.springframework.transaction.annotation.Transactional;
@@ -392,47 +392,46 @@ public interface AppointmentService extends OpenmrsService {
 	 */
 	public List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot);
 	
-	//Appointment Status
+	//Appointment Status History
 	/**
-	 * Gets all appointment statuses.
+	 * Gets all appointment status histories.
 	 * 
-	 * @return a list of appointment status objects.
-	 * @should get all appointment statuses
+	 * @return a list of appointment status history objects.
+	 * @should get all appointment status histories
 	 */
 	@Transactional(readOnly = true)
-	List<AppointmentStatus> getAllAppointmentStatuses();
+	List<AppointmentStatusHistory> getAllAppointmentStatusHistories();
 	
 
 	/**
-	 * Gets an appointment status by its appointment status id.
+	 * Gets an appointment status by its appointment status history id.
 	 * 
-	 * @param appointmentStatusId the appointment status id.
-	 * @return the appointment status object found with the given id, else null.
-	 * @should get correct appointment status
+	 * @param appointmentStatusHistoryId the appointment status history id.
+	 * @return the appointment status history object found with the given id, else null.
+	 * @should get correct appointment status history
 	 */
 	@Transactional(readOnly = true)
-	AppointmentStatus getAppointmentStatus(Integer appointmentStatusId);
+	AppointmentStatusHistory getAppointmentStatusHistory(Integer appointmentStatusHistoryId);
 	
 	/**
-	 * Gets all appointment statuses whose names(statuses) are similar to or contain the given
+	 * Gets all appointment status histories whose statuses are similar to or contain the given
 	 * status.
 	 * 
 	 * @param status the search phrase to use.
-	 * @return a list of all appointment statuses with names identical to or containing the given
-	 *         status
-	 * @should get correct appointment statuses
+	 * @return a list of all appointment status histories with names identical to or containing the given status
+	 * @should get correct appointment status histories
 	 */
 	@Transactional(readOnly = true)
-	List<AppointmentStatus> getAppointmentStatuses(String status);
+	List<AppointmentStatusHistory> getAppointmentStatusHistories(String status);
 	
 	/**
-	 * Creates or updates the given appointment status in the database.
+	 * Creates or updates the given appointment status history in the database.
 	 * 
-	 * @param AppointmentStatus the status to create or update.
-	 * @return the created or updated appointment status.
-	 * @should save new appointment status
-	 * @should save edited appointment status
+	 * @param AppointmentStatusHistory the appointment status history to create or update.
+	 * @return the created or updated appointment status history.
+	 * @should save new appointment status history
+	 * @should save edited appointment status history
 	 */
-	AppointmentStatus saveAppointmentStatus(AppointmentStatus appointmentStatus) throws APIException;
+	AppointmentStatusHistory saveAppointmentStatusHistory(AppointmentStatusHistory appointmentStatusHistory) throws APIException;
 	
 }

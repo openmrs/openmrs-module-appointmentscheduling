@@ -10,11 +10,11 @@
 <fieldset>
 	<table>
 		<tr>
-			<td><spring:message code="appointment.AppointmentBlock.head.pickDate"/> </td>
+			<td><spring:message code="appointment.AppointmentBlock.pickDate"/>: </td>
 			<td><input type="text" name="Date" id="dateFilter" size="11" onfocus="showCalendar(this,60)"/></td>
 		</tr>
 		<tr>
-		    <td><spring:message code="appointment.AppointmentBlock.head.location"/> </td>
+		    <td><spring:message code="appointment.AppointmentBlock.column.location"/> </td>
 		  	<td>
 			  <select name="locationSelect">
 		  		  <c:forEach var="location" items="${locationList}">
@@ -39,7 +39,7 @@
 		</tr>
 		<c:forEach var="appointmentBlock" items="${appointmentBlockList}">
 			<tr>
-				<td align="center"><input type="checkbox" name="appointmentBlockCheckBox" value=${appointmentBlock.appointmentBlockId }></td>
+				<td align="center"><input type="radio" name="appointmentBlockCheckBox" value=${appointmentBlock.appointmentBlockId }></td>
 				<td valign="top">
 					<a href="appointmentForm.form?appointmentBlockId=${appointmentBlock.appointmentBlockId}">
 						<c:choose>

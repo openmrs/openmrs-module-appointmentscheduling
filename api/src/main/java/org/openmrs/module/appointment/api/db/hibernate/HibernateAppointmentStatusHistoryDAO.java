@@ -19,19 +19,19 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.openmrs.module.appointment.AppointmentStatus;
-import org.openmrs.module.appointment.api.db.AppointmentStatusDAO;
+import org.openmrs.module.appointment.AppointmentStatusHistory;
+import org.openmrs.module.appointment.api.db.AppointmentStatusHistoryDAO;
 import org.springframework.transaction.annotation.Transactional;
 
-public class HibernateAppointmentStatusDAO extends HibernateSingleClassDAO implements AppointmentStatusDAO {
+public class HibernateAppointmentStatusHistoryDAO extends HibernateSingleClassDAO implements AppointmentStatusHistoryDAO {
 	
-	public HibernateAppointmentStatusDAO() {
-		super(AppointmentStatus.class);
+	public HibernateAppointmentStatusHistoryDAO() {
+		super(AppointmentStatusHistory.class);
 	}
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<AppointmentStatus> getAll(String status) {
+	public List<AppointmentStatusHistory> getAll(String status) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mappedClass);
 		criteria.add(Restrictions.like("status", status, MatchMode.EXACT));
 		criteria.addOrder(Order.asc("status"));
