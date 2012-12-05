@@ -1,36 +1,35 @@
 <%@ include file="/WEB-INF/template/include.jsp" %>
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <%@ include file="localHeader.jsp" %>
- <openmrs:htmlInclude file="/scripts/calendar/calendar.js" />
-
+<openmrs:htmlInclude file="/scripts/calendar/calendar.js" />
+<openmrs:htmlInclude file="/scripts/jquery/jsTree/jquery.tree.min.js" />
+<openmrs:htmlInclude file="/scripts/jquery/jsTree/themes/classic/style.css" />
  
 <h2><spring:message code="appointment.AppointmentBlock.manage.title"/></h2>
-
 <br/><br/>
-<fieldset>
-	<table>
-		<tr>
-			<td><spring:message code="appointment.AppointmentBlock.pickDate"/>: </td>
-			<td><input type="text" name="Date" id="dateFilter" size="11" onfocus="showCalendar(this,60)"/></td>
-		</tr>
-		<tr>
-		    <td><spring:message code="appointment.AppointmentBlock.column.location"/> </td>
-		  	<td>
-			  <select name="locationSelect">
-		  		  <c:forEach var="location" items="${locationList}">
-		  			  <option value="${location.id}">${location.name}</option>
-				  </c:forEach>
-		 	 </select>
-		   </td>
-		</tr>
-	</table>
+
+<fieldset style="clear: both"> 
+     	<legend><spring:message code="appointment.AppointmentBlock.legend.properties"/></legend>
+        <div style="margin: 0.5em 0;">
+       			<table>
+					<tr>
+						<td><spring:message code="appointment.AppointmentBlock.pickDate"/>: </td>
+						<td><input type="text" name="appointmentBlockDateFilter" id="dateFilter" size="11" onfocus="showCalendar(this,60)"/></td>
+					</tr>
+					<tr>
+					    <td><spring:message code="appointment.AppointmentBlock.column.location"/>: </td>
+					  	<td><openmrs:fieldGen type="org.openmrs.Location" formFieldName="locationId" val="${selectedLocation}"/></td>
+					</tr>
+				</table>
+        </div>
 </fieldset>
+
 <br/>
 <b class="boxHeader"><spring:message code="appointment.AppointmentBlock.list.title"/></b>
 <form method="post" class="box">
 	<table>
 		<tr>
-			<th align="center"> <spring:message code="appointment.AppointmentBlock.column.check"/></th>
+			<th align="center"> <spring:message code="appointment.AppointmentBlock.column.select"/></th>
 			<th align="center"> <spring:message code="appointment.AppointmentBlock.column.location"/> </th>
 			<th align="center"> <spring:message code="appointment.AppointmentBlock.column.user"/> </th>
 			<th align="center"> <spring:message code="appointment.AppointmentBlock.column.appointmentTypes"/> </th>
@@ -53,10 +52,10 @@
 					</a>
 				</td>
 				<td align="center" valign="top">${appointmentBlock.provider}</td>
-				<td align="center">
-					<c:forEach var="appointmentType" items="${appointmentTypeList}">
-						${appointmentType.name} 					
-					</c:forEach>
+				<td align="center">|
+						<c:forEach var="appointmentType" items="${appointmentTypeList}">						
+								${appointmentType.name}|	 	
+						</c:forEach>
 				</td>
 				<td align="center" valign="top">${appointmentBlock.startDate}</td>
 				<td align="center" valign="top">${appointmentBlock.endDate}</td>
