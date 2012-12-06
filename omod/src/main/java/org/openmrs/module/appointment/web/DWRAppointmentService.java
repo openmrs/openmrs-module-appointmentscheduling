@@ -17,10 +17,10 @@ import org.openmrs.module.appointment.api.AppointmentService;
  */
 public class DWRAppointmentService {
 	
-	public PatientDescription getPatientDescription(Integer patientId) {
+	public Object getPatientDescription(Integer patientId) {
 		Patient patient = Context.getPatientService().getPatient(patientId);
-		if (patient == null)
-			return null;
+		//if (patient == null)
+		//	return null;
 		
 		PatientDescription patientDescription = new PatientDescription("test","test");
 		/*patientDescription

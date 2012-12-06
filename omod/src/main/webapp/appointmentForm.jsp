@@ -18,7 +18,7 @@
    function updatePatient(formFieldId, patientObj, isPageLoad) {
 	if(!isPageLoad){
 		DWRAppointmentService.getPatientDescription(patientObj.patientId, function(details){
-			alert(details);
+			alert(details.phoneNumber);
 		});
 	}
    }
