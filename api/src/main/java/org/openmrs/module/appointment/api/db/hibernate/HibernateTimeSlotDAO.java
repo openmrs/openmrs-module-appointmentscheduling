@@ -16,7 +16,7 @@ public class HibernateTimeSlotDAO extends HibernateSingleClassDAO implements Tim
 	
 	@Override
 	public List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot) {
-		return super.sessionFactory.getCurrentSession().createCriteria(Appointment.class)
-		        .add(Restrictions.eq("timeSlot", timeSlot)).list();
+		return super.sessionFactory.getCurrentSession().createCriteria(Appointment.class).add(
+		    Restrictions.eq("timeSlot", timeSlot)).list();
 	}
 }

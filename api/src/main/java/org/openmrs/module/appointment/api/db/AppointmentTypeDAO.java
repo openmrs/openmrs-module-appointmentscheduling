@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.appointment.api.db;
 
-
-
 public interface AppointmentTypeDAO extends SingleClassDAO {
 
 }

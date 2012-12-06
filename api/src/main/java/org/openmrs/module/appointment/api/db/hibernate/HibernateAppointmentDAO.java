@@ -31,15 +31,15 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 	@Override
 	@Transactional(readOnly = true)
 	public List<Appointment> getAppointmentsByPatient(Patient patient) {
-		return super.sessionFactory.getCurrentSession().createCriteria(Appointment.class)
-		        .add(Restrictions.eq("patient", patient)).list();
+		return super.sessionFactory.getCurrentSession().createCriteria(Appointment.class).add(
+		    Restrictions.eq("patient", patient)).list();
 	}
 	
 	@Override
 	@Transactional(readOnly = true)
 	public Appointment getAppointmentByVisit(Visit visit) {
-		return (Appointment) super.sessionFactory.getCurrentSession()
-		        .createQuery("from " + mappedClass.getSimpleName() + " at where at.visit = :visit").setParameter("visit", visit)
+		return (Appointment) super.sessionFactory.getCurrentSession().createQuery(
+		    "from " + mappedClass.getSimpleName() + " at where at.visit = :visit").setParameter("visit", visit)
 		        .uniqueResult();
 	}
 }

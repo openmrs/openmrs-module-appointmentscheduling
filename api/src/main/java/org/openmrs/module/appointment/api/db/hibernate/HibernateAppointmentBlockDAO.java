@@ -16,9 +16,8 @@ package org.openmrs.module.appointment.api.db.hibernate;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.api.db.AppointmentBlockDAO;
 
-
-public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implements AppointmentBlockDAO  {
-
+public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implements AppointmentBlockDAO {
+	
 	public HibernateAppointmentBlockDAO() {
 		super(AppointmentBlock.class);
 	}

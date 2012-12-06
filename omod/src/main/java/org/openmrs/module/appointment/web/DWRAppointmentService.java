@@ -22,7 +22,7 @@ public class DWRAppointmentService {
 		if (patient == null)
 			return null;
 		
-		PatientDescription patientDescription = new PatientDescription("test","test");
+		PatientDescription patientDescription = new PatientDescription("test", "test");
 		/*patientDescription
 		        .setPhoneNumber(patient.getAttribute(
 		            Context.getAdministrationService().getGlobalProperty("appointment.phoneNumberPersonAttributeTypeId"))

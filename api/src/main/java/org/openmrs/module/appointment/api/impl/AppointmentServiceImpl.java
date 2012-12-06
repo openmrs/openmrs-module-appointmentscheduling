@@ -396,15 +396,16 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	/**
 	 * @see org.openmrs.module.appointment.api.AppointmentService#saveAppointmentStatusHistory(org.openmrs.AppointmentStatusHistory)
 	 */
-	public AppointmentStatusHistory saveAppointmentStatusHistory(AppointmentStatusHistory appointmentStatusHistory) throws APIException {
+	public AppointmentStatusHistory saveAppointmentStatusHistory(AppointmentStatusHistory appointmentStatusHistory)
+	        throws APIException {
 		ValidateUtil.validate(appointmentStatusHistory);
 		return (AppointmentStatusHistory) getAppointmentStatusHistoryDAO().saveOrUpdate(appointmentStatusHistory);
 	}
-
+	
 	@Override
-    public Date getMissedLastAppointment(Patient patient) {
-	    //TODO Yonatan (need to think about how to do this efficiently)
-	    return null;
-    }
+	public Date getMissedLastAppointment(Patient patient) {
+		//TODO Yonatan (need to think about how to do this efficiently)
+		return null;
+	}
 	
 }
