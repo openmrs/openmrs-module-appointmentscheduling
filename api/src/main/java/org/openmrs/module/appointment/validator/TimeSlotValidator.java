@@ -49,7 +49,7 @@ public class TimeSlotValidator implements Validator {
 	 * @should fail validation if name is null or empty or whitespace
 	 * @should pass validation if all required fields have proper values
 	 */
-
+	
 	public void validate(Object obj, Errors errors) {
 		TimeSlot timeSlot = (TimeSlot) obj;
 		if (timeSlot == null) {

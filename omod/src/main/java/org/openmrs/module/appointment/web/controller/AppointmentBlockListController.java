@@ -50,10 +50,9 @@ public class AppointmentBlockListController {
 			AppointmentService appointmentService = Context.getService(AppointmentService.class);
 			appointmentBlockList = appointmentService.getAllAppointmentBlocks();
 			appointmentTypeList = new ArrayList<AppointmentType>(appointmentService.getAllAppointmentTypes(false));
-		}	
+		}
 		model.addAttribute("appointmentBlockList", appointmentBlockList);
 		model.addAttribute("appointmentTypeList", appointmentTypeList);
 	}
 	
-	
-	}
+}

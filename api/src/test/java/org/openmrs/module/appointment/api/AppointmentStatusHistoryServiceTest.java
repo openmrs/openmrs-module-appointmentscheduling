@@ -36,7 +36,7 @@ import org.openmrs.test.Verifies;
 /**
  * Tests Appointment Status History methods in the {@link ${AppointmentService}}.
  */
-public class  AppointmentStatusHistoryServiceTest extends BaseModuleContextSensitiveTest {
+public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensitiveTest {
 	
 	private AppointmentService service;
 	
@@ -72,7 +72,6 @@ public class  AppointmentStatusHistoryServiceTest extends BaseModuleContextSensi
 		Assert.assertNull(appointmentStatusHistory);
 	}
 	
-	
 	@Test
 	@Verifies(value = "should get correct appointment status histories", method = "getAppointmentStatusHistories(String)")
 	public void getAppointmentStatusHistories_shouldGetCorrentAppointmentStatusHistories() throws Exception {
@@ -99,8 +98,9 @@ public class  AppointmentStatusHistoryServiceTest extends BaseModuleContextSensi
 		
 		AppointmentBlock appointmentBlock = service.getAppointmentBlock(1);
 		TimeSlot timeSlot = new TimeSlot(appointmentBlock, new Date(), new Date());
-		Appointment appointment = service.getAppointment(1);		
-		AppointmentStatusHistory appointmentStatusHistory = new AppointmentStatusHistory(appointment,"Some Status", new Date(),new Date());
+		Appointment appointment = service.getAppointment(1);
+		AppointmentStatusHistory appointmentStatusHistory = new AppointmentStatusHistory(appointment, "Some Status",
+		        new Date(), new Date());
 		service.saveAppointmentStatusHistory(appointmentStatusHistory);
 		
 		appointmentStatusHistories = service.getAppointmentStatusHistories("Some Status");
@@ -128,4 +128,4 @@ public class  AppointmentStatusHistoryServiceTest extends BaseModuleContextSensi
 		assertEquals(3, service.getAllAppointmentStatusHistories().size());
 	}
 	
-	}
+}

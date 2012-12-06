@@ -46,9 +46,10 @@ public class AppointmentTypeFormController {
 	public void showForm() {
 		
 	}
-
+	
 	@ModelAttribute("appointmentType")
-	public AppointmentType getAppointmentType(@RequestParam(value = "appointmentTypeId", required = false) Integer appointmentTypeId) {
+	public AppointmentType getAppointmentType(
+	        @RequestParam(value = "appointmentTypeId", required = false) Integer appointmentTypeId) {
 		AppointmentType appointmentType = null;
 		
 		if (Context.isAuthenticated()) {
@@ -64,10 +65,11 @@ public class AppointmentTypeFormController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public String onSubmit(HttpServletRequest request, AppointmentType appointmentType, BindingResult result) throws Exception {
+	public String onSubmit(HttpServletRequest request, AppointmentType appointmentType, BindingResult result)
+	        throws Exception {
 		
 		HttpSession httpSession = request.getSession();
-				
+		
 		if (Context.isAuthenticated()) {
 			AppointmentService appointmentService = Context.getService(AppointmentService.class);
 			
@@ -104,7 +106,8 @@ public class AppointmentTypeFormController {
 				
 				try {
 					appointmentService.purgeAppointmentType(appointmentType);
-					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentType.purgedSuccessfully");
+					httpSession
+					        .setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentType.purgedSuccessfully");
 				}
 				catch (DataIntegrityViolationException e) {
 					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "error.object.inuse.cannot.purge");

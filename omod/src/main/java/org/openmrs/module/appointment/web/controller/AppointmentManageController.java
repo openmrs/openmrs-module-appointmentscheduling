@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * The main controller.
  */
 @Controller
-public class  AppointmentManageController {
+public class AppointmentManageController {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 	

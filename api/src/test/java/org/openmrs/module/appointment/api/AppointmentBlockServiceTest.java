@@ -104,7 +104,7 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		Set<AppointmentType> appointmentTypes = service.getAllAppointmentTypes();
 		Provider provider = Context.getProviderService().getProvider(1);
 		AppointmentBlock appointmentBlock = new AppointmentBlock(started, started, provider, new Location(1),
-	          appointmentTypes);
+		        appointmentTypes);
 		service.saveAppointmentBlock(appointmentBlock);
 		
 		appointmentBlock = service.getAppointmentBlock(4);

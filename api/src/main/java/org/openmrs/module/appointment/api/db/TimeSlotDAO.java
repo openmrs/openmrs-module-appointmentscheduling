@@ -20,6 +20,6 @@ import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.TimeSlot;
 
 public interface TimeSlotDAO extends SingleClassDAO {
-		
+	
 	List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot);
 }

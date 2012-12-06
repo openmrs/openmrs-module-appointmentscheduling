@@ -199,7 +199,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(timeSlot);
 		appointments = service.getAppointmentsInTimeSlot(timeSlot);
 		assertNotNull(appointments);
-		assertEquals(0,appointments.size());
+		assertEquals(0, appointments.size());
 		
 	}
 }

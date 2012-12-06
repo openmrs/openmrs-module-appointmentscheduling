@@ -306,7 +306,7 @@ public interface AppointmentService extends OpenmrsService {
 	/*
 	 * TODO: add status to appointment.
 	 */
-	
+
 	//TimeSlot
 	
 	/**
@@ -403,7 +403,6 @@ public interface AppointmentService extends OpenmrsService {
 	@Transactional(readOnly = true)
 	List<AppointmentStatusHistory> getAllAppointmentStatusHistories();
 	
-
 	/**
 	 * Gets an appointment status by its appointment status history id.
 	 * 
@@ -433,7 +432,8 @@ public interface AppointmentService extends OpenmrsService {
 	 * @should save new appointment status history
 	 * @should save edited appointment status history
 	 */
-	AppointmentStatusHistory saveAppointmentStatusHistory(AppointmentStatusHistory appointmentStatusHistory) throws APIException;
+	AppointmentStatusHistory saveAppointmentStatusHistory(AppointmentStatusHistory appointmentStatusHistory)
+	        throws APIException;
 	
 	/**
 	 * 
