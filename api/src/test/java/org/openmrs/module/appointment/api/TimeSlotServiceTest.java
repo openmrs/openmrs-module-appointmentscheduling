@@ -40,6 +40,8 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 	
 	private AppointmentService service;
 	
+	private Integer amountOfTimeSlots = 4;
+	
 	@Before
 	public void before() throws Exception {
 		service = Context.getService(AppointmentService.class);
@@ -50,21 +52,21 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 	@Verifies(value = "should get all time slots", method = "getAllTimeSlots()")
 	public void getAllTimeSlots_shouldGetAllTimeSlots() {
 		List<TimeSlot> timeSlots = service.getAllTimeSlots();
-		Assert.assertEquals(3, timeSlots.size());
+		Assert.assertEquals(amountOfTimeSlots, (Integer) timeSlots.size());
 	}
 	
 	@Test
 	@Verifies(value = "should get all time slots by a given bool whether to include voided", method = "getAllTimeSlots(boolean)")
 	public void getAllTimeSlots_shouldGetAllUnvoidedTimeSlots() {
 		List<TimeSlot> timeSlots = service.getAllTimeSlots(false);
-		Assert.assertEquals(2, timeSlots.size());
+		Assert.assertEquals(3, timeSlots.size());
 	}
 	
 	@Test
 	@Verifies(value = "should get all time slots including voided", method = "getAllTimeSlots(boolean)")
 	public void getAllTimeSlots_shouldGetAllIncludingVoidedTimeSlots() {
 		List<TimeSlot> timeSlots = service.getAllTimeSlots(true);
-		Assert.assertEquals(3, timeSlots.size());
+		Assert.assertEquals(amountOfTimeSlots, (Integer) timeSlots.size());
 	}
 	
 	@Test
@@ -77,7 +79,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		List<TimeSlot> timeSlots = service.getAllTimeSlots();
 		
 		Assert.assertNotNull(timeSlot);
-		Assert.assertEquals(4, timeSlots.size());
+		Assert.assertEquals(amountOfTimeSlots + 1, timeSlots.size());
 	}
 	
 	@Test
@@ -109,9 +111,9 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		timeSlot = service.getTimeSlot(3);
 		startDate = timeSlot.getStartDate();
 		assertNotNull(timeSlot);
-		assertEquals("2006-01-01 00:00:00.2", startDate.toString());
+		assertEquals("2007-01-01 00:00:00.2", startDate.toString());
 		
-		timeSlot = service.getTimeSlot(4);
+		timeSlot = service.getTimeSlot(5);
 		Assert.assertNull(timeSlot);
 	}
 	
@@ -131,7 +133,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		timeSlot = service.getTimeSlotByUuid("c0c579b0-8e59-401d-8a4a-976a0b183606");
 		startDate = timeSlot.getStartDate();
 		assertNotNull(timeSlot);
-		assertEquals("2006-01-01 00:00:00.2", startDate.toString());
+		assertEquals("2007-01-01 00:00:00.2", startDate.toString());
 		
 		timeSlot = service.getTimeSlotByUuid("NOT A UUID");
 		Assert.assertNull(timeSlot);
@@ -150,7 +152,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(timeSlot);
 		assertTrue(timeSlot.isVoided());
 		
-		assertEquals(3, service.getAllTimeSlots().size());
+		assertEquals(amountOfTimeSlots, (Integer) service.getAllTimeSlots().size());
 	}
 	
 	@Test
@@ -168,21 +170,21 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		assertFalse(timeSlot.isVoided());
 		assertNull(timeSlot.getVoidReason());
 		
-		assertEquals(3, service.getAllTimeSlots().size());
+		assertEquals(amountOfTimeSlots, (Integer) service.getAllTimeSlots().size());
 	}
 	
 	@Test
 	@Verifies(value = "should delete a given time slot", method = "purgeTimeSlot(TimeSlot)")
 	public void purgeTimeSlot_shouldDeleteTimeSlot() {
-		TimeSlot timeSlot = service.getTimeSlot(3);
+		TimeSlot timeSlot = service.getTimeSlot(4);
 		assertNotNull(timeSlot);
 		
 		service.purgeTimeSlot(timeSlot);
 		
-		timeSlot = service.getTimeSlot(3);
+		timeSlot = service.getTimeSlot(4);
 		assertNull(timeSlot);
 		
-		assertEquals(2, service.getAllTimeSlots().size());
+		assertEquals(amountOfTimeSlots - 1, service.getAllTimeSlots().size());
 	}
 	
 	@Test
@@ -199,7 +201,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(timeSlot);
 		appointments = service.getAppointmentsInTimeSlot(timeSlot);
 		assertNotNull(appointments);
-		assertEquals(0, appointments.size());
+		assertEquals(1, appointments.size());
 		
 	}
 }

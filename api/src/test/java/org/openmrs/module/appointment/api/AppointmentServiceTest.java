@@ -33,11 +33,13 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 /**
- * Tests Appointment methods in the {@link ${AppointmentService}}.
+ * Tests Appointment methods in the {@link $ AppointmentService}}.
  */
 public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	
 	private AppointmentService service;
+	
+	private Integer amountOfAppointments = 4;
 	
 	@Before
 	public void before() throws Exception {
@@ -49,7 +51,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	@Verifies(value = "should get all appointments", method = "getAllAppointments()")
 	public void getAllAppointments_shouldGetAllAppointments() throws Exception {
 		List<Appointment> appointments = service.getAllAppointments();
-		assertEquals(3, appointments.size());
+		assertEquals(amountOfAppointments, (Integer) appointments.size());
 	}
 	
 	@Test
@@ -67,7 +69,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(appointment);
 		assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183603", appointment.getUuid());
 		
-		appointment = service.getAppointment(4);
+		appointment = service.getAppointment(5);
 		Assert.assertNull(appointment);
 	}
 	
@@ -103,7 +105,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		
 		//Should create a new appointment type row.
 		List<Appointment> appointments = service.getAllAppointments();
-		assertEquals(4, appointments.size());
+		assertEquals(amountOfAppointments + 1, appointments.size());
 	}
 	
 	@Test
@@ -121,7 +123,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals("TEST_CHANGED", appointment.getStatus());
 		
 		//Should not change the number of appointment types.
-		assertEquals(3, service.getAllAppointments().size());
+		assertEquals(amountOfAppointments, (Integer) service.getAllAppointments().size());
 	}
 	
 	@Test
@@ -140,7 +142,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals("void reason", appointment.getVoidReason());
 		
 		//Should not change the number of appointment types.
-		assertEquals(3, service.getAllAppointments().size());
+		assertEquals(4, service.getAllAppointments().size());
 	}
 	
 	@Test
@@ -159,7 +161,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		Assert.assertNull(appointment.getVoidReason());
 		
 		//Should not change the number of appointment types.
-		assertEquals(3, service.getAllAppointments().size());
+		assertEquals(amountOfAppointments, (Integer) service.getAllAppointments().size());
 	}
 	
 	@Test
@@ -174,7 +176,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		Assert.assertNull(appointment);
 		
 		//Should reduce the existing number of appointment types.
-		assertEquals(2, service.getAllAppointments().size());
+		assertEquals(amountOfAppointments - 1, service.getAllAppointments().size());
 	}
 	
 	@Test
@@ -195,5 +197,26 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		
 		appointment = service.getAppointmentByVisit(new Visit(13));
 		Assert.assertNull(appointment);
+	}
+	
+	@Test
+	@Verifies(value = "should retrieve patient's most recent appointment, null if none scheduled", method = "getLastAppointment(Patient)")
+	public void getLastAppointment_shouldRetrieveCorrectMostRecentAppointment() {
+		Patient patient = Context.getPatientService().getPatient(1);
+		assertNotNull(patient);
+		
+		Appointment appointment = null;
+		appointment = service.getLastAppointment(null);
+		Assert.assertNull(appointment);
+		
+		appointment = service.getLastAppointment(new Patient(5));
+		Assert.assertNull(appointment);
+		
+		appointment = service.getLastAppointment(patient);
+		assertEquals((Integer) 4, appointment.getAppointmentId());
+		
+		patient = Context.getPatientService().getPatient(2);
+		appointment = service.getLastAppointment(patient);
+		assertEquals((Integer) 2, appointment.getAppointmentId());
 	}
 }

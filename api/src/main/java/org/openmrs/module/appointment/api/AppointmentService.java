@@ -391,7 +391,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param timeSlot the time slot to search by.
 	 * @return the appointments in the given time slot.
 	 */
-	public List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot);
+	List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot);
 	
 	//Appointment Status History
 	/**
@@ -437,10 +437,11 @@ public interface AppointmentService extends OpenmrsService {
 	
 	/**
 	 * 
-	 * Checks if a given patient missed his last appointment, if so return the appointment date.
+	 * Retrieves the most recent appointment for a given patient.
 	 * 
-	 * @param patient the patient to check according to.
-	 * @return null if the patient did not missed his/her last appointment, the appointment date otherwise.
+	 * @param patient the patient for which we are retrieving.
+	 * @return The most recent appointment for the given patient, null if no appointments were set.
 	 */
-	Date getMissedLastAppointment(Patient patient);
+	@Transactional(readOnly = true)
+	Appointment getLastAppointment(Patient patient);
 }

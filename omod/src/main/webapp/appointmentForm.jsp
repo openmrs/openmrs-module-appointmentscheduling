@@ -1,7 +1,6 @@
 <%@ include file="/WEB-INF/template/include.jsp" %>
 
 <%@ include file="/WEB-INF/template/header.jsp" %>
-<%@ include file="localHeader.jsp" %>
 <openmrs:htmlInclude file="/scripts/timepicker/timepicker.js" />
 
 <script type="text/javascript">
@@ -17,10 +16,34 @@
 <script type="text/javascript">
    function updatePatient(formFieldId, patientObj, isPageLoad) {
 	if(!isPageLoad){
+		addPatientLink(patientObj);
 		DWRAppointmentService.getPatientDescription(patientObj.patientId, function(details){
-			alert(details.phoneNumber);
+			if(!details){
+				document.getElementById('detailsCell').innerHTML = "";
+				return;
+			}
+			var phone = "<spring:message code='appointment.Appointment.create.patientNoPhoneNumber'/>";
+			var missedLast = "<spring:message code='appointment.Appointment.create.patientNotMissed'/>";
+			
+			if(details.phoneNumber)
+				phone = details.phoneNumber;
+			if(details.dateMissed)
+				missedLast = details.dateMissed;
+			
+			var detailsText = "<spring:message code='appointment.Appointment.create.patientPhoneNumber'/>"+phone+"<br/><spring:message code='appointment.Appointment.create.patientMissedMeeting'/>"+missedLast;
+			document.getElementById('detailsCell').innerHTML = detailsText;
 		});
 	}
+   }
+   
+   function addPatientLink(patientObj){
+	   if(patientObj!=null){
+		   var message = "<spring:message code='appointment.Appointment.create.link.viewPatient'/>";
+		   var link = "<a href='${pageContext.request.contextPath}/patientDashboard.form?patientId="+patientObj.patientId+"'>";
+		   document.getElementById('patientLinkCell').innerHTML = link+message+"</a>";
+	   }
+	   else
+		   document.getElementById('patientLinkCell').innerHTML = "";
    }
 </script>
 
@@ -30,14 +53,15 @@
 	<tr>
 		<td><spring:message code="appointment.Appointment.create.label.findPatient"/></td>
 		
-			<td>
-				<spring:bind path="appointment.patient"><openmrs_tag:patientField formFieldName="patientId" callback="updatePatient"/></spring:bind>
-			</td>
+		<td>
+			<spring:bind path="appointment.patient"><openmrs_tag:patientField formFieldName="patientId" callback="updatePatient"/></spring:bind>
+		</td>
+		<td id="patientLinkCell"></td>
 	</tr>
 	<tr>
-		<td colspan="2">
-			<label id="labelPhone"></label>
-			<label id="labelMissed"></label>
+		<td></td>
+		<td colspan="2" id="detailsCell">
+			
 		</td>
 	</tr>
 

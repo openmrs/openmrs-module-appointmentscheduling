@@ -1,12 +1,10 @@
 package org.openmrs.module.appointment.web;
 
-import java.util.Date;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.Patient;
+import org.openmrs.PersonAttribute;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.api.AppointmentService;
 
 /**
@@ -21,16 +19,19 @@ public class DWRAppointmentService {
 		Patient patient = Context.getPatientService().getPatient(patientId);
 		if (patient == null)
 			return null;
+		PatientDescription patientDescription = new PatientDescription();
+		//Get Patient's phone
+		Integer phonePropertyId = Integer.parseInt(Context.getAdministrationService().getGlobalProperty(
+		    "appointment.phoneNumberPersonAttributeTypeId"));
+		PersonAttribute phoneAttribute = patient.getAttribute(phonePropertyId);
+		if (phoneAttribute != null)
+			patientDescription.setPhoneNumber(phoneAttribute.getValue());
+		//Runs: check if patient missed his/her last appointment.
+		Appointment lastAppointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
+		//TODO: change hard coded "MISSED" to correct enum value
+		if (lastAppointment != null && lastAppointment.getStatus() == "MISSED")
+			patientDescription.setDateMissed(Context.getDateFormat().format(lastAppointment.getTimeSlot().getStartDate()));
 		
-		PatientDescription patientDescription = new PatientDescription("test", "test");
-		/*patientDescription
-		        .setPhoneNumber(patient.getAttribute(
-		            Context.getAdministrationService().getGlobalProperty("appointment.phoneNumberPersonAttributeTypeId"))
-		                .getValue());
-		Date missedLastAppointment = Context.getService(AppointmentService.class).getMissedLastAppointment(patient);
-		if (missedLastAppointment != null)
-			patientDescription.setDateMissed(Context.getDateFormat().format(missedLastAppointment));
-		*/
 		return patientDescription;
 	}
 }
