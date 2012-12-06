@@ -31,14 +31,14 @@
 	<dwr>
 		<allow>
 			<create creator="new" javascript="DWRAppointmentService">
-				<param name="class" value="@MODULE_PACKAGE@.web.DWRAppointmentService" />
+				<param name="class" value="org.openmrs.module.appointment.web.DWRAppointmentService" />
 				<include method="getPatientDescription" />
 			</create>
 		</allow>
 
 		<signatures>
             <![CDATA[
-            import @MODULE_PACKAGE@.web.DWRAppointmentService;
+            import org.openmrs.module.appointment.web.DWRAppointmentService;
             DWRAppointmentService.getPatientDescription(Integer patientId);
             ]]>
 		</signatures>

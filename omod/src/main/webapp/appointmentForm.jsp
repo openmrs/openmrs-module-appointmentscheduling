@@ -11,8 +11,9 @@
       }
    }
 </script>
-
-<script src="<openmrs:contextPath/>/dwr/interface/DWRAppointmentService.js"></script>
+<script type="text/javascript" src='${pageContext.request.contextPath}/dwr/engine.js'></script>
+<script type="text/javascript" src='${pageContext.request.contextPath}/dwr/util.js'></script>
+<script type="text/javascript" src='${pageContext.request.contextPath}/dwr/interface/DWRAppointmentService.js'></script>
 <script type="text/javascript">
    function updatePatient(formFieldId, patientObj, isPageLoad) {
 	if(!isPageLoad){
