@@ -1,4 +1,4 @@
-package web;
+package org.openmrs.module.appointment.web;
 
 import java.util.Date;
 
