@@ -6,28 +6,54 @@
 	<id>${project.parent.artifactId}</id>
 	<name>${project.parent.name}</name>
 	<version>${project.parent.version}</version>
-	<package>${project.parent.groupId}.${project.parent.artifactId}</package>
+	<package>${project.parent.groupId}.${project.parent.artifactId}
+	</package>
 	<author>Tobin,Adam,Yonatan</author>
 	<description>
 		${project.parent.description}
 	</description>
-	<updateURL>https://dev.openmrs.org/modules/download/${project.parent.artifactId}/update.rdf</updateURL>
+	<updateURL>https://dev.openmrs.org/modules/download/${project.parent.artifactId}/update.rdf
+	</updateURL>
 	<require_version>${openMRSVersion}</require_version>
 	<!-- / Module Properties -->
+	<globalProperty>
+		<property>${project.parent.artifactId}.phoneNumberPersonAttributeTypeId
+		</property>
+		<defaultValue>8</defaultValue>
+		<description>Person attribute type id for the phone number.
+		</description>
+	</globalProperty>
 
-	
 	<!-- Module Activator -->
-	<activator>${project.parent.groupId}.${project.parent.artifactId}.AppointmentActivator</activator>
-	
-	
+	<activator>${project.parent.groupId}.${project.parent.artifactId}.AppointmentActivator
+	</activator>
+
+	<dwr>
+		<allow>
+			<create creator="yony258" javascript="DWRAppointmentService">
+				<param name="class" value="@MODULE_PACKAGE@.web.DWRAppointmentService" />
+				<include method="getPatientDescription" />
+			</create>
+		</allow>
+
+		<signatures>
+            <![CDATA[
+            import @MODULE_PACKAGE@.web.DWRAppointmentService;
+            DWRAppointmentService.getPatientDescription(Integer patientId);
+            ]]>
+		</signatures>
+	</dwr>
+
+
 	<!-- Adds link to admin page -->
 	<extension>
 		<point>org.openmrs.admin.list</point>
-		<class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.AdminList</class>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.AdminList
+		</class>
 	</extension>
-	
+
 	<!-- Maps hibernate file's, if present -->
-	<mappingFiles>		
+	<mappingFiles>
 		Appointment.hbm.xml
 		AppointmentType.hbm.xml
 		AppointmentBlock.hbm.xml

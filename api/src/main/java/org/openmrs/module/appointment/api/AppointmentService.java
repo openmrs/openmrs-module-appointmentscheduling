@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.appointment.api;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -434,4 +435,12 @@ public interface AppointmentService extends OpenmrsService {
 	 */
 	AppointmentStatusHistory saveAppointmentStatusHistory(AppointmentStatusHistory appointmentStatusHistory) throws APIException;
 	
+	/**
+	 * 
+	 * Checks if a given patient missed his last appointment, if so return the appointment date.
+	 * 
+	 * @param patient the patient to check according to.
+	 * @return null if the patient did not missed his/her last appointment, the appointment date otherwise.
+	 */
+	Date getMissedLastAppointment(Patient patient);
 }

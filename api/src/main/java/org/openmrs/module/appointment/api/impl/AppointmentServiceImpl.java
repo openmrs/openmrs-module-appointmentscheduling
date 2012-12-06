@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.appointment.api.impl;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -399,5 +400,11 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		ValidateUtil.validate(appointmentStatusHistory);
 		return (AppointmentStatusHistory) getAppointmentStatusHistoryDAO().saveOrUpdate(appointmentStatusHistory);
 	}
+
+	@Override
+    public Date getMissedLastAppointment(Patient patient) {
+	    //TODO Yonatan (need to think about how to do this efficiently)
+	    return null;
+    }
 	
 }

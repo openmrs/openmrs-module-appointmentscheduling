@@ -22,23 +22,26 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.api.AppointmentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Controller for editing appointment types.
+ * Controller for creating appointments.
  */
 @Controller
-public class CreateAppointmentFormController {
+public class AppointmentFormController {
 	
 	/** Logger for this class and subclasses */
 	protected final Log log = LogFactory.getLog(getClass());
 	
-	@RequestMapping(value = "/module/appointment/createAppointmentForm", method = RequestMethod.GET)
+	@RequestMapping(value = "/module/appointment/appointmentForm", method = RequestMethod.GET)
 	public void showForm(ModelMap model) {
 		//default empty Object
 		Set<AppointmentType> appointmentTypeList = new HashSet<AppointmentType>();
@@ -53,6 +56,22 @@ public class CreateAppointmentFormController {
 		
 		model.addAttribute("appointmentTypeList", appointmentTypeList);
 		model.addAttribute("providerList", providerList);
+	}
+	
+	@ModelAttribute("appointment")
+	public Appointment getAppointment(@RequestParam(value = "appointmentId", required = false) Integer appointmentId) {
+		Appointment appointment = null;
+		
+		if (Context.isAuthenticated()) {
+			AppointmentService as = Context.getService(AppointmentService.class);
+			if (appointmentId != null)
+				appointment = as.getAppointment(appointmentId);
+		}
+		
+		if (appointment == null)
+			appointment = new Appointment();
+		
+		return appointment;
 	}
 	
 }

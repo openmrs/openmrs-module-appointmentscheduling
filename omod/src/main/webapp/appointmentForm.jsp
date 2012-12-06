@@ -12,16 +12,31 @@
    }
 </script>
 
+<script src="<openmrs:contextPath/>/dwr/interface/DWRAppointmentService.js"></script>
+<script type="text/javascript">
+   function updatePatient(formFieldId, patientObj, isPageLoad) {
+	if(!isPageLoad){
+		DWRAppointmentService.getPatientDescription(patientObj.patientId, function(details){
+			alert(details);
+		});
+	}
+   }
+</script>
+
 <h2><spring:message code="appointment.Appointment.create.title"/></h2>
 
 <table>
 	<tr>
 		<td><spring:message code="appointment.Appointment.create.label.findPatient"/></td>
-		<td><openmrs_tag:patientField formFieldName="patientId"/></td>
+		
+			<td>
+				<spring:bind path="appointment.patient"><openmrs_tag:patientField formFieldName="patientId" callback="updatePatient"/></spring:bind>
+			</td>
 	</tr>
 	<tr>
 		<td colspan="2">
-		Patient Details if one was selected.
+			<label id="labelPhone"></label>
+			<label id="labelMissed"></label>
 		</td>
 	</tr>
 
