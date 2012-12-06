@@ -30,7 +30,7 @@
 
 	<dwr>
 		<allow>
-			<create creator="yony258" javascript="DWRAppointmentService">
+			<create creator="new" javascript="DWRAppointmentService">
 				<param name="class" value="@MODULE_PACKAGE@.web.DWRAppointmentService" />
 				<include method="getPatientDescription" />
 			</create>
