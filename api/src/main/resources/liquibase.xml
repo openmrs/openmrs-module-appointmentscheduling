@@ -237,6 +237,9 @@
 			<column name="status" type="varchar(255)">
 				<constraints nullable="false"/>
 			</column>
+			<column name="reason" type="varchar(1024)">
+				<constraints nullable="true"/>
+			</column>
 			<column name="uuid" type="char(38)">
 				<constraints nullable="false" unique="true"/>
 			</column>

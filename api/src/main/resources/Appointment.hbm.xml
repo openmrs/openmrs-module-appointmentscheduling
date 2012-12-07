@@ -15,6 +15,7 @@
 		<many-to-one name="visit" column="visit_id" class="org.openmrs.Visit" not-null="false" />
 		<many-to-one name="patient" column="patient_id" class="org.openmrs.Patient" not-null="true" />
 		<property name="status" type="java.lang.String" column="status" length="255" not-null="true" />
+		<property name="reason" type="java.lang.String" column="reason" length="1024" not-null="false" />
 		
 		<property name="uuid" type="java.lang.String" column="uuid" length="38" unique="true" />
 		<property name="dateCreated" type="java.util.Date" column="date_created" not-null="true" length="19" />

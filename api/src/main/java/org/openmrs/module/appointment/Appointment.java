@@ -39,6 +39,8 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 	
 	private String status;
 	
+	private String reason;
+	
 	public Appointment() {
 		
 	}
@@ -109,5 +111,17 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	
+    public String getReason() {
+    	return reason;
+    }
+
+	
+    public void setReason(String reason) {
+    	this.reason = reason;
+    }
+	
+	
 	
 }
