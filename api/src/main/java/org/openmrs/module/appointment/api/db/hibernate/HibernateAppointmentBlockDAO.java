@@ -13,12 +13,40 @@
  */
 package org.openmrs.module.appointment.api.db.hibernate;
 
+import java.util.Date;
+import java.util.List;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Restrictions;
+import org.openmrs.Location;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.api.db.AppointmentBlockDAO;
+import org.springframework.transaction.annotation.Transactional;
 
 public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implements AppointmentBlockDAO {
 	
 	public HibernateAppointmentBlockDAO() {
 		super(AppointmentBlock.class);
+	}
+	
+	/**
+	 * Returns the appointment blocks corresponding to the given date and location.
+	 * 
+	 * @param date the date to filter by.
+	 * @param location the location to filter by.
+	 * @return the appointment blocks that is on the given date and location.
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, Location location) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(AppointmentBlock.class);
+		if (location != null)
+			criteria.add(Restrictions.eq("location", location));
+		if (fromDate != null)
+			criteria.add(Restrictions.ge("startDate", fromDate));
+		if (toDate != null)
+			criteria.add(Restrictions.le("endDate", toDate));
+		return criteria.list();
 	}
 }

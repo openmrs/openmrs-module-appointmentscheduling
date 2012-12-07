@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.APIException;
@@ -226,7 +227,16 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	/**
-	 * @return the appointment type dao
+	 * @see org.openmrs.module.appointment.api.AppointmentService#getAppointmentBlocks(java.util.Date,java.util.Date,org.openmrs.Location))
+	 */
+	@Transactional(readOnly = true)
+	public List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, Location location) {
+		return getAppointmentBlockDAO().getAppointmentBlocks(fromDate, toDate, location);
+	}
+	
+	//Appointment
+	/**
+	 * @return the appointment dao
 	 */
 	public AppointmentDAO getAppointmentDAO() {
 		return appointmentDAO;

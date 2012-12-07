@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.APIException;
@@ -208,6 +209,15 @@ public interface AppointmentService extends OpenmrsService {
 	 * @should delete given appointment block
 	 */
 	void purgeAppointmentBlock(AppointmentBlock appointmentBlock);
+	
+	/**
+	 * Gets appointment blocks which have a given date and location.
+	 * 
+	 * @return a list of appointment block objects.
+	 * @should get all appointment blocks which have a given date and location.
+	 */
+	@Transactional(readOnly = true)
+	List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, Location location);
 	
 	//Appointment
 	/**

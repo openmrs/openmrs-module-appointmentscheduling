@@ -13,6 +13,13 @@
  */
 package org.openmrs.module.appointment.api.db;
 
-public interface AppointmentBlockDAO extends SingleClassDAO {
+import java.util.Date;
+import java.util.List;
 
+import org.openmrs.Location;
+import org.openmrs.module.appointment.AppointmentBlock;
+
+public interface AppointmentBlockDAO extends SingleClassDAO {
+	
+	List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, Location location);
 }
