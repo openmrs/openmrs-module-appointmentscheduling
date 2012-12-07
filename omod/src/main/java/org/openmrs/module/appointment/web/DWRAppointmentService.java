@@ -15,23 +15,24 @@ import org.openmrs.module.appointment.api.AppointmentService;
  */
 public class DWRAppointmentService {
 	
-	public PatientDescription getPatientDescription(Integer patientId) {
+	public PatientData getPatientDescription(Integer patientId) {
 		Patient patient = Context.getPatientService().getPatient(patientId);
 		if (patient == null)
 			return null;
-		PatientDescription patientDescription = new PatientDescription();
+		PatientData patientData = new PatientData();
 		//Get Patient's phone
 		Integer phonePropertyId = Integer.parseInt(Context.getAdministrationService().getGlobalProperty(
 		    "appointment.phoneNumberPersonAttributeTypeId"));
 		PersonAttribute phoneAttribute = patient.getAttribute(phonePropertyId);
 		if (phoneAttribute != null)
-			patientDescription.setPhoneNumber(phoneAttribute.getValue());
+			patientData.setPhoneNumber(phoneAttribute.getValue());
 		//Runs: check if patient missed his/her last appointment.
 		Appointment lastAppointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
 		//TODO: change hard coded "MISSED" to correct enum value
 		if (lastAppointment != null && lastAppointment.getStatus() == "MISSED")
-			patientDescription.setDateMissed(Context.getDateFormat().format(lastAppointment.getTimeSlot().getStartDate()));
+			patientData.setDateMissedLastAppointment(Context.getDateFormat().format(
+			    lastAppointment.getTimeSlot().getStartDate()));
 		
-		return patientDescription;
+		return patientData;
 	}
 }

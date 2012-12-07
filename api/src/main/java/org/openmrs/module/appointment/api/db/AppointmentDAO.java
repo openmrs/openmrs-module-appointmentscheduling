@@ -28,4 +28,6 @@ public interface AppointmentDAO extends SingleClassDAO {
 	List<Appointment> getAppointmentsByPatient(Patient patient);
 	
 	Appointment getAppointmentByVisit(Visit visit);
+	
+	Appointment getLastAppointment(Patient patient);
 }

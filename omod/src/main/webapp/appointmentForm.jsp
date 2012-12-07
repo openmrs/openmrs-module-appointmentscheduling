@@ -19,19 +19,19 @@
 		addPatientLink(patientObj);
 		DWRAppointmentService.getPatientDescription(patientObj.patientId, function(details){
 			if(!details){
-				document.getElementById('detailsCell').innerHTML = "";
+				document.getElementById('patientDataCell').innerHTML = "";
 				return;
 			}
 			var phone = "<spring:message code='appointment.Appointment.create.patientNoPhoneNumber'/>";
-			var missedLast = "<spring:message code='appointment.Appointment.create.patientNotMissed'/>";
+			var dateMissedLastAppointment = "<spring:message code='appointment.Appointment.create.patientNotMissedLastAppointment'/>";
 			
 			if(details.phoneNumber)
 				phone = details.phoneNumber;
-			if(details.dateMissed)
-				missedLast = details.dateMissed;
+			if(details.dateMissedLastAppointment)
+				dateMissedLastAppointment = details.dateMissedLastAppointment;
 			
-			var detailsText = "<spring:message code='appointment.Appointment.create.patientPhoneNumber'/>"+phone+"<br/><spring:message code='appointment.Appointment.create.patientMissedMeeting'/>"+missedLast;
-			document.getElementById('detailsCell').innerHTML = detailsText;
+			var detailsText = "<spring:message code='appointment.Appointment.create.patientPhoneNumber'/>"+phone+"<br/><spring:message code='appointment.Appointment.create.patientMissedMeeting'/>"+dateMissedLastAppointment;
+			document.getElementById('patientDataCell').innerHTML = detailsText;
 		});
 	}
    }
@@ -60,7 +60,7 @@
 	</tr>
 	<tr>
 		<td></td>
-		<td colspan="2" id="detailsCell">
+		<td colspan="2" id="patientDataCell">
 			
 		</td>
 	</tr>

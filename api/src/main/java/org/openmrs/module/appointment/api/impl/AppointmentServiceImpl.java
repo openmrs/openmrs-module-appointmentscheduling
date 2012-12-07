@@ -404,21 +404,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	
 	@Override
 	public Appointment getLastAppointment(Patient patient) {
-		List<Appointment> appointments = getAppointmentsOfPatient(patient);
-		Appointment recentAppointment = null;
-		
-		for (Appointment appointment : appointments) {
-			//TODO: confirm that MISSED appointment != voided Appointment, remove this if o.w
-			if (!appointment.isVoided()) {
-				if (recentAppointment == null)
-					recentAppointment = appointment;
-				//Assumption: A patient won't have two appointments in the same time slot.
-				else if (appointment.getTimeSlot().getStartDate().after(recentAppointment.getTimeSlot().getStartDate()))
-					recentAppointment = appointment;
-			}
-		}
-		
-		return recentAppointment;
+		return getAppointmentDAO().getLastAppointment(patient);
 	}
 	
 }

@@ -42,4 +42,18 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 		    "from " + mappedClass.getSimpleName() + " at where at.visit = :visit").setParameter("visit", visit)
 		        .uniqueResult();
 	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public Appointment getLastAppointment(Patient patient) {
+		String query = "select appointment from Appointment as appointment"
+		        + " where appointment.patient = :patient and appointment.timeSlot.startDate in"
+		        + " (select max(timeSlot.startDate) from Appointment as appointment inner join appointment.timeSlot"
+		        + " where appointment.patient = :patient)";
+		
+		Appointment appointment = (Appointment) super.sessionFactory.getCurrentSession().createQuery(query).setParameter(
+		    "patient", patient).uniqueResult();
+		
+		return appointment;
+	}
 }
