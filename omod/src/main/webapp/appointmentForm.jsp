@@ -2,7 +2,7 @@
 
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <openmrs:htmlInclude file="/scripts/timepicker/timepicker.js" />
-
+<openmrs:htmlInclude file="/moduleResources/appointment/createAppointmentStyle.css"/>
 <script type="text/javascript">
    function forceMaxLength(object, maxLength) {
       if( object.value.length >= maxLength) {
@@ -15,7 +15,7 @@
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/interface/DWRAppointmentService.js'></script>
 <script type="text/javascript">
    function updatePatient(formFieldId, patientObj, isPageLoad) {
-	if(!isPageLoad){
+	if(patientObj!=null){
 		addPatientLink(patientObj);
 		DWRAppointmentService.getPatientDescription(patientObj.patientId, function(details){
 			if(!details){
@@ -47,14 +47,22 @@
    }
 </script>
 
-<h2><spring:message code="appointment.Appointment.create.title"/></h2>
-
-<table>
+<h2 id="headline"><spring:message code="appointment.Appointment.create.title"/></h2>
+<spring:hasBindErrors name="appointment">
+	<spring:message code="fix.error"/>
+	<br />
+</spring:hasBindErrors>
+<form method="post">
+<fieldset>
+<table id="createAppointmentTable">
 	<tr>
 		<td><spring:message code="appointment.Appointment.create.label.findPatient"/></td>
 		
 		<td>
-			<spring:bind path="appointment.patient"><openmrs_tag:patientField formFieldName="patientId" callback="updatePatient"/></spring:bind>
+			<spring:bind path="appointment.patient">
+				<openmrs_tag:patientField formFieldName="patient" callback="updatePatient" initialValue="${status.value}"/>
+				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
+			</spring:bind>
 		</td>
 		<td id="patientLinkCell"></td>
 	</tr>
@@ -64,7 +72,7 @@
 			
 		</td>
 	</tr>
-
+	
 	<tr>
 		<td><spring:message code="appointment.Appointment.create.label.appointmentType"/></td>
 		<td>
@@ -79,7 +87,7 @@
 		<td><spring:message code="appointment.Appointment.create.label.clinician"/></td>
 		<td>
 			<select name="providerSelect">
-				<option value="0">Not Specified</option>
+				<option value="0"><spring:message code="appointment.Appointment.create.label.clinicianNotSpecified"/></option>
 				<c:forEach var="provider" items="${providerList}">
 					<option value="${appointmentType.providerId}">${provider.name}</option>
 				</c:forEach>
@@ -88,22 +96,43 @@
 	</tr>
 	<tr>
 		<td><spring:message code="appointment.Appointment.create.label.betweenDates"/></td>
-		<td><input type="text" name="Date" id="fromDate" size="15" value="" onfocus="showDateTimePicker(this)"/> and <input type="text" name="Date" id="toDate" size="15" value="" onfocus="showDateTimePicker(this)"/></td>
+		<td><input type="text" name="Date" id="fromDate" size="16" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('fromDate').focus();"/> and <input type="text" name="Date" id="toDate" size="16" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('toDate').focus();"/></td>
 	</tr>
 	<tr>
-		<td/><td><input type="button" value="<spring:message code="appointment.Appointment.create.findTime"/>" name="cancel"></td>
+		<td/><td><input type="button" class="appointmentButton" value="<spring:message code="appointment.Appointment.create.findTime"/>" name="cancel"></td>
 	</tr>
 	<tr>
-		<td><spring:message code="appointment.Appointment.create.label.availbleTimes"/></td>
-		<td>List of Times</td>
+		<td><spring:message code="appointment.Appointment.create.label.availableTimes"/></td>
+		<td>
+			
+			<table id="availbleTimesTable" cellspacing="0">
+				<tr class="tableHeader">
+					<th><spring:message code="appointment.Appointment.create.header.clinician"/></th>
+					<th><spring:message code="appointment.Appointment.create.header.appointmentType"/></th>
+					<th><spring:message code="appointment.Appointment.create.header.date"/></th>
+					<th><spring:message code="appointment.Appointment.create.header.timeSlot"/></th>
+					<th><spring:message code="appointment.Appointment.create.header.selectedOption"/></th>
+				</tr>
+				<tr>
+					<td>a </td>
+					<td>b </td>
+					<td>c </td>
+					<td>d </td>
+					<td>e </td>
+				</tr>
+			</table>
+		</td>
 	</tr>
 	<tr>
 		<td><spring:message code="appointment.Appointment.create.label.reason"/></td>
-		<td><textarea name="description" rows="3" cols="40" onkeypress="return forceMsaxLength(this, 1024);"></textarea></td>
+		<spring:bind path="appointment.reason">
+			<td><textarea name="reason" rows="3" cols="50" style="resize:none" onkeypress="return forceMsaxLength(this, 1024);">${status.value}</textarea></td>
+		</spring:bind>
 	</tr>
-	<tr><td><input type="submit" value="<spring:message code="appointment.Appointment.create.save"/>" name="save"></td>
-	<td><input type="reset" value="<spring:message code="appointment.Appointment.create.cancel"/>" name="cancel"></td>
+	<tr><td><input type="submit"  class="appointmentButton" value="<spring:message code="appointment.Appointment.create.save"/>" name="save"></td>
+	<td><input type="reset"  class="appointmentButton" value="<spring:message code="appointment.Appointment.create.cancel"/>" name="cancel"></td>
 	</tr>
 </table>
-
+</fieldset>
+</form>
 <%@ include file="/WEB-INF/template/footer.jsp" %>

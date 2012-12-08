@@ -111,17 +111,13 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
 	
-    public String getReason() {
-    	return reason;
-    }
-
+	public String getReason() {
+		return reason;
+	}
 	
-    public void setReason(String reason) {
-    	this.reason = reason;
-    }
-	
-	
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
 	
 }

@@ -1,0 +1,62 @@
+#createAppointmentTable{
+	margin-top:30px;
+}
+
+#createAppointmentTable td{
+	padding:5px;
+	padding-left:15px;
+}
+
+#headline{
+	font-size:x-large;
+	font-weight:bold;
+	padding-left:15px;
+}
+
+.appointmentButton{
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #a2dec8), color-stop(1, #009c8f) );
+	background:-moz-linear-gradient( center top, #a2dec8 5%, #009c8f 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#a2dec8', endColorstr='#009c8f');
+	background-color:#a2dec8;
+	border:1px solid #d9d9d9;
+	display:inline-block;
+	color:#ffffff;
+	padding:3px 20px;
+	text-decoration:none;
+	text-shadow:1px 1px 0px #666666;
+	font-weight:bold;
+}
+.appointmentButton:hover {
+	background:-webkit-gradient( linear, left top, left bottom,  color-stop(0.05, #009c8f), color-stop(1, #a2dec8) );
+	background:-moz-linear-gradient( center top, #009c8f 5%, #a2dec8 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#009c8f', endColorstr='#a2dec8');
+	background-color:#a2dec8;
+}
+.appointmentButton:active {
+	position:relative;
+	top:1px;
+}
+
+.calendarIcon{
+	margin-left:7px;
+	margin-bottom:-5px;
+}
+
+#availbleTimesTable td
+{
+	border: 1px solid black;
+	padding-right:15px;
+	padding-left:5px;
+
+}
+
+#availableTimesTable{
+	border-collapse:collapse;
+}
+
+.tableHeader{
+	background-color:#009D8E;
+	font-weight:bold;
+	color:white;
+}
+.

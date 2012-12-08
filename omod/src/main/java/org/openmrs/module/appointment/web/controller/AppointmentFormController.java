@@ -18,6 +18,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Provider;
@@ -25,8 +28,10 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.api.AppointmentService;
+import org.openmrs.module.appointment.validator.AppointmentValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -72,6 +77,22 @@ public class AppointmentFormController {
 			appointment = new Appointment();
 		
 		return appointment;
+	}
+	
+	@RequestMapping(method = RequestMethod.POST)
+	public String onSubmit(HttpServletRequest request, Appointment appointment, BindingResult result) throws Exception {
+		HttpSession httpSession = request.getSession();
+		
+		if (Context.isAuthenticated()) {
+			AppointmentService appointmentService = Context.getService(AppointmentService.class);
+			
+			if (request.getParameter("save") != null) {
+				new AppointmentValidator().validate(appointment, result);
+			}
+			if (result.hasErrors())
+				return null;
+		}
+		return "";
 	}
 	
 }
