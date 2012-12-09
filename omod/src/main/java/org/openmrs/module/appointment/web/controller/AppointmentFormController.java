@@ -27,6 +27,7 @@ import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentType;
+import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.AppointmentService;
 import org.openmrs.module.appointment.validator.AppointmentValidator;
 import org.springframework.stereotype.Controller;
@@ -91,8 +92,22 @@ public class AppointmentFormController {
 			}
 			if (result.hasErrors())
 				return null;
+			
+			if (request.getParameter("findAvailableTime") != null) {
+				return null;
+			}
 		}
 		return "";
+	}
+	
+	@RequestMapping(params = "findAvailableTime", method = RequestMethod.POST)
+	public void onFindTimesClick(HttpServletRequest request, Appointment appointment, BindingResult result, ModelMap model)
+	        throws Exception {
+		if (Context.isAuthenticated()) {
+			List<TimeSlot> availableTimes = Context.getService(AppointmentService.class).getAllTimeSlots();
+			
+			model.addAttribute("availableTimes", availableTimes);
+		}
 	}
 	
 }

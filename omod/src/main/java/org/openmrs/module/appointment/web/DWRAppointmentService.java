@@ -26,7 +26,7 @@ public class DWRAppointmentService {
 		PersonAttribute phoneAttribute = patient.getAttribute(phonePropertyId);
 		if (phoneAttribute != null)
 			patientData.setPhoneNumber(phoneAttribute.getValue());
-		//Runs: check if patient missed his/her last appointment.
+		//Checks if patient missed his/her last appointment.
 		Appointment lastAppointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
 		//TODO: change hard coded "MISSED" to correct enum value
 		if (lastAppointment != null && lastAppointment.getStatus() == "MISSED")

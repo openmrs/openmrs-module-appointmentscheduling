@@ -3,6 +3,7 @@
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <openmrs:htmlInclude file="/scripts/timepicker/timepicker.js" />
 <openmrs:htmlInclude file="/moduleResources/appointment/createAppointmentStyle.css"/>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <script type="text/javascript">
    function forceMaxLength(object, maxLength) {
       if( object.value.length >= maxLength) {
@@ -87,9 +88,9 @@
 		<td><spring:message code="appointment.Appointment.create.label.clinician"/></td>
 		<td>
 			<select name="providerSelect">
-				<option value="0"><spring:message code="appointment.Appointment.create.label.clinicianNotSpecified"/></option>
+				<option value="null"><spring:message code="appointment.Appointment.create.label.clinicianNotSpecified"/></option>
 				<c:forEach var="provider" items="${providerList}">
-					<option value="${appointmentType.providerId}">${provider.name}</option>
+					<option value="${provider.providerId}">${provider.name}</option>
 				</c:forEach>
 			</select>
 		</td>
@@ -99,28 +100,35 @@
 		<td><input type="text" name="Date" id="fromDate" size="16" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('fromDate').focus();"/> and <input type="text" name="Date" id="toDate" size="16" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('toDate').focus();"/></td>
 	</tr>
 	<tr>
-		<td/><td><input type="button" class="appointmentButton" value="<spring:message code="appointment.Appointment.create.findTime"/>" name="cancel"></td>
+		<td/><td><input type="submit" name="findAvailableTime" class="appointmentButton" value="<spring:message code="appointment.Appointment.create.findTime"/>" name="cancel"></td>
 	</tr>
 	<tr>
 		<td><spring:message code="appointment.Appointment.create.label.availableTimes"/></td>
 		<td>
-			
-			<table id="availbleTimesTable" cellspacing="0">
-				<tr class="tableHeader">
-					<th><spring:message code="appointment.Appointment.create.header.clinician"/></th>
-					<th><spring:message code="appointment.Appointment.create.header.appointmentType"/></th>
-					<th><spring:message code="appointment.Appointment.create.header.date"/></th>
-					<th><spring:message code="appointment.Appointment.create.header.timeSlot"/></th>
-					<th><spring:message code="appointment.Appointment.create.header.selectedOption"/></th>
-				</tr>
-				<tr>
-					<td>a </td>
-					<td>b </td>
-					<td>c </td>
-					<td>d </td>
-					<td>e </td>
-				</tr>
-			</table>
+				<table id="availbleTimesTable" cellspacing="0">
+					<tr class="tableHeader">
+						<th><spring:message code="appointment.Appointment.create.header.selectedOption"/></th>
+						<th><spring:message code="appointment.Appointment.create.header.clinician"/></th>
+						<th><spring:message code="appointment.Appointment.create.header.appointmentType"/></th>
+						<th><spring:message code="appointment.Appointment.create.header.date"/></th>
+						<th><spring:message code="appointment.Appointment.create.header.timeSlot"/></th>
+					</tr>
+					<spring:bind path="appointment.timeSlot">
+					<c:forEach var="slot" items="${availableTimes}">
+						<tr>
+							<td><input type="radio" value="${slot}"/> </td>
+							<td>${slot.appointmentBlock.provider.name}</td>
+							<td>
+								<c:forEach var="appointmentType" items="${slot.appointmentBlock.types}">
+								${appointmentType.name},
+								</c:forEach>
+							</td>
+							<td><fmt:formatDate type="date" value="${slot.startDate}" /></td>
+							<td><fmt:formatDate type="time" pattern="hh:mm a" value="${slot.startDate}" /> - <fmt:formatDate type="time" pattern="hh:mm a" value="${slot.endDate}" /></td>
+						</tr>
+					</c:forEach>
+					</spring:bind>
+				</table>
 		</td>
 	</tr>
 	<tr>

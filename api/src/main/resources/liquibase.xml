@@ -179,34 +179,7 @@
 			<column name="appointment_block_id" type="int">
 				<constraints primaryKey="true" nullable="false"/>
 			</column>
-			<column name="uuid" type="char(38)">
-				<constraints nullable="false" unique="true"/>
-			</column>
-			<column name="creator" type="int" >
-				<constraints nullable="false" />
-			</column>
-			<column name="date_created" type="datetime" >
-				<constraints nullable="false"/>
-			</column>
-			<column name="changed_by" type="int" />
-			<column name="date_changed" type="datetime" />
-			<column name="retired" type="tinyint" defaultValueNumeric="0">
-				<constraints nullable="false"/>
-			</column>
-			<column name="retired_by" type="int" />
-			<column name="date_retired" type="datetime" />
-			<column name="retire_reason" type="varchar(255)" defaultValue="null"/>
 		</createTable>
-		<addForeignKeyConstraint constraintName="appointment_block_type_map_creator"
-			baseTableName="appointment_block_type_map" baseColumnNames="creator"
-			referencedTableName="users" referencedColumnNames="user_id"/>
-		<addForeignKeyConstraint constraintName="appointment_block_type_map_changed_by" 
-			baseTableName="appointment_block_type_map" baseColumnNames="changed_by"
-			referencedTableName="users" referencedColumnNames="user_id"/>
-		<addForeignKeyConstraint constraintName="appointment_block_type_map_retired_by"
-			baseTableName="appointment_block_type_map" baseColumnNames="retired_by"
-			referencedTableName="users" referencedColumnNames="user_id"/>
-	
 		<addForeignKeyConstraint constraintName="appointment_block_type_map_appointment_type_id" 
 			baseTableName="appointment_block_type_map" baseColumnNames="appointment_type_id"
 			referencedTableName="appointment_type" referencedColumnNames="appointment_type_id"/>

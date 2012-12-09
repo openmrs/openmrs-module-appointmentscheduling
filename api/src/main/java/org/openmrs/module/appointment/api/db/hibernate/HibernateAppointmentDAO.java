@@ -47,7 +47,7 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 	@Transactional(readOnly = true)
 	public Appointment getLastAppointment(Patient patient) {
 		String query = "select appointment from Appointment as appointment"
-		        + " where appointment.patient = :patient and appointment.timeSlot.startDate in"
+		        + " where appointment.patient = :patient and appointment.timeSlot.startDate ="
 		        + " (select max(timeSlot.startDate) from Appointment as appointment inner join appointment.timeSlot"
 		        + " where appointment.patient = :patient)";
 		
