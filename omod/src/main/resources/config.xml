@@ -30,6 +30,7 @@
 
 	<dwr>
 		<allow>
+		    <convert converter="bean" match="org.openmrs.module.appointment.web.AppointmentBlockDetails"/>
 			<convert converter="bean" match="org.openmrs.module.appointment.web.PatientData"/>
 			<convert converter="bean" match="org.openmrs.module.appointment.TimeSlot"/>
 			<convert converter="bean" match="org.openmrs.module.appointment.AppointmentBlock"/>
@@ -39,6 +40,7 @@
 				<param name="class" value="org.openmrs.module.appointment.web.DWRAppointmentService" />
 				<include method="getPatientDescription" />
 				<include method="getAvailableTimeSlots" />
+				<include method="getAppointmentBlocks"/>
 			</create>
 		</allow>
 
@@ -46,6 +48,7 @@
             <![CDATA[
             import org.openmrs.module.appointment.web.DWRAppointmentService;
             DWRAppointmentService.getPatientDescription(Integer patientId);
+            DWRAppointmentService.getAppointmentBlocks(Date fromDate,Date toDate,Integer locationId);
             ]]>
              <![CDATA[
             import org.openmrs.module.appointment.web.DWRAppointmentService;
