@@ -15,6 +15,34 @@
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/util.js'></script>
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/interface/DWRAppointmentService.js'></script>
 <script type="text/javascript">
+
+	function findAvailableTime(){
+		DWRAppointmentService.getAvailableTimeSlots(function(timeSlots){
+			//Reset the table
+			for(var i=document.getElementById("availbleTimesTable").rows.length; i>1; i--){
+				document.getElementById("availbleTimesTable").deleteRow(i-1);
+			}
+			//Insert lines
+			for(var i=0; i<timeSlots.length; i++){
+				var line = "<tr><td><input type='radio' name='timeSlotSelect' value='"+timeSlots[i]+"'/></td>"
+				+"<td>"+timeSlots[i].appointmentBlock.provider.name+"</td><td>";
+				for(var j=0; j<timeSlots[i].appointmentBlock.types.length; j++){
+					line+= timeSlots[i].appointmentBlock.types[j].name
+					if(j!=timeSlots[i].appointmentBlock.types.length-1)
+						line+=",";
+				}
+				line+="</td>";
+				var startDate = new Date(timeSlots[i].startDate);
+				var endDate = new Date(timeSlots[i].endDate);
+				line +="<td>"+startDate.toLocaleDateString()+"</td>";
+				line +="<td>"+startDate.toLocaleTimeString()+" - "+endDate.toLocaleTimeString()+"</td>";
+				line +="</tr>";
+				document.getElementById("availbleTimesTable").innerHTML += line;
+				
+			}
+		});
+	}
+
    function updatePatient(formFieldId, patientObj, isPageLoad) {
 	if(patientObj!=null){
 		addPatientLink(patientObj);
@@ -46,6 +74,7 @@
 	   else
 		   document.getElementById('patientLinkCell').innerHTML = "";
    }
+
 </script>
 
 <h2 id="headline"><spring:message code="appointment.Appointment.create.title"/></h2>
@@ -100,7 +129,7 @@
 		<td><input type="text" name="Date" id="fromDate" size="16" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('fromDate').focus();"/> and <input type="text" name="Date" id="toDate" size="16" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('toDate').focus();"/></td>
 	</tr>
 	<tr>
-		<td/><td><input type="submit" name="findAvailableTime" class="appointmentButton" value="<spring:message code="appointment.Appointment.create.findTime"/>" name="cancel"></td>
+		<td/><td><input type="button" onclick="findAvailableTime()" class="appointmentButton" value="<spring:message code="appointment.Appointment.create.findTime"/>" name="cancel"></td>
 	</tr>
 	<tr>
 		<td><spring:message code="appointment.Appointment.create.label.availableTimes"/></td>
@@ -113,21 +142,6 @@
 						<th><spring:message code="appointment.Appointment.create.header.date"/></th>
 						<th><spring:message code="appointment.Appointment.create.header.timeSlot"/></th>
 					</tr>
-					<spring:bind path="appointment.timeSlot">
-					<c:forEach var="slot" items="${availableTimes}">
-						<tr>
-							<td><input type="radio" value="${slot}"/> </td>
-							<td>${slot.appointmentBlock.provider.name}</td>
-							<td>
-								<c:forEach var="appointmentType" items="${slot.appointmentBlock.types}">
-								${appointmentType.name},
-								</c:forEach>
-							</td>
-							<td><fmt:formatDate type="date" value="${slot.startDate}" /></td>
-							<td><fmt:formatDate type="time" pattern="hh:mm a" value="${slot.startDate}" /> - <fmt:formatDate type="time" pattern="hh:mm a" value="${slot.endDate}" /></td>
-						</tr>
-					</c:forEach>
-					</spring:bind>
 				</table>
 		</td>
 	</tr>

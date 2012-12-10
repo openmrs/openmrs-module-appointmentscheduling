@@ -1,10 +1,13 @@
 package org.openmrs.module.appointment.web;
 
+import java.util.List;
+
 import org.openmrs.Patient;
 import org.openmrs.PersonAttribute;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
+import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.AppointmentService;
 
 /**
@@ -34,5 +37,11 @@ public class DWRAppointmentService {
 			    lastAppointment.getTimeSlot().getStartDate()));
 		
 		return patientData;
+	}
+	
+	public List<TimeSlot> getAvailableTimeSlots() {
+		//TODO change to include constraints.
+		List<TimeSlot> timeSlots = Context.getService(AppointmentService.class).getAllTimeSlots();
+		return timeSlots;
 	}
 }

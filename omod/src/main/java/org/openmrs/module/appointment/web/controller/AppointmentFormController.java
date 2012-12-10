@@ -93,21 +93,7 @@ public class AppointmentFormController {
 			if (result.hasErrors())
 				return null;
 			
-			if (request.getParameter("findAvailableTime") != null) {
-				return null;
-			}
 		}
 		return "";
 	}
-	
-	@RequestMapping(params = "findAvailableTime", method = RequestMethod.POST)
-	public void onFindTimesClick(HttpServletRequest request, Appointment appointment, BindingResult result, ModelMap model)
-	        throws Exception {
-		if (Context.isAuthenticated()) {
-			List<TimeSlot> availableTimes = Context.getService(AppointmentService.class).getAllTimeSlots();
-			
-			model.addAttribute("availableTimes", availableTimes);
-		}
-	}
-	
 }
