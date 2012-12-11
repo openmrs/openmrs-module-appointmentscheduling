@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.appointment.web.controller;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Location;
 import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
@@ -30,9 +32,12 @@ import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.AppointmentService;
 import org.openmrs.module.appointment.validator.AppointmentValidator;
+import org.openmrs.module.appointment.web.TimeSlotEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -47,21 +52,23 @@ public class AppointmentFormController {
 	/** Logger for this class and subclasses */
 	protected final Log log = LogFactory.getLog(getClass());
 	
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.registerCustomEditor(TimeSlot.class, new TimeSlotEditor());
+	}
+	
 	@RequestMapping(value = "/module/appointment/appointmentForm", method = RequestMethod.GET)
 	public void showForm(ModelMap model) {
-		//default empty Object
-		Set<AppointmentType> appointmentTypeList = new HashSet<AppointmentType>();
-		List<Provider> providerList = new LinkedList<Provider>();
 		
-		//only fill the Object is the user has authenticated properly
-		if (Context.isAuthenticated()) {
-			AppointmentService appointmentService = Context.getService(AppointmentService.class);
-			appointmentTypeList = appointmentService.getAllAppointmentTypes();
-			providerList = Context.getProviderService().getAllProviders();
-		}
-		
-		model.addAttribute("appointmentTypeList", appointmentTypeList);
-		model.addAttribute("providerList", providerList);
+	}
+	
+	@ModelAttribute("availableTimes")
+	public List<TimeSlot> getAvailableTimes(@RequestParam(value = "fromDate", required = false) Date fromDate,
+	        @RequestParam(value = "toDate", required = false) Date toDate,
+	        @RequestParam(value = "location", required = false) Location location) {
+		if (fromDate != null)
+			return Context.getService(AppointmentService.class).getAllTimeSlots();
+		return null;
 	}
 	
 	@ModelAttribute("appointment")
@@ -80,6 +87,16 @@ public class AppointmentFormController {
 		return appointment;
 	}
 	
+	@ModelAttribute("providerList")
+	public List<Provider> getProviderList() {
+		return Context.getProviderService().getAllProviders();
+	}
+	
+	@ModelAttribute("appointmentTypeList")
+	public Set<AppointmentType> getAppointmentTypeList() {
+		return Context.getService(AppointmentService.class).getAllAppointmentTypes();
+	}
+	
 	@RequestMapping(method = RequestMethod.POST)
 	public String onSubmit(HttpServletRequest request, Appointment appointment, BindingResult result) throws Exception {
 		HttpSession httpSession = request.getSession();
@@ -92,8 +109,21 @@ public class AppointmentFormController {
 			}
 			if (result.hasErrors())
 				return null;
-			
 		}
 		return "";
+	}
+	
+	@RequestMapping(params = "findAvailableTime", method = RequestMethod.POST)
+	public void onFindTimesClick(ModelMap model, Appointment appointment,
+	        @RequestParam(value = "fromDate", required = false) Date fromDate,
+	        @RequestParam(value = "toDate", required = false) Date toDate,
+	        @RequestParam(value = "location", required = false) Location location) throws Exception {
+		
+		if (Context.isAuthenticated()) {
+			if (fromDate == null)
+				getAvailableTimes(new Date(), toDate, location);
+			else
+				getAvailableTimes(fromDate, toDate, location);
+		}
 	}
 }
