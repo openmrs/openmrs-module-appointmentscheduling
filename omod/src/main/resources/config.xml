@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module configVersion="1.2">
+
+	<!-- Module Properties -->
+	<id>${project.parent.artifactId}</id>
+	<name>${project.parent.name}</name>
+	<version>${project.parent.version}</version>
+	<package>${project.parent.groupId}.${project.parent.artifactId}
+	</package>
+	<author>Tobin,Adam,Yonatan</author>
+	<description>
+		${project.parent.description}
+	</description>
+	<updateURL>https://dev.openmrs.org/modules/download/${project.parent.artifactId}/update.rdf
+	</updateURL>
+	<require_version>${openMRSVersion}</require_version>
+	<!-- / Module Properties -->
+	<globalProperty>
+		<property>${project.parent.artifactId}.phoneNumberPersonAttributeTypeId
+		</property>
+		<defaultValue>8</defaultValue>
+		<description>Person attribute type id for the phone number.
+		</description>
+	</globalProperty>
+
+	<!-- Module Activator -->
+	<activator>${project.parent.groupId}.${project.parent.artifactId}.AppointmentActivator
+	</activator>
+
+	<dwr>
+		<allow>
+		    <convert converter="bean" match="org.openmrs.module.appointment.web.AppointmentBlockDetails"/>
+			<convert converter="bean" match="org.openmrs.module.appointment.web.PatientData"/>
+			<convert converter="bean" match="org.openmrs.module.appointment.TimeSlot"/>
+			<convert converter="bean" match="org.openmrs.module.appointment.AppointmentBlock"/>
+			<convert converter="bean" match="org.openmrs.module.appointment.AppointmentType"/>
+			<convert converter="bean" match="org.openmrs.Provider"/>
+			<create creator="new" javascript="DWRAppointmentService">
+				<param name="class" value="org.openmrs.module.appointment.web.DWRAppointmentService" />
+				<include method="getPatientDescription" />
+				<include method="getAvailableTimeSlots" />
+				<include method="getAppointmentBlocks"/>
+			</create>
+		</allow>
+
+		<signatures>
+            <![CDATA[
+            import org.openmrs.module.appointment.web.DWRAppointmentService;
+            DWRAppointmentService.getPatientDescription(Integer patientId);
+            DWRAppointmentService.getAppointmentBlocks(Date fromDate,Date toDate,Integer locationId);
+            ]]>
+             <![CDATA[
+            import org.openmrs.module.appointment.web.DWRAppointmentService;
+            DWRAppointmentService.getAvailableTimeSlots();
+            ]]>
+		</signatures>
+	</dwr>
+
+
+	<!-- Adds link to admin page -->
+	<extension>
+		<point>org.openmrs.admin.list</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.AdminList
+		</class>
+	</extension>
+
+	<!-- Maps hibernate file's, if present -->
+	<mappingFiles>
+		Appointment.hbm.xml
+		AppointmentType.hbm.xml
+		AppointmentBlock.hbm.xml
+		TimeSlot.hbm.xml
+		AppointmentStatusHistory.hbm.xml
+	</mappingFiles>
+
+	<!-- Internationalization -->
+	<!-- All message codes should start with ${project.parent.artifactId}. -->
+	<messages>
+		<lang>en</lang>
+		<file>messages.properties</file>
+	</messages>
+	<messages>
+		<lang>fr</lang>
+		<file>messages_fr.properties</file>
+	</messages>
+	<messages>
+		<lang>es</lang>
+		<file>messages_es.properties</file>
+	</messages>
+	<!-- /Internationalization -->
+
+</module>
