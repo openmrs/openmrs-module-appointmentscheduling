@@ -19,6 +19,7 @@ import java.util.Set;
 
 import org.openmrs.Location;
 import org.openmrs.Patient;
+import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
@@ -428,7 +429,8 @@ public interface AppointmentService extends OpenmrsService {
 	 * status.
 	 * 
 	 * @param status the search phrase to use.
-	 * @return a list of all appointment status histories with names identical to or containing the given status
+	 * @return a list of all appointment status histories with names identical to or containing the
+	 *         given status
 	 * @should get correct appointment status histories
 	 */
 	@Transactional(readOnly = true)
@@ -446,7 +448,6 @@ public interface AppointmentService extends OpenmrsService {
 	        throws APIException;
 	
 	/**
-	 * 
 	 * Retrieves the most recent appointment for a given patient.
 	 * 
 	 * @param patient the patient for which we are retrieving.
@@ -454,4 +455,16 @@ public interface AppointmentService extends OpenmrsService {
 	 */
 	@Transactional(readOnly = true)
 	Appointment getLastAppointment(Patient patient);
+	
+	/**
+	 * Return a list of time slots that stands within the given constraints.
+	 * 
+	 * @param appointmentType - Type of the appointment
+	 * @param fromDate - (optional) earliest start date.
+	 * @param toDate - (optional) latest start date.
+	 * @param provider - (optional) the appointment's provider.
+	 * @return List of TimeSlots that stands within the given constraints, null if illegal values
+	 *         (fromDate>toDate or null appointmentType)
+	 */
+	List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate, Provider provider);
 }

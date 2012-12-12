@@ -30,6 +30,7 @@ public class DWRAppointmentService {
 		if (patient == null)
 			return null;
 		PatientData patientData = new PatientData();
+		patientData.setPatientId(patientId.toString());
 		//Get Patient's phone
 		Integer phonePropertyId = Integer.parseInt(Context.getAdministrationService().getGlobalProperty(
 		    "appointment.phoneNumberPersonAttributeTypeId"));

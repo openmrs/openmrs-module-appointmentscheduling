@@ -26,15 +26,17 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentBlock;
+import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 /**
- * Tests Time Slot methods in the {@link ${AppointmentService}}.
+ * Tests Time Slot methods in the {@link $ AppointmentService}}.
  */
 public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 	
@@ -203,5 +205,24 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(appointments);
 		assertEquals(1, appointments.size());
 		
+	}
+	
+	@Test
+	@Verifies(value = "should return correct time slots", method = "getTimeSlotsByConstraints(AppointmentType, Date, Date, Provider)")
+	public void getTimeSlotsByConstraints_shouldReturnCorrectTimeSlots() {
+		//		AppointmentType appointmentType = service.getAppointmentType(1);
+		//		assertNotNull(appointmentType);
+		//		Date fromDate = new Date("2013-01-01 00:00:00.0");
+		//		Date toDate = new Date("2006-01-01 00:00:00.0");
+		//		//Should be null because fromDate>toDate
+		//		Assert.assertNull(service.getTimeSlotsByConstraints(appointmentType, fromDate, toDate, null));
+		//		
+		//		fromDate = toDate;
+		//		toDate = new Date("2013-01-01 00:00:00.1");
+		//		//Should be null because appointment type is not optional
+		//		Assert.assertNull(service.getTimeSlotsByConstraints(null, fromDate, toDate, null));
+		//		
+		//		List<TimeSlot> timeSlots = service.getTimeSlotsByConstraints(null, fromDate, toDate, Context.getProviderService().getProvider(2));
+		//		assertEquals(0, timeSlots.size());
 	}
 }

@@ -219,4 +219,5 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		appointment = service.getLastAppointment(patient);
 		assertEquals((Integer) 2, appointment.getAppointmentId());
 	}
+	
 }

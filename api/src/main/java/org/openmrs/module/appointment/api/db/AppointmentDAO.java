@@ -13,11 +13,15 @@
  */
 package org.openmrs.module.appointment.api.db;
 
+import java.util.Date;
 import java.util.List;
 
 import org.openmrs.Patient;
+import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.module.appointment.Appointment;
+import org.openmrs.module.appointment.AppointmentType;
+import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.AppointmentService;
 
 /**
@@ -30,4 +34,5 @@ public interface AppointmentDAO extends SingleClassDAO {
 	Appointment getAppointmentByVisit(Visit visit);
 	
 	Appointment getLastAppointment(Patient patient);
+	
 }

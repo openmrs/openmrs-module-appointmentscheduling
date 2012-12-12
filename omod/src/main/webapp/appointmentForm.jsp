@@ -3,6 +3,7 @@
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <openmrs:htmlInclude file="/scripts/timepicker/timepicker.js" />
 <openmrs:htmlInclude file="/moduleResources/appointment/createAppointmentStyle.css"/>
+
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <script type="text/javascript">
    function forceMaxLength(object, maxLength) {
@@ -25,13 +26,13 @@
                         }
                         var phone = "<spring:message code='appointment.Appointment.create.patientNoPhoneNumber'/>";
                         var dateMissedLastAppointment = "<spring:message code='appointment.Appointment.create.patientNotMissedLastAppointment'/>";
-                       
+                        var patientId = details.patientId;
                         if(details.phoneNumber)
                                 phone = details.phoneNumber;
                         if(details.dateMissedLastAppointment)
                                 dateMissedLastAppointment = details.dateMissedLastAppointment;
                        
-                        var detailsText = "<spring:message code='appointment.Appointment.create.patientPhoneNumber'/>"+phone+"<br/><spring:message code='appointment.Appointment.create.patientMissedMeeting'/>"+dateMissedLastAppointment;
+                        var detailsText ="<spring:message code='appointment.Appointment.create.patientId'/>"+patientId+"<br/><spring:message code='appointment.Appointment.create.patientPhoneNumber'/>"+phone+"<br/><spring:message code='appointment.Appointment.create.patientMissedMeeting'/>"+dateMissedLastAppointment;
                         document.getElementById('patientDataCell').innerHTML = detailsText;
                 });
         }
@@ -87,7 +88,7 @@
                 <td><spring:message code="appointment.Appointment.create.label.clinician"/></td>
                 <td>
                         <select name="providerSelect" id="providerSelect">
-                                <option value="null" ${null==param.providerSelect ? 'selected' : ''}><spring:message code="appointment.Appointment.create.label.clinicianNotSpecified"/></option>
+                                <option value="" ${null==param.providerSelect ? 'selected' : ''}><spring:message code="appointment.Appointment.create.label.clinicianNotSpecified"/></option>
                                 <c:forEach var="provider" items="${providerList}">
                                         <option value="${provider.providerId}"  ${provider.providerId==param.providerSelect ? 'selected' : ''} >${provider.name}</option>
                                 </c:forEach>
@@ -127,7 +128,7 @@
                                                 <tr>
                                                         <td>
                                                                 <spring:bind path="appointment.timeSlot">
-                                                                        <input type="radio" name="${status.expression}"  value="${slot.timeSlotId}"  ${slot.timeSlotId == appointment.timeSlot.timeSlotId ? 'selected' : ''} />
+                                                                        <input type="radio" name="${status.expression}"  value="${slot.timeSlotId}"  ${slot.timeSlotId==appointment.timeSlot.timeSlotId ? 'checked' : ''} />
                                                                 </spring:bind>
                                                         </td>
                                                        

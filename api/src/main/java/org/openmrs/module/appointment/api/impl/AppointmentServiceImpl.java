@@ -22,6 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.Patient;
+import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
@@ -227,7 +228,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	/**
-	 * @see org.openmrs.module.appointment.api.AppointmentService#getAppointmentBlocks(java.util.Date,java.util.Date,org.openmrs.Location))
+	 * @see org.openmrs.module.appointment.api.AppointmentService#getAppointmentBlocks(java.util.Date,java.util.Date,org.openmrs.Location)
+	 *      )
 	 */
 	@Transactional(readOnly = true)
 	public List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, Location location) {
@@ -415,6 +417,13 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Override
 	public Appointment getLastAppointment(Patient patient) {
 		return getAppointmentDAO().getLastAppointment(patient);
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate,
+	        Provider provider) {
+		return getTimeSlotDAO().getTimeSlotsByConstraints(appointmentType, fromDate, toDate, provider);
 	}
 	
 }

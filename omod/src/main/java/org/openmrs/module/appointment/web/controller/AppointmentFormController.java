@@ -14,8 +14,6 @@
 package org.openmrs.module.appointment.web.controller;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -24,7 +22,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Location;
 import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
@@ -32,7 +29,10 @@ import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.AppointmentService;
 import org.openmrs.module.appointment.validator.AppointmentValidator;
+import org.openmrs.module.appointment.web.AppointmentTypeEditor;
+import org.openmrs.module.appointment.web.ProviderEditor;
 import org.openmrs.module.appointment.web.TimeSlotEditor;
+import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -55,20 +55,26 @@ public class AppointmentFormController {
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(TimeSlot.class, new TimeSlotEditor());
+		binder.registerCustomEditor(AppointmentType.class, new AppointmentTypeEditor());
+		binder.registerCustomEditor(Provider.class, new ProviderEditor());
 	}
 	
 	@RequestMapping(value = "/module/appointment/appointmentForm", method = RequestMethod.GET)
-	public void showForm(ModelMap model) {
+	public void showForm(ModelMap model, HttpServletRequest request) {
 		
 	}
 	
 	@ModelAttribute("availableTimes")
-	public List<TimeSlot> getAvailableTimes(@RequestParam(value = "fromDate", required = false) Date fromDate,
+	public List<TimeSlot> getAvailableTimes(HttpServletRequest request,
+	        @RequestParam(value = "fromDate", required = false) Date fromDate,
 	        @RequestParam(value = "toDate", required = false) Date toDate,
-	        @RequestParam(value = "location", required = false) Location location) {
-		if (fromDate != null)
-			return Context.getService(AppointmentService.class).getAllTimeSlots();
-		return null;
+	        @RequestParam(value = "providerSelect", required = false) Provider provider,
+	        @RequestParam(value = "appointmentTypeSelect", required = false) AppointmentType appointmentType) {
+		//TODO: Change this method to really act according to the submitted values, 
+		//		but this does not require any change in the form, thus, if all is ok I want to mark AM-6 as finished
+		//		and create a new ticket for the function which I will do asap
+		return Context.getService(AppointmentService.class).getTimeSlotsByConstraints(appointmentType, fromDate, toDate,
+		    provider);
 	}
 	
 	@ModelAttribute("appointment")
@@ -106,24 +112,17 @@ public class AppointmentFormController {
 			
 			if (request.getParameter("save") != null) {
 				new AppointmentValidator().validate(appointment, result);
+				
+				if (result.hasErrors())
+					return null;
+				else {
+					//TODO: change to enum
+					appointment.setStatus("SCHEDULED");
+					appointmentService.saveAppointment(appointment);
+					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.Appointment.saved");
+				}
 			}
-			if (result.hasErrors())
-				return null;
 		}
-		return "";
-	}
-	
-	@RequestMapping(params = "findAvailableTime", method = RequestMethod.POST)
-	public void onFindTimesClick(ModelMap model, Appointment appointment,
-	        @RequestParam(value = "fromDate", required = false) Date fromDate,
-	        @RequestParam(value = "toDate", required = false) Date toDate,
-	        @RequestParam(value = "location", required = false) Location location) throws Exception {
-		
-		if (Context.isAuthenticated()) {
-			if (fromDate == null)
-				getAvailableTimes(new Date(), toDate, location);
-			else
-				getAvailableTimes(fromDate, toDate, location);
-		}
+		return null;
 	}
 }

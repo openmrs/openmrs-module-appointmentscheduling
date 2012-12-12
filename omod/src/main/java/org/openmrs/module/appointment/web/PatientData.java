@@ -2,6 +2,8 @@ package org.openmrs.module.appointment.web;
 
 public class PatientData {
 	
+	String patientId;
+	
 	String phoneNumber;
 	
 	String dateMissedLastAppointment;
@@ -9,9 +11,10 @@ public class PatientData {
 	public PatientData() {
 	}
 	
-	public PatientData(String phoneNumber, String dateMissed) {
+	public PatientData(String phoneNumber, String dateMissed, String patientId) {
 		setPhoneNumber(phoneNumber);
 		setDateMissedLastAppointment(dateMissed);
+		setPatientId(patientId);
 	}
 	
 	public String getPhoneNumber() {
@@ -28,6 +31,14 @@ public class PatientData {
 	
 	public void setDateMissedLastAppointment(String dateMissed) {
 		this.dateMissedLastAppointment = dateMissed;
+	}
+	
+	public String getPatientId() {
+		return patientId;
+	}
+	
+	public void setPatientId(String patientId) {
+		this.patientId = patientId;
 	}
 	
 }
