@@ -1,5 +1,6 @@
 package org.openmrs.module.appointment.web;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -53,14 +54,23 @@ public class DWRAppointmentService {
 		return timeSlots;
 	}
 	
-	public List<AppointmentBlockDetails> getAppointmentBlocks(Date fromDate, Date toDate, Integer locationId) {
+	public List<AppointmentBlockDetails> getAppointmentBlocks(String selectedDate, Integer locationId) throws ParseException {
 		List<AppointmentBlock> appointmentBlockList = new ArrayList<AppointmentBlock>();
 		List<AppointmentBlockDetails> appointmentBlockDetails = new Vector<AppointmentBlockDetails>();
+		Date fromDate = null;
+		Date toDate = null;
 		if (Context.isAuthenticated()) {
 			AppointmentService appointmentService = Context.getService(AppointmentService.class);
 			Location location = null;
 			if (locationId != null)
 				location = Context.getLocationService().getLocation(locationId);
+			//In case the user didn't select any Date.
+			if (!selectedDate.isEmpty()) {
+				fromDate = Context.getDateTimeFormat().parse(selectedDate);
+				//end of the day
+				String endOfTheDay = selectedDate.substring(0, 11) + "23:59";
+				toDate = Context.getDateTimeFormat().parse(endOfTheDay);
+			}
 			appointmentBlockList = appointmentService.getAppointmentBlocks(fromDate, toDate, location);
 			for (AppointmentBlock appointmentBlock : appointmentBlockList) {
 				Set<AppointmentType> appointmentTypes = appointmentBlock.getTypes();
@@ -73,9 +83,10 @@ public class DWRAppointmentService {
 						appointmentTypeNames += ", ";
 					appointmentTypeSize--;
 				}
-				appointmentBlockDetails.add(new AppointmentBlockDetails(appointmentBlock.getLocation().getName(),
-				        appointmentBlock.getProvider().getName(), appointmentTypeNames, appointmentBlock.getStartDate()
-				                .toString(), appointmentBlock.getEndDate().toString()));
+				appointmentBlockDetails.add(new AppointmentBlockDetails(appointmentBlock.getId() + "", appointmentBlock
+				        .getLocation().getName(), appointmentBlock.getProvider().getName(), appointmentTypeNames, Context
+				        .getDateFormat().format(appointmentBlock.getStartDate()), Context.getDateFormat().format(
+				    appointmentBlock.getEndDate())));
 			}
 		}
 		return appointmentBlockDetails;

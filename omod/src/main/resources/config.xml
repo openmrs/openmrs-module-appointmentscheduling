@@ -48,7 +48,7 @@
             <![CDATA[
             import org.openmrs.module.appointment.web.DWRAppointmentService;
             DWRAppointmentService.getPatientDescription(Integer patientId);
-            DWRAppointmentService.getAppointmentBlocks(Date fromDate,Date toDate,Integer locationId);
+            DWRAppointmentService.getAppointmentBlocks(String selectedDate,Integer locationId);
             ]]>
              <![CDATA[
             import org.openmrs.module.appointment.web.DWRAppointmentService;
@@ -91,4 +91,3 @@
 	<!-- /Internationalization -->
 
 </module>
-
