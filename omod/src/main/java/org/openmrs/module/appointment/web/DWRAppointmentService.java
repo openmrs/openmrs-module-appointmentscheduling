@@ -14,6 +14,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.AppointmentType;
+import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.AppointmentService;
 
 /**
@@ -23,7 +24,7 @@ import org.openmrs.module.appointment.api.AppointmentService;
  * @see PatientService
  */
 public class DWRAppointmentService {
-	
+
 	public PatientData getPatientDescription(Integer patientId) {
 		Patient patient = Context.getPatientService().getPatient(patientId);
 		if (patient == null)
@@ -41,10 +42,16 @@ public class DWRAppointmentService {
 		if (lastAppointment != null && lastAppointment.getStatus() == "MISSED")
 			patientData.setDateMissedLastAppointment(Context.getDateFormat().format(
 			    lastAppointment.getTimeSlot().getStartDate()));
-		
+
 		return patientData;
 	}
-	
+
+	public List<TimeSlot> getAvailableTimeSlots() {
+		//TODO change to include constraints.
+		List<TimeSlot> timeSlots = Context.getService(AppointmentService.class).getAllTimeSlots();
+		return timeSlots;
+	}
+
 	public List<AppointmentBlockDetails> getAppointmentBlocks(Date fromDate, Date toDate, Integer locationId) {
 		List<AppointmentBlock> appointmentBlockList = new ArrayList<AppointmentBlock>();
 		List<AppointmentBlockDetails> appointmentBlockDetails = new Vector<AppointmentBlockDetails>();
