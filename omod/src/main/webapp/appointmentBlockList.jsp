@@ -17,16 +17,8 @@
         {
                         var selectedDate = document.getElementById('dateFilter').value;
 	                    var selectedLocation = document.getElementById("locationId");
-		                var locationId = selectedLocation.options[selectedLocation.selectedIndex].value;
-                        var fromDate = null;
-                        var toDate = null;
-	           
+		                var locationId = selectedLocation.options[selectedLocation.selectedIndex].value;	           
                         var tableContent = '';
-                        if(selectedDate != "")
-                        {
-                        fromDate = new Date(selectedDate);            
-                        toDate = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate()+1);          
-                        }
                         document.getElementById('appointmentBlocksTable').innerHTML = tableContent;
                         tableContent="<tr>";
                         tableContent+='<th align="center"><spring:message code="appointment.AppointmentBlock.column.select"/></th>';
@@ -36,9 +28,9 @@
                         tableContent+='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.startTime"/> </th>';
                         tableContent+='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.endTime"/> </th>';
                         tableContent+="</tr>";
-	           document.getElementById('appointmentBlocksTable').innerHTML +=tableContent;
-                        DWRAppointmentService.getAppointmentBlocks(fromDate,toDate,locationId,function(appointmentBlocks){
-		       tableContent = '';
+	           			document.getElementById('appointmentBlocksTable').innerHTML +=tableContent;
+                        DWRAppointmentService.getAppointmentBlocks(selectedDate,locationId,function(appointmentBlocks){
+		    				    tableContent = '';
                                 for(var i=0;i<appointmentBlocks.length;i++)
                                 {
                                     tableContent += "<tr>";
@@ -49,9 +41,9 @@
 		       					    tableContent += '<td align="center">'+appointmentBlocks[i].startDate+'</td>';
     		     			        tableContent += '<td align="center">'+appointmentBlocks[i].endDate+'</td>';
                                     tableContent += "</tr>";  
-		         }                   
-			document.getElementById('appointmentBlocksTable').innerHTML +=tableContent;
-                        });
+		      				   }                   
+							   document.getElementById('appointmentBlocksTable').innerHTML += tableContent;
+                       });
                         
         }
        
