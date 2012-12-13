@@ -12,6 +12,12 @@
 		} else {
 			return false;
 		}
+	}	
+	function updateAppointmentTypes(){
+        var allAppointmentTypes = document.getElementById("appointmentTypeSelect");
+        var selectedTypeToAdd = allAppointmentTypes.options[allAppointmentTypes.selectedIndex];
+        var currentAppointmentTypes = document.getElementById("currentApoointmentTypes");
+        currentAppointmentTypes.options[currentAppointmentTypes.options.length] = new Option(selectedTypeToAdd.text, selectedTypeToAdd.value);		
 	}
 </script>
 
@@ -34,34 +40,53 @@
 	<fieldset>
 		<table>
 			<tr>
-				<td><spring:message
-						code="appointment.AppointmentBlock.clinician" /></td>
-				<td><select name="providerSelect" id="providerSelect">
-						<c:forEach var="provider" items="${providerList}">
-							<option value="${provider.providerId}"
-								${provider.providerId==param.providerSelect ? 'selected' : ''}>${provider.name}</option>
-						</c:forEach>
-				</select></td>
+				<td><spring:message code="appointment.AppointmentBlock.clinician" /></td>
+				<td><spring:bind path="appointmentBlock.provider">
+					<select name="${status.expression}" id="providerSelect">
+					<c:forEach items="${providerList}" var="provider">
+						<option value="${provider.providerId}" <c:if test="${provider.providerId == status.value}">selected="selected"</c:if>>
+							${provider.name}
+						</option>
+					</c:forEach>
+					</select>
+				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>           
+				</spring:bind>
+				</td>
 			</tr>
-			<td><spring:message code="appointment.AppointmentBlock.location" /></td>
-				<td><spring:bind path="appointmentBlock.location">
-                    <openmrs_tag:locationField formFieldName="location" initialValue="${status.value}"/>
-                    <c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
-                    </spring:bind>
-               </td>
-			</tr>
-
 			<tr>
-				<td><spring:message
-						code="appointment.AppointmentBlock.appointmentType" /></td>
+				<td><spring:message code="appointment.AppointmentBlock.location" /></td>
+				<td><spring:bind path="appointmentBlock.location">
+              			      <openmrs_tag:locationField formFieldName="location" initialValue="${status.value}"/>
+              			      <c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
+             			       </spring:bind>
+          				     </td>
+			</tr>
+		
+			<tr>
+				<td><spring:message code="appointment.AppointmentBlock.appointmentType" /></td>
 				<td><select name="appointmentTypeSelect"
 					id="appointmentTypeSelect">
 						<c:forEach var="appointmentType" items="${appointmentTypeList}">
 							<option value="${appointmentType.appointmentTypeId}"
 								${param.appointmentTypeSelect==appointmentType.appointmentTypeId ? 'selected' : ''}>${appointmentType.name}</option>
 						</c:forEach>
-				</select></td>
+					</select>
+				</td>
+				<td>
+				<spring:bind path="appointmentBlock.types">
+				<select name="${status.expression}" id="currentApoointmentTypes">
+						<c:forEach var="appointmentType" items="${appointmentBlock.types}">
+							<option value="${appointmentType.appointmentTypeId}"
+								${param.appointmentTypeSelect==appointmentType.appointmentTypeId ? 'selected' : ''}>${appointmentType.name}</option>
+						</c:forEach>
+				</select>
+				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
+				</spring:bind>
+				</td>
+				<td><input type="button" value="Add Appointment Type" onClick="updateAppointmentTypes()"></td>
 			</tr>
+			
+		
 			<tr>
 				<td><spring:message code="appointment.AppointmentBlock.timeInterval" /></td>
 				<td> 
@@ -73,7 +98,8 @@
 					onClick="document.getElementById('startDate').focus();" />
 					<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
 					</spring:bind>
-					and
+				</td>
+				<td>
 					<spring:bind path="appointmentBlock.endDate">
 					<input type="text" name="endDate" id="endDate" size="16" value="${status.value}"
 					onfocus="showDateTimePicker(this)" /> <img
@@ -82,13 +108,14 @@
 					onClick="document.getElementById('endDate').focus();" />
 					<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
 					</spring:bind>
+				</td>
 			</tr>
 
 			<c:if test="${!(appointmentBlock.creator == null)}">
-				<tr>
-					<td><spring:message code="general.createdBy" /></td>
-					<td><openmrs:format user="${ appointmentBlock.creator }" /></td>
-				</tr>
+			<tr>
+				<td><spring:message code="general.createdBy" /></td>
+				<td><openmrs:format user="${ appointmentBlock.creator }" /></td>
+			</tr>
 			</c:if>
 		</table>
 		<br /> <input type="submit"
