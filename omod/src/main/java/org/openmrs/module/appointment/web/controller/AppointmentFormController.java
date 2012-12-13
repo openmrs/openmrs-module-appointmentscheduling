@@ -37,6 +37,8 @@ import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -114,7 +116,9 @@ public class AppointmentFormController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public String onSubmit(HttpServletRequest request, Appointment appointment, BindingResult result) throws Exception {
+	public String onSubmit(HttpServletRequest request, Appointment appointment, BindingResult result,
+	        @RequestParam(value = "fromDate", required = false) Date fromDate,
+	        @RequestParam(value = "toDate", required = false) Date toDate) throws Exception {
 		HttpSession httpSession = request.getSession();
 		
 		if (Context.isAuthenticated()) {
@@ -131,6 +135,10 @@ public class AppointmentFormController {
 					appointmentService.saveAppointment(appointment);
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.Appointment.saved");
 				}
+			}
+			if (request.getParameter("findAvailableTime") != null) {
+				if (fromDate != null && !fromDate.before(toDate))
+					result.rejectValue("timeSlot", "appointment.Appointment.error.InvalidDateInterval");
 			}
 		}
 		return null;

@@ -70,11 +70,6 @@
         <tr>
                 <td></td>
                 <td colspan="2" id="patientDataCell">
-                       <script type="text/javascript" id="patientDataTemplate">
-                       		<spring:message code='appointment.Appointment.create.patientId'/>${patientId}<br/>
-                       		<spring:message code='appointment.Appointment.create.patientPhoneNumber'/>${phoneNumber}<br/>
-                       		<spring:message code='appointment.Appointment.create.patientMissedMeeting'/>${dateMissedLastAppointment};
-                       </script>
                 </td>
         </tr>
        
