@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Provider;
+import org.openmrs.api.APIException;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
@@ -26,11 +27,11 @@ public class HibernateTimeSlotDAO extends HibernateSingleClassDAO implements Tim
 	@Override
 	@Transactional(readOnly = true)
 	public List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate,
-	        Provider provider) throws Exception {
+	        Provider provider) throws APIException {
 		if (appointmentType == null)
-			throw new Exception("Appointment Type can not be null.");
+			throw new APIException("Appointment Type can not be null.");
 		else if (fromDate != null && !fromDate.before(toDate))
-			throw new Exception("fromDate can not be later than toDate");
+			throw new APIException("fromDate can not be later than toDate");
 		else {
 			//TODO change this
 			return getAll();

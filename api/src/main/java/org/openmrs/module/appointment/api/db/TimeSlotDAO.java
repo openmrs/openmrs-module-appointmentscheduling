@@ -17,8 +17,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.openmrs.Provider;
+import org.openmrs.api.APIException;
 import org.openmrs.module.appointment.Appointment;
-import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
 
@@ -44,5 +44,5 @@ public interface TimeSlotDAO extends SingleClassDAO {
 	 *         (fromDate>toDate or null appointmentType)
 	 */
 	List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate, Provider provider)
-	        throws Exception;
+	        throws APIException;
 }

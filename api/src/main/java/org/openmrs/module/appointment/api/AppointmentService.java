@@ -467,5 +467,5 @@ public interface AppointmentService extends OpenmrsService {
 	 *         (fromDate>toDate or null appointmentType)
 	 */
 	List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate, Provider provider)
-	        throws Exception;
+	        throws APIException;
 }

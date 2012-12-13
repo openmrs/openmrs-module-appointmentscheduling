@@ -23,6 +23,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Provider;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentType;
@@ -73,6 +74,9 @@ public class AppointmentFormController {
 		//TODO: Change this method to really act according to the submitted values, 
 		//		but this does not require any change in the form, thus, if all is ok I want to mark AM-6 as finished
 		//		and create a new ticket for the function which I will do asap
+		if (appointmentType == null || (fromDate != null && !fromDate.before(toDate)))
+			return null;
+		
 		try {
 			List<TimeSlot> availableTimeSlots = Context.getService(AppointmentService.class).getTimeSlotsByConstraints(
 			    appointmentType, fromDate, toDate, provider);

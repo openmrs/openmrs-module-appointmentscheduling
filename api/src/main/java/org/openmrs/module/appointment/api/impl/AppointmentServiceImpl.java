@@ -422,7 +422,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Override
 	@Transactional(readOnly = true)
 	public List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate,
-	        Provider provider) throws Exception {
+	        Provider provider) throws APIException {
 		return getTimeSlotDAO().getTimeSlotsByConstraints(appointmentType, fromDate, toDate, provider);
 	}
 	
