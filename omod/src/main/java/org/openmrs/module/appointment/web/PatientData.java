@@ -1,8 +1,15 @@
 package org.openmrs.module.appointment.web;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
+import org.openmrs.PatientIdentifier;
+import org.openmrs.api.context.Context;
+
 public class PatientData {
 	
-	String patientId;
+	List<String> identifiers;
 	
 	String phoneNumber;
 	
@@ -14,7 +21,7 @@ public class PatientData {
 	public PatientData(String phoneNumber, String dateMissed, String patientId) {
 		setPhoneNumber(phoneNumber);
 		setDateMissedLastAppointment(dateMissed);
-		setPatientId(patientId);
+		setIdentifiers(patientId);
 	}
 	
 	public String getPhoneNumber() {
@@ -33,12 +40,28 @@ public class PatientData {
 		this.dateMissedLastAppointment = dateMissed;
 	}
 	
-	public String getPatientId() {
-		return patientId;
+	public List<String> getIdentifiers() {
+		return identifiers;
 	}
 	
-	public void setPatientId(String patientId) {
-		this.patientId = patientId;
+	public void setIdentifiers(List<String> identifiers) {
+		this.identifiers = identifiers;
 	}
 	
+	public void setIdentifiers(String patientId) {
+		Set<PatientIdentifier> identifiers = Context.getPatientService().getPatient(Integer.parseInt(patientId))
+		        .getIdentifiers();
+		this.identifiers = new LinkedList<String>();
+		for (PatientIdentifier identifier : identifiers) {
+			//Representation format: <identifier type name> : <identifier value> 
+			//for example: "OpenMRS Identification Number: 7532AM-1" 
+			String representation = identifier.getIdentifierType().getName() + ": " + identifier.getIdentifier();
+			//Put "OpenMRS Identification Number" first.
+			if (identifier.getPreferred())
+				this.identifiers.add(0, representation);
+			//Insert to the end of the list
+			else
+				this.identifiers.add(this.identifiers.size(), representation);
+		}
+	}
 }

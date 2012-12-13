@@ -26,13 +26,16 @@
                         }
                         var phone = "<spring:message code='appointment.Appointment.create.patientNoPhoneNumber'/>";
                         var dateMissedLastAppointment = "<spring:message code='appointment.Appointment.create.patientNotMissedLastAppointment'/>";
-                        var patientId = details.patientId;
                         if(details.phoneNumber)
                                 phone = details.phoneNumber;
                         if(details.dateMissedLastAppointment)
                                 dateMissedLastAppointment = details.dateMissedLastAppointment;
-                       
-                        var detailsText ="<spring:message code='appointment.Appointment.create.patientId'/>"+patientId+"<br/><spring:message code='appointment.Appointment.create.patientPhoneNumber'/>"+phone+"<br/><spring:message code='appointment.Appointment.create.patientMissedMeeting'/>"+dateMissedLastAppointment;
+                        var detailsText = "";
+                        for(var i=0; i<details.identifiers.length; i++){
+                        	detailsText+=details.identifiers[i] + "<br/>";
+                        }
+                        
+                        detailsText +="<spring:message code='appointment.Appointment.create.patientPhoneNumber'/>"+phone+"<br/><spring:message code='appointment.Appointment.create.patientMissedMeeting'/>"+dateMissedLastAppointment;
                         document.getElementById('patientDataCell').innerHTML = detailsText;
                 });
         }
