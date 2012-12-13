@@ -76,7 +76,7 @@ public class AppointmentFormController {
 		//TODO: Change this method to really act according to the submitted values, 
 		//		but this does not require any change in the form, thus, if all is ok I want to mark AM-6 as finished
 		//		and create a new ticket for the function which I will do asap
-		if (appointmentType == null || (fromDate != null && !fromDate.before(toDate)))
+		if (appointmentType == null || (fromDate != null && toDate != null && !fromDate.before(toDate)))
 			return null;
 		
 		try {
@@ -137,7 +137,7 @@ public class AppointmentFormController {
 				}
 			}
 			if (request.getParameter("findAvailableTime") != null) {
-				if (fromDate != null && !fromDate.before(toDate))
+				if (fromDate != null && toDate != null && !fromDate.before(toDate))
 					result.rejectValue("timeSlot", "appointment.Appointment.error.InvalidDateInterval");
 			}
 		}

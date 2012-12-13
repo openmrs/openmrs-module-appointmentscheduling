@@ -153,8 +153,7 @@
                         <td><textarea name="reason" rows="3" cols="50" style="resize:none" onkeypress="return forceMsaxLength(this, 1024);">${status.value}</textarea></td>
                 </spring:bind>
         </tr>
-        <tr><td><input type="submit"  class="appointmentButton" value="<spring:message code="appointment.Appointment.create.save"/>" name="save"></td>
-        <td><input type="reset"  class="appointmentButton" value="<spring:message code="appointment.Appointment.create.cancel"/>" name="cancel"></td>
+        <tr><td></td><td><input type="submit"  class="appointmentButton" value="<spring:message code="appointment.Appointment.create.save"/>" name="save"></td>
         </tr>
 </table>
 </fieldset>

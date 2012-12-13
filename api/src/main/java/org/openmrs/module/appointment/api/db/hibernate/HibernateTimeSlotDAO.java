@@ -30,7 +30,7 @@ public class HibernateTimeSlotDAO extends HibernateSingleClassDAO implements Tim
 	        Provider provider) throws APIException {
 		if (appointmentType == null)
 			throw new APIException("Appointment Type can not be null.");
-		else if (fromDate != null && !fromDate.before(toDate))
+		else if (fromDate != null && toDate != null && !fromDate.before(toDate))
 			throw new APIException("fromDate can not be later than toDate");
 		else {
 			//TODO change this
