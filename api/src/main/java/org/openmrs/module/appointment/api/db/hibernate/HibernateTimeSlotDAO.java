@@ -26,9 +26,11 @@ public class HibernateTimeSlotDAO extends HibernateSingleClassDAO implements Tim
 	@Override
 	@Transactional(readOnly = true)
 	public List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate,
-	        Provider provider) {
-		if (appointmentType == null || (fromDate != null && !fromDate.before(toDate)))
-			return null;
+	        Provider provider) throws Exception {
+		if (appointmentType == null)
+			throw new Exception("Appointment Type can not be null.");
+		else if (fromDate != null && !fromDate.before(toDate))
+			throw new Exception("fromDate can not be later than toDate");
 		else {
 			//TODO change this
 			return getAll();

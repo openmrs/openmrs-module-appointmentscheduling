@@ -70,7 +70,11 @@
         <tr>
                 <td></td>
                 <td colspan="2" id="patientDataCell">
-                       
+                       <script type="text/javascript" id="patientDataTemplate">
+                       		<spring:message code='appointment.Appointment.create.patientId'/>${patientId}<br/>
+                       		<spring:message code='appointment.Appointment.create.patientPhoneNumber'/>${phoneNumber}<br/>
+                       		<spring:message code='appointment.Appointment.create.patientMissedMeeting'/>${dateMissedLastAppointment};
+                       </script>
                 </td>
         </tr>
        
@@ -115,7 +119,8 @@
         </tr>
         <tr>
                 <td><spring:message code="appointment.Appointment.create.label.availableTimes"/></td>
-                <td>
+                <td>			
+                	<div id="timeSlotsDIV">
                                 <table id="availbleTimesTable" cellspacing="0">
                                         <tr class="tableHeader">
                                                 <th><spring:message code="appointment.Appointment.create.header.selectedOption"/></th>
@@ -124,8 +129,9 @@
                                                 <th><spring:message code="appointment.Appointment.create.header.date"/></th>
                                                 <th><spring:message code="appointment.Appointment.create.header.timeSlot"/></th>
                                         </tr>
+										<% int count=0; %>
                                         <c:forEach var="slot" items="${availableTimes}">
-                                                <tr>
+                                                <tr style=<%= count++ % 2==0 ? "background-color:#ffffff":"background-color:#D8D8D8" %>;>
                                                         <td>
                                                                 <spring:bind path="appointment.timeSlot">
                                                                         <input type="radio" name="${status.expression}"  value="${slot.timeSlotId}"  ${slot.timeSlotId==appointment.timeSlot.timeSlotId ? 'checked' : ''} />
@@ -143,6 +149,7 @@
                                                 </tr>
                                         </c:forEach>
                                 </table>
+                		</div>
                 </td>
         </tr>
         <tr>

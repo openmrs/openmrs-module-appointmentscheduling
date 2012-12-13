@@ -58,5 +58,10 @@
 	background-color:#009D8E;
 	font-weight:bold;
 	color:white;
+	height:20px;
 }
-.
+
+#timeSlotsDIV{
+	overflow:auto;
+	max-height:395px;
+}

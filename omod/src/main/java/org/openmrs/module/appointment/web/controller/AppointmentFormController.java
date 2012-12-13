@@ -73,8 +73,14 @@ public class AppointmentFormController {
 		//TODO: Change this method to really act according to the submitted values, 
 		//		but this does not require any change in the form, thus, if all is ok I want to mark AM-6 as finished
 		//		and create a new ticket for the function which I will do asap
-		return Context.getService(AppointmentService.class).getTimeSlotsByConstraints(appointmentType, fromDate, toDate,
-		    provider);
+		try {
+			List<TimeSlot> availableTimeSlots = Context.getService(AppointmentService.class).getTimeSlotsByConstraints(
+			    appointmentType, fromDate, toDate, provider);
+			return availableTimeSlots;
+		}
+		catch (Exception ex) {
+			return null;
+		}
 	}
 	
 	@ModelAttribute("appointment")

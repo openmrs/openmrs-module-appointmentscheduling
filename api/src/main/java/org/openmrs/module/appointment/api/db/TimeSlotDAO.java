@@ -24,7 +24,25 @@ import org.openmrs.module.appointment.TimeSlot;
 
 public interface TimeSlotDAO extends SingleClassDAO {
 	
+	/**
+	 * 
+	 * Retrieve all appointments in a given time slot.
+	 * 
+	 * @param timeSlot - The time slot to look into.
+	 * @return a list of the appointments in the given time slot.
+	 */
 	List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot);
 	
-	List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate, Provider provider);
+	/**
+	 * Return a list of time slots that stands within the given constraints.
+	 * 
+	 * @param appointmentType - Type of the appointment
+	 * @param fromDate - (optional) earliest start date.
+	 * @param toDate - (optional) latest start date.
+	 * @param provider - (optional) the appointment's provider.
+	 * @return List of TimeSlots that stands within the given constraints, null if illegal values
+	 *         (fromDate>toDate or null appointmentType)
+	 */
+	List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate, Provider provider)
+	        throws Exception;
 }
