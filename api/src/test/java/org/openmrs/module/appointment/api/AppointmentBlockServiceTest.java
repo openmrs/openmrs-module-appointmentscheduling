@@ -189,28 +189,26 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 	
 	@SuppressWarnings("deprecation")
 	@Test
-	@Verifies(value = "should get all the appointment blocks that correspounds to a given location and between a given date interval", method = "getAppointmentBlocks(Date,Date,Location)")
+	@Verifies(value = "should get all the appointment blocks that correspounds to a given location and a given date", method = "getAppointmentBlocks(Date,Location)")
 	public void getAppointmentBlocksByDateAndLocation_shouldGetAllCorrectAppointmentBlock() throws Exception {
 		AppointmentBlock appointmentBlock = service.getAppointmentBlock(1);
 		Location location = appointmentBlock.getLocation();
-		Date fromDate = appointmentBlock.getStartDate();
-		Date toDate = appointmentBlock.getEndDate();
-		List<AppointmentBlock> appointmentBlocks = service.getAppointmentBlocks(fromDate, toDate, location);
+		Date selectedDate = appointmentBlock.getStartDate();
+		List<AppointmentBlock> appointmentBlocks = service.getAppointmentBlocks(selectedDate, location);
 		assertNotNull(appointmentBlocks);
 		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
 		
 		appointmentBlock = service.getAppointmentBlock(2);
-		fromDate = appointmentBlock.getStartDate();
-		toDate = appointmentBlock.getEndDate();
-		appointmentBlocks = service.getAppointmentBlocks(fromDate, toDate, null);
+		selectedDate = appointmentBlock.getStartDate();
+		appointmentBlocks = service.getAppointmentBlocks(selectedDate, null);
 		assertNotNull(appointmentBlocks);
 		assertEquals(new Integer(2), appointmentBlocks.get(0).getAppointmentBlockId());
 		
-		appointmentBlocks = service.getAppointmentBlocks(null, null, location);
+		appointmentBlocks = service.getAppointmentBlocks(null, location);
 		assertNotNull(appointmentBlocks);
 		assertEquals(2, appointmentBlocks.size());
 		
-		appointmentBlocks = service.getAppointmentBlocks(null, null, null);
+		appointmentBlocks = service.getAppointmentBlocks(null, null);
 		assertEquals(3, appointmentBlocks.size());
 	}
 }

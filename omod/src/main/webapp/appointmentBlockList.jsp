@@ -34,12 +34,22 @@
                                 for(var i=0;i<appointmentBlocks.length;i++)
                                 {
                                     tableContent += "<tr>";
-                                    tableContent += '<td align="center">'+'<input type="radio" name="appointmentBlockCheckBox" value="'+appointmentBlocks[i].id+'"/></td>';
-                                    tableContent += '<td align="center">'+appointmentBlocks[i].location+"</td>";      
-                                    tableContent += '<td align="center">'+appointmentBlocks[i].providor+"</td>";  
-                                    tableContent += '<td align="center">'+appointmentBlocks[i].types+"</td>";    
-		       					    tableContent += '<td align="center">'+appointmentBlocks[i].startDate+'</td>';
-    		     			        tableContent += '<td align="center">'+appointmentBlocks[i].endDate+'</td>';
+                                    tableContent += '<td align="center">'+'<input type="radio" name="appointmentBlockCheckBox" value="'+appointmentBlocks[i].appointmentBlockId+'"/></td>';
+                                    tableContent += '<td align="center">'+appointmentBlocks[i].location.name+"</td>";      
+                                    tableContent += '<td align="center">'+appointmentBlocks[i].provider.name+"</td>";
+                                    //Linking the appointment types in a string.
+                                    var appointmentTypes = "";
+                                    var appointmentTypesArray = appointmentBlocks[i].types;
+                                    for(var j=0;j<appointmentTypesArray.length;j++)
+                                    {
+                                    	    appointmentTypes += appointmentTypesArray[j].name;
+                                    		if(j<(appointmentTypesArray.length - 1)){
+                                    			appointmentTypes += ", ";
+                                    		}
+                                    }
+                                    tableContent += '<td align="center">'+appointmentTypes+"</td>";    
+		       					    tableContent += '<td align="center">'+appointmentBlocks[i].startDate.getTime()+'</td>';
+    		     			        tableContent += '<td align="center">'+appointmentBlocks[i].endDate.getTime()+'</td>';
                                     tableContent += "</tr>";  
 		      				   }                   
 							   document.getElementById('appointmentBlocksTable').innerHTML += tableContent;
