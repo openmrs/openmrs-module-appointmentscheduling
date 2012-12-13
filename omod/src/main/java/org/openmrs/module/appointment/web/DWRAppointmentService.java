@@ -69,4 +69,12 @@ public class DWRAppointmentService {
 		}
 		return appointmentBlockList;
 	}
+	
+	public void purgeAppointmentBlock(Integer appointmentBlockId) {
+		if (Context.isAuthenticated()) {
+			AppointmentService appointmentService = Context.getService(AppointmentService.class);
+			AppointmentBlock appointmentBlock = appointmentService.getAppointmentBlock(appointmentBlockId);
+			appointmentService.purgeAppointmentBlock(appointmentBlock);
+		}
+	}
 }

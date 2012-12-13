@@ -13,6 +13,27 @@
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/util.js'></script>
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/interface/DWRAppointmentService.js'></script>
 <script type="text/javascript">
+		function deleteSelectedAppointmentBlock()
+		{
+			var radios = document.getElementsByName('appointmentBlockRadios');
+			var appointmentBlockId;
+			for (var i = 0; i < radios.length; i++) {
+			    if (radios[i].type === 'radio' && radios[i].checked) {
+			        // get value, set checked flag or do whatever you need to
+			        appointmentBlockId = radios[i].value;     
+			        break;
+			    }
+			}
+			if(appointmentBlockId != null)
+			{
+				DWRAppointmentService.purgeAppointmentBlock(appointmentBlockId, function(){
+					updateAppointmentBlockTable();
+				});
+			}
+			else{
+				window.alert('<openmrs:message code="appointment.AppointmentBlock.error.selectAppointmentBlock" javaScriptEscape="true"/>');
+			}
+		}
         function updateAppointmentBlockTable()
         {
                         var selectedDate = document.getElementById('dateFilter').value;
@@ -33,8 +54,8 @@
 		    				    tableContent = '';
                                 for(var i=0;i<appointmentBlocks.length;i++)
                                 {
-                                    tableContent += "<tr>";
-                                    tableContent += '<td align="center">'+'<input type="radio" name="appointmentBlockCheckBox" value="'+appointmentBlocks[i].appointmentBlockId+'"/></td>';
+                                    tableContent = "<tr>";
+                                    tableContent += '<td align="center">'+'<input type="radio" name="appointmentBlockRadios" value="'+appointmentBlocks[i].appointmentBlockId+'"/></td>';
                                     tableContent += '<td align="center">'+appointmentBlocks[i].location.name+"</td>";      
                                     tableContent += '<td align="center">'+appointmentBlocks[i].provider.name+"</td>";
                                     //Linking the appointment types in a string.
@@ -47,12 +68,14 @@
                                     			appointmentTypes += ", ";
                                     		}
                                     }
+
                                     tableContent += '<td align="center">'+appointmentTypes+"</td>";    
-		       					    tableContent += '<td align="center">'+appointmentBlocks[i].startDate.getTime()+'</td>';
-    		     			        tableContent += '<td align="center">'+appointmentBlocks[i].endDate.getTime()+'</td>';
-                                    tableContent += "</tr>";  
+		       					    tableContent += '<td align="center">'+appointmentBlocks[i].startDate.toString()+'</td>';
+    		     			        tableContent += '<td align="center">'+appointmentBlocks[i].endDate.toString()+'</td>';
+                                    tableContent += "</tr>";
+                                    document.getElementById('appointmentBlocksTable').innerHTML += tableContent;
 		      				   }                   
-							   document.getElementById('appointmentBlocksTable').innerHTML += tableContent;
+							   
                        });
                         
         }
@@ -96,7 +119,7 @@
 <table align="center">
         <tr><td><a href="appointmentBlockForm.form"><spring:message code="appointment.AppointmentBlock.add"/></a></td>
         <td><a href="appointmentBlockForm.form"><spring:message code="appointment.AppointmentBlock.edit"/></a></td>
-        <td><a href="appointmentBlockForm.form"><spring:message code="appointment.AppointmentBlock.delete"/></a></td>
+        <td><a onClick="deleteSelectedAppointmentBlock()"><spring:message code="appointment.AppointmentBlock.delete"/></a></td>
         </tr>
 </table>
  

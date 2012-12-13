@@ -41,6 +41,7 @@
 				<include method="getPatientDescription" />
 				<include method="getAvailableTimeSlots" />
 				<include method="getAppointmentBlocks"/>
+				<include method="purgeAppointmentBlock"/>
 			</create>
 		</allow>
 
@@ -49,6 +50,7 @@
             import org.openmrs.module.appointment.web.DWRAppointmentService;
             DWRAppointmentService.getPatientDescription(Integer patientId);
             DWRAppointmentService.getAppointmentBlocks(String selectedDate,Integer locationId);
+            DWRAppointmentService.purgeAppointmentBlock(Integer appointmentBlockId)
             ]]>
              <![CDATA[
             import org.openmrs.module.appointment.web.DWRAppointmentService;
