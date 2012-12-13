@@ -13,7 +13,18 @@
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/util.js'></script>
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/interface/DWRAppointmentService.js'></script>
 <script type="text/javascript">
-		function deleteSelectedAppointmentBlock()
+		function updateHrefForAppointmentBlockEdit()
+		{
+			var appointmentBlockId = getSelectedAppointmentBlockId();
+			if(appointmentBlockId!=null){
+				document.getElementById("editLink").href="appointmentBlockForm.form?appointmentBlockId="+appointmentBlockId;			
+			}
+			else
+			{
+				window.alert('<openmrs:message code="appointment.AppointmentBlock.error.selectAppointmentBlock" javaScriptEscape="true"/>');	
+			}
+		}
+		function getSelectedAppointmentBlockId()
 		{
 			var radios = document.getElementsByName('appointmentBlockRadios');
 			var appointmentBlockId;
@@ -24,6 +35,11 @@
 			        break;
 			    }
 			}
+			return appointmentBlockId;
+		}
+		function deleteSelectedAppointmentBlock()
+		{
+			var appointmentBlockId = getSelectedAppointmentBlockId();
 			if(appointmentBlockId != null)
 			{
 				DWRAppointmentService.purgeAppointmentBlock(appointmentBlockId, function(){
@@ -118,7 +134,7 @@
 </form>
 <table align="center">
         <tr><td><a href="appointmentBlockForm.form"><spring:message code="appointment.AppointmentBlock.add"/></a></td>
-        <td><a href="appointmentBlockForm.form"><spring:message code="appointment.AppointmentBlock.edit"/></a></td>
+        <td><a id="editLink" onClick="updateHrefForAppointmentBlockEdit()"  ><spring:message code="appointment.AppointmentBlock.edit"/></a></td>
         <td><a onClick="deleteSelectedAppointmentBlock()"><spring:message code="appointment.AppointmentBlock.delete"/></a></td>
         </tr>
 </table>
