@@ -15,6 +15,7 @@ package org.openmrs.module.appointment.api.impl;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -22,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.api.APIException;
@@ -424,6 +426,28 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	public List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate,
 	        Provider provider) throws APIException {
 		return getTimeSlotDAO().getTimeSlotsByConstraints(appointmentType, fromDate, toDate, provider);
+	}
+	
+	@Override
+	public List<String> getPatientIdentifiersRepresentation(Patient patient) {
+		LinkedList<String> identifiers = new LinkedList<String>();
+		
+		if (patient == null)
+			return identifiers;
+		
+		for (PatientIdentifier identifier : patient.getIdentifiers()) {
+			//Representation format: <identifier type name> : <identifier value> 
+			//for example: "OpenMRS Identification Number: 7532AM-1" 
+			String representation = identifier.getIdentifierType().getName() + ": " + identifier.getIdentifier();
+			//Put preferred identifier first.
+			if (identifier.getPreferred())
+				identifiers.add(0, representation);
+			//Insert to the end of the list
+			else
+				identifiers.add(identifiers.size(), representation);
+		}
+		
+		return identifiers;
 	}
 	
 }

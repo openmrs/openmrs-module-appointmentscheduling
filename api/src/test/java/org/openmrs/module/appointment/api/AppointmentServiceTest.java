@@ -18,6 +18,7 @@ import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -220,4 +221,18 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals((Integer) 2, appointment.getAppointmentId());
 	}
 	
+	@Test
+	@Verifies(value = "should retrieve correct representation", method = "getPatientIdentifiersRepresentation(Patient)")
+	public void getPatientIdentifiersRepresentation_shouldGetCorrectRepresentation() {
+		List<String> identifiers = service.getPatientIdentifiersRepresentation(null);
+		assertEquals(0, identifiers.size());
+		
+		Patient patient = Context.getPatientService().getPatient(2);
+		Assert.assertNotNull(patient);
+		identifiers = service.getPatientIdentifiersRepresentation(patient);
+		List<String> toCompare = new LinkedList<String>();
+		toCompare.add(0, "OpenMRS Identification Number: 101-6");
+		toCompare.add(toCompare.size(), "Old Identification Number: 101");
+		assertEquals(identifiers, toCompare);
+	}
 }

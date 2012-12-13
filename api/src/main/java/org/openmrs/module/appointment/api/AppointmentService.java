@@ -468,4 +468,15 @@ public interface AppointmentService extends OpenmrsService {
 	 */
 	List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate, Provider provider)
 	        throws APIException;
+	
+	/**
+	 * Returns a list of strings, where each string represents an identifier of the given patient
+	 * and its value. The preferred identifier will be the first in the list. The format of each
+	 * string will be: "<identifier name>: <identifier value>" for example:
+	 * "Old Identification Number: 2142"
+	 * 
+	 * @param patient the patient.
+	 * @return a list of strings where each string represents an identifier of the patient.
+	 */
+	List<String> getPatientIdentifiersRepresentation(Patient patient);
 }

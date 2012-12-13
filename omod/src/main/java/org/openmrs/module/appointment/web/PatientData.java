@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.api.context.Context;
 
@@ -18,10 +19,10 @@ public class PatientData {
 	public PatientData() {
 	}
 	
-	public PatientData(String phoneNumber, String dateMissed, String patientId) {
+	public PatientData(String phoneNumber, String dateMissed, List<String> identifiers) {
 		setPhoneNumber(phoneNumber);
 		setDateMissedLastAppointment(dateMissed);
-		setIdentifiers(patientId);
+		setIdentifiers(identifiers);
 	}
 	
 	public String getPhoneNumber() {
@@ -46,22 +47,5 @@ public class PatientData {
 	
 	public void setIdentifiers(List<String> identifiers) {
 		this.identifiers = identifiers;
-	}
-	
-	public void setIdentifiers(String patientId) {
-		Set<PatientIdentifier> identifiers = Context.getPatientService().getPatient(Integer.parseInt(patientId))
-		        .getIdentifiers();
-		this.identifiers = new LinkedList<String>();
-		for (PatientIdentifier identifier : identifiers) {
-			//Representation format: <identifier type name> : <identifier value> 
-			//for example: "OpenMRS Identification Number: 7532AM-1" 
-			String representation = identifier.getIdentifierType().getName() + ": " + identifier.getIdentifier();
-			//Put "OpenMRS Identification Number" first.
-			if (identifier.getPreferred())
-				this.identifiers.add(0, representation);
-			//Insert to the end of the list
-			else
-				this.identifiers.add(this.identifiers.size(), representation);
-		}
 	}
 }
