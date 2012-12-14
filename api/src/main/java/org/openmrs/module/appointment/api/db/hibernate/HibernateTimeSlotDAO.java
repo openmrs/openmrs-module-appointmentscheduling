@@ -2,11 +2,13 @@ package org.openmrs.module.appointment.api.db.hibernate;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Provider;
 import org.openmrs.api.APIException;
 import org.openmrs.module.appointment.Appointment;
+import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.db.TimeSlotDAO;
@@ -37,4 +39,14 @@ public class HibernateTimeSlotDAO extends HibernateSingleClassDAO implements Tim
 			return getAll();
 		}
 	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<TimeSlot> getTimeSlotsByAppointmentBlock(AppointmentBlock appointmentBlock) {
+		if (appointmentBlock == null)
+			return new Vector<TimeSlot>();
+		return super.sessionFactory.getCurrentSession().createCriteria(TimeSlot.class).add(
+		    Restrictions.eq("appointmentBlock", appointmentBlock)).list();
+	}
+	
 }

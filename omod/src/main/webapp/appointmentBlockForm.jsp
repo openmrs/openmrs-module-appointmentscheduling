@@ -110,7 +110,12 @@
 					</spring:bind>
 				</td>
 			</tr>
-
+			<tr>
+				<td valign="top"><spring:message code="appointment.AppointmentBlock.slotLength"/></td>
+				<td valign="top">
+						<input type="text" name="timeSlotLength" id="timeSlotLength" value="${timeSlotLength}" size="35" />
+				</td>
+			</tr>
 			<c:if test="${!(appointmentBlock.creator == null)}">
 			<tr>
 				<td><spring:message code="general.createdBy" /></td>
