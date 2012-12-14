@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.appointment.web.controller;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -21,17 +23,16 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Location;
 import org.openmrs.Provider;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.AppointmentType;
+import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.AppointmentService;
 import org.openmrs.module.appointment.validator.AppointmentBlockValidator;
 import org.openmrs.module.appointment.web.AppointmentTypeEditor;
 import org.openmrs.module.appointment.web.ProviderEditor;
-import org.openmrs.propertyeditor.LocationEditor;
 import org.openmrs.web.WebConstants;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -81,6 +82,22 @@ public class AppointmentBlockFormController {
 		return appointmentBlock;
 	}
 	
+	@ModelAttribute("timeSlotLength")
+	public String getTimeSlotLength(@RequestParam(value = "appointmentBlockId", required = false) Integer appointmentBlockId) {
+		if (appointmentBlockId == null)
+			return "";
+		else {
+			if (Context.isAuthenticated()) {
+				AppointmentService as = Context.getService(AppointmentService.class);
+				AppointmentBlock appointmentBlock = as.getAppointmentBlock(appointmentBlockId);
+				TimeSlot timeSlot = Context.getService(AppointmentService.class).getTimeSlotsInAppointmentBlock(
+				    appointmentBlock).get(0);
+				return (timeSlot.getEndDate().getTime() - timeSlot.getStartDate().getTime()) / 60000 + "";
+			}
+		}
+		return "";
+	}
+	
 	@ModelAttribute("providerList")
 	public List<Provider> getProviderList() {
 		return Context.getProviderService().getAllProviders();
@@ -92,8 +109,8 @@ public class AppointmentBlockFormController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public String onSubmit(HttpServletRequest request, AppointmentBlock appointmentBlock, BindingResult result)
-	        throws Exception {
+	public String onSubmit(HttpServletRequest request, AppointmentBlock appointmentBlock, BindingResult result,
+	        @RequestParam(value = "timeSlotLength", required = true) String timeSlotLength) throws Exception {
 		
 		HttpSession httpSession = request.getSession();
 		
@@ -105,6 +122,22 @@ public class AppointmentBlockFormController {
 				if (result.hasErrors()) {
 					return null;
 				} else {
+					//Create the time slots.
+					Integer slotLength = Integer.parseInt(timeSlotLength);
+					long appointmentBlocklengthInMinutes = (appointmentBlock.getEndDate().getTime() - appointmentBlock
+					        .getStartDate().getTime()) / 60000;
+					int howManyTimeSlotsToCreate = (int) (appointmentBlocklengthInMinutes / slotLength);
+					Date startDate = appointmentBlock.getStartDate();
+					Date endDate = appointmentBlock.getStartDate();
+					Calendar cal = Calendar.getInstance();
+					for (int i = 0; i < howManyTimeSlotsToCreate; i++) {
+						cal.setTime(startDate);
+						cal.add(Calendar.MINUTE, slotLength); // add slotLength minutes
+						endDate = cal.getTime();
+						TimeSlot timeSlot = new TimeSlot(appointmentBlock, startDate, endDate);
+						startDate = endDate;
+						appointmentService.saveTimeSlot(timeSlot);
+					}
 					appointmentService.saveAppointmentBlock(appointmentBlock);
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentBlock.saved");
 				}

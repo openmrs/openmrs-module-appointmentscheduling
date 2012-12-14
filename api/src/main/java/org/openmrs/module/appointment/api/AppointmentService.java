@@ -404,6 +404,15 @@ public interface AppointmentService extends OpenmrsService {
 	 */
 	List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot);
 	
+	/**
+	 * Should retrieve all time slots in the given appointment block.
+	 * 
+	 * @param appointmentBlock - the appointment block to search by.
+	 * @return the time slots in the given appointment block.
+	 */
+	@Transactional(readOnly = true)
+	List<TimeSlot> getTimeSlotsInAppointmentBlock(AppointmentBlock appointmentBlock);
+	
 	//Appointment Status History
 	/**
 	 * Gets all appointment status histories.

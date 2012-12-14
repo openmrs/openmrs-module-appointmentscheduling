@@ -34,6 +34,7 @@ import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Tests Time Slot methods in the {@link $ AppointmentService}}.
@@ -224,5 +225,24 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		//		
 		//		List<TimeSlot> timeSlots = service.getTimeSlotsByConstraints(null, fromDate, toDate, Context.getProviderService().getProvider(2));
 		//		assertEquals(0, timeSlots.size());
+	}
+	
+	@Test
+	@Verifies(value = "should return correct time slots", method = "getTimeSlotsInAppointmentBlock(AppointmentBlock)")
+	public void getTimeSlotsInAppointmentBlock_shouldReturnCorrectTimeSlots() {
+		AppointmentBlock appointmentBlock = service.getAppointmentBlock(1);
+		assertNotNull(appointmentBlock);
+		
+		List<TimeSlot> timeSlots = service.getTimeSlotsInAppointmentBlock(appointmentBlock);
+		assertEquals(4, timeSlots.size());
+		
+		//Should be empty list because appointment block is not exists
+		timeSlots = service.getTimeSlotsInAppointmentBlock(null);
+		assertEquals(0, timeSlots.size());
+		
+		//Should get an empty list because there are no time slots associated with the given appointment block
+		appointmentBlock = service.getAppointmentBlock(2);
+		timeSlots = service.getTimeSlotsInAppointmentBlock(appointmentBlock);
+		assertEquals(0, timeSlots.size());
 	}
 }

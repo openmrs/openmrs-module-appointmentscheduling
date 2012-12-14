@@ -368,6 +368,12 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		return getTimeSlotDAO().getAppointmentsInTimeSlot(timeSlot);
 	}
 	
+	@Override
+	@Transactional(readOnly = true)
+	public List<TimeSlot> getTimeSlotsInAppointmentBlock(AppointmentBlock appointmentBlock) {
+		return getTimeSlotDAO().getTimeSlotsByAppointmentBlock(appointmentBlock);
+	}
+	
 	//AppointmentStatusHistory
 	/**
 	 * @param dao the appointment status history dao to set
