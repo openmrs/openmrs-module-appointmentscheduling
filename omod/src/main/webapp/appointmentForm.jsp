@@ -30,21 +30,36 @@
                                 phone = details.phoneNumber;
                         if(details.dateMissedLastAppointment)
                                 dateMissedLastAppointment = details.dateMissedLastAppointment;
-                        var detailsText = "";
+                        var detailsText ="<b><spring:message code='appointment.Appointment.create.patientPhoneNumber'/></b>"+phone+"<br/><b><spring:message code='appointment.Appointment.create.patientMissedMeeting'/></b>"+dateMissedLastAppointment+"<br/><br/>";
                         for(var i=0; i<details.identifiers.length; i++){
-                        	detailsText+=details.identifiers[i] + "<br/>";
+                        	var array = details.identifiers[i].split(":");
+                        	detailsText+="<b>"+array[0]+"</b>: "+array[1]+"<br/>";
                         }
                         
-                        detailsText +="<spring:message code='appointment.Appointment.create.patientPhoneNumber'/>"+phone+"<br/><spring:message code='appointment.Appointment.create.patientMissedMeeting'/>"+dateMissedLastAppointment;
                         document.getElementById('patientDataCell').innerHTML = detailsText;
                 });
         }
    }
    function addPatientLink(patientObj){
            if(patientObj!=null){
+                   var genderImg = "<img src='${pageContext.request.contextPath}/images/male.gif' alt='<openmrs:message code='Person.gender.male'/>'/>";
+                   if(patientObj.gender != 'M')
+                   	genderImg = "<img src='${pageContext.request.contextPath}/images/female.gif' alt='<openmrs:message code='Person.gender.female'/>'/>";
+                   var age = "";
+                   if(patientObj.age == 0)
+                   	age+="1";
+                   else
+                   	age += patientObj.age.toString();
+                   age += " <openmrs:message code='Person.age.year' />";
+        	   	   var detailsText = "<table><tr><td>";
+                   detailsText+= genderImg +" ("+ age +")<br/></td><td>";
                    var message = "<spring:message code='appointment.Appointment.create.link.viewPatient'/>";
                    var link = "<a href='${pageContext.request.contextPath}/patientDashboard.form?patientId="+patientObj.patientId+"'>";
-                   document.getElementById('patientLinkCell').innerHTML = link+message+"</a>";
+                   detailsText += link+message+"</a><br/>";
+                   message = "<spring:message code='appointment.Appointment.create.link.editPatient'/>";
+                   link = "<a href='${pageContext.request.contextPath}/admin/patients/shortPatientForm.form?patientId="+patientObj.patientId+"'>";
+                   detailsText += link+message+"</a>";
+                   document.getElementById('patientLinkCell').innerHTML += detailsText+"</td></tr></table>";
            }
            else
                    document.getElementById('patientLinkCell').innerHTML = "";
@@ -59,8 +74,9 @@
 <form:form modelAttribute="appointment" method="post">
 <fieldset>
 <table id="createAppointmentTable">
+		<tr class="steps"><td colspan="3"><spring:message code="appointment.Appointment.steps.selectPatient"/></td></tr>
         <tr>
-                <td><spring:message code="appointment.Appointment.create.label.findPatient"/></td>
+                <td class="formLabel"><spring:message code="appointment.Appointment.create.label.findPatient"/></td>
                
                 <td>
                         <spring:bind path="appointment.patient">
@@ -72,22 +88,25 @@
         </tr>
         <tr>
                 <td></td>
-                <td colspan="2" id="patientDataCell" style="font-style:italic;">
+                <td colspan="3" id="patientDataCell" style="font-style:italic;">
                 </td>
         </tr>
-       
+     	<tr class="steps"><td colspan="3"><spring:message code="appointment.Appointment.steps.defineAppointmentProperties"/></td></tr>
         <tr>
-                <td><spring:message code="appointment.Appointment.create.label.appointmentType"/></td>
+                <td class="formLabel"><spring:message code="appointment.Appointment.create.label.appointmentType"/></td>
                 <td>
-                        <select name="appointmentTypeSelect" id="appointmentTypeSelect">
+                	<spring:bind path="appointment.appointmentType">
+                        <select name="${status.expression}" id="appointmentTypeSelect">
                                 <c:forEach var="appointmentType" items="${appointmentTypeList}">
                                         <option value="${appointmentType.appointmentTypeId}" ${param.appointmentTypeSelect==appointmentType.appointmentTypeId ? 'selected' : ''}>${appointmentType.name}</option>
                                 </c:forEach>
                         </select>
+                        <c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
+                    </spring:bind>
                 </td>
         </tr>
         <tr>
-                <td><spring:message code="appointment.Appointment.create.label.clinician"/></td>
+                <td class="formLabel"><spring:message code="appointment.Appointment.create.label.clinician"/></td>
                 <td>
                         <select name="providerSelect" id="providerSelect">
                                 <option value="" ${null==param.providerSelect ? 'selected' : ''}><spring:message code="appointment.Appointment.create.label.clinicianNotSpecified"/></option>
@@ -98,7 +117,7 @@
                 </td>
         </tr>
         <tr>
-                <td><spring:message code="appointment.Appointment.create.label.betweenDates"/></td>
+                <td class="formLabel"><spring:message code="appointment.Appointment.create.label.betweenDates"/></td>
                 <td>
                 	<input type="text" name="fromDate" id="fromDate" size="16" value="${param.fromDate}" onfocus="showDateTimePicker(this)"/>
                 	<img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('fromDate').focus();"/>
@@ -107,6 +126,7 @@
                 	 <img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('toDate').focus();"/>
                	 </td>
         </tr>
+        <tr class="steps"><td colspan="3"><spring:message code="appointment.Appointment.steps.selectTime"/></td></tr>
         <tr>
                 <td/><td><input type="submit" name="findAvailableTime" class="appointmentButton" value="<spring:message code="appointment.Appointment.create.findTime"/>"></td>
 		<td>
@@ -116,8 +136,8 @@
 		</td>
         </tr>
         <tr>
-                <td><spring:message code="appointment.Appointment.create.label.availableTimes"/></td>
-                <td>			
+                <td class="formLabel"><spring:message code="appointment.Appointment.create.label.availableTimes"/></td>
+                <td colspan="2">			
                 	<div id="timeSlotsDIV">
                                 <table id="availbleTimesTable" cellspacing="0">
                                         <tr class="tableHeader">
@@ -129,7 +149,7 @@
                                         </tr>
 										<% int count=0; %>
                                         <c:forEach var="slot" items="${availableTimes}">
-                                                <tr style=<%= count++ % 2==0 ? "background-color:#ffffff":"background-color:#D8D8D8" %>;>
+                                                <tr style=<%= count++ % 2==0 ? "background-color:#ffffff":"background-color:#E6E6E6" %>;>
                                                         <td>
                                                                 <spring:bind path="appointment.timeSlot">
                                                                         <input type="radio" name="${status.expression}"  value="${slot.timeSlotId}"  ${slot.timeSlotId==appointment.timeSlot.timeSlotId ? 'checked' : ''} />
@@ -150,13 +170,14 @@
                 		</div>
                 </td>
         </tr>
+        <tr class="steps"><td colspan="3"><spring:message code="appointment.Appointment.steps.enterNotes"/></td></tr>
         <tr>
-                <td><spring:message code="appointment.Appointment.create.label.reason"/></td>
+                <td class="formLabel"><spring:message code="appointment.Appointment.create.label.reason"/></td>
                 <spring:bind path="appointment.reason">
                         <td><textarea name="reason" rows="3" cols="50" style="resize:none" onkeypress="return forceMsaxLength(this, 1024);">${status.value}</textarea></td>
                 </spring:bind>
         </tr>
-        <tr><td></td><td><input type="submit"  class="appointmentButton" value="<spring:message code="appointment.Appointment.create.save"/>" name="save"></td>
+        <tr><td></td><td><input type="submit"  class="saveButton" value="<spring:message code="appointment.Appointment.create.save"/>" name="save"></td>
         </tr>
 </table>
 </fieldset>

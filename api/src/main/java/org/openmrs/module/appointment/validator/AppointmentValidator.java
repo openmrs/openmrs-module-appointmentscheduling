@@ -55,6 +55,7 @@ public class AppointmentValidator implements Validator {
 		} else {
 			ValidationUtils.rejectIfEmpty(errors, "timeSlot", "appointment.Appointment.emptyTimeSlot");
 			ValidationUtils.rejectIfEmpty(errors, "patient", "appointment.Appointment.emptyPatient");
+			ValidationUtils.rejectIfEmpty(errors, "appointmentType", "appointment.Appointment.emptyType");
 		}
 	}
 }

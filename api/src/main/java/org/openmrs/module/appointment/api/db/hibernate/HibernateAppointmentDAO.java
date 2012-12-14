@@ -55,9 +55,12 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 		        + " (select max(timeSlot.startDate) from Appointment as appointment inner join appointment.timeSlot"
 		        + " where appointment.patient = :patient)";
 		
-		Appointment appointment = (Appointment) super.sessionFactory.getCurrentSession().createQuery(query).setParameter(
-		    "patient", patient).uniqueResult();
+		List<Appointment> appointment = super.sessionFactory.getCurrentSession().createQuery(query).setParameter("patient",
+		    patient).list();
 		
-		return appointment;
+		if (appointment.size() > 0)
+			return (Appointment) appointment.get(0);
+		else
+			return null;
 	}
 }

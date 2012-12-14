@@ -23,7 +23,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Provider;
-import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentType;
@@ -37,8 +36,6 @@ import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -67,28 +64,6 @@ public class AppointmentFormController {
 		
 	}
 	
-	@ModelAttribute("availableTimes")
-	public List<TimeSlot> getAvailableTimes(HttpServletRequest request,
-	        @RequestParam(value = "fromDate", required = false) Date fromDate,
-	        @RequestParam(value = "toDate", required = false) Date toDate,
-	        @RequestParam(value = "providerSelect", required = false) Provider provider,
-	        @RequestParam(value = "appointmentTypeSelect", required = false) AppointmentType appointmentType) {
-		//TODO: Change this method to really act according to the submitted values, 
-		//		but this does not require any change in the form, thus, if all is ok I want to mark AM-6 as finished
-		//		and create a new ticket for the function which I will do asap
-		if (appointmentType == null || (fromDate != null && toDate != null && !fromDate.before(toDate)))
-			return null;
-		
-		try {
-			List<TimeSlot> availableTimeSlots = Context.getService(AppointmentService.class).getTimeSlotsByConstraints(
-			    appointmentType, fromDate, toDate, provider);
-			return availableTimeSlots;
-		}
-		catch (Exception ex) {
-			return null;
-		}
-	}
-	
 	@ModelAttribute("appointment")
 	public Appointment getAppointment(@RequestParam(value = "appointmentId", required = false) Integer appointmentId) {
 		Appointment appointment = null;
@@ -103,6 +78,28 @@ public class AppointmentFormController {
 			appointment = new Appointment();
 		
 		return appointment;
+	}
+	
+	@ModelAttribute("availableTimes")
+	public List<TimeSlot> getAvailableTimes(HttpServletRequest request, Appointment appointment,
+	        @RequestParam(value = "fromDate", required = false) Date fromDate,
+	        @RequestParam(value = "toDate", required = false) Date toDate,
+	        @RequestParam(value = "providerSelect", required = false) Provider provider) {
+		//TODO: Change this method to really act according to the submitted values, 
+		//		but this does not require any change in the form, thus, if all is ok I want to mark AM-6 as finished
+		//		and create a new ticket for the function which I will do asap
+		AppointmentType appointmentType = appointment.getAppointmentType();
+		if (appointmentType == null || (fromDate != null && toDate != null && !fromDate.before(toDate)))
+			return null;
+		
+		try {
+			List<TimeSlot> availableTimeSlots = Context.getService(AppointmentService.class).getTimeSlotsByConstraints(
+			    appointmentType, fromDate, toDate, provider);
+			return availableTimeSlots;
+		}
+		catch (Exception ex) {
+			return null;
+		}
 	}
 	
 	@ModelAttribute("providerList")
@@ -134,6 +131,7 @@ public class AppointmentFormController {
 					appointment.setStatus("SCHEDULED");
 					appointmentService.saveAppointment(appointment);
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.Appointment.saved");
+					return "redirect:/index.htm";
 				}
 			}
 			if (request.getParameter("findAvailableTime") != null) {

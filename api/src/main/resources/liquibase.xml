@@ -207,6 +207,9 @@
 			<column name="patient_id" type="int">
 				<constraints nullable="false"/>
 			</column>
+			<column name="appointment_type_id" type="int">
+				<constraints nullable="false"/>
+			</column>
 			<column name="status" type="varchar(255)">
 				<constraints nullable="false"/>
 			</column>
@@ -244,6 +247,9 @@
 		<addForeignKeyConstraint constraintName="appointment_time_slot_id"
 			baseTableName="appointment" baseColumnNames="time_slot_id"
 			referencedTableName="appointment_time_slot" referencedColumnNames="time_slot_id"/>
+		<addForeignKeyConstraint constraintName="appointment_appointment_type_id"
+			baseTableName="appointment" baseColumnNames="appointment_type_id"
+			referencedTableName="appointment_type" referencedColumnNames="appointment_type_id"/>
 		<addForeignKeyConstraint constraintName="appointment_visit_id"
 			baseTableName="appointment" baseColumnNames="visit_id"
 			referencedTableName="visit" referencedColumnNames="visit_id"/>

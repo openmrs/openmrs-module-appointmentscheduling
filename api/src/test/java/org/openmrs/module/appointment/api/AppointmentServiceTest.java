@@ -29,6 +29,7 @@ import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
+import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
@@ -101,7 +102,8 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		timeSlot.setEndDate(new Date());
 		timeSlot.setAppointmentBlock(service.getAppointmentBlock(1));
 		service.saveTimeSlot(timeSlot);
-		Appointment appointment = new Appointment(timeSlot, new Visit(1), new Patient(1), "SCHEDULED");
+		AppointmentType appointmentType = service.getAppointmentType(1);
+		Appointment appointment = new Appointment(timeSlot, new Visit(1), new Patient(1), appointmentType, "SCHEDULED");
 		service.saveAppointment(appointment);
 		
 		//Should create a new appointment type row.
