@@ -72,7 +72,7 @@
         </tr>
         <tr>
                 <td></td>
-                <td colspan="2" id="patientDataCell">
+                <td colspan="2" id="patientDataCell" style="font-style:italic;">
                 </td>
         </tr>
        
