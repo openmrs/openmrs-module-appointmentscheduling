@@ -57,7 +57,6 @@ public class AppointmentBlockFormController {
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(AppointmentType.class, new AppointmentTypeEditor());
 		binder.registerCustomEditor(Provider.class, new ProviderEditor());
-		binder.registerCustomEditor(Location.class, new LocationEditor());
 	}
 	
 	@RequestMapping(value = "/module/appointment/appointmentBlockForm", method = RequestMethod.GET)
@@ -85,11 +84,6 @@ public class AppointmentBlockFormController {
 	@ModelAttribute("providerList")
 	public List<Provider> getProviderList() {
 		return Context.getProviderService().getAllProviders();
-	}
-	
-	@ModelAttribute("locationList")
-	public List<Location> getLocationList() {
-		return Context.getLocationService().getAllLocations();
 	}
 	
 	@ModelAttribute("appointmentTypeList")
