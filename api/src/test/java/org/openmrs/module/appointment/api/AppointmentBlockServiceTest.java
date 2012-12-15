@@ -32,6 +32,7 @@ import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+import org.openmrs.util.OpenmrsUtil;
 
 /**
  * Tests Appointment Block methods in the {@link ${AppointmentService}}.
@@ -103,8 +104,8 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		Date started = new Date();
 		Set<AppointmentType> appointmentTypes = service.getAllAppointmentTypes();
 		Provider provider = Context.getProviderService().getProvider(1);
-		AppointmentBlock appointmentBlock = new AppointmentBlock(started, started, provider, new Location(1),
-		        appointmentTypes);
+		AppointmentBlock appointmentBlock = new AppointmentBlock(started, OpenmrsUtil.getLastMomentOfDay(started), provider,
+		        new Location(1), appointmentTypes);
 		service.saveAppointmentBlock(appointmentBlock);
 		
 		appointmentBlock = service.getAppointmentBlock(4);
@@ -123,6 +124,7 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		assertEquals("2005-01-01 00:00:00.0", appointmentBlock.getStartDate().toString());
 		Date startDate = new Date();
 		appointmentBlock.setStartDate(startDate);
+		appointmentBlock.setEndDate(OpenmrsUtil.getLastMomentOfDay(startDate));
 		service.saveAppointmentBlock(appointmentBlock);
 		
 		appointmentBlock = service.getAppointmentBlock(1);
