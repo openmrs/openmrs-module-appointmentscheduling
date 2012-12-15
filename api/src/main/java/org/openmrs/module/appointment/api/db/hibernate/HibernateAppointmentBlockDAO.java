@@ -32,22 +32,24 @@ public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implem
 	}
 	
 	/**
-	 * Returns the appointment blocks corresponding to the given date and location.
+	 * Returns the appointment blocks corresponding to the given date interval and location.
 	 * 
-	 * @param date the date to filter by.
+	 * @param fromDate the lower bound of the date interval.
+	 * @param toDate the upper bound of the date interval.
 	 * @param location the location to filter by.
-	 * @return the appointment blocks that is on the given date and location.
+	 * @return the appointment blocks that is on the given date interval and location.
 	 */
 	@Override
 	@Transactional(readOnly = true)
-	public List<AppointmentBlock> getAppointmentBlocks(Date selectedDate, Location location) {
+	public List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, Location location) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(AppointmentBlock.class);
 		if (location != null)
 			criteria.add(Restrictions.eq("location", location));
-		if (selectedDate != null) {
-			Date endOfDayDate = OpenmrsUtil.getLastMomentOfDay(selectedDate);
-			criteria.add(Restrictions.ge("startDate", selectedDate));
-			criteria.add(Restrictions.le("endDate", endOfDayDate));
+		if (fromDate != null) {
+			criteria.add(Restrictions.ge("startDate", fromDate));
+		}
+		if (toDate != null) {
+			criteria.add(Restrictions.le("endDate", toDate));
 		}
 		return criteria.list();
 	}

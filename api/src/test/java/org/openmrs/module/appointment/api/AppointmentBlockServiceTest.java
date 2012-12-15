@@ -195,22 +195,32 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 	public void getAppointmentBlocksByDateAndLocation_shouldGetAllCorrectAppointmentBlock() throws Exception {
 		AppointmentBlock appointmentBlock = service.getAppointmentBlock(1);
 		Location location = appointmentBlock.getLocation();
-		Date selectedDate = appointmentBlock.getStartDate();
-		List<AppointmentBlock> appointmentBlocks = service.getAppointmentBlocks(selectedDate, location);
+		Date fromDate = appointmentBlock.getStartDate();
+		Date toDate = appointmentBlock.getEndDate();
+		List<AppointmentBlock> appointmentBlocks = service.getAppointmentBlocks(fromDate, toDate, location);
 		assertNotNull(appointmentBlocks);
 		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
 		
 		appointmentBlock = service.getAppointmentBlock(2);
-		selectedDate = appointmentBlock.getStartDate();
-		appointmentBlocks = service.getAppointmentBlocks(selectedDate, null);
+		fromDate = appointmentBlock.getStartDate();
+		toDate = appointmentBlock.getEndDate();
+		appointmentBlocks = service.getAppointmentBlocks(fromDate, toDate, null);
 		assertNotNull(appointmentBlocks);
 		assertEquals(new Integer(2), appointmentBlocks.get(0).getAppointmentBlockId());
 		
-		appointmentBlocks = service.getAppointmentBlocks(null, location);
+		appointmentBlocks = service.getAppointmentBlocks(toDate, null, null);
+		assertNotNull(appointmentBlocks);
+		assertEquals(new Integer(3), appointmentBlocks.get(0).getAppointmentBlockId());
+		
+		appointmentBlocks = service.getAppointmentBlocks(null, toDate, null);
 		assertNotNull(appointmentBlocks);
 		assertEquals(2, appointmentBlocks.size());
 		
-		appointmentBlocks = service.getAppointmentBlocks(null, null);
+		appointmentBlocks = service.getAppointmentBlocks(null, null, location);
+		assertNotNull(appointmentBlocks);
+		assertEquals(2, appointmentBlocks.size());
+		
+		appointmentBlocks = service.getAppointmentBlocks(null, null, null);
 		assertEquals(3, appointmentBlocks.size());
 	}
 }

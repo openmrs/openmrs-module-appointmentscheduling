@@ -234,8 +234,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	 *      )
 	 */
 	@Transactional(readOnly = true)
-	public List<AppointmentBlock> getAppointmentBlocks(Date selectedDate, Location location) {
-		return getAppointmentBlockDAO().getAppointmentBlocks(selectedDate, location);
+	public List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, Location location) {
+		return getAppointmentBlockDAO().getAppointmentBlocks(fromDate, toDate, location);
 	}
 	
 	//Appointment

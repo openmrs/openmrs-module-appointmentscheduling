@@ -53,9 +53,11 @@ public class DWRAppointmentService {
 		return timeSlots;
 	}
 	
-	public List<AppointmentBlock> getAppointmentBlocks(String selectedDate, Integer locationId) throws ParseException {
+	public List<AppointmentBlock> getAppointmentBlocks(String fromDate, String toDate, Integer locationId)
+	        throws ParseException {
 		List<AppointmentBlock> appointmentBlockList = new ArrayList<AppointmentBlock>();
-		Date fromDate = null;
+		Date fromAsDate = null;
+		Date toAsDate = null;
 		//location needs authentication
 		if (Context.isAuthenticated()) {
 			AppointmentService appointmentService = Context.getService(AppointmentService.class);
@@ -63,10 +65,13 @@ public class DWRAppointmentService {
 			if (locationId != null)
 				location = Context.getLocationService().getLocation(locationId);
 			//In case the user selected a date.
-			if (!selectedDate.isEmpty()) {
-				fromDate = Context.getDateTimeFormat().parse(selectedDate);
+			if (!fromDate.isEmpty()) {
+				fromAsDate = Context.getDateTimeFormat().parse(fromDate);
 			}
-			appointmentBlockList = appointmentService.getAppointmentBlocks(fromDate, location);
+			if (!toDate.isEmpty()) {
+				toAsDate = Context.getDateTimeFormat().parse(toDate);
+			}
+			appointmentBlockList = appointmentService.getAppointmentBlocks(fromAsDate, toAsDate, location);
 		}
 		return appointmentBlockList;
 	}

@@ -215,10 +215,10 @@ public interface AppointmentService extends OpenmrsService {
 	 * Gets appointment blocks which have a given date and location.
 	 * 
 	 * @return a list of appointment block objects.
-	 * @should get all appointment blocks which have a given date and location.
+	 * @should get all appointment blocks which have contains in a given date interval and corresponds to a given location.
 	 */
 	@Transactional(readOnly = true)
-	List<AppointmentBlock> getAppointmentBlocks(Date selectedDate, Location location);
+	List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, Location location);
 	
 	//Appointment
 	/**
