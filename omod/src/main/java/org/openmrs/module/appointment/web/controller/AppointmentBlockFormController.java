@@ -122,23 +122,26 @@ public class AppointmentBlockFormController {
 				if (result.hasErrors()) {
 					return null;
 				} else {
+					appointmentService.saveAppointmentBlock(appointmentBlock);
 					//Create the time slots.
 					Integer slotLength = Integer.parseInt(timeSlotLength);
 					long appointmentBlocklengthInMinutes = (appointmentBlock.getEndDate().getTime() - appointmentBlock
 					        .getStartDate().getTime()) / 60000;
 					int howManyTimeSlotsToCreate = (int) (appointmentBlocklengthInMinutes / slotLength);
+					//String toShow = howManyTimeSlotsToCreate + "," + appointmentBlocklengthInMinutes;
 					Date startDate = appointmentBlock.getStartDate();
-					Date endDate = appointmentBlock.getStartDate();
-					Calendar cal = Calendar.getInstance();
+					Date endDate = null;
 					for (int i = 0; i < howManyTimeSlotsToCreate; i++) {
+						Calendar cal = Context.getDateTimeFormat().getCalendar();
 						cal.setTime(startDate);
 						cal.add(Calendar.MINUTE, slotLength); // add slotLength minutes
 						endDate = cal.getTime();
+						//toShow += ",{" + startDate + "," + endDate + "}";
 						TimeSlot timeSlot = new TimeSlot(appointmentBlock, startDate, endDate);
 						startDate = endDate;
-						appointmentService.saveTimeSlot(timeSlot);
-					}
-					appointmentService.saveAppointmentBlock(appointmentBlock);
+						appointmentService.saveTimeSlot(timeSlot);						
+					}		
+					//httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, toShow);
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentBlock.saved");
 				}
 			}
