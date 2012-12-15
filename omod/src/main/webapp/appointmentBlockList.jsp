@@ -101,7 +101,6 @@
                         
         }
         function getDateTimeFormat(date){
-			alert("asd");
 		   	var newFormat = "";
 			if((date.getDate()+"").length == 1){
 				newFormat += "0";
@@ -116,16 +115,16 @@
          }
         //Showing the jQuery data table when the page loaded.
          $j(document).ready(function() {
-	   var currentDate = new Date();
-	   currentDate.setHours(0,0,0,0);	 
-	   var currentTime = new Date();
-	   var days = 6;
-	   currentTime.setTime(currentTime.getTime() + (days * 24 * 60 * 60 * 1000));
-	   var nextWeekDate = new Date(currentTime);
-	   nextWeekDate.setHours(23,59,59,999);
-	   document.getElementById('fromDate').value = getDateTimeFormat(currentDate);
-	   document.getElementById('toDate').value = getDateTimeFormat(nextWeekDate);
-                updateAppointmentBlockTable();
+			   var currentDate = new Date();
+			   currentDate.setHours(0,0,0,0);	 
+			   var currentTime = new Date();
+			   var days = 6;
+			   currentTime.setTime(currentTime.getTime() + (days * 24 * 60 * 60 * 1000));
+			   var nextWeekDate = new Date(currentTime);
+			   nextWeekDate.setHours(23,59,59,999);
+			   document.getElementById('fromDate').value = getDateTimeFormat(currentDate);
+			   document.getElementById('toDate').value = getDateTimeFormat(nextWeekDate);
+               updateAppointmentBlockTable();
         });
  
 </script>
