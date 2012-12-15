@@ -122,6 +122,7 @@ public class AppointmentBlockFormController {
 				if (result.hasErrors()) {
 					return null;
 				} else {
+					//First we need to save the appointment block (before creating the time slot
 					appointmentService.saveAppointmentBlock(appointmentBlock);
 					//Create the time slots.
 					Integer slotLength = Integer.parseInt(timeSlotLength);
@@ -129,19 +130,28 @@ public class AppointmentBlockFormController {
 					        .getStartDate().getTime()) / 60000;
 					int howManyTimeSlotsToCreate = (int) (appointmentBlocklengthInMinutes / slotLength);
 					//String toShow = howManyTimeSlotsToCreate + "," + appointmentBlocklengthInMinutes;
-					Date startDate = appointmentBlock.getStartDate();
-					Date endDate = null;
-					for (int i = 0; i < howManyTimeSlotsToCreate; i++) {
-						Calendar cal = Context.getDateTimeFormat().getCalendar();
-						cal.setTime(startDate);
-						cal.add(Calendar.MINUTE, slotLength); // add slotLength minutes
-						endDate = cal.getTime();
-						//toShow += ",{" + startDate + "," + endDate + "}";
-						TimeSlot timeSlot = new TimeSlot(appointmentBlock, startDate, endDate);
-						startDate = endDate;
-						appointmentService.saveTimeSlot(timeSlot);						
-					}		
+					List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
+					if (currentTimeSlots.size() != howManyTimeSlotsToCreate) { //the time slot length changed therefore we need to update.
+						//First we will purge the current time slots.
+						for (TimeSlot timeSlot : currentTimeSlots) {
+							appointmentService.purgeTimeSlot(timeSlot);
+						}
+						//Then we will add the new time slots corresponding to the new time slot length 
+						Date startDate = appointmentBlock.getStartDate();
+						Date endDate = null;
+						for (int i = 0; i < howManyTimeSlotsToCreate; i++) {
+							Calendar cal = Context.getDateTimeFormat().getCalendar();
+							cal.setTime(startDate);
+							cal.add(Calendar.MINUTE, slotLength); // add slotLength minutes
+							endDate = cal.getTime();
+							//toShow += ",{" + startDate + "," + endDate + "}";
+							TimeSlot timeSlot = new TimeSlot(appointmentBlock, startDate, endDate);
+							startDate = endDate;
+							appointmentService.saveTimeSlot(timeSlot);
+						}
+					}
 					//httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, toShow);
+					
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentBlock.saved");
 				}
 			}
