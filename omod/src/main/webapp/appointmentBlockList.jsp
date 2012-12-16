@@ -74,7 +74,14 @@
                                 {
                                     tableContent = "<tr>";
                                     tableContent += '<td align="center">'+'<input type="radio" name="appointmentBlockRadios" value="'+appointmentBlocks[i].appointmentBlockId+'"/></td>';
-                                    tableContent += '<td align="center">'+appointmentBlocks[i].location.name+"</td>";      
+                                    var location = appointmentBlocks[i].location;
+                                    var locationString = "";
+                                    //assumption there are only two levels for the location tree.
+                                    if(location.parentLocation!=null){	    
+                                	    locationString += location.parentLocation.name+"\\";	
+                                    }
+                                    locationString += location.name;
+                                    tableContent += '<td align="center">'+locationString+"</td>";      
                                     tableContent += '<td align="center">'+appointmentBlocks[i].provider.name+"</td>";
                                     //Linking the appointment types in a string.
                                     var appointmentTypes = "";

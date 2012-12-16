@@ -17,12 +17,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Location;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.api.db.AppointmentBlockDAO;
-import org.openmrs.util.OpenmrsUtil;
 import org.springframework.transaction.annotation.Transactional;
 
 public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implements AppointmentBlockDAO {
@@ -43,8 +42,16 @@ public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implem
 	@Transactional(readOnly = true)
 	public List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, Location location) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(AppointmentBlock.class);
-		if (location != null)
-			criteria.add(Restrictions.eq("location", location));
+		if (location != null) {
+			if (location.getChildLocations().size() > 0) {
+				Disjunction disjunction = Restrictions.disjunction();
+				for (Location locationChild : location.getChildLocations()) {
+					disjunction.add(Restrictions.eq("location", locationChild));
+				}
+				criteria.add(disjunction);
+			} else
+				criteria.add(Restrictions.eq("location", location));
+		}
 		if (fromDate != null) {
 			criteria.add(Restrictions.ge("startDate", fromDate));
 		}
