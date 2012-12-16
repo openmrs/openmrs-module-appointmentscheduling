@@ -52,27 +52,38 @@
 		}
         function updateAppointmentBlockTable()
         {
-                        var selectedDate = document.getElementById('dateFilter').value;
-	                    var selectedLocation = document.getElementById("locationId");
-		                var locationId = selectedLocation.options[selectedLocation.selectedIndex].value;	           
+                        var fromDate = document.getElementById('fromDate').value;
+                        var toDate = document.getElementById('toDate').value;
+	         		    var selectedLocation = document.getElementById("locationId");
+	                    var locationId = selectedLocation.options[selectedLocation.selectedIndex].value;
+		                if(locationId =="")
+		                	locationId =null;
                         var tableContent = '';
                         document.getElementById('appointmentBlocksTable').innerHTML = tableContent;
                         tableContent="<tr>";
                         tableContent+='<th align="center"><spring:message code="appointment.AppointmentBlock.column.select"/></th>';
                         tableContent+='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.location"/> </th>';
-                        tableContent+='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.user"/> </th>';
+                        tableContent+='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.provider"/> </th>';
                         tableContent+='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.appointmentTypes"/> </th>';
+                        tableContent+='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.date"/> </th>';
                         tableContent+='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.startTime"/> </th>';
                         tableContent+='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.endTime"/> </th>';
                         tableContent+="</tr>";
 	           			document.getElementById('appointmentBlocksTable').innerHTML +=tableContent;
-                        DWRAppointmentService.getAppointmentBlocks(selectedDate,locationId,function(appointmentBlocks){
+                        DWRAppointmentService.getAppointmentBlocks(fromDate,toDate,locationId,function(appointmentBlocks){
 		    				    tableContent = '';
                                 for(var i=0;i<appointmentBlocks.length;i++)
                                 {
                                     tableContent = "<tr>";
                                     tableContent += '<td align="center">'+'<input type="radio" name="appointmentBlockRadios" value="'+appointmentBlocks[i].appointmentBlockId+'"/></td>';
-                                    tableContent += '<td align="center">'+appointmentBlocks[i].location.name+"</td>";      
+                                    var location = appointmentBlocks[i].location;
+                                    var locationString = "";
+                                    //assumption there are only two levels for the location tree.
+                                    if(location.parentLocation!=null){	    
+                                	    locationString += location.parentLocation.name+"\\";	
+                                    }
+                                    locationString += location.name;
+                                    tableContent += '<td align="center">'+locationString+"</td>";      
                                     tableContent += '<td align="center">'+appointmentBlocks[i].provider.name+"</td>";
                                     //Linking the appointment types in a string.
                                     var appointmentTypes = "";
@@ -86,8 +97,11 @@
                                     }
 
                                     tableContent += '<td align="center">'+appointmentTypes+"</td>";    
-		       					    tableContent += '<td align="center">'+appointmentBlocks[i].startDate.toString()+'</td>';
-    		     			        tableContent += '<td align="center">'+appointmentBlocks[i].endDate.toString()+'</td>';
+							        var startDate = appointmentBlocks[i].startDate;
+							        var endDate = appointmentBlocks[i].endDate;
+							        tableContent += '<td align="center">'+startDate.getDate()+"/"+(startDate.getMonth()+1)+"/"+startDate.getFullYear()+'</td>';
+							        tableContent += '<td align="center">'+startDate.toLocaleTimeString()+'</td>';
+							        tableContent += '<td align="center">'+endDate.toLocaleTimeString()+'</td>';
                                     tableContent += "</tr>";
                                     document.getElementById('appointmentBlocksTable').innerHTML += tableContent;
 		      				   }                   
@@ -95,10 +109,34 @@
                        });
                         
         }
-       
+        function getDateTimeFormat(date){
+		   	var newFormat = "";
+			if((date.getDate()+"").length == 1){
+				newFormat += "0";
+			}
+			newFormat += date.getDate()+"/";
+			if(((date.getMonth()+1)+"").length == 1){
+				newFormat += "0";
+			}
+			newFormat += (date.getMonth()+1)+"/"+date.getFullYear();
+			newFormat += " "+date.toLocaleTimeString();
+			return newFormat;	
+         }
         //Showing the jQuery data table when the page loaded.
          $j(document).ready(function() {
-                updateAppointmentBlockTable();
+			   var currentDate = new Date();
+			   currentDate.setHours(0,0,0,0);	 
+			   var currentTime = new Date();
+			   var days = 6;
+			   currentTime.setTime(currentTime.getTime() + (days * 24 * 60 * 60 * 1000));
+			   var nextWeekDate = new Date(currentTime);
+			   nextWeekDate.setHours(23,59,59,999);
+			   document.getElementById('fromDate').value = getDateTimeFormat(currentDate);
+			   document.getElementById('toDate').value = getDateTimeFormat(nextWeekDate);
+			   var selectLocation = document.getElementById("locationId");
+			   selectLocation.options[selectLocation.options.length] = new Option('', '');
+			   selectLocation.selectedIndex = selectLocation.options.length-1;
+               updateAppointmentBlockTable();
         });
  
 </script>
@@ -111,7 +149,8 @@
                         <table>
                                         <tr>
                                                 <td><spring:message code="appointment.AppointmentBlock.pickDate"/>: </td>
-                                                <td><input type="text" name="Date" id="dateFilter" size="16" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('dateFilter').focus();"/></td>
+                                                <td><input type="text" name="fromDate" id="fromDate" size="16" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('fromDate').focus();"/></td>
+                                                <td><input type="text" name="toDate" id="toDate" size="16" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('toDate').focus();"/></td>
                                         </tr>
                                         <tr>
                                             <td><spring:message code="appointment.AppointmentBlock.column.location"/>: </td>
@@ -127,10 +166,7 @@
 <br/>
 <b class="boxHeader"><spring:message code="appointment.AppointmentBlock.list.title"/></b>
 <form method="post" class="box">
-        <table id="appointmentBlocksTable">
- 
- 
-        </table>
+        <table id="appointmentBlocksTable"></table>
 </form>
 <table align="center">
         <tr><td><a href="appointmentBlockForm.form"><spring:message code="appointment.AppointmentBlock.add"/></a></td>

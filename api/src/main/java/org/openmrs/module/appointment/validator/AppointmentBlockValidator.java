@@ -17,6 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.appointment.AppointmentBlock;
+import org.openmrs.module.appointment.AppointmentType;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
@@ -45,8 +46,8 @@ public class AppointmentBlockValidator implements Validator {
 	 * 
 	 * @see org.springframework.validation.Validator#validate(java.lang.Object,
 	 *      org.springframework.validation.Errors)
-	 * @should fail validation if name is null or empty or whitespace
 	 * @should pass validation if all required fields have proper values
+	 *  @should fail validation if start date is not before end date
 	 */
 	
 	public void validate(Object obj, Errors errors) {
@@ -58,6 +59,8 @@ public class AppointmentBlockValidator implements Validator {
 			ValidationUtils.rejectIfEmpty(errors, "endDate", "appointment.AppointmentBlock.emptyendDate");
 			ValidationUtils.rejectIfEmpty(errors, "provider", "appointment.AppointmentBlock.emptyProvider");
 			ValidationUtils.rejectIfEmpty(errors, "location", "appointment.AppointmentBlock.emptyLocation");
+			if (!appointmentBlock.getStartDate().before(appointmentBlock.getEndDate()))
+				errors.rejectValue("appointmentBlock", "appointment.AppointmentBlock.error.InvalidDateInterval");
 		}
 	}
 }
