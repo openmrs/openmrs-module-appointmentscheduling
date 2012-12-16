@@ -149,8 +149,8 @@
                         <table>
                                         <tr>
                                                 <td><spring:message code="appointment.AppointmentBlock.pickDate"/>: </td>
-                                                <td><input type="text" name="fromDate" id="fromDate" size="16" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('dateFilter').focus();"/></td>
-                                                <td><input type="text" name="toDate" id="toDate" size="16" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('dateFilter').focus();"/></td>
+                                                <td><input type="text" name="fromDate" id="fromDate" size="16" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('fromDate').focus();"/></td>
+                                                <td><input type="text" name="toDate" id="toDate" size="16" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('toDate').focus();"/></td>
                                         </tr>
                                         <tr>
                                             <td><spring:message code="appointment.AppointmentBlock.column.location"/>: </td>
@@ -166,10 +166,7 @@
 <br/>
 <b class="boxHeader"><spring:message code="appointment.AppointmentBlock.list.title"/></b>
 <form method="post" class="box">
-        <table id="appointmentBlocksTable">
- 
- 
-        </table>
+        <table id="appointmentBlocksTable"></table>
 </form>
 <table align="center">
         <tr><td><a href="appointmentBlockForm.form"><spring:message code="appointment.AppointmentBlock.add"/></a></td>
