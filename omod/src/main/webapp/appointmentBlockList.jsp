@@ -54,8 +54,10 @@
         {
                         var fromDate = document.getElementById('fromDate').value;
                         var toDate = document.getElementById('toDate').value;
-	                    var selectedLocation = document.getElementById("locationId");
-		                var locationId = selectedLocation.options[selectedLocation.selectedIndex].value;	           
+	         		    var selectedLocation = document.getElementById("locationId");
+	                    var locationId = selectedLocation.options[selectedLocation.selectedIndex].value;
+		                if(locationId =="")
+		                	locationId =null;
                         var tableContent = '';
                         document.getElementById('appointmentBlocksTable').innerHTML = tableContent;
                         tableContent="<tr>";
@@ -131,6 +133,9 @@
 			   nextWeekDate.setHours(23,59,59,999);
 			   document.getElementById('fromDate').value = getDateTimeFormat(currentDate);
 			   document.getElementById('toDate').value = getDateTimeFormat(nextWeekDate);
+			   var selectLocation = document.getElementById("locationId");
+			   selectLocation.options[selectLocation.options.length] = new Option('', '');
+			   selectLocation.selectedIndex = selectLocation.options.length-1;
                updateAppointmentBlockTable();
         });
  
