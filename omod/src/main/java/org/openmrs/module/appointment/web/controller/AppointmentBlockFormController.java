@@ -129,7 +129,6 @@ public class AppointmentBlockFormController {
 					long appointmentBlocklengthInMinutes = (appointmentBlock.getEndDate().getTime() - appointmentBlock
 					        .getStartDate().getTime()) / 60000;
 					int howManyTimeSlotsToCreate = (int) (appointmentBlocklengthInMinutes / slotLength);
-					//String toShow = howManyTimeSlotsToCreate + "," + appointmentBlocklengthInMinutes;
 					List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
 					if (currentTimeSlots.size() != howManyTimeSlotsToCreate) { //the time slot length changed therefore we need to update.
 						//First we will purge the current time slots.
@@ -139,19 +138,22 @@ public class AppointmentBlockFormController {
 						//Then we will add the new time slots corresponding to the new time slot length 
 						Date startDate = appointmentBlock.getStartDate();
 						Date endDate = null;
+						Calendar cal;
 						for (int i = 0; i < howManyTimeSlotsToCreate; i++) {
-							Calendar cal = Context.getDateTimeFormat().getCalendar();
+							cal = Context.getDateTimeFormat().getCalendar();
 							cal.setTime(startDate);
 							cal.add(Calendar.MINUTE, slotLength); // add slotLength minutes
 							endDate = cal.getTime();
-							//toShow += ",{" + startDate + "," + endDate + "}";
 							TimeSlot timeSlot = new TimeSlot(appointmentBlock, startDate, endDate);
 							startDate = endDate;
 							appointmentService.saveTimeSlot(timeSlot);
 						}
+						//fill the lost time with one time slot if there is any.
+						if (startDate.before(appointmentBlock.getEndDate())) {
+							TimeSlot timeSlot = new TimeSlot(appointmentBlock, startDate, appointmentBlock.getEndDate());
+							appointmentService.saveTimeSlot(timeSlot);
+						}
 					}
-					//httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, toShow);
-					
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentBlock.saved");
 				}
 			}

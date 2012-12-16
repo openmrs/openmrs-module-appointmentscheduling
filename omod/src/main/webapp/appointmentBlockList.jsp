@@ -61,7 +61,7 @@
                         tableContent="<tr>";
                         tableContent+='<th align="center"><spring:message code="appointment.AppointmentBlock.column.select"/></th>';
                         tableContent+='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.location"/> </th>';
-                        tableContent+='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.user"/> </th>';
+                        tableContent+='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.provider"/> </th>';
                         tableContent+='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.appointmentTypes"/> </th>';
                         tableContent+='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.date"/> </th>';
                         tableContent+='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.startTime"/> </th>';
