@@ -488,4 +488,13 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return a list of strings where each string represents an identifier of the patient.
 	 */
 	List<String> getPatientIdentifiersRepresentation(Patient patient);
+	
+	/**
+	 * Returns the amount of minutes left in a given time slot.
+	 * 
+	 * @param timeSlot the given time slot.
+	 * @return The amount of minutes left in the given time slot. Returns null if the given time
+	 *         slot was null;
+	 */
+	Integer getTimeLeftInTimeSlot(TimeSlot timeSlot);
 }

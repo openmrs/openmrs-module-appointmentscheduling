@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Provider;
 import org.openmrs.api.APIException;
@@ -36,7 +37,25 @@ public class HibernateTimeSlotDAO extends HibernateSingleClassDAO implements Tim
 			throw new APIException("fromDate can not be later than toDate");
 		else {
 			//TODO change this
-			return getAll();
+			Date startDate = (fromDate == null) ? new Date() : fromDate;
+			
+			String stringQuery = "SELECT timeSlot FROM TimeSlot AS timeSlot WHERE timeSlot.appointmentBlock IN("
+			        + " FROM AppointmentBlock WHERE :appointmentType IN elements(types)) AND voided = 0 AND startDate >= :startDate";
+			
+			if (toDate != null)
+				stringQuery += " AND endDate < :endDate";
+			if (provider != null)
+				stringQuery += " AND timeSlot.appointmentBlock.provider = :provider";
+			
+			Query query = super.sessionFactory.getCurrentSession().createQuery(stringQuery).setParameter("appointmentType",
+			    appointmentType).setParameter("startDate", startDate);
+			
+			if (toDate != null)
+				query.setParameter("endDate", toDate);
+			if (provider != null)
+				query.setParameter("provider", provider);
+			
+			return query.list();
 		}
 	}
 	

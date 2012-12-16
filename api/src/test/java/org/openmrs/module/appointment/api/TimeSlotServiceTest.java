@@ -19,6 +19,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +29,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Provider;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentBlock;
@@ -34,10 +37,9 @@ import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Tests Time Slot methods in the {@link $ AppointmentService}}.
+ * Tests Time Slot methods in the {@link $ AppointmentService} .
  */
 public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 	
@@ -209,22 +211,96 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	@Test
-	@Verifies(value = "should return correct time slots", method = "getTimeSlotsByConstraints(AppointmentType, Date, Date, Provider)")
-	public void getTimeSlotsByConstraints_shouldReturnCorrectTimeSlots() {
-		//		AppointmentType appointmentType = service.getAppointmentType(1);
-		//		assertNotNull(appointmentType);
-		//		Date fromDate = new Date("2013-01-01 00:00:00.0");
-		//		Date toDate = new Date("2006-01-01 00:00:00.0");
-		//		//Should be null because fromDate>toDate
-		//		Assert.assertNull(service.getTimeSlotsByConstraints(appointmentType, fromDate, toDate, null));
-		//		
-		//		fromDate = toDate;
-		//		toDate = new Date("2013-01-01 00:00:00.1");
-		//		//Should be null because appointment type is not optional
-		//		Assert.assertNull(service.getTimeSlotsByConstraints(null, fromDate, toDate, null));
-		//		
-		//		List<TimeSlot> timeSlots = service.getTimeSlotsByConstraints(null, fromDate, toDate, Context.getProviderService().getProvider(2));
-		//		assertEquals(0, timeSlots.size());
+	@Verifies(value = "should not include voided time slots", method = "getTimeSlotsByConstraints(AppointmentType, Date, Date, Provider)")
+	public void getTimeSlotsByConstraints_shouldNotIncludeVoidedTimeSlots() throws ParseException {
+		AppointmentType appointmentType = service.getAppointmentType(1);
+		assertNotNull(appointmentType);
+		List<TimeSlot> availableTimeSlots = service.getTimeSlotsByConstraints(appointmentType, null, null, null);
+		int countVoided = 0;
+		for (TimeSlot slot : availableTimeSlots) {
+			if (slot.isVoided())
+				countVoided++;
+		}
+		assertEquals(countVoided, 0);
+		
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		Date fromDate = format.parse("2000-01-01 00:00:00.0");
+		Date toDate = format.parse("2012-01-01 00:00:00.0");
+		availableTimeSlots = service.getTimeSlotsByConstraints(appointmentType, fromDate, toDate, null);
+		countVoided = 0;
+		for (TimeSlot slot : availableTimeSlots) {
+			if (slot.isVoided())
+				countVoided++;
+		}
+		assertEquals(countVoided, 0);
+		
+		Provider provider = Context.getProviderService().getProvider(1);
+		Assert.assertNotNull(provider);
+		availableTimeSlots = service.getTimeSlotsByConstraints(appointmentType, fromDate, toDate, provider);
+		countVoided = 0;
+		for (TimeSlot slot : availableTimeSlots) {
+			if (slot.isVoided())
+				countVoided++;
+		}
+		
+		assertEquals(countVoided, 0);
+	}
+	
+	@Test
+	@Verifies(value = "should get correct time slots", method = "getTimeSlotsByConstraints(AppointmentType, Date, Date, Provider)")
+	public void getTimeSlotsByConstraints_shouldGetCorrectTimeSlots() throws ParseException {
+		AppointmentType appointmentType = service.getAppointmentType(2);
+		assertNotNull(appointmentType);
+		Provider provider = Context.getProviderService().getProvider(1);
+		assertNotNull(provider);
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		Date fromDate = format.parse("2006-01-01 00:00:00.1");
+		Date toDate = format.parse("2013-01-01 00:00:00.0");
+		
+		//Filter by dates
+		List<TimeSlot> availableTimeSlots = service.getTimeSlotsByConstraints(appointmentType, fromDate, toDate, provider);
+		assertTrue(availableTimeSlots.contains(service.getTimeSlot(2)));
+		assertTrue(availableTimeSlots.contains(service.getTimeSlot(4)));
+		assertTrue(availableTimeSlots.size() == 2);
+		
+		//Confirm Time Left
+		appointmentType = service.getAppointmentType(1);
+		assertNotNull(appointmentType);
+		fromDate = format.parse("2006-01-01 00:00:00.0");
+		availableTimeSlots = service.getTimeSlotsByConstraints(appointmentType, fromDate, toDate, provider);
+		assertTrue(availableTimeSlots.contains(service.getTimeSlot(4)));
+		assertTrue(availableTimeSlots.size() == 1);
+		
+		//Filter by provider
+		provider = Context.getProviderService().getProvider(2);
+		assertNotNull(provider);
+		availableTimeSlots = service.getTimeSlotsByConstraints(appointmentType, fromDate, toDate, provider);
+		assertTrue(availableTimeSlots.size() == 0);
+		
+	}
+	
+	@Test(expected = APIException.class)
+	@Verifies(value = "should throw exception if appointment type is null", method = "getTimeSlotsByConstraints(AppointmentType, Date, Date, Provider)")
+	public void getTimeSlotsByConstraints_shouldThrowExcetpionIfAppointmentTypeIsNull() throws ParseException {
+		Provider provider = Context.getProviderService().getProvider(1);
+		Assert.assertNotNull(provider);
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		Date fromDate = format.parse("2000-01-01 00:00:00.0");
+		Date toDate = format.parse("2013-01-01 00:00:00.0");
+		List<TimeSlot> availableTimeSlots = service.getTimeSlotsByConstraints(null, fromDate, toDate, provider);
+	}
+	
+	@Test(expected = APIException.class)
+	@Verifies(value = "should throw exception if an illegal date interval was given", method = "getTimeSlotsByConstraints(AppointmentType, Date, Date, Provider)")
+	public void getTimeSlotsByConstraints_shouldThrowExcetpionIfIllegalDateInterval() throws ParseException {
+		AppointmentType appointmentType = service.getAppointmentType(1);
+		assertNotNull(appointmentType);
+		Provider provider = Context.getProviderService().getProvider(1);
+		Assert.assertNotNull(provider);
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		Date fromDate = format.parse("2000-01-01 00:00:00.0");
+		Date toDate = format.parse("2013-01-01 00:00:00.0");
+		List<TimeSlot> availableTimeSlots = service.getTimeSlotsByConstraints(null, toDate, fromDate, provider);
 	}
 	
 	@Test
@@ -244,5 +320,17 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		appointmentBlock = service.getAppointmentBlock(2);
 		timeSlots = service.getTimeSlotsInAppointmentBlock(appointmentBlock);
 		assertEquals(0, timeSlots.size());
+	}
+	
+	@Test
+	@Verifies(value = "should return correct time left in time slot", method = "getTimeLeftInTimeSlot(TimeSlot)")
+	public void getTimeLeftInTimeSlot_shouldReturnCorrectTimeLeft() {
+		Integer timeLeft = service.getTimeLeftInTimeSlot(null);
+		assertNull(timeLeft);
+		
+		TimeSlot timeSlot = service.getTimeSlot(1);
+		Assert.assertNotNull(timeSlot);
+		timeLeft = service.getTimeLeftInTimeSlot(timeSlot);
+		assertEquals((Integer) 1, timeLeft);
 	}
 }

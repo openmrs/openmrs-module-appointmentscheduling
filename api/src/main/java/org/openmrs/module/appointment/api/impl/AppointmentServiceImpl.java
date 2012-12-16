@@ -431,7 +431,18 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Transactional(readOnly = true)
 	public List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate,
 	        Provider provider) throws APIException {
-		return getTimeSlotDAO().getTimeSlotsByConstraints(appointmentType, fromDate, toDate, provider);
+		List<TimeSlot> suitableTimeSlots = getTimeSlotDAO().getTimeSlotsByConstraints(appointmentType, fromDate, toDate,
+		    provider);
+		
+		List<TimeSlot> availableTimeSlots = new LinkedList<TimeSlot>();
+		Integer duration = appointmentType.getDuration();
+		for (TimeSlot slot : suitableTimeSlots) {
+			if (getTimeLeftInTimeSlot(slot) >= duration)
+				availableTimeSlots.add(slot);
+		}
+		
+		return availableTimeSlots;
+		
 	}
 	
 	@Override
@@ -454,6 +465,28 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		}
 		
 		return identifiers;
+	}
+	
+	@Override
+	public Integer getTimeLeftInTimeSlot(TimeSlot timeSlot) {
+		Integer timeLeft = null;
+		
+		if (timeSlot == null)
+			return timeLeft;
+		
+		Date startDate = timeSlot.getStartDate();
+		Date endDate = timeSlot.getEndDate();
+		
+		//Calculate total number of minutes in the time slot.
+		timeLeft = (int) ((endDate.getTime() / 60000) - (startDate.getTime() / 60000));
+		
+		//Subtract from time left the amounts of minutes already scheduled
+		List<Appointment> appointments = getAppointmentsInTimeSlot(timeSlot);
+		for (Appointment appointment : appointments) {
+			timeLeft -= appointment.getAppointmentType().getDuration();
+		}
+		
+		return timeLeft;
 	}
 	
 }
