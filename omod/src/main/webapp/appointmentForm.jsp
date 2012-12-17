@@ -98,7 +98,7 @@
                 	<spring:bind path="appointment.appointmentType">
                         <select name="${status.expression}" id="appointmentTypeSelect">
                                 <c:forEach var="appointmentType" items="${appointmentTypeList}">
-                                        <option value="${appointmentType.appointmentTypeId}" ${param.appointmentTypeSelect==appointmentType.appointmentTypeId ? 'selected' : ''}>${appointmentType.name}</option>
+                                        <option value="${appointmentType.appointmentTypeId}" ${appointment.appointmentType.appointmentTypeId==appointmentType.appointmentTypeId ? 'selected' : ''}>${appointmentType.name}</option>
                                 </c:forEach>
                         </select>
                         <c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
