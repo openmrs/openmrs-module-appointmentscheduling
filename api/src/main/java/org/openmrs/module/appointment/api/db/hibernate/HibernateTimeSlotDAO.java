@@ -43,7 +43,7 @@ public class HibernateTimeSlotDAO extends HibernateSingleClassDAO implements Tim
 			        + " FROM AppointmentBlock WHERE :appointmentType IN elements(types)) AND voided = 0 AND startDate >= :startDate";
 			
 			if (toDate != null)
-				stringQuery += " AND endDate < :endDate";
+				stringQuery += " AND endDate <= :endDate";
 			if (provider != null)
 				stringQuery += " AND timeSlot.appointmentBlock.provider = :provider";
 			

@@ -42,15 +42,15 @@
    }
    function addPatientLink(patientObj){
            if(patientObj!=null){
-                   var genderImg = "<img src='${pageContext.request.contextPath}/images/male.gif' alt='<openmrs:message code='Person.gender.male'/>'/>";
+                   var genderImg = "<img src='${pageContext.request.contextPath}/images/male.gif' alt='<spring:message code='Person.gender.male'/>'/>";
                    if(patientObj.gender != 'M')
-                   	genderImg = "<img src='${pageContext.request.contextPath}/images/female.gif' alt='<openmrs:message code='Person.gender.female'/>'/>";
+                   	genderImg = "<img src='${pageContext.request.contextPath}/images/female.gif' alt='<spring:message code='Person.gender.female'/>'/>";
                    var age = "";
                    if(patientObj.age == 0)
                    	age+="1";
                    else
                    	age += patientObj.age.toString();
-                   age += " <openmrs:message code='Person.age.year' />";
+                   age += " <spring:message code='Person.age.year' />";
         	   	   var detailsText = "<table><tr><td>";
                    detailsText+= genderImg +" ("+ age +")<br/></td><td>";
                    var message = "<spring:message code='appointment.Appointment.create.link.viewPatient'/>";
