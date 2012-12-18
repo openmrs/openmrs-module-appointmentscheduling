@@ -5,8 +5,8 @@
 <openmrs:htmlInclude file="/moduleResources/appointment/createAppointmentStyle.css"/>
 <openmrs:htmlInclude file="/scripts/jquery/jsTree/jquery.tree.min.js" />
 <openmrs:htmlInclude file="/scripts/jquery/jsTree/themes/classic/style.css" />
-<openmrs:htmlInclude file="/scripts/jquery/dataTables/css/dataTables.css" />
-<openmrs:htmlInclude file="/scripts/jquery/dataTables/js/jquery.dataTables.min.js" />
+
+
  <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/engine.js'></script>
@@ -58,23 +58,31 @@
 	                    var locationId = selectedLocation.options[selectedLocation.selectedIndex].value;
 		                if(locationId =="")
 		                	locationId =null;
-                        var tableContent = '';
-                        document.getElementById('appointmentBlocksTable').innerHTML = tableContent;
-                        tableContent="<tr>";
-                        tableContent+='<th align="center"><spring:message code="appointment.AppointmentBlock.column.select"/></th>';
-                        tableContent+='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.location"/> </th>';
-                        tableContent+='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.provider"/> </th>';
-                        tableContent+='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.appointmentTypes"/> </th>';
-                        tableContent+='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.date"/> </th>';
-                        tableContent+='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.startTime"/> </th>';
-                        tableContent+='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.endTime"/> </th>';
-                        tableContent+="</tr>";
-	           			document.getElementById('appointmentBlocksTable').innerHTML +=tableContent;
+                        var tableHeader= '';
+                        document.getElementById('appointmentBlocksTable').innerHTML = tableHeader;
+                        tableHeader = '<tr class="tableHeader" align="center">';
+                        tableHeader +='<th align="center"><spring:message code="appointment.AppointmentBlock.column.select"/></th>';
+                        tableHeader +='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.location"/> </th>';
+                        tableHeader +='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.provider"/> </th>';
+                        tableHeader +='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.appointmentTypes"/> </th>';
+                        tableHeader +='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.date"/> </th>';
+                        tableHeader +='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.startTime"/> </th>';
+                        tableHeader +='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.endTime"/> </th>';
+                        tableHeader +="</tr>";
+	           //document.getElementById('appointmentBlocksTable').innerHTML +=tableHeader;
                         DWRAppointmentService.getAppointmentBlocks(fromDate,toDate,locationId,function(appointmentBlocks){
-		    				    tableContent = '';
+		       var tableContent = '';
+		       var count = 0;
                                 for(var i=0;i<appointmentBlocks.length;i++)
                                 {
-                                    tableContent = "<tr>";
+			if(count == 0){
+			document.getElementById('appointmentBlocksTable').innerHTML +=tableHeader;
+			}
+		          var backgroundColor = 'background-color:#E6E6E6';
+		          if((count++)%2 ==0){
+			backgroundColor = 'background-color:#ffffff';
+		          }
+                                    tableContent = '<tr style="'+backgroundColor +'">';
                                     tableContent += '<td align="center">'+'<input type="radio" name="appointmentBlockRadios" value="'+appointmentBlocks[i].appointmentBlockId+'"/></td>';
                                     var location = appointmentBlocks[i].location;
                                     var locationString = "";
@@ -148,16 +156,16 @@
         <div style="margin: 0.5em 0;">
                         <table>
                                         <tr>
-                                                <td><spring:message code="appointment.AppointmentBlock.pickDate"/>: </td>
-                                                <td><input type="text" name="fromDate" id="fromDate" size="16" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('fromDate').focus();"/></td>
-                                                <td><input type="text" name="toDate" id="toDate" size="16" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('toDate').focus();"/></td>
+                                                <td class="formLabel"><spring:message code="appointment.AppointmentBlock.pickDate"/>: </td>
+                                                <td><input type="text" name="fromDate" id="fromDate" size="18" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('fromDate').focus();"/></td>
+                                                <td><input type="text" name="toDate" id="toDate" size="18" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('toDate').focus();"/></td>
                                         </tr>
                                         <tr>
-                                            <td><spring:message code="appointment.AppointmentBlock.column.location"/>: </td>
-				<td><openmrs:fieldGen type="org.openmrs.Location" formFieldName="locationId" val="${selectedLocation}" /></td>
+                                            <td class="formLabel"><spring:message code="appointment.AppointmentBlock.column.location"/>: </td>
+											<td><openmrs:fieldGen type="org.openmrs.Location" formFieldName="locationId" val="${selectedLocation}" /></td>
                                         </tr>
                                         <tr>
-                                                <td><input type="button" value="Apply" onClick="updateAppointmentBlockTable()"></td>
+                                                <td><input type="button" class="appointmentButton" value=<spring:message code="appointment.AppointmentBlock.apply"/> onClick="updateAppointmentBlockTable()"></td>
                                         </tr>
                                 </table>
         </div>
@@ -166,7 +174,7 @@
 <br/>
 <b class="boxHeader"><spring:message code="appointment.AppointmentBlock.list.title"/></b>
 <form method="post" class="box">
-        <table id="appointmentBlocksTable"></table>
+        <table id="appointmentBlocksTable" cellspacing="0" align="center"></table>
 </form>
 <table align="center">
         <tr><td><a href="appointmentBlockForm.form"><spring:message code="appointment.AppointmentBlock.add"/></a></td>

@@ -1,6 +1,7 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 
 <%@ include file="/WEB-INF/template/header.jsp"%>
+<openmrs:htmlInclude file="/moduleResources/appointment/createAppointmentStyle.css"/>
 <openmrs:htmlInclude file="/scripts/timepicker/timepicker.js" />
 <openmrs:htmlInclude
 	file="/moduleResources/appointment/createAppointmentStyle.css" />
@@ -38,41 +39,42 @@
 </spring:hasBindErrors>
 <form method="post">
 	<fieldset>
-		<table>
+		<table id="appointmentBlockFormTable">
 			<tr>
-				<td><spring:message code="appointment.AppointmentBlock.clinician" /></td>
+			<tr class="steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.selectClinician"/></td></tr>
+				<td class="formLabel"><spring:message code="appointment.AppointmentBlock.clinician" /></td>
 				<td><spring:bind path="appointmentBlock.provider">
 					<select name="${status.expression}" id="providerSelect">
 					<c:forEach items="${providerList}" var="provider">
-						<option value="${provider.providerId}" <c:if test="${provider.providerId == status.value}">selected="selected"</c:if>>
-							${provider.name}
-						</option>
+						<option value="${provider.providerId}" <c:if test="${provider.providerId == status.value}">selected="selected"</c:if>>${provider.name}</option>
 					</c:forEach>
 					</select>
 				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>           
 				</spring:bind>
 				</td>
 			</tr>
+			<tr class="steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.selectLocation"/></td></tr>
 			<tr>
-				<td><spring:message code="appointment.AppointmentBlock.location" /></td>
+				<td class="formLabel"><spring:message code="appointment.AppointmentBlock.location" /></td>
 				<td><spring:bind path="appointmentBlock.location">
               			      <openmrs_tag:locationField formFieldName="location" initialValue="${status.value}"/>
               			      <c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
              			       </spring:bind>
           				     </td>
 			</tr>
-		
+			<tr class="steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.selectAppointmentTypes"/></td></tr>
 			<tr>
-				<td><spring:message code="appointment.AppointmentBlock.appointmentType" /></td>
-				<td><select name="appointmentTypeSelect"
+				<td class="formLabel"><spring:message code="appointment.AppointmentBlock.appointmentType" /></td>
+				<td><fieldset align="center"><legend><spring:message code="appointment.AppointmentBlock.availableTypes"/></legend><select name="appointmentTypeSelect"
 					id="appointmentTypeSelect">
 						<c:forEach var="appointmentType" items="${appointmentTypeList}">
 							<option value="${appointmentType.appointmentTypeId}"
 								${param.appointmentTypeSelect==appointmentType.appointmentTypeId ? 'selected' : ''}>${appointmentType.name}</option>
 						</c:forEach>
-					</select>
-				</td>
+					</select></fieldset>
+				</td>	
 				<td>
+				<fieldset align="center"><legend><spring:message code="appointment.AppointmentBlock.appointmentBlockTypes"/></legend>
 				<spring:bind path="appointmentBlock.types">
 				<select name="${status.expression}" id="currentApoointmentTypes">
 						<c:forEach var="appointmentType" items="${appointmentBlock.types}">
@@ -82,13 +84,15 @@
 				</select>
 				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
 				</spring:bind>
+				</fieldset>
 				</td>
-				<td><input type="button" value="Add Appointment Type" onClick="updateAppointmentTypes()"></td>
 			</tr>
-			
+			<tr><td colspan="3" align="center"><input type="button" id="appointmentBlockButton" class="appointmentButton" value=<spring:message code="appointment.AppointmentBlock.addType"/> onClick="updateAppointmentTypes()"></td></tr>
+
+			<tr class="steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.selectTimeInterval"/></td></tr>
 		
 			<tr>
-				<td><spring:message code="appointment.AppointmentBlock.timeInterval" /></td>
+				<td class="formLabel"><spring:message code="appointment.AppointmentBlock.timeInterval" /></td>
 				<td> 
 					<spring:bind path="appointmentBlock.startDate">
 					<input type="text" name="startDate" id="startDate" size="16" value="${status.value}"
@@ -110,11 +114,10 @@
 					</spring:bind>
 				</td>
 			</tr>
+<tr class="steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.defineTimeSlotLength"/></td></tr>
 			<tr>
-				<td valign="top"><spring:message code="appointment.AppointmentBlock.slotLength"/></td>
-				<td valign="top">
-						<input type="text" name="timeSlotLength" id="timeSlotLength" value="${timeSlotLength}" size="35" />
-				</td>
+				<td class="formLabel"><spring:message code="appointment.AppointmentBlock.slotLength"/></td>
+				<td><input type="text" name="timeSlotLength" id="timeSlotLength" value="${timeSlotLength}" size="24" /></td>
 			</tr>
 			<c:if test="${!(appointmentBlock.creator == null)}">
 			<tr>
@@ -123,7 +126,7 @@
 			</tr>
 			</c:if>
 		</table>
-		<br /> <input type="submit"
+		<br /> <input type="submit" class="appointmentButton"
 			value="<spring:message code="appointment.AppointmentBlock.save"/>"
 			name="save">
 
@@ -151,7 +154,7 @@
 					</c:if>
 				</c:forEach>
 			</spring:hasBindErrors>
-			<br /> <input type="submit"
+			<br /> <input type="submit" class="appointmentButton" 
 				value='<spring:message code="appointment.AppointmentBlock.voidAppointmentBlock"/>'
 				name="void" />
 		</fieldset>
@@ -166,7 +169,7 @@
 				<spring:message
 					code="appointment.AppointmentBlock.unretireAppointmentBlock" />
 			</h4>
-			<input type="submit"
+			<input type="submit" class="appointmentButton" 
 				value='<spring:message code="appointment.AppointmentBlock.unvoidAppointmentBlock"/>'
 				name="unvoid" />
 		</fieldset>
@@ -182,7 +185,7 @@
 				<spring:message
 					code="appointment.AppointmentBlock.purgeAppointmentBlock" />
 			</h4>
-			<input type="submit"
+			<input type="submit" class="appointmentButton" 
 				value='<spring:message code="appointment.AppointmentBlock.purgeAppointmentBlock"/>'
 				name="purge" />
 		</fieldset>

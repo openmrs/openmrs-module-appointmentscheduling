@@ -50,11 +50,11 @@
             import org.openmrs.module.appointment.web.DWRAppointmentService;
             DWRAppointmentService.getPatientDescription(Integer patientId);
             DWRAppointmentService.getAppointmentBlocks(String fromDate,String toDate,Integer locationId);
-            DWRAppointmentService.purgeAppointmentBlock(Integer appointmentBlockId)
             ]]>
              <![CDATA[
             import org.openmrs.module.appointment.web.DWRAppointmentService;
             DWRAppointmentService.getAvailableTimeSlots();
+            DWRAppointmentService.purgeAppointmentBlock(Integer appointmentBlockId);
             ]]>
 		</signatures>
 	</dwr>
