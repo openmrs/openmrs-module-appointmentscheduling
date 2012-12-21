@@ -16,6 +16,7 @@ package org.openmrs.module.appointment.api.db;
 import java.util.Date;
 import java.util.List;
 
+import org.openmrs.Location;
 import org.openmrs.Provider;
 import org.openmrs.api.APIException;
 import org.openmrs.module.appointment.Appointment;

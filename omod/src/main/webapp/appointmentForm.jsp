@@ -41,6 +41,7 @@
         }
    }
    function addPatientLink(patientObj){
+		   document.getElementById('patientLinkCell').innerHTML = "";
            if(patientObj!=null){
                    var genderImg = "<img src='${pageContext.request.contextPath}/images/male.gif' alt='<spring:message code='Person.gender.male'/>'/>";
                    if(patientObj.gender != 'M')
@@ -61,8 +62,6 @@
                    detailsText += link+message+"</a>";
                    document.getElementById('patientLinkCell').innerHTML += detailsText+"</td></tr></table>";
            }
-           else
-                   document.getElementById('patientLinkCell').innerHTML = "";
    }
 </script>
  
@@ -74,7 +73,7 @@
 <form:form modelAttribute="appointment" method="post">
 <fieldset>
 <table id="createAppointmentTable">
-		<tr class="steps"><td colspan="3"><spring:message code="appointment.Appointment.steps.selectPatient"/></td></tr>
+		<tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.Appointment.steps.selectPatient"/></td></tr>
         <tr>
                 <td class="formLabel"><spring:message code="appointment.Appointment.create.label.findPatient"/></td>
                
@@ -91,7 +90,7 @@
                 <td colspan="3" id="patientDataCell" style="font-style:italic;">
                 </td>
         </tr>
-     	<tr class="steps"><td colspan="3"><spring:message code="appointment.Appointment.steps.defineAppointmentProperties"/></td></tr>
+     	<tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.Appointment.steps.defineAppointmentProperties"/></td></tr>
         <tr>
                 <td class="formLabel"><spring:message code="appointment.Appointment.create.label.appointmentType"/></td>
                 <td>
@@ -103,6 +102,12 @@
                         </select>
                         <c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
                     </spring:bind>
+                </td>
+        </tr>
+        <tr>
+                <td class="formLabel"><spring:message code="appointment.Appointment.create.label.location"/></td>
+                <td>
+             			<openmrs:fieldGen type="org.openmrs.Location" formFieldName="locationId" val="${selectedLocation}" />
                 </td>
         </tr>
         <tr>
@@ -126,7 +131,7 @@
                 	 <img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('toDate').focus();"/>
                	 </td>
         </tr>
-        <tr class="steps"><td colspan="3"><spring:message code="appointment.Appointment.steps.selectTime"/></td></tr>
+        <tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.Appointment.steps.selectTime"/></td></tr>
         <tr>
                 <td/><td><input type="submit" name="findAvailableTime" class="appointmentButton" value="<spring:message code="appointment.Appointment.create.findTime"/>"></td>
 		<td>
@@ -146,6 +151,7 @@
                                                 <th><spring:message code="appointment.Appointment.create.header.appointmentType"/></th>
                                                 <th><spring:message code="appointment.Appointment.create.header.date"/></th>
                                                 <th><spring:message code="appointment.Appointment.create.header.timeSlot"/></th>
+                                                <th><spring:message code="appointment.Appointment.create.header.location"/></th>
                                         </tr>
 										<% int count=0; %>
                                         <c:forEach var="slot" items="${availableTimes}">
@@ -164,13 +170,14 @@
                                                         </td>
                                                         <td><fmt:formatDate type="date" value="${slot.startDate}" /></td>
                                                         <td><fmt:formatDate type="time" pattern="hh:mm a" value="${slot.startDate}" /> - <fmt:formatDate type="time" pattern="hh:mm a" value="${slot.endDate}" /></td>
+                                                        <td>${slot.appointmentBlock.location.name}</td>
                                                 </tr>
                                         </c:forEach>
                                 </table>
                 		</div>
                 </td>
         </tr>
-        <tr class="steps"><td colspan="3"><spring:message code="appointment.Appointment.steps.enterNotes"/></td></tr>
+        <tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.Appointment.steps.enterNotes"/></td></tr>
         <tr>
                 <td class="formLabel"><spring:message code="appointment.Appointment.create.label.reason"/></td>
                 <spring:bind path="appointment.reason">

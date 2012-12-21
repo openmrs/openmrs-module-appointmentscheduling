@@ -430,14 +430,27 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Override
 	@Transactional(readOnly = true)
 	public List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate,
-	        Provider provider) throws APIException {
+	        Provider provider, Location location) throws APIException {
 		List<TimeSlot> suitableTimeSlots = getTimeSlotDAO().getTimeSlotsByConstraints(appointmentType, fromDate, toDate,
 		    provider);
 		
 		List<TimeSlot> availableTimeSlots = new LinkedList<TimeSlot>();
+		Set<Location> relevantLocations = getAllLocationDescendants(location, null);
 		Integer duration = appointmentType.getDuration();
 		for (TimeSlot slot : suitableTimeSlots) {
-			if (getTimeLeftInTimeSlot(slot) >= duration)
+			boolean satisfyingConstraints = true;
+			
+			//Filter by location
+			if (location != null) {
+				if (!relevantLocations.contains(slot.getAppointmentBlock().getLocation()))
+					satisfyingConstraints = false;
+			}
+			
+			//Filter by time left
+			if (satisfyingConstraints && getTimeLeftInTimeSlot(slot) < duration)
+				satisfyingConstraints = false;
+			
+			if (satisfyingConstraints)
 				availableTimeSlots.add(slot);
 		}
 		
@@ -487,6 +500,21 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		}
 		
 		return timeLeft;
+	}
+	
+	@Override
+	public Set<Location> getAllLocationDescendants(Location location, Set<Location> descendants) {
+		if (descendants == null)
+			descendants = new HashSet<Location>();
+		
+		if (location != null) {
+			for (Location childLocation : location.getChildLocations()) {
+				descendants.add(childLocation);
+				getAllLocationDescendants(childLocation, descendants);
+			}
+		}
+		
+		return descendants;
 	}
 	
 }

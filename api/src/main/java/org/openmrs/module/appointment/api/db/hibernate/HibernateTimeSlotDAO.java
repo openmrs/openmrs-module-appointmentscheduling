@@ -2,12 +2,15 @@ package org.openmrs.module.appointment.api.db.hibernate;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
+import org.openmrs.Location;
 import org.openmrs.Provider;
 import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.AppointmentType;
@@ -36,7 +39,6 @@ public class HibernateTimeSlotDAO extends HibernateSingleClassDAO implements Tim
 		else if (fromDate != null && toDate != null && !fromDate.before(toDate))
 			throw new APIException("fromDate can not be later than toDate");
 		else {
-			//TODO change this
 			Date startDate = (fromDate == null) ? new Date() : fromDate;
 			
 			String stringQuery = "SELECT timeSlot FROM TimeSlot AS timeSlot WHERE timeSlot.appointmentBlock IN("

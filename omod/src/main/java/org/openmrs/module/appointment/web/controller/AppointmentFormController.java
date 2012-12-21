@@ -22,6 +22,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Location;
 import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
@@ -61,7 +62,16 @@ public class AppointmentFormController {
 	
 	@RequestMapping(value = "/module/appointment/appointmentForm", method = RequestMethod.GET)
 	public void showForm(ModelMap model, HttpServletRequest request) {
-		
+		if (Context.isAuthenticated())
+			model.put("selectedLocation", Context.getUserContext().getLocation());
+	}
+	
+	@ModelAttribute("selectedLocation")
+	public Location getLocation(@RequestParam(value = "locationId", required = false) Location location) {
+		if (location != null)
+			return location;
+		else
+			return null;
 	}
 	
 	@ModelAttribute("appointment")
@@ -84,17 +94,15 @@ public class AppointmentFormController {
 	public List<TimeSlot> getAvailableTimes(HttpServletRequest request, Appointment appointment,
 	        @RequestParam(value = "fromDate", required = false) Date fromDate,
 	        @RequestParam(value = "toDate", required = false) Date toDate,
-	        @RequestParam(value = "providerSelect", required = false) Provider provider) {
-		//TODO: Change this method to really act according to the submitted values, 
-		//		but this does not require any change in the form, thus, if all is ok I want to mark AM-6 as finished
-		//		and create a new ticket for the function which I will do asap
+	        @RequestParam(value = "providerSelect", required = false) Provider provider,
+	        @RequestParam(value = "locationId", required = false) Location location) {
 		AppointmentType appointmentType = appointment.getAppointmentType();
 		if (appointmentType == null || (fromDate != null && toDate != null && !fromDate.before(toDate)))
 			return null;
 		
 		try {
 			List<TimeSlot> availableTimeSlots = Context.getService(AppointmentService.class).getTimeSlotsByConstraints(
-			    appointmentType, fromDate, toDate, provider);
+			    appointmentType, fromDate, toDate, provider, location);
 			return availableTimeSlots;
 		}
 		catch (Exception ex) {

@@ -472,11 +472,12 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param fromDate - (optional) earliest start date.
 	 * @param toDate - (optional) latest start date.
 	 * @param provider - (optional) the appointment's provider.
+	 * @param location - (optional) the appointment's location. (or predecessor location)
 	 * @return List of TimeSlots that stands within the given constraints, null if illegal values
 	 *         (fromDate>toDate or null appointmentType)
 	 */
-	List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate, Provider provider)
-	        throws APIException;
+	List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate, Provider provider,
+	        Location location) throws APIException;
 	
 	/**
 	 * Returns a list of strings, where each string represents an identifier of the given patient
@@ -497,4 +498,15 @@ public interface AppointmentService extends OpenmrsService {
 	 *         slot was null;
 	 */
 	Integer getTimeLeftInTimeSlot(TimeSlot timeSlot);
+	
+	/**
+	 * Utility Method
+	 * Returns all the descendants of a given location recursively.
+	 * Call with null descendants.
+	 * 
+	 * @param location the location that is ancestor to all of the location in the returned set.
+	 * @param descendants the result set which is being built recursively.
+	 * @return A set that contains all of the descendants of the given location.
+	 */
+	Set<Location> getAllLocationDescendants(Location location, Set<Location> descendants);
 }

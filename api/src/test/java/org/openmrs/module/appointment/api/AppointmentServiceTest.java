@@ -18,13 +18,16 @@ import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
@@ -33,6 +36,8 @@ import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+
+import com.mchange.util.AssertException;
 
 /**
  * Tests Appointment methods in the {@link $ AppointmentService}}.
@@ -236,5 +241,18 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		toCompare.add(0, "OpenMRS Identification Number: 101-6");
 		toCompare.add(toCompare.size(), "Old Identification Number: 101");
 		assertEquals(identifiers, toCompare);
+	}
+	
+	@Test
+	@Verifies(value = "should retrieve correct descendants", method = "getAllLocationDescendants(Location , Set<Location> )")
+	public void getAllLocationDescendants_shouldGetCorrectDescendants() {
+		Location location = Context.getLocationService().getLocation(2);
+		assertNotNull(location);
+		
+		Set<Location> descendants = new HashSet<Location>();
+		descendants.add(Context.getLocationService().getLocation(3));
+		descendants.add(Context.getLocationService().getLocation(4));
+		
+		assertEquals(descendants, service.getAllLocationDescendants(location, null));
 	}
 }

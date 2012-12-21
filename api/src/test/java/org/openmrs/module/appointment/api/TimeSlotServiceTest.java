@@ -215,7 +215,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 	public void getTimeSlotsByConstraints_shouldNotIncludeVoidedTimeSlots() throws ParseException {
 		AppointmentType appointmentType = service.getAppointmentType(1);
 		assertNotNull(appointmentType);
-		List<TimeSlot> availableTimeSlots = service.getTimeSlotsByConstraints(appointmentType, null, null, null);
+		List<TimeSlot> availableTimeSlots = service.getTimeSlotsByConstraints(appointmentType, null, null, null, null);
 		int countVoided = 0;
 		for (TimeSlot slot : availableTimeSlots) {
 			if (slot.isVoided())
@@ -226,7 +226,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 		Date fromDate = format.parse("2000-01-01 00:00:00.0");
 		Date toDate = format.parse("2012-01-01 00:00:00.0");
-		availableTimeSlots = service.getTimeSlotsByConstraints(appointmentType, fromDate, toDate, null);
+		availableTimeSlots = service.getTimeSlotsByConstraints(appointmentType, fromDate, toDate, null, null);
 		countVoided = 0;
 		for (TimeSlot slot : availableTimeSlots) {
 			if (slot.isVoided())
@@ -236,7 +236,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		
 		Provider provider = Context.getProviderService().getProvider(1);
 		Assert.assertNotNull(provider);
-		availableTimeSlots = service.getTimeSlotsByConstraints(appointmentType, fromDate, toDate, provider);
+		availableTimeSlots = service.getTimeSlotsByConstraints(appointmentType, fromDate, toDate, provider, null);
 		countVoided = 0;
 		for (TimeSlot slot : availableTimeSlots) {
 			if (slot.isVoided())
@@ -258,7 +258,8 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		Date toDate = format.parse("2013-01-01 00:00:00.0");
 		
 		//Filter by dates
-		List<TimeSlot> availableTimeSlots = service.getTimeSlotsByConstraints(appointmentType, fromDate, toDate, provider);
+		List<TimeSlot> availableTimeSlots = service.getTimeSlotsByConstraints(appointmentType, fromDate, toDate, provider,
+		    null);
 		assertTrue(availableTimeSlots.contains(service.getTimeSlot(2)));
 		assertTrue(availableTimeSlots.contains(service.getTimeSlot(4)));
 		assertTrue(availableTimeSlots.size() == 2);
@@ -267,14 +268,14 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		appointmentType = service.getAppointmentType(1);
 		assertNotNull(appointmentType);
 		fromDate = format.parse("2006-01-01 00:00:00.0");
-		availableTimeSlots = service.getTimeSlotsByConstraints(appointmentType, fromDate, toDate, provider);
+		availableTimeSlots = service.getTimeSlotsByConstraints(appointmentType, fromDate, toDate, provider, null);
 		assertTrue(availableTimeSlots.contains(service.getTimeSlot(4)));
 		assertTrue(availableTimeSlots.size() == 1);
 		
 		//Filter by provider
 		provider = Context.getProviderService().getProvider(2);
 		assertNotNull(provider);
-		availableTimeSlots = service.getTimeSlotsByConstraints(appointmentType, fromDate, toDate, provider);
+		availableTimeSlots = service.getTimeSlotsByConstraints(appointmentType, fromDate, toDate, provider, null);
 		assertTrue(availableTimeSlots.size() == 0);
 		
 	}
@@ -287,7 +288,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 		Date fromDate = format.parse("2000-01-01 00:00:00.0");
 		Date toDate = format.parse("2013-01-01 00:00:00.0");
-		List<TimeSlot> availableTimeSlots = service.getTimeSlotsByConstraints(null, fromDate, toDate, provider);
+		List<TimeSlot> availableTimeSlots = service.getTimeSlotsByConstraints(null, fromDate, toDate, provider, null);
 	}
 	
 	@Test(expected = APIException.class)
@@ -300,7 +301,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 		Date fromDate = format.parse("2000-01-01 00:00:00.0");
 		Date toDate = format.parse("2013-01-01 00:00:00.0");
-		List<TimeSlot> availableTimeSlots = service.getTimeSlotsByConstraints(null, toDate, fromDate, provider);
+		List<TimeSlot> availableTimeSlots = service.getTimeSlotsByConstraints(null, toDate, fromDate, provider, null);
 	}
 	
 	@Test
