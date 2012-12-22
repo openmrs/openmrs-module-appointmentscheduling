@@ -17,19 +17,19 @@
 	function updateAppointmentTypes(add){
 	
         var allAppointmentTypes = document.getElementById("appointmentTypeSelect");
-        var currentAppointmentTypes = document.getElementById("currentApoointmentTypes");
+        var selectedAppointmentTypes = document.getElementById("currentApoointmentTypes");
         var from;
         var to;
 
         if(add==true)
        	{
         	from = allAppointmentTypes;
-        	to = currentAppointmentTypes;		
+        	to = selectedAppointmentTypes;
         }
         else
         	{
         		to = allAppointmentTypes;
-        		from = currentAppointmentTypes;		
+        		from = selectedAppointmentTypes;
         	}
         
         for(var i=0;i<from.options.length;i++)
@@ -41,6 +41,14 @@
         			}
         	
         	}
+	}
+	function selectAllTypes()
+	{
+	        var selectedAppointmentTypes = document.getElementById("currentApoointmentTypes");	
+	        for(var i=0;i<selectedAppointmentTypes.options.length;i++)
+	    	{
+			selectedAppointmentTypes.options[i].selected = true;
+		}
 	}
 </script>
 
@@ -151,7 +159,7 @@
 			</tr>
 			</c:if>
 		</table>
-		<br /> <input type="submit" class="appointmentButton"
+		<br /> <input type="submit" class="appointmentButton" onClick="selectAllTypes()"
 			value="<spring:message code="appointment.AppointmentBlock.save"/>"
 			name="save">
 
