@@ -14,11 +14,33 @@
 			return false;
 		}
 	}	
-	function updateAppointmentTypes(){
+	function updateAppointmentTypes(add){
+	
         var allAppointmentTypes = document.getElementById("appointmentTypeSelect");
-        var selectedTypeToAdd = allAppointmentTypes.options[allAppointmentTypes.selectedIndex];
         var currentAppointmentTypes = document.getElementById("currentApoointmentTypes");
-        currentAppointmentTypes.options[currentAppointmentTypes.options.length] = new Option(selectedTypeToAdd.text, selectedTypeToAdd.value);		
+        var from;
+        var to;
+
+        if(add==true)
+       	{
+        	from = allAppointmentTypes;
+        	to = currentAppointmentTypes;		
+        }
+        else
+        	{
+        		to = allAppointmentTypes;
+        		from = currentAppointmentTypes;		
+        	}
+        
+        for(var i=0;i<from.options.length;i++)
+        	{
+        		if(from.options[i].selected == true)
+        			{
+        				to[to.options.length] = new Option(from.options[i].text,from.options[i].value);
+        				from.remove(i);
+        			}
+        	
+        	}
 	}
 </script>
 
@@ -41,8 +63,7 @@
 	<fieldset>
 		<table id="appointmentBlockFormTable">
 			<tr>
-			<tr class="steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.selectClinician"/></td></tr>
-				<td class="formLabel"><spring:message code="appointment.AppointmentBlock.clinician" /></td>
+			<tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.selectClinician"/></td></tr>
 				<td><spring:bind path="appointmentBlock.provider">
 					<select name="${status.expression}" id="providerSelect">
 					<c:forEach items="${providerList}" var="provider">
@@ -53,30 +74,35 @@
 				</spring:bind>
 				</td>
 			</tr>
-			<tr class="steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.selectLocation"/></td></tr>
+			<tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.selectLocation"/></td></tr>
 			<tr>
-				<td class="formLabel"><spring:message code="appointment.AppointmentBlock.location" /></td>
 				<td><spring:bind path="appointmentBlock.location">
               			      <openmrs_tag:locationField formFieldName="location" initialValue="${status.value}"/>
               			      <c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
              			       </spring:bind>
           				     </td>
 			</tr>
-			<tr class="steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.selectAppointmentTypes"/></td></tr>
+			<tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.selectAppointmentTypes"/></td></tr>
 			<tr>
-				<td class="formLabel"><spring:message code="appointment.AppointmentBlock.appointmentType" /></td>
-				<td><fieldset align="center"><legend><spring:message code="appointment.AppointmentBlock.availableTypes"/></legend><select name="appointmentTypeSelect"
+				<td><fieldset align="center"><legend><spring:message code="appointment.AppointmentBlock.availableTypes"/></legend>
+				<select multiple name="appointmentTypeSelect"
 					id="appointmentTypeSelect">
 						<c:forEach var="appointmentType" items="${appointmentTypeList}">
 							<option value="${appointmentType.appointmentTypeId}"
 								${param.appointmentTypeSelect==appointmentType.appointmentTypeId ? 'selected' : ''}>${appointmentType.name}</option>
 						</c:forEach>
 					</select></fieldset>
-				</td>	
+				</td>
 				<td>
-				<fieldset align="center"><legend><spring:message code="appointment.AppointmentBlock.appointmentBlockTypes"/></legend>
+				<table>
+				<tr><td align="center"><input type="button" id="addButton" value="->" onClick="updateAppointmentTypes(true)"></td></tr>
+				<tr><td align="center"><input type="button" id="removeButton" value="<-" onClick="updateAppointmentTypes(false)"></td></tr>	
+				</table>
+				</td>
+				<td>
+				<fieldset align="center"><legend><spring:message code="appointment.AppointmentBlock.chosenTypes"/></legend>
 				<spring:bind path="appointmentBlock.types">
-				<select name="${status.expression}" id="currentApoointmentTypes">
+				<select multiple name="${status.expression}" id="currentApoointmentTypes">
 						<c:forEach var="appointmentType" items="${appointmentBlock.types}">
 							<option value="${appointmentType.appointmentTypeId}"
 								${param.appointmentTypeSelect==appointmentType.appointmentTypeId ? 'selected' : ''}>${appointmentType.name}</option>
@@ -87,12 +113,11 @@
 				</fieldset>
 				</td>
 			</tr>
-			<tr><td colspan="3" align="center"><input type="button" id="appointmentBlockButton" class="appointmentButton" value=<spring:message code="appointment.AppointmentBlock.addType"/> onClick="updateAppointmentTypes()"></td></tr>
+			<tr></tr>
 
-			<tr class="steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.selectTimeInterval"/></td></tr>
+			<tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.selectTimeInterval"/></td></tr>
 		
 			<tr>
-				<td class="formLabel"><spring:message code="appointment.AppointmentBlock.timeInterval" /></td>
 				<td> 
 					<spring:bind path="appointmentBlock.startDate">
 					<input type="text" name="startDate" id="startDate" size="16" value="${status.value}"
@@ -103,6 +128,7 @@
 					<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
 					</spring:bind>
 				</td>
+				<td></td>
 				<td>
 					<spring:bind path="appointmentBlock.endDate">
 					<input type="text" name="endDate" id="endDate" size="16" value="${status.value}"
@@ -114,9 +140,8 @@
 					</spring:bind>
 				</td>
 			</tr>
-<tr class="steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.defineTimeSlotLength"/></td></tr>
+<tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.defineTimeSlotLength"/></td></tr>
 			<tr>
-				<td class="formLabel"><spring:message code="appointment.AppointmentBlock.slotLength"/></td>
 				<td><input type="text" name="timeSlotLength" id="timeSlotLength" value="${timeSlotLength}" size="24" /></td>
 			</tr>
 			<c:if test="${!(appointmentBlock.creator == null)}">
