@@ -18,17 +18,13 @@
 <script type="text/javascript">
 $j(document).ready(function() {
 	//If the user is using "Simple" version
+
 	if($j('#locationId').length>0){
-	    var selectLocation = document.getElementById("locationId");
-	    //Add the NULL option
-	   	var option = new Option('<spring:message code="appointment.Appointment.create.label.locationNotSpecified"/>', '');
-	   	//Add as first
-		selectLocation.insertBefore(option, selectLocation.firstChild);
-	   	//Load the user default option
-		var userDefault = "${selectedLocation}";
-		// If no default was configured - set to null
-		if(userDefault  == "")
-			selectLocation.selectedIndex = 0;
+	    var selectLocation = $j('#locationId');
+	    //Set the Null option text (Default is empty string)
+		if(selectLocation[0][0].innerHTML == '')
+	   	 selectLocation[0][0].innerHTML = "<spring:message code='appointment.Appointment.create.label.locationNotSpecified'/>";
+	   		
 	}
 });
 
@@ -124,7 +120,7 @@ $j(document).ready(function() {
         <tr>
                 <td class="formLabel"><spring:message code="appointment.Appointment.create.label.location"/></td>
                 <td>
-             			<openmrs:fieldGen type="org.openmrs.Location" formFieldName="locationId" val="${selectedLocation}" />
+             			<openmrs_tag:locationField formFieldName="locationId" initialValue="${selectedLocation}" optionHeader="[blank]"/>
                 </td>
         </tr>
         <tr>
