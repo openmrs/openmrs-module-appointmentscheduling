@@ -86,13 +86,23 @@
                                     tableContent += '<td align="center">'+'<input type="radio" name="appointmentBlockRadios" value="'+appointmentBlocks[i].appointmentBlockId+'"/></td>';
                                     var location = appointmentBlocks[i].location;
                                     var locationString = "";
-                                    //assumption there are only two levels for the location tree.
-                                    var parentLocation = location.parentLocation;
-                                    if(parentLocation!=null && parentLocation.parentLocation!=null){	    
-                                	    locationString += parentLocation.name+"\\";
-                                	    parentLocation = parentLocation.parentLocation;
-                                    }
-                                    locationString += location.name;
+                                    //levels for the location tree.
+			
+			while(location != null){
+			      if(location.id != locationId)
+			      {
+			      locationString = location.name + locationString;
+			      locationString = "\\" + locationString;
+			      }
+			      else{
+				if(locationString==""){
+					locationString = location.name;
+				}
+				break;
+                                                    }
+		                   location = location.parentLocation;
+
+			}
                                     tableContent += '<td align="center">'+locationString+"</td>";      
                                     tableContent += '<td align="center">'+appointmentBlocks[i].provider.name+"</td>";
                                     //Linking the appointment types in a string.
@@ -176,15 +186,14 @@
 <br/>
 <b class="boxHeader"><spring:message code="appointment.AppointmentBlock.list.title"/></b>
 <form method="post" class="box">
-        <table id="appointmentBlocksTable" cellspacing="0" align="center"></table>
-</form>
-<table align="center">
+        <table id="appointmentBlocksTable" cellspacing="0"></table>
+<table>
         <tr><td><a href="appointmentBlockForm.form"><spring:message code="appointment.AppointmentBlock.add"/></a></td>
         <td><a id="editLink" onClick="updateHrefForAppointmentBlockEdit()"  ><spring:message code="appointment.AppointmentBlock.edit"/></a></td>
         <td><a id="deleteLink" onClick="deleteSelectedAppointmentBlock()"><spring:message code="appointment.AppointmentBlock.delete"/></a></td>
         </tr>
 </table>
- 
+ </form>
  
  
 <%@ include file="/WEB-INF/template/footer.jsp" %>
