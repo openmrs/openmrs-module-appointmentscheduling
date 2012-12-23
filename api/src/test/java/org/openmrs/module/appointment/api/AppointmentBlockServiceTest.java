@@ -197,30 +197,31 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		Location location = appointmentBlock.getLocation();
 		Date fromDate = appointmentBlock.getStartDate();
 		Date toDate = appointmentBlock.getEndDate();
-		List<AppointmentBlock> appointmentBlocks = service.getAppointmentBlocks(fromDate, toDate, location);
+		String locaitons = location.getId() + ",3";
+		List<AppointmentBlock> appointmentBlocks = service.getAppointmentBlocks(fromDate, toDate, locaitons);
 		assertNotNull(appointmentBlocks);
 		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
 		
 		appointmentBlock = service.getAppointmentBlock(2);
 		fromDate = appointmentBlock.getStartDate();
 		toDate = appointmentBlock.getEndDate();
-		appointmentBlocks = service.getAppointmentBlocks(fromDate, toDate, null);
+		appointmentBlocks = service.getAppointmentBlocks(fromDate, toDate, "");
 		assertNotNull(appointmentBlocks);
 		assertEquals(new Integer(2), appointmentBlocks.get(0).getAppointmentBlockId());
 		
-		appointmentBlocks = service.getAppointmentBlocks(toDate, null, null);
+		appointmentBlocks = service.getAppointmentBlocks(toDate, null, "");
 		assertNotNull(appointmentBlocks);
 		assertEquals(new Integer(3), appointmentBlocks.get(0).getAppointmentBlockId());
 		
-		appointmentBlocks = service.getAppointmentBlocks(null, toDate, null);
+		appointmentBlocks = service.getAppointmentBlocks(null, toDate, "");
 		assertNotNull(appointmentBlocks);
 		assertEquals(2, appointmentBlocks.size());
 		
-		appointmentBlocks = service.getAppointmentBlocks(null, null, location);
+		appointmentBlocks = service.getAppointmentBlocks(null, null, locaitons);
 		assertNotNull(appointmentBlocks);
 		assertEquals(2, appointmentBlocks.size());
 		
-		appointmentBlocks = service.getAppointmentBlocks(null, null, null);
+		appointmentBlocks = service.getAppointmentBlocks(null, null, "");
 		assertEquals(3, appointmentBlocks.size());
 	}
 }
