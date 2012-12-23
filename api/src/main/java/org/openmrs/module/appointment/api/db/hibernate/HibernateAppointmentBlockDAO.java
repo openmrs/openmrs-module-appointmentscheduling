@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.appointment.api.db.hibernate;
 
+import java.security.Provider.Service;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +21,8 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Location;
+import org.openmrs.api.LocationService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.api.db.AppointmentBlockDAO;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,21 +39,21 @@ public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implem
 	 * @param fromDate the lower bound of the date interval.
 	 * @param toDate the upper bound of the date interval.
 	 * @param location the location to filter by.
-	 * @return the appointment blocks that is on the given date interval and location.
+	 * @return the appointment blocks that is on the given date interval and locations.
 	 */
 	@Override
 	@Transactional(readOnly = true)
-	public List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, Location location) {
+	public List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, String locations) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(AppointmentBlock.class);
-		if (location != null) {
-			if (location.getChildLocations().size() > 0) {
-				Disjunction disjunction = Restrictions.disjunction();
-				for (Location locationChild : location.getChildLocations()) {
-					disjunction.add(Restrictions.eq("location", locationChild));
-				}
-				criteria.add(disjunction);
-			} else
-				criteria.add(Restrictions.eq("location", location));
+		if (!locations.isEmpty()) {
+			String[] locationsAsArray = locations.split(",");
+			Disjunction disjunction = Restrictions.disjunction();
+			LocationService locationService = Context.getLocationService();
+			for (int i = 0; i < locationsAsArray.length; i++) {
+				disjunction.add(Restrictions.eq("location", locationService.getLocation(Integer
+				        .parseInt(locationsAsArray[i]))));
+			}
+			criteria.add(disjunction);
 		}
 		if (fromDate != null) {
 			criteria.add(Restrictions.ge("startDate", fromDate));

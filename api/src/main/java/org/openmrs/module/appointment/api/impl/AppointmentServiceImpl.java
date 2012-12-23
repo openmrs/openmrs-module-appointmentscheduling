@@ -230,12 +230,12 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	/**
-	 * @see org.openmrs.module.appointment.api.AppointmentService#getAppointmentBlocks(java.util.Date,java.util.Date,org.openmrs.Location)
+	 * @see org.openmrs.module.appointment.api.AppointmentService#getAppointmentBlocks(java.util.Date,java.util.Date,java.util.String)
 	 *      )
 	 */
 	@Transactional(readOnly = true)
-	public List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, Location location) {
-		return getAppointmentBlockDAO().getAppointmentBlocks(fromDate, toDate, location);
+	public List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, String locations) {
+		return getAppointmentBlockDAO().getAppointmentBlocks(fromDate, toDate, locations);
 	}
 	
 	//Appointment

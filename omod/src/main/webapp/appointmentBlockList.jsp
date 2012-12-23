@@ -39,10 +39,10 @@
 		}
 		function deleteSelectedAppointmentBlock()
 		{
-			var appointmentBlockId = getSelectedAppointmentBlockId();
+			var appointmentBlockId = parseInt(getSelectedAppointmentBlockId());
 			if(appointmentBlockId != null)
 			{
-				DWRAppointmentService.purgeAppointmentBlock(appointmentBlockId, function(){
+				DWRAppointmentService.purgeAppointmentBlock(appointmentBlockId, function(id){
 					updateAppointmentBlockTable();
 				});
 			}
@@ -87,8 +87,10 @@
                                     var location = appointmentBlocks[i].location;
                                     var locationString = "";
                                     //assumption there are only two levels for the location tree.
-                                    if(location.parentLocation!=null){	    
-                                	    locationString += location.parentLocation.name+"\\";	
+                                    var parentLocation = location.parentLocation;
+                                    if(parentLocation!=null && parentLocation.parentLocation!=null){	    
+                                	    locationString += parentLocation.name+"\\";
+                                	    parentLocation = parentLocation.parentLocation;
                                     }
                                     locationString += location.name;
                                     tableContent += '<td align="center">'+locationString+"</td>";      
@@ -179,7 +181,7 @@
 <table align="center">
         <tr><td><a href="appointmentBlockForm.form"><spring:message code="appointment.AppointmentBlock.add"/></a></td>
         <td><a id="editLink" onClick="updateHrefForAppointmentBlockEdit()"  ><spring:message code="appointment.AppointmentBlock.edit"/></a></td>
-        <td><a onClick="deleteSelectedAppointmentBlock()"><spring:message code="appointment.AppointmentBlock.delete"/></a></td>
+        <td><a id="deleteLink" onClick="deleteSelectedAppointmentBlock()"><spring:message code="appointment.AppointmentBlock.delete"/></a></td>
         </tr>
 </table>
  

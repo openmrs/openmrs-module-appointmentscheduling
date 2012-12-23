@@ -62,8 +62,11 @@ public class DWRAppointmentService {
 		if (Context.isAuthenticated()) {
 			AppointmentService appointmentService = Context.getService(AppointmentService.class);
 			Location location = null;
-			if (locationId != null)
+			if (locationId != null) {
 				location = Context.getLocationService().getLocation(locationId);
+				//build the location hierarchy
+				
+			}
 			//In case the user selected a date.
 			if (!fromDate.isEmpty()) {
 				fromAsDate = Context.getDateTimeFormat().parse(fromDate);
@@ -71,16 +74,34 @@ public class DWRAppointmentService {
 			if (!toDate.isEmpty()) {
 				toAsDate = Context.getDateTimeFormat().parse(toDate);
 			}
-			appointmentBlockList = appointmentService.getAppointmentBlocks(fromAsDate, toAsDate, location);
+			appointmentBlockList = appointmentService
+			        .getAppointmentBlocks(fromAsDate, toAsDate, buildLocationList(location));
 		}
 		return appointmentBlockList;
 	}
 	
-	public void purgeAppointmentBlock(Integer appointmentBlockId) {
+	public Integer purgeAppointmentBlock(Integer appointmentBlockId) {
 		if (Context.isAuthenticated()) {
 			AppointmentService appointmentService = Context.getService(AppointmentService.class);
 			AppointmentBlock appointmentBlock = appointmentService.getAppointmentBlock(appointmentBlockId);
 			appointmentService.purgeAppointmentBlock(appointmentBlock);
 		}
+		return appointmentBlockId;
+	}
+	
+	private String buildLocationList(Location location) {
+		String ans = "";
+		if (location != null) {
+			ans = location.getId() + "";
+			if (location.getChildLocations().size() == 0)
+				return ans;
+			else {
+				for (Location locationChild : location.getChildLocations()) {
+					ans += "," + buildLocationList(locationChild);
+				}
+			}
+		}
+		return ans;
+		
 	}
 }

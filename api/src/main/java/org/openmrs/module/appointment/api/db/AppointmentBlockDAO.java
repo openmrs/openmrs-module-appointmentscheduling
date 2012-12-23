@@ -21,5 +21,5 @@ import org.openmrs.module.appointment.AppointmentBlock;
 
 public interface AppointmentBlockDAO extends SingleClassDAO {
 	
-	List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, Location location);
+	List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, String locations);
 }
