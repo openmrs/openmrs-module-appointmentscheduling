@@ -16,6 +16,23 @@
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/util.js'></script>
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/interface/DWRAppointmentService.js'></script>
 <script type="text/javascript">
+$j(document).ready(function() {
+	//If the user is using "Simple" version
+	if($j('#locationId').length>0){
+	    var selectLocation = document.getElementById("locationId");
+	    //Add the NULL option
+	   	var option = new Option('<spring:message code="appointment.Appointment.create.label.locationNotSpecified"/>', '');
+	   	//Add as first
+		selectLocation.insertBefore(option, selectLocation.firstChild);
+	   	//Load the user default option
+		var userDefault = "${selectedLocation}";
+		// If no default was configured - set to null
+		if(userDefault  == "")
+			selectLocation.selectedIndex = 0;
+	}
+});
+
+
    function updatePatient(formFieldId, patientObj, isPageLoad) {
         if(patientObj!=null){
                 addPatientLink(patientObj);
@@ -140,9 +157,8 @@
 			</spring:bind>
 		</td>
         </tr>
-        <tr>
-                <td class="formLabel"><spring:message code="appointment.Appointment.create.label.availableTimes"/></td>
-                <td colspan="2">			
+        <tr>               
+                <td colspan="3">			
                 	<div id="timeSlotsDIV">
                                 <table id="availbleTimesTable" cellspacing="0">
                                         <tr class="tableHeader">

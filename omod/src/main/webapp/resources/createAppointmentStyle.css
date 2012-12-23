@@ -98,6 +98,8 @@
 #timeSlotsDIV {
 	overflow: auto;
 	max-height: 395px;
+	margin-left:55px;
+	margin-right:55px;
 }
 
 .steps {
