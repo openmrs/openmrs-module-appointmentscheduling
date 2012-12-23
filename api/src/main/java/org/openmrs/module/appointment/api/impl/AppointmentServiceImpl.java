@@ -436,7 +436,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		
 		List<TimeSlot> availableTimeSlots = new LinkedList<TimeSlot>();
 		Set<Location> relevantLocations = getAllLocationDescendants(location, null);
-		relevantLocations.add(location)
+		relevantLocations.add(location);
+		
 		Integer duration = appointmentType.getDuration();
 		for (TimeSlot slot : suitableTimeSlots) {
 			boolean satisfyingConstraints = true;
