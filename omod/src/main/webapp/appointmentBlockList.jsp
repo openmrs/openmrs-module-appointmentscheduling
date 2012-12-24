@@ -68,66 +68,68 @@
                         tableHeader +='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.date"/> </th>';
                         tableHeader +='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.startTime"/> </th>';
                         tableHeader +='<th align="center"> <spring:message code="appointment.AppointmentBlock.column.endTime"/> </th>';
+                        tableHeader +='<th align="center"> <spring:message code="appointment.AppointmentBlock.slotLength"/> </th>';
                         tableHeader +="</tr>";
-	           //document.getElementById('appointmentBlocksTable').innerHTML +=tableHeader;
                         DWRAppointmentService.getAppointmentBlocks(fromDate,toDate,locationId,function(appointmentBlocks){
-		       var tableContent = '';
-		       var count = 0;
-                                for(var i=0;i<appointmentBlocks.length;i++)
-                                {
-			if(count == 0){
-			document.getElementById('appointmentBlocksTable').innerHTML +=tableHeader;
-			}
-		          var backgroundColor = 'background-color:#E6E6E6';
-		          if((count++)%2 ==0){
-			backgroundColor = 'background-color:#ffffff';
-		          }
-                                    tableContent = '<tr style="'+backgroundColor +'">';
-                                    tableContent += '<td align="center">'+'<input type="radio" name="appointmentBlockRadios" value="'+appointmentBlocks[i].appointmentBlockId+'"/></td>';
-                                    var location = appointmentBlocks[i].location;
-                                    var locationString = "";
-                                    //levels for the location tree.
-			
-			while(location != null){
-			      if(location.id != locationId)
-			      {
-			      locationString = location.name + locationString;
-			      locationString = "\\" + locationString;
-			      }
-			      else{
-				if(locationString==""){
-					locationString = location.name;
-				}
-				break;
-                                                    }
-		                   location = location.parentLocation;
-
-			}
-                                    tableContent += '<td align="center">'+locationString+"</td>";      
-                                    tableContent += '<td align="center">'+appointmentBlocks[i].provider.name+"</td>";
-                                    //Linking the appointment types in a string.
-                                    var appointmentTypes = "";
-                                    var appointmentTypesArray = appointmentBlocks[i].types;
-                                    for(var j=0;j<appointmentTypesArray.length;j++)
-                                    {
-                                    	    appointmentTypes += appointmentTypesArray[j].name;
-                                    		if(j<(appointmentTypesArray.length - 1)){
-                                    			appointmentTypes += ", ";
-                                    		}
-                                    }
-
-                                    tableContent += '<td align="center">'+appointmentTypes+"</td>";    
-							        var startDate = appointmentBlocks[i].startDate;
-							        var endDate = appointmentBlocks[i].endDate;
-							        tableContent += '<td align="center">'+startDate.getDate()+"/"+(startDate.getMonth()+1)+"/"+startDate.getFullYear()+'</td>';
-							        tableContent += '<td align="center">'+startDate.toLocaleTimeString()+'</td>';
-							        tableContent += '<td align="center">'+endDate.toLocaleTimeString()+'</td>';
-                                    tableContent += "</tr>";
-                                    document.getElementById('appointmentBlocksTable').innerHTML += tableContent;
-		      				   }                   
-							   
-                       });
+				      	var tableContent = '';
+		       			var count = 0;
+                        for(var i=0;i<appointmentBlocks.length;i++)
+                        {
+							if(count == 0){
+								document.getElementById('appointmentBlocksTable').innerHTML +=tableHeader;
+							}
+		  			        var backgroundColor = 'background-color:#E6E6E6';
+	   				        if((count++)%2 ==0){
+							backgroundColor = 'background-color:#ffffff';
+	   			   	        }
+                            tableContent = '<tr style="'+backgroundColor +'">';
+                            tableContent += '<td align="center">'+'<input type="radio" name="appointmentBlockRadios" value="'+appointmentBlocks[i].appointmentBlockId+'"/></td>';
+                            var location = appointmentBlocks[i].location;
+                            var locationString = "";
+                            //levels for the location tree.			
+							while(location != null){
+							      if(location.id != locationId)
+							      {
+							  	    locationString = location.name + locationString;
+							  	    locationString = "\\" + locationString;
+							      }
+							      else{
+									if(locationString==""){
+										locationString = location.name;
+									}
+									break;
+                                  }
+                		     	  location = location.parentLocation;
+							}
+                            tableContent += '<td align="center">'+locationString+"</td>";      
+                            tableContent += '<td align="center">'+appointmentBlocks[i].provider.name+"</td>";
+                            //Linking the appointment types in a string.
+                            var appointmentTypes = "";
+                            var appointmentTypesArray = appointmentBlocks[i].types;
+                            for(var j=0;j<appointmentTypesArray.length;j++)
+                            {
+                            	    appointmentTypes += appointmentTypesArray[j].name;
+                            		if(j<(appointmentTypesArray.length - 1)){
+                            			appointmentTypes += ", ";
+                            		}
+                            }
+                            tableContent += '<td align="center">'+appointmentTypes+"</td>";    
+					        var startDate = appointmentBlocks[i].startDate;
+					        var endDate = appointmentBlocks[i].endDate;
+					        tableContent += '<td align="center">'+startDate.getDate()+"/"+(startDate.getMonth()+1)+"/"+startDate.getFullYear()+'</td>';
+					        tableContent += '<td align="center">'+startDate.toLocaleTimeString()+'</td>';
+					        tableContent += '<td align="center">'+endDate.toLocaleTimeString()+'</td>';			
+						    tableContent += '<td align="center">'+appointmentBlocks[i].timeSlotLength+'</td>';
+                            tableContent += "</tr>";
+                            document.getElementById('appointmentBlocksTable').innerHTML += tableContent;
+      				    }                   					   
+          });
                         
+        }
+        function getTimeSlotLength(appointmentBlockId){
+        	 var timeSlot = '';
+
+        	 return 1;
         }
         function getDateTimeFormat(date){
 		   	var newFormat = "";

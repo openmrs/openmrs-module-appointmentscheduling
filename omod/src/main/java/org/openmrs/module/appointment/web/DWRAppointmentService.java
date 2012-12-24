@@ -15,6 +15,7 @@ import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.AppointmentService;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * DWR patient methods. The methods in here are used in the webapp to get data from the database via
@@ -53,9 +54,10 @@ public class DWRAppointmentService {
 		return timeSlots;
 	}
 	
-	public List<AppointmentBlock> getAppointmentBlocks(String fromDate, String toDate, Integer locationId)
+	public List<AppointmentBlockData> getAppointmentBlocks(String fromDate, String toDate, Integer locationId)
 	        throws ParseException {
 		List<AppointmentBlock> appointmentBlockList = new ArrayList<AppointmentBlock>();
+		List<AppointmentBlockData> appointmentBlockDatalist = new ArrayList<AppointmentBlockData>();
 		Date fromAsDate = null;
 		Date toAsDate = null;
 		//location needs authentication
@@ -64,8 +66,6 @@ public class DWRAppointmentService {
 			Location location = null;
 			if (locationId != null) {
 				location = Context.getLocationService().getLocation(locationId);
-				//build the location hierarchy
-				
 			}
 			//In case the user selected a date.
 			if (!fromDate.isEmpty()) {
@@ -76,8 +76,14 @@ public class DWRAppointmentService {
 			}
 			appointmentBlockList = appointmentService
 			        .getAppointmentBlocks(fromAsDate, toAsDate, buildLocationList(location));
+			
+			for (AppointmentBlock appointmentBlock : appointmentBlockList) {
+				appointmentBlockDatalist.add(new AppointmentBlockData(appointmentBlock.getId(), appointmentBlock
+				        .getLocation(), appointmentBlock.getProvider(), appointmentBlock.getTypes(), appointmentBlock
+				        .getStartDate(), appointmentBlock.getEndDate(), this.getTimeSlotLength(appointmentBlock.getId())));
+			}
 		}
-		return appointmentBlockList;
+		return appointmentBlockDatalist;
 	}
 	
 	public Integer purgeAppointmentBlock(Integer appointmentBlockId) {
@@ -102,6 +108,20 @@ public class DWRAppointmentService {
 			}
 		}
 		return ans;
-		
+	}
+	
+	private String getTimeSlotLength(Integer appointmentBlockId) {
+		if (appointmentBlockId == null)
+			return "";
+		else {
+			if (Context.isAuthenticated()) {
+				AppointmentService as = Context.getService(AppointmentService.class);
+				AppointmentBlock appointmentBlock = as.getAppointmentBlock(appointmentBlockId);
+				TimeSlot timeSlot = Context.getService(AppointmentService.class).getTimeSlotsInAppointmentBlock(
+				    appointmentBlock).get(0);
+				return (timeSlot.getEndDate().getTime() - timeSlot.getStartDate().getTime()) / 60000 + "";
+			}
+		}
+		return "";
 	}
 }

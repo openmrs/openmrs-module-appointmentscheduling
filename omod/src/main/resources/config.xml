@@ -31,6 +31,7 @@
 	<dwr>
 		<allow>
 			<convert converter="bean" match="org.openmrs.module.appointment.web.PatientData"/>
+			<convert converter="bean" match="org.openmrs.module.appointment.web.AppointmentBlockData"/>
 			<convert converter="bean" match="org.openmrs.module.appointment.TimeSlot"/>
 			<convert converter="bean" match="org.openmrs.module.appointment.AppointmentBlock"/>
 			<convert converter="bean" match="org.openmrs.module.appointment.AppointmentType"/>
