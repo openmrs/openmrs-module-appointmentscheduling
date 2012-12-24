@@ -110,7 +110,7 @@ public class AppointmentBlockFormController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public String onSubmit(HttpServletRequest request, AppointmentBlock appointmentBlock, BindingResult result,
-	        @RequestParam(value = "timeSlotLength", required = true) String timeSlotLength) throws Exception {
+	        @RequestParam(value = "timeSlotLength", required = false) String timeSlotLength) throws Exception {
 		
 		HttpSession httpSession = request.getSession();
 		
@@ -159,7 +159,7 @@ public class AppointmentBlockFormController {
 			}
 
 			// if the user is voiding out the AppointmentBlock
-			else if (request.getParameter("retire") != null) {
+			else if (request.getParameter("void") != null) {
 				String voidReason = request.getParameter("voidReason");
 				if (appointmentBlock.getAppointmentBlockId() != null && !(StringUtils.hasText(voidReason))) {
 					result.reject("voidReason", "general.voidedReason.empty");

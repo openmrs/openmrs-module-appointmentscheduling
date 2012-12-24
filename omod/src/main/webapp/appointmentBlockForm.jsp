@@ -200,7 +200,7 @@
 		<fieldset>
 			<h4>
 				<spring:message
-					code="appointment.AppointmentBlock.unretireAppointmentBlock" />
+					code="appointment.AppointmentBlock.unvoidAppointmentBlock" />
 			</h4>
 			<input type="submit" class="appointmentButton" 
 				value='<spring:message code="appointment.AppointmentBlock.unvoidAppointmentBlock"/>'

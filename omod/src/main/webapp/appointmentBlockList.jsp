@@ -39,10 +39,10 @@
 		}
 		function deleteSelectedAppointmentBlock()
 		{
-			var appointmentBlockId = parseInt(getSelectedAppointmentBlockId());
+			var appointmentBlockId = getSelectedAppointmentBlockId();
 			if(appointmentBlockId != null)
 			{
-				DWRAppointmentService.purgeAppointmentBlock(appointmentBlockId, function(id){
+				DWRAppointmentService.purgeAppointmentBlock(parseInt(appointmentBlockId), function(){
 					updateAppointmentBlockTable();
 				});
 			}
@@ -54,10 +54,16 @@
         {
                         var fromDate = document.getElementById('fromDate').value;
                         var toDate = document.getElementById('toDate').value;
-	         		    var selectedLocation = document.getElementById("locationId");
-	                    var locationId = selectedLocation.options[selectedLocation.selectedIndex].value;
-		                if(locationId =="")
-		                	locationId =null;
+	           var selectedLocation = document.getElementById("locationId");
+	           var locationId = null;
+	           if(selectedLocation == null){
+	           locationId = $j("[name='locationId']")[0].value;
+		}
+		else{
+		    locationId = selectedLocation.options[selectedLocation.selectedIndex].value;
+		}
+		if(locationId =="")
+		         locationId =null;
                         var tableHeader= '';
                         document.getElementById('appointmentBlocksTable').innerHTML = tableHeader;
                         tableHeader = '<tr class="tableHeader" align="center">';
@@ -155,9 +161,9 @@
 			   nextWeekDate.setHours(23,59,59,999);
 			   document.getElementById('fromDate').value = getDateTimeFormat(currentDate);
 			   document.getElementById('toDate').value = getDateTimeFormat(nextWeekDate);
-			   var selectLocation = document.getElementById("locationId");
-			   selectLocation.options[selectLocation.options.length] = new Option('', '');
-			   selectLocation.selectedIndex = selectLocation.options.length-1;
+			 //  var selectLocation = document.getElementById("locationId");
+			  // selectLocation.options[selectLocation.options.length] = new Option('', '');
+			  // selectLocation.selectedIndex = selectLocation.options.length-1;
                updateAppointmentBlockTable();
         });
  
@@ -176,7 +182,7 @@
                                         </tr>
                                         <tr>
                                             <td class="formLabel"><spring:message code="appointment.AppointmentBlock.column.location"/>: </td>
-											<td><openmrs:fieldGen type="org.openmrs.Location" formFieldName="locationId" val="${selectedLocation}" /></td>
+											<td><openmrs_tag:locationField formFieldName="locationId" initialValue="${selectedLocation}" optionHeader="[blank]"/></td>
                                         </tr>
                                         <tr>
                                                 <td><input type="button" class="appointmentButton" value=<spring:message code="appointment.AppointmentBlock.apply"/> onClick="updateAppointmentBlockTable()"></td>

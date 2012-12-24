@@ -5,16 +5,25 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.directwebremoting.WebContext;
+import org.directwebremoting.WebContextFactory;
+
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.PersonAttribute;
 import org.openmrs.Provider;
+import org.openmrs.api.APIException;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.AppointmentService;
+import org.openmrs.web.WebConstants;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -86,13 +95,24 @@ public class DWRAppointmentService {
 		return appointmentBlockDatalist;
 	}
 	
-	public Integer purgeAppointmentBlock(Integer appointmentBlockId) {
+	public void purgeAppointmentBlock(Integer appointmentBlockId) {
 		if (Context.isAuthenticated()) {
+			WebContext ctx = WebContextFactory.get();
+			HttpServletRequest request = ctx.getHttpServletRequest();
+			HttpSession httpSession = request.getSession();
 			AppointmentService appointmentService = Context.getService(AppointmentService.class);
 			AppointmentBlock appointmentBlock = appointmentService.getAppointmentBlock(appointmentBlockId);
-			appointmentService.purgeAppointmentBlock(appointmentBlock);
+			try {
+				appointmentService.purgeAppointmentBlock(appointmentBlock);
+				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentBlock.purgedSuccessfully");
+			}
+			catch (DataIntegrityViolationException e) {
+				httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "error.object.inuse.cannot.purge");
+			}
+			catch (APIException e) {
+				httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "error.general: " + e.getLocalizedMessage());
+			}
 		}
-		return appointmentBlockId;
 	}
 	
 	private String buildLocationList(Location location) {
