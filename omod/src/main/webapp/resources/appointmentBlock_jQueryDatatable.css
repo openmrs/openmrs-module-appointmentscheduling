@@ -1,13 +1,3 @@
-#createAppointmentTable {
-	margin-top: 30px;
-	width:auto;
-}
-
-#createAppointmentTable td {
-	padding: 5px;
-	padding-left: 15px;
-}
-
 #headline {
 	font-size: x-large;
 	font-weight: bold;
@@ -113,4 +103,9 @@
 .notSelectedRow:hover{
 	background-color:#efffd0 !important;
 	cursor:pointer;
+}
+
+.dataTable{
+position:static;
+width:100%  !important;
 }
