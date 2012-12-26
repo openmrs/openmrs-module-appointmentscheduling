@@ -1,111 +1,57 @@
-#headline {
-	font-size: x-large;
-	font-weight: bold;
-	padding-left: 15px;
-	padding: 7px;
-}
-
-.appointmentButton {
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #A3A3A3), color-stop(1, #757575) );
-	background: -moz-linear-gradient(center top, #A3A3A3 0%, #757575 100%   );
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#A3A3A3',
-		endColorstr='#757575' );
-	background-color: #a2dec8;
-	border: 1px solid #d9d9d9;
-	display: inline-block;
-	color: #ffffff;
-	padding: 3px 20px;
-	text-decoration: none;
-	text-shadow: 1px 1px 0px #666666;
-	font-weight: bold;
-}
-
-.appointmentButton:hover {
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #757575
-		), color-stop(1, #A3A3A3) );
-	background: -moz-linear-gradient(center top, #757575 0%, #A3A3A3 100%   );
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#757575',
-		endColorstr='#A3A3A3' );
-	background-color: #a2dec8;
-}
-
-.appointmentButton:active {
-	position: relative;
-	top: 1px;
-}
-
-.saveButton {
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #A3A3A3
-		), color-stop(1, #757575) );
-	background: -moz-linear-gradient(center top, #A3A3A3 0%, #757575 100%   );
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#A3A3A3',
-		endColorstr='#757575' );
-	background-color: #a2dec8;
-	border: 1px solid #d9d9d9;
-	display: inline-block;
-	color: #ffffff;
-	padding: 8px 25px;
-	text-decoration: none;
-	text-shadow: 1px 1px 0px #666666;
-	font-weight: bold;
-}
-
-.saveButton:hover {
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #757575
-		), color-stop(1, #A3A3A3) );
-	background: -moz-linear-gradient(center top, #757575 0%, #A3A3A3 100%   );
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#757575',
-		endColorstr='#A3A3A3' );
-	background-color: #a2dec8;
-}
-
-.saveButton:active {
-	position: relative;
-	top: 1px;
-}
-
-.calendarIcon {
-	margin-left: 7px;
-	margin-bottom: -5px;
-}
-
-
-.steps {
-	display:table-row;
-}
-
-.formLabel {
-	font-weight: bold;
-	font-weight: 600;
-}
-
-#appointmentBlockFormTable{
-	margin-top: 30px;
-	width:auto;
-}
-
-#appointmentBlockFormTable td {
-	padding: 5px;
-	padding-left: 15px;
-}
-
-.tableHeader {
-	background-color: #666666;
-	font-weight: bold;
-	color: white;
-	height: 20px;
-}
-
-.selectedRow{
-	background-color:#7fbffa !important;
-}
-
-.notSelectedRow:hover{
-	background-color:#efffd0 !important;
-	cursor:pointer;
-}
-
 .dataTable{
-position:static;
-width:100%  !important;
+	position:static;
+	width:100% !important;
 }
+
+table.display thead th {
+	border-bottom: 1px solid black;
+	cursor: pointer;
+	font-weight: bold;
+	padding: 3px 18px 3px 10px;
+}
+
+.dataTables_info{
+	font-weight:normal;
+	padding:3px;
+}
+
+thead tr th{
+	cursor:pointer;
+	font-weight:bold !important;
+}
+
+.sorting_1{
+	background-color:#8F8F8F;
+	color:white;
+}
+
+.dataTables_empty{
+	padding:5px;
+}
+
+.even{  	
+	background-color:#FFFFFF;
+}
+
+.odd{
+	background-color:#D4D4D4;
+}
+
+.dataTables_paginate{
+	padding:3px;
+	float:right;
+}
+
+.fg-button{
+	margin-left: 10px !important;
+	width:20px !important;
+	height:20px !important;
+}
+
+
+
+
+
+
+
+

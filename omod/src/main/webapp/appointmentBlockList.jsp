@@ -5,6 +5,7 @@
 <openmrs:htmlInclude file="/scripts/jquery/jsTree/jquery.tree.min.js" />
 <openmrs:htmlInclude file="/scripts/jquery/jsTree/themes/classic/style.css" />
 <openmrs:htmlInclude file="/moduleResources/appointment/jquery.dataTables.js" />
+<openmrs:htmlInclude file="/moduleResources/appointment/createAppointmentStyle.css" />
 <openmrs:htmlInclude file="/moduleResources/appointment/appointmentBlock_jQueryDatatable.css"/>
 <openmrs:htmlInclude file="/moduleResources/appointment/jQuerySmoothness/jquery-ui-1.9.2.custom.css"/>
 
