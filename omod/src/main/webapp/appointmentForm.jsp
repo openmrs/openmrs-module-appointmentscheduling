@@ -33,6 +33,15 @@
 						//Datatables.net
 						$j('#availableTimesTable').dataTable(
 								{
+"aoColumns": [
+                              {"bSortable": true},
+                              {"bSortable": true},
+                              {"bSortable": true},
+                              {"iDataSort": 6},
+				{"bSortable": true},
+				{"bSortable": true},
+                              {"bVisible": false}
+                             ],
 									"aLengthMenu" : [ [ 5, 10, 25, 50, -1 ],
 											[ 5, 10, 25, 50, "All" ] ],
 									"iDisplayLength" : 5,
@@ -54,7 +63,7 @@
 						}
 
 						//Toggle Checked Row
-						$j('.dataTables_wrapper tr').live(
+						$j('.dataTables_wrapper tbody tr').live(
 								'click',
 								function() {
 									var table = $j('#availableTimesTable')
@@ -133,6 +142,15 @@
 			document.getElementById('patientLinkCell').innerHTML += detailsText
 					+ "</td></tr></table>";
 		}
+	}
+	
+	function updateToDate(object){
+		if(object.value==''){
+		var fromDate = document.getElementById('fromDate').value;
+		if(fromDate!='')
+			object.value = fromDate;
+		}
+		showDateTimePicker(object);
 	}
 </script>
 
@@ -214,9 +232,11 @@
 					value="${param.fromDate}" onfocus="showDateTimePicker(this)" /> <img
 					src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png"
 					class="calendarIcon" alt=""
-					onClick="document.getElementById('fromDate').focus();" /> and <input
+					onClick="document.getElementById('fromDate').focus();" />
+					 and 
+					 <input
 					type="text" name="toDate" id="toDate" size="16"
-					value="${param.toDate}" onfocus="showDateTimePicker(this)" /> <img
+					value="${param.toDate}" onfocus="updateToDate(this)" /> <img
 					src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png"
 					class="calendarIcon" alt=""
 					onClick="document.getElementById('toDate').focus();" /></td>
@@ -275,6 +295,7 @@
 										value="${slot.startDate}" /> - <fmt:formatDate type="time"
 										pattern="HH:mm" value="${slot.endDate}" /></td>
 								<td>${slot.appointmentBlock.location.name}</td>
+								<td><fmt:formatDate type="date" value="${slot.startDate}" pattern="yyyyMMddHHmm" /></td>
 								</tr>
 							</c:forEach>
 						</tbody>
