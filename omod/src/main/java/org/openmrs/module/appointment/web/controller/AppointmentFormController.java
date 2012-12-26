@@ -103,6 +103,10 @@ public class AppointmentFormController {
 		try {
 			List<TimeSlot> availableTimeSlots = Context.getService(AppointmentService.class).getTimeSlotsByConstraints(
 			    appointmentType, fromDate, toDate, provider, location);
+			TimeSlot currentSelectedSlot = appointment.getTimeSlot();
+			//The appointment time slot should be selected from the latest list
+			if (currentSelectedSlot != null && !availableTimeSlots.contains(currentSelectedSlot))
+				appointment.setTimeSlot(null);
 			return availableTimeSlots;
 		}
 		catch (Exception ex) {

@@ -1,5 +1,6 @@
 #createAppointmentTable {
 	margin-top: 30px;
+	width:auto;
 }
 
 #createAppointmentTable td {
@@ -78,29 +79,6 @@
 	margin-bottom: -5px;
 }
 
-#availbleTimesTable td {
-	border: 1px solid black;
-	padding-right: 15px;
-	padding-left: 5px;
-}
-
-#availableTimesTable {
-	border-collapse: collapse;
-}
-
-.tableHeader {
-	background-color: #666666;
-	font-weight: bold;
-	color: white;
-	height: 20px;
-}
-
-#timeSlotsDIV {
-	overflow: auto;
-	max-height: 395px;
-	margin-left:55px;
-	margin-right:55px;
-}
 
 .steps {
 	display:table-row;
@@ -135,4 +113,13 @@
 	font-weight: bold;
 	color: white;
 	height: 20px;
+}
+
+.selectedRow{
+	background-color:#7fbffa !important;
+}
+
+.notSelectedRow:hover{
+	background-color:#efffd0 !important;
+	cursor:pointer;
 }

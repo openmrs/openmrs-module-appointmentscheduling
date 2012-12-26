@@ -2,9 +2,13 @@
  
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <openmrs:htmlInclude file="/scripts/timepicker/timepicker.js" />
+<openmrs:htmlInclude file="/moduleResources/appointment/jquery.dataTables.js" />
 <openmrs:htmlInclude file="/moduleResources/appointment/createAppointmentStyle.css"/>
+<openmrs:htmlInclude file="/moduleResources/appointment/appointment_jQueryDatatable.css"/>
+<openmrs:htmlInclude file="/moduleResources/appointment/jQuerySmoothness/jquery-ui-1.9.2.custom.css"/>
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <script type="text/javascript">
    function forceMaxLength(object, maxLength) {
       if( object.value.length >= maxLength) {
@@ -17,6 +21,17 @@
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/interface/DWRAppointmentService.js'></script>
 <script type="text/javascript">
 $j(document).ready(function() {
+	//Datatables.net
+	$j('#availableTimesTable').dataTable({
+		"aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+	"iDisplayLength": 5,
+	    "bLengthChange": true,
+	    "bFilter": false,
+	    "bInfo": true,
+	"bPaginate": true,
+"bJQueryUI": true
+	});
+	
 	//If the user is using "Simple" version
 
 	if($j('#locationId').length>0){
@@ -26,6 +41,21 @@ $j(document).ready(function() {
 	   	 selectLocation[0][0].innerHTML = "<spring:message code='appointment.Appointment.create.label.locationNotSpecified'/>";
 	   		
 	}
+
+	//Toggle Checked Row
+    $j('.dataTables_wrapper tr').live('click',
+      function(){
+	var table = $j('#availableTimesTable').dataTable();
+	var nNodes = table.fnGetNodes();
+	$j('input:radio', this).attr('checked',true);
+	for(var i=0; i<nNodes.length; i++){
+		$j(nNodes[i]).removeClass('selectedRow');
+		$j(nNodes[i]).addClass('notSelectedRow');
+	}
+	$j(this).addClass('selectedRow');
+	$j(this).removeClass('notSelectedRow');
+      }
+      );
 });
 
 
@@ -155,19 +185,20 @@ $j(document).ready(function() {
         </tr>
         <tr>               
                 <td colspan="3">			
-                	<div id="timeSlotsDIV">
-                                <table id="availbleTimesTable" cellspacing="0">
-                                        <tr class="tableHeader">
-                                                <th><spring:message code="appointment.Appointment.create.header.selectedOption"/></th>
-                                                <th><spring:message code="appointment.Appointment.create.header.clinician"/></th>
-                                                <th><spring:message code="appointment.Appointment.create.header.appointmentType"/></th>
-                                                <th><spring:message code="appointment.Appointment.create.header.date"/></th>
-                                                <th><spring:message code="appointment.Appointment.create.header.timeSlot"/></th>
-                                                <th><spring:message code="appointment.Appointment.create.header.location"/></th>
-                                        </tr>
-										<% int count=0; %>
+                                <table id="availableTimesTable" cellspacing="0">
+					<thead>
+						<tr>
+							<th><spring:message code="appointment.Appointment.create.header.selectedOption"/></th>
+	                                                <th><spring:message code="appointment.Appointment.create.header.clinician"/></th>
+	                                                <th><spring:message code="appointment.Appointment.create.header.appointmentType"/></th>
+	                                                <th><spring:message code="appointment.Appointment.create.header.date"/></th>
+	                                                <th><spring:message code="appointment.Appointment.create.header.timeSlot"/></th>
+	                                                <th><spring:message code="appointment.Appointment.create.header.location"/></th>
+						</tr>
+					</thead>
+                                        <tbody>
                                         <c:forEach var="slot" items="${availableTimes}">
-                                                <tr style=<%= count++ % 2==0 ? "background-color:#ffffff":"background-color:#E6E6E6" %>;>
+                                                <tr ${slot.timeSlotId==appointment.timeSlot.timeSlotId ? 'class="selectedRow"' : 'class="notSelectedRow"'} />
                                                         <td>
                                                                 <spring:bind path="appointment.timeSlot">
                                                                         <input type="radio" name="${status.expression}"  value="${slot.timeSlotId}"  ${slot.timeSlotId==appointment.timeSlot.timeSlotId ? 'checked' : ''} />
@@ -176,8 +207,8 @@ $j(document).ready(function() {
                                                        
                                                         <td>${slot.appointmentBlock.provider.name}</td>
                                                         <td>
-                                                                <c:forEach var="appointmentType" items="${slot.appointmentBlock.types}">
-                                                                ${appointmentType.name},
+                                                                <c:forEach var="appointmentType" items="${slot.appointmentBlock.types}" varStatus="status">
+                                                                ${appointmentType.name}<c:if test="${status.index != fn:length(slot.appointmentBlock.types)-1}">, </c:if>								
                                                                 </c:forEach>
                                                         </td>
                                                         <td><fmt:formatDate type="date" value="${slot.startDate}" /></td>
@@ -185,8 +216,8 @@ $j(document).ready(function() {
                                                         <td>${slot.appointmentBlock.location.name}</td>
                                                 </tr>
                                         </c:forEach>
+					</tbody>
                                 </table>
-                		</div>
                 </td>
         </tr>
         <tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.Appointment.steps.enterNotes"/></td></tr>
