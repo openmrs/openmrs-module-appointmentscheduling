@@ -1,10 +1,8 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 
 <%@ include file="/WEB-INF/template/header.jsp"%>
-<openmrs:htmlInclude file="/moduleResources/appointment/createAppointmentStyle.css"/>
+<openmrs:htmlInclude file="/moduleResources/appointment/Styles/createAppointmentStyle.css"/>
 <openmrs:htmlInclude file="/scripts/timepicker/timepicker.js" />
-<openmrs:htmlInclude
-	file="/moduleResources/appointment/createAppointmentStyle.css" />
 
 <script type="text/javascript">
 	function confirmPurge() {
@@ -130,7 +128,7 @@
 					<spring:bind path="appointmentBlock.startDate">
 					<input type="text" name="startDate" id="startDate" size="16" value="${status.value}"
 					onfocus="showDateTimePicker(this)" /> <img
-					src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png"
+					src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png"
 					class="calendarIcon" alt=""
 					onClick="document.getElementById('startDate').focus();" />
 					<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
@@ -141,7 +139,7 @@
 					<spring:bind path="appointmentBlock.endDate">
 					<input type="text" name="endDate" id="endDate" size="16" value="${status.value}"
 					onfocus="showDateTimePicker(this)" /> <img
-					src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png"
+					src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png"
 					class="calendarIcon" alt=""
 					onClick="document.getElementById('endDate').focus();" />
 					<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>

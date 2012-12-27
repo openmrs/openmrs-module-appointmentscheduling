@@ -498,7 +498,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		//Subtract from time left the amounts of minutes already scheduled
 		List<Appointment> appointments = getAppointmentsInTimeSlot(timeSlot);
 		for (Appointment appointment : appointments) {
-			timeLeft -= appointment.getAppointmentType().getDuration();
+			if (!appointment.isVoided())
+				timeLeft -= appointment.getAppointmentType().getDuration();
 		}
 		
 		return timeLeft;

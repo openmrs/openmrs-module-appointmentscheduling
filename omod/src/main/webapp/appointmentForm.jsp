@@ -3,13 +3,15 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 <openmrs:htmlInclude file="/scripts/timepicker/timepicker.js" />
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/jquery.dataTables.js" />
+	file="/moduleResources/appointment/Scripts/jquery.dataTables.js" />
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/createAppointmentStyle.css" />
+	file="/moduleResources/appointment/Scripts/jquery.maxlength.js" />
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/appointment_jQueryDatatable.css" />
+	file="/moduleResources/appointment/Styles/createAppointmentStyle.css" />
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/jQuerySmoothness/jquery-ui-1.9.2.custom.css" />
+	file="/moduleResources/appointment/Styles/appointment_jQueryDatatable.css" />
+<openmrs:htmlInclude
+	file="/moduleResources/appointment/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css" />
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
@@ -30,18 +32,33 @@
 	$j(document)
 			.ready(
 					function() {
+						//Focus "search patient"
+						$j('#patient_id_selection').focus();
+						
+						//Init max notes length
+						$j('[name="reason"]').maxlength({
+							'feedback' : '.charsLeft',
+						    'useInput' : true
+						});
+						
 						//Datatables.net
 						$j('#availableTimesTable').dataTable(
 								{
-"aoColumns": [
-                              {"bSortable": true},
-                              {"bSortable": true},
-                              {"bSortable": true},
-                              {"iDataSort": 6},
-				{"bSortable": true},
-				{"bSortable": true},
-                              {"bVisible": false}
-                             ],
+									"aoColumns" : [ {
+										"bSortable" : true
+									}, {
+										"bSortable" : true
+									}, {
+										"bSortable" : true
+									}, {
+										"iDataSort" : 6
+									}, {
+										"bSortable" : true
+									}, {
+										"bSortable" : true
+									}, {
+										"bVisible" : false
+									} ],
 									"aLengthMenu" : [ [ 5, 10, 25, 50, -1 ],
 											[ 5, 10, 25, 50, "All" ] ],
 									"iDisplayLength" : 5,
@@ -118,7 +135,7 @@
 		}
 	}
 	function addPatientLink(patientObj) {
-		document.getElementById('patientLinkCell').innerHTML = "";
+		document.getElementById('patientLinkDiv').innerHTML = "";
 		if (patientObj != null) {
 			var genderImg = "<img src='${pageContext.request.contextPath}/images/male.gif' alt='<spring:message code='Person.gender.male'/>'/>";
 			if (patientObj.gender != 'M')
@@ -131,24 +148,24 @@
 			age += " <spring:message code='Person.age.year' />";
 			var detailsText = "<table><tr><td>";
 			detailsText += genderImg + " (" + age + ")<br/></td><td>";
-			var message = "<spring:message code='appointment.Appointment.create.link.viewPatient'/>";
+			var message = "<img src='${pageContext.request.contextPath}/moduleResources/appointment/Images/view.png' class='formIcon' alt=''/><spring:message code='appointment.Appointment.create.link.viewPatient'/>";
 			var link = "<a href='${pageContext.request.contextPath}/patientDashboard.form?patientId="
 					+ patientObj.patientId + "'>";
 			detailsText += link + message + "</a><br/>";
-			message = "<spring:message code='appointment.Appointment.create.link.editPatient'/>";
+			message = "<img src='${pageContext.request.contextPath}/moduleResources/appointment/Images/edit.png' class='formIcon' alt=''/><spring:message code='appointment.Appointment.create.link.editPatient'/>";
 			link = "<a href='${pageContext.request.contextPath}/admin/patients/shortPatientForm.form?patientId="
 					+ patientObj.patientId + "'>";
 			detailsText += link + message + "</a>";
-			document.getElementById('patientLinkCell').innerHTML += detailsText
+			document.getElementById('patientLinkDiv').innerHTML += detailsText
 					+ "</td></tr></table>";
 		}
 	}
-	
-	function updateToDate(object){
-		if(object.value==''){
-		var fromDate = document.getElementById('fromDate').value;
-		if(fromDate!='')
-			object.value = fromDate;
+
+	function updateToDate(object) {
+		if (object.value == '') {
+			var fromDate = document.getElementById('fromDate').value;
+			if (fromDate != '')
+				object.value = fromDate;
 		}
 		showDateTimePicker(object);
 	}
@@ -174,12 +191,12 @@
 
 				<td><spring:bind path="appointment.patient">
 						<openmrs_tag:patientField formFieldName="patient"
-							callback="updatePatient" initialValue="${status.value}" />
+							callback="updatePatient" initialValue="${status.value}"/>
 						<c:if test="${status.errorMessage != ''}">
 							<span class="error">${status.errorMessage}</span>
 						</c:if>
-					</spring:bind></td>
-				<td id="patientLinkCell"></td>
+					</spring:bind><div id="patientLinkDiv"></div></td>
+				<td></td>
 			</tr>
 			<tr>
 				<td></td>
@@ -230,14 +247,12 @@
 						code="appointment.Appointment.create.label.betweenDates" /></td>
 				<td><input type="text" name="fromDate" id="fromDate" size="16"
 					value="${param.fromDate}" onfocus="showDateTimePicker(this)" /> <img
-					src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png"
+					src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png"
 					class="calendarIcon" alt=""
-					onClick="document.getElementById('fromDate').focus();" />
-					 and 
-					 <input
+					onClick="document.getElementById('fromDate').focus();" /> and <input
 					type="text" name="toDate" id="toDate" size="16"
 					value="${param.toDate}" onfocus="updateToDate(this)" /> <img
-					src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png"
+					src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png"
 					class="calendarIcon" alt=""
 					onClick="document.getElementById('toDate').focus();" /></td>
 			</tr>
@@ -288,14 +303,16 @@
 								<td>${slot.appointmentBlock.provider.name}</td>
 								<td><c:forEach var="appointmentType"
 										items="${slot.appointmentBlock.types}" varStatus="status">
-                                                                ${appointmentType.name}<c:if test="${status.index != fn:length(slot.appointmentBlock.types)-1}">, </c:if>
+                                                                ${appointmentType.name}<c:if
+											test="${status.index != fn:length(slot.appointmentBlock.types)-1}">, </c:if>
 									</c:forEach></td>
 								<td><fmt:formatDate type="date" value="${slot.startDate}" /></td>
 								<td><fmt:formatDate type="time" pattern="HH:mm"
 										value="${slot.startDate}" /> - <fmt:formatDate type="time"
 										pattern="HH:mm" value="${slot.endDate}" /></td>
 								<td>${slot.appointmentBlock.location.name}</td>
-								<td><fmt:formatDate type="date" value="${slot.startDate}" pattern="yyyyMMddHHmm" /></td>
+								<td><fmt:formatDate type="date" value="${slot.startDate}"
+										pattern="yyyyMMddHHmm" /></td>
 								</tr>
 							</c:forEach>
 						</tbody>
@@ -312,9 +329,13 @@
 				<spring:bind path="appointment.reason">
 					<td><textarea name="reason" rows="3" cols="50"
 							style="resize: none"
-							onkeypress="return forceMsaxLength(this, 1024);">${status.value}</textarea></td>
+							onkeypress="return forceMaxLength(this, 1024);">${status.value}</textarea></td>
 				</spring:bind>
+				<input type="hidden" name="maxlength" value="1024" />
 			</tr>
+			<tr><td></td><td style="font-size:12px;">
+				(<spring:message code="appointment.Appointment.create.label.charactersLeft" /><span class="charsLeft">1024</span>)
+			</td></tr>
 			<tr>
 				<td></td>
 				<td><input type="submit" class="saveButton"

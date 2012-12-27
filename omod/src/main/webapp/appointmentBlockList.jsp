@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <%@ include file="localHeader.jsp" %>
 <openmrs:htmlInclude file="/scripts/timepicker/timepicker.js" />
-<openmrs:htmlInclude file="/moduleResources/appointment/createAppointmentStyle.css"/>
+<openmrs:htmlInclude file="/moduleResources/appointment/Styles/createAppointmentStyle.css"/>
 <openmrs:htmlInclude file="/scripts/jquery/jsTree/jquery.tree.min.js" />
 <openmrs:htmlInclude file="/scripts/jquery/jsTree/themes/classic/style.css" />
 
@@ -168,8 +168,8 @@
                         <table>
                                         <tr>
                                                 <td class="formLabel"><spring:message code="appointment.AppointmentBlock.pickDate"/>: </td>
-                                                <td><input type="text" name="fromDate" id="fromDate" size="18" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('fromDate').focus();"/></td>
-                                                <td><input type="text" name="toDate" id="toDate" size="18" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('toDate').focus();"/></td>
+                                                <td><input type="text" name="fromDate" id="fromDate" size="18" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('fromDate').focus();"/></td>
+                                                <td><input type="text" name="toDate" id="toDate" size="18" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('toDate').focus();"/></td>
                                         </tr>
                                         <tr>
                                             <td class="formLabel"><spring:message code="appointment.AppointmentBlock.column.location"/>: </td>

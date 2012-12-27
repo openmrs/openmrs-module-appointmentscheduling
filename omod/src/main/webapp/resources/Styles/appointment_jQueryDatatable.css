@@ -11,6 +11,11 @@ table.display thead th {
     padding: 3px 18px 3px 10px;
 }
 
+.dataTables_wrapper{
+	border:thin gainsboro solid;
+	border-radius:6px;
+}
+
 .dataTables_info{
 	font-weight:normal;
 	padding:3px;
@@ -28,7 +33,7 @@ thead tr th{
 
 .dataTables_empty{
 	padding:5px;
-
+	background-color:#FFFFFF !important;
 }
 
 .even{
@@ -42,6 +47,10 @@ thead tr th{
 .dataTables_paginate{
 	padding:3px;
 	float:right;
+}
+
+.dataTables_length{
+	margin-left:5px;
 }
 
 .fg-button{

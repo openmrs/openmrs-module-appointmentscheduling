@@ -332,6 +332,6 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		TimeSlot timeSlot = service.getTimeSlot(1);
 		Assert.assertNotNull(timeSlot);
 		timeLeft = service.getTimeLeftInTimeSlot(timeSlot);
-		assertEquals((Integer) 1, timeLeft);
+		assertEquals((Integer) 6, timeLeft);
 	}
 }
