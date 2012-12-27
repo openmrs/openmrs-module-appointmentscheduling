@@ -115,12 +115,6 @@
 	padding-left: 15px;
 }
 
-#appointmentBlocksTable td {
-	border: 1px solid black;
-	padding-right: 15px;
-	padding-left: 5px;
-}
-
 #appointmentBlocksTable{
 	border-collapse: collapse;
 }
