@@ -77,6 +77,7 @@
                   var count = 0;
                   for(var i=0;i<appointmentBlocks.length;i++)
                   {
+                      //clean the table content
                       if(count ==0){
                         document.getElementById('appointmentBlocksTable').innerHTML='';
                       }
@@ -123,13 +124,20 @@
                       //If we got to the end
                       if(count == appointmentBlocks.length){
                         var oTable = $j('#appointmentBlocksTable').dataTable();
+                        oTable.fnClearTable();
                         oTable.fnDestroy();
                         document.getElementById('appointmentBlocksTable').innerHTML += tableContent;
                       }
 
 
                     }
-                     if(count!=0 && count == appointmentBlocks.length){
+                     if(count == appointmentBlocks.length){
+                            //if there was no appointment blocks, clear table and destroy
+                            if(appointmentBlocks.length == 0){
+                                var oTable = $j('#appointmentBlocksTable').dataTable();
+                                oTable.fnClearTable();
+                                oTable.fnDestroy();
+                             }
                             $j('#appointmentBlocksTable').dataTable({
                                 "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                                 "iDisplayLength": -1,
@@ -210,20 +218,20 @@
 <fieldset style="clear: both">
         <legend><spring:message code="appointment.AppointmentBlock.legend.properties"/></legend>
         <div style="margin: 0.5em 0;">
-                        <table>
-                                        <tr>
-                                                <td class="formLabel"><spring:message code="appointment.AppointmentBlock.pickDate"/>: </td>
-                                                <td><input type="text" name="fromDate" id="fromDate" size="18" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('fromDate').focus();"/></td>
-                                                <td><input type="text" name="toDate" id="toDate" size="18" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('toDate').focus();"/></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="formLabel"><spring:message code="appointment.AppointmentBlock.column.location"/>: </td>
-											<td><openmrs_tag:locationField formFieldName="locationId" initialValue="${selectedLocation}" optionHeader="[blank]"/></td>
-                                        </tr>
-                                        <tr>
-                                                <td><input type="button" class="appointmentButton" value=<spring:message code="appointment.AppointmentBlock.apply"/> onClick="updateAppointmentBlockTable()"></td>
-                                        </tr>
-                                </table>
+                <table>
+                        <tr>
+                                <td class="formLabel"><spring:message code="appointment.AppointmentBlock.pickDate"/>: </td>
+                                <td><input type="text" name="fromDate" id="fromDate" size="18" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('fromDate').focus();"/></td>
+                                <td><input type="text" name="toDate" id="toDate" size="18" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('toDate').focus();"/></td>
+                        </tr>
+                        <tr>
+                            <td class="formLabel"><spring:message code="appointment.AppointmentBlock.column.location"/>: </td>
+                            <td><openmrs_tag:locationField formFieldName="locationId" initialValue="${selectedLocation}" optionHeader="[blank]"/></td>
+                        </tr>
+                        <tr>
+                                <td><input type="button" class="appointmentButton" value=<spring:message code="appointment.AppointmentBlock.apply"/> onClick="updateAppointmentBlockTable()"></td>
+                        </tr>
+                </table>
         </div>
 </fieldset>
  

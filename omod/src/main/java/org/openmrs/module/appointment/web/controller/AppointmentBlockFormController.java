@@ -15,6 +15,7 @@ package org.openmrs.module.appointment.web.controller;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -104,8 +105,21 @@ public class AppointmentBlockFormController {
 	}
 	
 	@ModelAttribute("appointmentTypeList")
-	public Set<AppointmentType> getAppointmentTypeList() {
-		return Context.getService(AppointmentService.class).getAllAppointmentTypes();
+	public Set<AppointmentType> getAppointmentTypeList(
+	        @RequestParam(value = "appointmentBlockId", required = false) Integer appointmentBlockId) {
+		Set<AppointmentType> allTypes = Context.getService(AppointmentService.class).getAllAppointmentTypes();
+		if (appointmentBlockId != null) {
+			Set<AppointmentType> toShow = new HashSet<AppointmentType>();
+			Set<AppointmentType> currentTypes = Context.getService(AppointmentService.class).getAppointmentBlock(
+			    appointmentBlockId).getTypes();
+			for (AppointmentType appointmentType : allTypes) {
+				if (!currentTypes.contains(appointmentType)) {
+					toShow.add(appointmentType);
+				}
+			}
+			return toShow;
+		} else
+			return allTypes;
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)

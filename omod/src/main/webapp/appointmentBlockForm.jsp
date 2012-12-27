@@ -101,8 +101,8 @@
 				</td>
 				<td>
 				<table>
-				<tr><td align="center"><input type="button" id="addButton" value="->" onClick="updateAppointmentTypes(true)"></td></tr>
-				<tr><td align="center"><input type="button" id="removeButton" value="<-" onClick="updateAppointmentTypes(false)"></td></tr>	
+				<tr><td align="center"><input type="button" class="appointmentButton" id="addButton" value="->" onClick="updateAppointmentTypes(true)"></td></tr>
+				<tr><td align="center"><input type="button" class="appointmentButton" id="removeButton" value="<-" onClick="updateAppointmentTypes(false)"></td></tr>
 				</table>
 				</td>
 				<td>
