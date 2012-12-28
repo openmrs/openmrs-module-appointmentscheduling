@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.appointment.web.controller;
 
+import java.beans.PropertyEditor;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -130,12 +131,23 @@ public class AppointmentBlockFormController {
 		
 		if (Context.isAuthenticated()) {
 			AppointmentService appointmentService = Context.getService(AppointmentService.class);
-			
 			if (request.getParameter("save") != null) {
 				new AppointmentBlockValidator().validate(appointmentBlock, result);
 				if (result.hasErrors()) {
 					return null;
 				} else {
+					//Error checking
+					if (appointmentBlock.getStartDate() != null && appointmentBlock.getEndDate() != null
+					        && !appointmentBlock.getStartDate().before(appointmentBlock.getEndDate())) {
+						result.rejectValue("endDate", "appointment.AppointmentBlock.error.InvalidDateInterval");
+						return null;
+					}
+					if (timeSlotLength.isEmpty() || Integer.parseInt(timeSlotLength) <= 0) {
+						httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,
+						    "appointment.AppointmentBlock.error.selectTimeSlot");
+						return null;
+					}
+					
 					//First we need to save the appointment block (before creating the time slot
 					appointmentService.saveAppointmentBlock(appointmentBlock);
 					//Create the time slots.
@@ -179,7 +191,10 @@ public class AppointmentBlockFormController {
 					result.reject("voidReason", "general.voidedReason.empty");
 					return null;
 				}
-				
+				List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
+				for (TimeSlot timeSlot : currentTimeSlots) {
+					//TODO timeSlot logic
+				}
 				appointmentService.voidAppointmentBlock(appointmentBlock, voidReason);
 				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentBlock.voidedSuccessfully");
 			}

@@ -3,7 +3,9 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 <openmrs:htmlInclude file="/moduleResources/appointment/Styles/createAppointmentStyle.css"/>
 <openmrs:htmlInclude file="/scripts/timepicker/timepicker.js" />
-
+<openmrs:htmlInclude
+	file="/moduleResources/appointment/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css" />
+	
 <script type="text/javascript">
 	function confirmPurge() {
 		if (confirm("<spring:message code='appointment.AppointmentBlock.purgeConfirmMessage' />")) {
@@ -106,17 +108,19 @@
 				</table>
 				</td>
 				<td>
-				<fieldset align="center"><legend><spring:message code="appointment.AppointmentBlock.chosenTypes"/></legend>
+
 				<spring:bind path="appointmentBlock.types">
+				<fieldset align="center"><legend><spring:message code="appointment.AppointmentBlock.chosenTypes"/></legend>
 				<select multiple name="${status.expression}" id="currentApoointmentTypes">
 						<c:forEach var="appointmentType" items="${appointmentBlock.types}">
 							<option value="${appointmentType.appointmentTypeId}"
 								${param.appointmentTypeSelect==appointmentType.appointmentTypeId ? 'selected' : ''}>${appointmentType.name}</option>
 						</c:forEach>
 				</select>
+				</fieldset>
 				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
 				</spring:bind>
-				</fieldset>
+
 				</td>
 			</tr>
 			<tr></tr>
@@ -124,36 +128,40 @@
 			<tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.selectTimeInterval"/></td></tr>
 		
 			<tr>
-				<td> 
+				<td>
 					<spring:bind path="appointmentBlock.startDate">
+                    <fieldset align="center"><legend><spring:message code="appointment.AppointmentBlock.startDate"/></legend>
 					<input type="text" name="startDate" id="startDate" size="16" value="${status.value}"
 					onfocus="showDateTimePicker(this)" /> <img
 					src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png"
 					class="calendarIcon" alt=""
 					onClick="document.getElementById('startDate').focus();" />
+					</fieldset>
 					<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
 					</spring:bind>
 				</td>
 				<td></td>
 				<td>
 					<spring:bind path="appointmentBlock.endDate">
+                    <fieldset align="center"><legend><spring:message code="appointment.AppointmentBlock.endDate"/></legend>
 					<input type="text" name="endDate" id="endDate" size="16" value="${status.value}"
 					onfocus="showDateTimePicker(this)" /> <img
 					src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png"
 					class="calendarIcon" alt=""
 					onClick="document.getElementById('endDate').focus();" />
+                    </fieldset>
 					<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
 					</spring:bind>
 				</td>
 			</tr>
 <tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.defineTimeSlotLength"/></td></tr>
 			<tr>
-				<td><input type="text" name="timeSlotLength" id="timeSlotLength" value="${timeSlotLength}" size="24" /></td>
+				<td><input type="text" name="timeSlotLength" id="timeSlotLength" value="${timeSlotLength}" size="12" /></td>
 			</tr>
 			<c:if test="${!(appointmentBlock.creator == null)}">
 			<tr>
 				<td><spring:message code="general.createdBy" /></td>
-				<td><openmrs:format user="${ appointmentBlock.creator }" /></td>
+				<td><openmrs:format user="${appointmentBlock.creator}"/></td>
 			</tr>
 			</c:if>
 		</table>
