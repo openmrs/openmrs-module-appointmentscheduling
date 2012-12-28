@@ -50,6 +50,7 @@
 			selectedAppointmentTypes.options[i].selected = true;
 		}
 	}
+
 </script>
 
 <script type="text/javascript">
@@ -93,7 +94,7 @@
 			<tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.selectAppointmentTypes"/></td></tr>
 			<tr>
 				<td><fieldset align="center"><legend><spring:message code="appointment.AppointmentBlock.availableTypes"/></legend>
-				<select multiple name="appointmentTypeSelect"
+				<select multiple name="appointmentTypeSelect" ondblclick="updateAppointmentTypes(true)"
 					id="appointmentTypeSelect">
 						<c:forEach var="appointmentType" items="${appointmentTypeList}">
 							<option value="${appointmentType.appointmentTypeId}"
@@ -111,7 +112,7 @@
 
 				<spring:bind path="appointmentBlock.types">
 				<fieldset align="center"><legend><spring:message code="appointment.AppointmentBlock.chosenTypes"/></legend>
-				<select multiple name="${status.expression}" id="currentApoointmentTypes">
+				<select multiple name="${status.expression}" ondblclick="updateAppointmentTypes(false)" id="currentApoointmentTypes">
 						<c:forEach var="appointmentType" items="${appointmentBlock.types}">
 							<option value="${appointmentType.appointmentTypeId}"
 								${param.appointmentTypeSelect==appointmentType.appointmentTypeId ? 'selected' : ''}>${appointmentType.name}</option>
