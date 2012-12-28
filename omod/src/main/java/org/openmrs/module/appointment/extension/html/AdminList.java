@@ -47,6 +47,7 @@ public class AdminList extends AdministrationSectionExt {
 		map.put("/module/appointment/appointmentTypeList.list", "appointment.AppointmentType.manage");
 		map.put("/module/appointment/appointmentBlockList.list", "appointment.AppointmentBlock.manage.title");
 		map.put("/module/appointment/appointmentForm.form", "appointment.Appointment.create");
+		map.put("/module/appointment/appointmentList.list", "appointment.Appointment.list.manage");
 		return map;
 	}
 	

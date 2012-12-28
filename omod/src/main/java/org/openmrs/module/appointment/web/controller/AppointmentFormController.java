@@ -143,7 +143,7 @@ public class AppointmentFormController {
 					appointment.setStatus("SCHEDULED");
 					appointmentService.saveAppointment(appointment);
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.Appointment.saved");
-					return "redirect:/index.htm";
+					return "redirect:appointmentList.list";
 				}
 			}
 			if (request.getParameter("findAvailableTime") != null) {

@@ -3,6 +3,9 @@
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <%@ include file="localHeader.jsp" %>
 
+<openmrs:htmlInclude
+	file="/moduleResources/appointment/Styles/createAppointmentStyle.css" />
+
 <script type="text/javascript">
 
 	function confirmPurge() {
@@ -31,6 +34,10 @@
 <form method="post">
 <fieldset>
 <table>
+	<tr class="boxHeader steps">
+				<td colspan="2"><spring:message
+						code="appointment.AppointmentType.steps.details" /></td>
+			</tr>
 	<tr>
 		<td><spring:message code="general.name"/></td>
 		<td>
@@ -67,7 +74,7 @@
 </table>
 <br />
 
-<input type="submit" value="<spring:message code="appointment.AppointmentType.save"/>" name="save">
+<input type="submit" class="appointmentButton" value="<spring:message code="appointment.AppointmentType.save"/>" name="save">
 
 </fieldset>
 </form>
@@ -87,7 +94,7 @@
 				</c:forEach>
 			</spring:hasBindErrors>
 			<br/>
-			<input type="submit" value='<spring:message code="appointment.AppointmentType.retireAppointmentType"/>' name="retire"/>
+			<input type="submit" class="appointmentButton" value='<spring:message code="appointment.AppointmentType.retireAppointmentType"/>' name="retire"/>
 		</fieldset>
 	</form>
 </c:if>
@@ -107,7 +114,7 @@
 	<form id="purge" method="post" onsubmit="return confirmPurge()">
 		<fieldset>
 			<h4><spring:message code="appointment.AppointmentType.purgeAppointmentType"/></h4>
-			<input type="submit" value='<spring:message code="appointment.AppointmentType.purgeAppointmentType"/>' name="purge" />
+			<input type="submit" class="appointmentButton" value='<spring:message code="appointment.AppointmentType.purgeAppointmentType"/>' name="purge" />
 		</fieldset>
 	</form>
 </c:if>

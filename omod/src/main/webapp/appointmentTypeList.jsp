@@ -31,6 +31,7 @@
 													[ 5, 10, 25, 50, -1 ],
 													[ 5, 10, 25, 50, "All" ] ],
 											"iDisplayLength" : 5,
+											"sDom" : "<'fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix'l<'addons'>>t<'fg-toolbar ui-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-helper-clearfix'ipT<'toolbar'>>",
 											"bLengthChange" : true,
 											"bFilter" : false,
 											"bInfo" : true,
@@ -38,8 +39,8 @@
 											"bJQueryUI" : true,
 
 											"fnDrawCallback" : function() {
-												$j("#appointmentTypesTable_length")
-														.prepend(
+												$j(".addons").html("");
+												$j(".addons").prepend(
 																"<input type='button' value='<spring:message code='appointment.AppointmentType.add'/>' class='saveButton' style='margin:10px; float:right; display:block;' onclick='addNewAppointmentType()'/>");
 											},
 										});
