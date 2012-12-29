@@ -16,46 +16,6 @@
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/interface/DWRAppointmentService.js'></script>
 
 <script type="text/javascript">
-		//In order to know which appointment block to edit
-		function updateHrefForAppointmentBlockEdit()
-		{
-			var appointmentBlockId = getSelectedAppointmentBlockId();
-			if(appointmentBlockId!=null){
-				document.getElementById("editLink").href="appointmentBlockForm.form?appointmentBlockId="+appointmentBlockId;			
-			}
-			else
-			{
-				window.alert('<openmrs:message code="appointment.AppointmentBlock.error.selectAppointmentBlock" javaScriptEscape="true"/>');	
-			}
-		}
-		//Gets the selected appointment block from the list/table
-		function getSelectedAppointmentBlockId()
-		{
-			var radios = document.getElementsByName('appointmentBlockRadios');
-			var appointmentBlockId;
-			for (var i = 0; i < radios.length; i++) {
-			    if (radios[i].type === 'radio' && radios[i].checked) {
-			        // get value, set checked flag or do whatever you need to
-			        appointmentBlockId = radios[i].value;     
-			        break;
-			    }
-			}
-			return appointmentBlockId;
-		}
-		//Calls a DWR function that purges the appointment block from the db. (need to change this to void I think)
-		function deleteSelectedAppointmentBlock()
-		{
-			var appointmentBlockId = getSelectedAppointmentBlockId();
-			if(appointmentBlockId != null)
-			{
-				DWRAppointmentService.purgeAppointmentBlock(parseInt(appointmentBlockId), function(){
-					updateAppointmentBlockTable();
-				});
-			}
-			else{
-				window.alert('<openmrs:message code="appointment.AppointmentBlock.error.selectAppointmentBlock" javaScriptEscape="true"/>');
-			}
-		}
 		//updates the table if changes occurred
        function updateAppointmentBlockTable()
        {
@@ -153,6 +113,7 @@
                             var table = $j('#appointmentBlocksTable').dataTable();
                             var nNodes = table.fnGetNodes();
                             $j('input:radio', this).attr('checked',true);
+                            document.getElementById('appointmentBlockId').value= $j('input:radio', this).attr('value');
                             for(var i=0; i<nNodes.length; i++){
                                 $j(nNodes[i]).removeClass('selectedRow');
                                 $j(nNodes[i]).addClass('notSelectedRow');
@@ -215,14 +176,15 @@
 <h2><spring:message code="appointment.AppointmentBlock.manage.title"/></h2>
 <br/><br/>
  
+ <form method="post">
 <fieldset style="clear: both">
         <legend><spring:message code="appointment.AppointmentBlock.legend.properties"/></legend>
         <div style="margin: 0.5em 0;">
                 <table>
                         <tr>
                                 <td class="formLabel"><spring:message code="appointment.AppointmentBlock.pickDate"/>: </td>
-                                <td><input type="text" name="fromDate" id="fromDate" size="18" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('fromDate').focus();"/></td>
-                                <td><input type="text" name="toDate" id="toDate" size="18" value="" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('toDate').focus();"/></td>
+                                <td><input type="text" name="fromDate" id="fromDate" size="18" value="${param.fromDate}" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('fromDate').focus();"/></td>
+                                <td><input type="text" name="toDate" id="toDate" size="18" value="${param.toDate}" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('toDate').focus();"/></td>
                         </tr>
                         <tr>
                             <td class="formLabel"><spring:message code="appointment.AppointmentBlock.column.location"/>: </td>
@@ -237,7 +199,6 @@
  
 <br/>
 <b class="boxHeader"><spring:message code="appointment.AppointmentBlock.list.title"/></b>
-<form method="post" class="box">
         <table id="appointmentBlocksTable" cellspacing="0">
                 <thead>
                     <tr>
@@ -253,10 +214,12 @@
                 </thead>
 
         </table>
+	<input type="hidden" name="appointmentBlockId" id="appointmentBlockId" value="${appointmentBlockId}" />
 		<table align="center">
-		        <tr><td><a href="appointmentBlockForm.form"><spring:message code="appointment.AppointmentBlock.add"/></a></td>
-		        <td><a id="editLink" onClick="updateHrefForAppointmentBlockEdit()"  ><spring:message code="appointment.AppointmentBlock.edit"/></a></td>
-		        <td><a id="deleteLink" onClick="deleteSelectedAppointmentBlock()"><spring:message code="appointment.AppointmentBlock.delete"/></a></td>
+		        <tr>
+		        <td><input type="submit" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.add"/>" name="add"> </td>
+		        <td><input type="submit" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.edit"/>" name="edit"> </td>
+		         <td><input type="submit" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.delete"/>" name="void"> </td>
 		        </tr>
 		</table>
  </form>

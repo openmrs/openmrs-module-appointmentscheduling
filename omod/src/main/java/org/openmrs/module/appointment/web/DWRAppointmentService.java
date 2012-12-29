@@ -95,26 +95,6 @@ public class DWRAppointmentService {
 		return appointmentBlockDatalist;
 	}
 	
-	public void purgeAppointmentBlock(Integer appointmentBlockId) {
-		if (Context.isAuthenticated()) {
-			WebContext ctx = WebContextFactory.get();
-			HttpServletRequest request = ctx.getHttpServletRequest();
-			HttpSession httpSession = request.getSession();
-			AppointmentService appointmentService = Context.getService(AppointmentService.class);
-			AppointmentBlock appointmentBlock = appointmentService.getAppointmentBlock(appointmentBlockId);
-			try {
-				appointmentService.purgeAppointmentBlock(appointmentBlock);
-				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentBlock.purgedSuccessfully");
-			}
-			catch (DataIntegrityViolationException e) {
-				httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "error.object.inuse.cannot.purge");
-			}
-			catch (APIException e) {
-				httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "error.general: " + e.getLocalizedMessage());
-			}
-		}
-	}
-	
 	private String buildLocationList(Location location) {
 		String ans = "";
 		if (location != null) {
