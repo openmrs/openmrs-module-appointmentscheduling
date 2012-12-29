@@ -12,4 +12,9 @@
 			<spring:message code="appointment.AppointmentBlock.manage.title"/>
 		</a>
 	</li>
+	<li <c:if test='<%= request.getRequestURI().contains("appointment/appointmentList.jsp") %>'>class="active"</c:if>>
+		<a href="${pageContext.request.contextPath}/module/appointment/appointmentList.list">
+			<spring:message code="appointment.Appointment.list.manage.title"/>
+		</a>
+	</li>
 </ul>

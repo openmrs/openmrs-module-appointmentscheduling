@@ -56,7 +56,12 @@ thead tr th{
 }
 
 
-
+.toolbar{
+	float:left;
+	height:auto;
+	margin-top:5px;
+	margin-left:5px;
+}
 
 
 
