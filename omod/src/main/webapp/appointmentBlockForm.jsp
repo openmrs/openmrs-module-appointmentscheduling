@@ -157,7 +157,8 @@
 			</tr>
 <tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.defineTimeSlotLength"/></td></tr>
 			<tr>
-				<td><input type="text" name="timeSlotLength" id="timeSlotLength" value="${timeSlotLength}" size="12" /></td>
+				<td><input type="text" dir="rtl" name="timeSlotLength" id="timeSlotLength" value="${timeSlotLength}" size="12" />
+				<spring:message code="appointment.AppointmentBlock.minutes"/></td>
 			</tr>
 			<c:if test="${!(appointmentBlock.creator == null)}">
 			<tr>
@@ -176,32 +177,6 @@
 <br />
 
 <c:if
-	test="${not appointmentBlock.voided && not empty appointmentBlock.appointmentBlockId}">
-	<form method="post">
-		<fieldset>
-			<h4>
-				<spring:message
-					code="appointment.AppointmentBlock.voidAppointmentBlock" />
-			</h4>
-
-			<b><spring:message code="general.reason" /></b> <input type="text"
-				value="" size="40" name="voidReason" />
-			<spring:hasBindErrors name="appointmentBlock">
-				<c:forEach items="${errors.allErrors}" var="error">
-					<c:if test="${error.code == 'voidReason'}">
-						<span class="error"><spring:message
-								code="${error.defaultMessage}" text="${error.defaultMessage}" /></span>
-					</c:if>
-				</c:forEach>
-			</spring:hasBindErrors>
-			<br /> <input type="submit" class="appointmentButton" 
-				value='<spring:message code="appointment.AppointmentBlock.voidAppointmentBlock"/>'
-				name="void" />
-		</fieldset>
-	</form>
-</c:if>
-
-<c:if
 	test="${appointmentBlock.voided && not empty appointmentBlock.appointmentBlockId}">
 	<form method="post">
 		<fieldset>
@@ -216,20 +191,6 @@
 	</form>
 </c:if>
 
-<br />
 
-<c:if test="${not empty appointmentBlock.appointmentBlockId}">
-	<form id="purge" method="post" onsubmit="return confirmPurge()">
-		<fieldset>
-			<h4>
-				<spring:message
-					code="appointment.AppointmentBlock.purgeAppointmentBlock" />
-			</h4>
-			<input type="submit" class="appointmentButton" 
-				value='<spring:message code="appointment.AppointmentBlock.purgeAppointmentBlock"/>'
-				name="purge" />
-		</fieldset>
-	</form>
-</c:if>
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>

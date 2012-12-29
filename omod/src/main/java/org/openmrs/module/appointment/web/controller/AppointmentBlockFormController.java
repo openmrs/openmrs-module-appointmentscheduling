@@ -137,8 +137,7 @@ public class AppointmentBlockFormController {
 					return null;
 				} else {
 					//Error checking
-					if (appointmentBlock.getStartDate() != null && appointmentBlock.getEndDate() != null
-					        && !appointmentBlock.getStartDate().before(appointmentBlock.getEndDate())) {
+					if (!appointmentBlock.getStartDate().before(appointmentBlock.getEndDate())) {
 						result.rejectValue("endDate", "appointment.AppointmentBlock.error.InvalidDateInterval");
 						return null;
 					}
@@ -147,13 +146,18 @@ public class AppointmentBlockFormController {
 						    "appointment.AppointmentBlock.error.selectTimeSlot");
 						return null;
 					}
+					long appointmentBlocklengthInMinutes = (appointmentBlock.getEndDate().getTime() - appointmentBlock
+					        .getStartDate().getTime()) / 60000;
+					if (!timeSlotLength.isEmpty() && (Integer.parseInt(timeSlotLength) > appointmentBlocklengthInMinutes)) {
+						httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,
+						    "appointment.AppointmentBlock.error.maximalTimeSlot");
+						return null;
+					}
 					
 					//First we need to save the appointment block (before creating the time slot
 					appointmentService.saveAppointmentBlock(appointmentBlock);
 					//Create the time slots.
 					Integer slotLength = Integer.parseInt(timeSlotLength);
-					long appointmentBlocklengthInMinutes = (appointmentBlock.getEndDate().getTime() - appointmentBlock
-					        .getStartDate().getTime()) / 60000;
 					int howManyTimeSlotsToCreate = (int) (appointmentBlocklengthInMinutes / slotLength);
 					List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
 					if (currentTimeSlots.size() != howManyTimeSlotsToCreate) { //the time slot length changed therefore we need to update.
@@ -184,41 +188,10 @@ public class AppointmentBlockFormController {
 				}
 			}
 
-			// if the user is voiding out the AppointmentBlock
-			else if (request.getParameter("void") != null) {
-				String voidReason = request.getParameter("voidReason");
-				if (appointmentBlock.getAppointmentBlockId() != null && !(StringUtils.hasText(voidReason))) {
-					result.reject("voidReason", "general.voidedReason.empty");
-					return null;
-				}
-				List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
-				for (TimeSlot timeSlot : currentTimeSlots) {
-					//TODO timeSlot logic
-				}
-				appointmentService.voidAppointmentBlock(appointmentBlock, voidReason);
-				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentBlock.voidedSuccessfully");
-			}
-
 			// if the user is unvoiding the AppointmentBlock
 			else if (request.getParameter("unvoid") != null) {
 				appointmentService.unvoidAppointmentBlock(appointmentBlock);
 				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentBlock.unvoidedSuccessfully");
-			}
-
-			// if the user is purging the appointmentBlock
-			else if (request.getParameter("purge") != null) {
-				
-				try {
-					appointmentService.purgeAppointmentBlock(appointmentBlock);
-					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
-					    "appointment.AppointmentBlock.purgedSuccessfully");
-				}
-				catch (DataIntegrityViolationException e) {
-					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "error.object.inuse.cannot.purge");
-				}
-				catch (APIException e) {
-					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "error.general: " + e.getLocalizedMessage());
-				}
 			}
 			
 		}

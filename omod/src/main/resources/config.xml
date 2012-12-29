@@ -39,7 +39,6 @@
 			<convert converter="bean" match="org.openmrs.Location"/>
 			<create creator="new" javascript="DWRAppointmentService">
 				<param name="class" value="org.openmrs.module.appointment.web.DWRAppointmentService" />
-				<include method="purgeAppointmentBlock"/>
 				<include method="getPatientDescription" />
 				<include method="getAvailableTimeSlots" />
 				<include method="getAppointmentBlocks"/>
@@ -52,10 +51,6 @@
             import org.openmrs.module.appointment.web.DWRAppointmentService;
             DWRAppointmentService.getPatientDescription(Integer patientId);
             DWRAppointmentService.getAppointmentBlocks(String fromDate,String toDate,Integer locationId);
-            ]]>
-            <![CDATA[
-            import org.openmrs.module.appointment.web.DWRAppointmentService;
-            DWRAppointmentService.purgeAppointmentBlock(Integer appointmentBlockId);
             ]]>
              <![CDATA[
             import org.openmrs.module.appointment.web.DWRAppointmentService;
