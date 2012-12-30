@@ -22,15 +22,22 @@
                var fromDate = document.getElementById('fromDate').value;
                var toDate = document.getElementById('toDate').value;
 	           var selectedLocation = document.getElementById("locationId");
+	           var modelAttributeSelectedLocation = "${selectedLocation}";
 	           var locationId = null;
 	           if(selectedLocation == null){
-	           locationId = $j("[name='locationId']")[0].value;
+	           		locationId = $j("[name='locationId']")[0].value;
 				}
 				else{
 				    locationId = selectedLocation.options[selectedLocation.selectedIndex].value;
 				}
-				if(locationId =="")
-     		          locationId =null;
+	            //location not selected
+				if(locationId ==""){
+					//If the location widget is not loaded yet
+					if(modelAttributeSelectedLocation != null){
+						locationId = "${selectedLocation.id}";
+					}
+					else locationId = null;				
+				}
 
                 DWRAppointmentService.getAppointmentBlocks(fromDate,toDate,locationId,function(appointmentBlocks){
                   var tableContent = '';
@@ -113,6 +120,7 @@
                             var table = $j('#appointmentBlocksTable').dataTable();
                             var nNodes = table.fnGetNodes();
                             $j('input:radio', this).attr('checked',true);
+                            //update the hidden input in order to update the appointmentBlockId model attribute
                             document.getElementById('appointmentBlockId').value= $j('input:radio', this).attr('value');
                             for(var i=0; i<nNodes.length; i++){
                                 $j(nNodes[i]).removeClass('selectedRow');
@@ -149,17 +157,20 @@
 			return newFormat;	
          }
 		//On the page load updates some necessary stuff
-         $j(document).ready(function() {      		
-                var currentDate = new Date();
-                currentDate.setHours(0,0,0,0);
-                var currentTime = new Date();
-                var days = 6;
-                currentTime.setTime(currentTime.getTime() + (days * 24 * 60 * 60 * 1000));
-                var nextWeekDate = new Date(currentTime);
-                nextWeekDate.setHours(23,59,59,999);
-                document.getElementById('fromDate').value = getDateTimeFormat(currentDate);
-                document.getElementById('toDate').value = getDateTimeFormat(nextWeekDate);
-                //data tables
+         $j(document).ready(function() {
+        	    //Initialization to the date time start and end
+        	 	if(document.getElementById('fromDate').value == "" && document.getElementById('fromDate').value == ""){
+	                var currentDate = new Date();
+	                currentDate.setHours(0,0,0,0);
+	                var currentTime = new Date();
+	                var days = 6;
+	                currentTime.setTime(currentTime.getTime() + (days * 24 * 60 * 60 * 1000));
+	                var nextWeekDate = new Date(currentTime);
+	                nextWeekDate.setHours(23,59,59,999);
+	                document.getElementById('fromDate').value = getDateTimeFormat(currentDate);
+	                document.getElementById('toDate').value = getDateTimeFormat(nextWeekDate);
+        	 	}
+                //data table
                 $j('#appointmentBlocksTable').dataTable({
                  "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                  "iDisplayLength": -1,

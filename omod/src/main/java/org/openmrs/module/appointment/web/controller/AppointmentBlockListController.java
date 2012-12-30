@@ -19,6 +19,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import net.sourceforge.jtds.jdbc.DateTime;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
@@ -33,6 +35,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,6 +54,14 @@ public class AppointmentBlockListController {
 		model.addAttribute("appointmentBlockId", null);
 	}
 	
+	@ModelAttribute("selectedLocation")
+	public Location getLocation(@RequestParam(value = "locationId", required = false) Location location) {
+		if (location != null)
+			return location;
+		else
+			return null;
+	}
+	
 	@RequestMapping(method = RequestMethod.POST)
 	public String onSubmit(HttpServletRequest request, @RequestParam(value = "fromDate", required = false) Date fromDate,
 	        @RequestParam(value = "toDate", required = false) Date toDate,
@@ -63,7 +74,6 @@ public class AppointmentBlockListController {
 			if (appointmentBlockId != null) {
 				appointmentBlock = appointmentService.getAppointmentBlock(appointmentBlockId);
 			}
-			
 			//If the user is voiding the AppointmentBlock
 			if (request.getParameter("void") != null) {
 				if (appointmentBlock != null) {
@@ -77,7 +87,6 @@ public class AppointmentBlockListController {
 					List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
 					boolean delete = true;
 					for (TimeSlot timeSlot : currentTimeSlots) {
-						//TODO timeSlot logic
 						List<Appointment> currentAppointments = appointmentService.getAppointmentsInTimeSlot(timeSlot);
 						if (!currentAppointments.isEmpty()) {
 							delete = false;
