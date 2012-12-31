@@ -25,7 +25,7 @@
 	$j(document)
 			.ready(
 					function() {
-						TableToolsInit.sSwfPath = "/openmrs-standalone/moduleResources/appointment/TableTools/media/swf/ZeroClipboard.swf";
+						TableToolsInit.sSwfPath = "${pageContext.request.contextPath}/moduleResources/appointment/TableTools/media/swf/ZeroClipboard.swf";
 
 						//Datatables.net
 						$j('#appointmentsTable')
@@ -50,9 +50,9 @@
 											}],
 											
 											"aLengthMenu" : [
-													[ 5, 10, 25, 50, -1 ],
-													[ 5, 10, 25, 50, "All" ] ],
-											"iDisplayLength" : 5,
+													[25, 50, -1 ],
+													[25, 50, "All" ] ],
+											"iDisplayLength" : 25,
 											"sDom" : "<'fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix'l<'addons'>>t<'fg-toolbar ui-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-helper-clearfix'ip<'toolbar' T>>",
 
 											"bLengthChange" : true,
@@ -71,7 +71,7 @@
 
 					});
 	function addNewAppointment(){
-		window.location = "appointmentForm.form;";
+		window.location = "appointmentForm.form";
 	}
 </script>
 
