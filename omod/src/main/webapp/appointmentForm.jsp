@@ -34,6 +34,7 @@
 	$j(document)
 			.ready(
 					function() {
+
 						//Focus "search patient"
 						$j('#patient_id_selection').focus();
 						
@@ -105,12 +106,21 @@
 									$j(this).removeClass('notSelectedRow');
 								});
 					});
+function addQueryParameter(paramName){
+	var value = queryParameters[paramName];
+	var currentURL = window.location.href;
+	
+		
+}
+
 
 	function updatePatient(formFieldId, patientObj, isPageLoad) {
 		if (patientObj != null) {
-			if(queryParameters['patient']!=patientObj.patientId){
-				queryParameters['patient']=patientObj.patientId;
+			if(queryParameters['patientId']!=patientObj.patientId){
+				queryParameters['patientId']=patientObj.patientId;
 				location.search = $j.param(queryParameters);
+				return;
+
 			}
 			addPatientLink(patientObj);
 			DWRAppointmentService

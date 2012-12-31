@@ -23,6 +23,6 @@ public class PatientScheduleAppointment extends Extension {
 	public String getOverrideContent(String bodyContent) {
 		String message = Context.getMessageSourceService().getMessage("appointment.Appointment.add");
 		
-		return "<a href='module/appointment/appointmentForm.form?patient=" + patientId + "' >" + message + "</a>";
+		return "<a href='module/appointment/appointmentForm.form?patientId=" + patientId + "' >" + message + "</a>";
 	}
 }
