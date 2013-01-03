@@ -40,6 +40,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -62,8 +63,12 @@ public class AppointmentFormController {
 	
 	@RequestMapping(value = "/module/appointment/appointmentForm", method = RequestMethod.GET)
 	public void showForm(ModelMap model, HttpServletRequest request) {
-		if (Context.isAuthenticated())
+		if (Context.isAuthenticated()) {
 			model.put("selectedLocation", Context.getUserContext().getLocation());
+			if (request.getParameter("patientId") != null) {
+				model.put("appointment", getAppointment(null, Integer.parseInt(request.getParameter("patientId"))));
+			}
+		}
 	}
 	
 	@ModelAttribute("selectedLocation")
@@ -75,7 +80,8 @@ public class AppointmentFormController {
 	}
 	
 	@ModelAttribute("appointment")
-	public Appointment getAppointment(@RequestParam(value = "appointmentId", required = false) Integer appointmentId) {
+	public Appointment getAppointment(@RequestParam(value = "appointmentId", required = false) Integer appointmentId,
+	        @RequestParam(value = "patientId", required = false) Integer patientId) {
 		Appointment appointment = null;
 		
 		if (Context.isAuthenticated()) {
@@ -84,8 +90,11 @@ public class AppointmentFormController {
 				appointment = as.getAppointment(appointmentId);
 		}
 		
-		if (appointment == null)
+		if (appointment == null) {
 			appointment = new Appointment();
+			if (patientId != null)
+				appointment.setPatient(Context.getPatientService().getPatient(patientId));
+		}
 		
 		return appointment;
 	}

@@ -66,6 +66,11 @@
 		<class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.AdminList
 		</class>
 	</extension>
+	<extension>
+		<point>org.openmrs.patientDashboard.Header</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.PatientScheduleAppointment
+		</class>
+	</extension>
 
 	<!-- Maps hibernate file's, if present -->
 	<mappingFiles>

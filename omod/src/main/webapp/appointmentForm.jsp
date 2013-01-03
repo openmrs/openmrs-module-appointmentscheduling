@@ -7,6 +7,8 @@
 <openmrs:htmlInclude
 	file="/moduleResources/appointment/Scripts/jquery.maxlength.js" />
 <openmrs:htmlInclude
+	file="/moduleResources/appointment/Scripts/queryParameters.js" />
+<openmrs:htmlInclude
 	file="/moduleResources/appointment/Styles/createAppointmentStyle.css" />
 <openmrs:htmlInclude
 	file="/moduleResources/appointment/Styles/appointment_jQueryDatatable.css" />
@@ -32,6 +34,7 @@
 	$j(document)
 			.ready(
 					function() {
+
 						//Focus "search patient"
 						$j('#patient_id_selection').focus();
 						
@@ -59,6 +62,9 @@
 									}, {
 										"bVisible" : false
 									} ],
+									"oLanguage": {
+ 										"sZeroRecords": "<spring:message code='appointment.Appointment.create.table.empty' />"
+									},
 									"aLengthMenu" : [ [ 5, 10, 25, 50, -1 ],
 											[ 5, 10, 25, 50, "All" ] ],
 									"iDisplayLength" : 5,
@@ -100,9 +106,22 @@
 									$j(this).removeClass('notSelectedRow');
 								});
 					});
+function addQueryParameter(paramName){
+	var value = queryParameters[paramName];
+	var currentURL = window.location.href;
+	
+		
+}
+
 
 	function updatePatient(formFieldId, patientObj, isPageLoad) {
 		if (patientObj != null) {
+			if(queryParameters['patientId']!=patientObj.patientId){
+				queryParameters['patientId']=patientObj.patientId;
+				location.search = $j.param(queryParameters);
+				return;
+
+			}
 			addPatientLink(patientObj);
 			DWRAppointmentService
 					.getPatientDescription(
