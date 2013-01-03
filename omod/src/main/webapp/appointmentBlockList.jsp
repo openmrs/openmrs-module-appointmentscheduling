@@ -51,24 +51,7 @@
                       count++;
                       tableContent += '<tr>';
                       tableContent += '<td align="center">'+'<input type="radio" name="appointmentBlockRadios" value="'+appointmentBlocks[i].appointmentBlockId+'"/></td>';
-                      var location = appointmentBlocks[i].location;
-                      var locationString = "";
-                      //levels for the location tree.
-                      while(location != null){
-                      if(location.id != locationId)
-                      {
-                        locationString = location.name + locationString;
-                        locationString = "\\" + locationString;
-                      }
-                      else{
-                        if(locationString==""){
-                            locationString = location.name;
-                        }
-                        break;
-                            }
-                          location = location.parentLocation;
-                        }
-                      tableContent += '<td align="center">'+locationString+"</td>";
+                      tableContent += '<td align="center">'+appointmentBlocks[i].location.name+"</td>";
                       tableContent += '<td align="center">'+appointmentBlocks[i].provider.name+"</td>";
                       //Linking the appointment types in a string.
                       var appointmentTypes = "";
@@ -107,7 +90,7 @@
                              }
                             $j('#appointmentBlocksTable').dataTable({
                                 "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
-                                "iDisplayLength": -1,
+                                "iDisplayLength": 25,
                                 "bLengthChange": true,
                                 "bFilter": false,
                                 "bInfo": true,
@@ -230,7 +213,7 @@
 		        <tr>
 		        <td><input type="submit" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.add"/>" name="add"> </td>
 		        <td><input type="submit" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.edit"/>" name="edit"> </td>
-		         <td><input type="submit" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.delete"/>" name="void"> </td>
+		         <td><input type="submit" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.delete"/>" name="delete"> </td>
 		        </tr>
 		</table>
  </form>

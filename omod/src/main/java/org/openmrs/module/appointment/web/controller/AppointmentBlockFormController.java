@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.appointment.web.controller;
 
-import java.beans.PropertyEditor;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -26,19 +25,17 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Provider;
-import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.AppointmentService;
 import org.openmrs.module.appointment.validator.AppointmentBlockValidator;
+import org.openmrs.module.appointment.web.AppointmentBlockEditor;
 import org.openmrs.module.appointment.web.AppointmentTypeEditor;
 import org.openmrs.module.appointment.web.ProviderEditor;
 import org.openmrs.web.WebConstants;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -59,12 +56,12 @@ public class AppointmentBlockFormController {
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(AppointmentType.class, new AppointmentTypeEditor());
+		binder.registerCustomEditor(AppointmentBlock.class, new AppointmentBlockEditor());
 		binder.registerCustomEditor(Provider.class, new ProviderEditor());
 	}
 	
 	@RequestMapping(value = "/module/appointment/appointmentBlockForm", method = RequestMethod.GET)
 	public void showForm() {
-		
 	}
 	
 	@ModelAttribute("appointmentBlock")
@@ -80,23 +77,24 @@ public class AppointmentBlockFormController {
 		
 		if (appointmentBlock == null)
 			appointmentBlock = new AppointmentBlock();
-		
 		return appointmentBlock;
 	}
 	
 	@ModelAttribute("timeSlotLength")
-	public String getTimeSlotLength(@RequestParam(value = "appointmentBlockId", required = false) Integer appointmentBlockId) {
-		if (appointmentBlockId == null)
-			return "";
-		else {
+	public String getTimeSlotLength(AppointmentBlock appointmentBlock,
+	        @RequestParam(value = "timeSlotLength", required = false) String timeSlotLength) {
+		if (timeSlotLength == null) {
 			if (Context.isAuthenticated()) {
 				AppointmentService as = Context.getService(AppointmentService.class);
-				AppointmentBlock appointmentBlock = as.getAppointmentBlock(appointmentBlockId);
-				TimeSlot timeSlot = Context.getService(AppointmentService.class).getTimeSlotsInAppointmentBlock(
-				    appointmentBlock).get(0);
-				return (timeSlot.getEndDate().getTime() - timeSlot.getStartDate().getTime()) / 60000 + "";
+				if (appointmentBlock.getCreator() != null) {
+					TimeSlot timeSlot = Context.getService(AppointmentService.class).getTimeSlotsInAppointmentBlock(
+					    appointmentBlock).get(0);
+					return (timeSlot.getEndDate().getTime() - timeSlot.getStartDate().getTime()) / 60000 + "";
+				}
 			}
-		}
+		} else
+			return timeSlotLength;
+		
 		return "";
 	}
 	
@@ -106,21 +104,19 @@ public class AppointmentBlockFormController {
 	}
 	
 	@ModelAttribute("appointmentTypeList")
-	public Set<AppointmentType> getAppointmentTypeList(
-	        @RequestParam(value = "appointmentBlockId", required = false) Integer appointmentBlockId) {
-		Set<AppointmentType> allTypes = Context.getService(AppointmentService.class).getAllAppointmentTypes();
-		if (appointmentBlockId != null) {
-			Set<AppointmentType> toShow = new HashSet<AppointmentType>();
-			Set<AppointmentType> currentTypes = Context.getService(AppointmentService.class).getAppointmentBlock(
-			    appointmentBlockId).getTypes();
-			for (AppointmentType appointmentType : allTypes) {
-				if (!currentTypes.contains(appointmentType)) {
-					toShow.add(appointmentType);
-				}
-			}
-			return toShow;
-		} else
+	public Set<AppointmentType> getAppointmentTypeList(AppointmentBlock appointmentBlock) {
+		AppointmentService as = Context.getService(AppointmentService.class);
+		Set<AppointmentType> allTypes = as.getAllAppointmentTypes();
+		Set<AppointmentType> toShow = new HashSet<AppointmentType>();
+		Set<AppointmentType> currentTypes = appointmentBlock.getTypes();
+		if (currentTypes == null)
 			return allTypes;
+		for (AppointmentType appointmentType : allTypes) {
+			if (!currentTypes.contains(appointmentType)) {
+				toShow.add(appointmentType);
+			}
+		}
+		return toShow;
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
@@ -131,6 +127,7 @@ public class AppointmentBlockFormController {
 		
 		if (Context.isAuthenticated()) {
 			AppointmentService appointmentService = Context.getService(AppointmentService.class);
+			
 			if (request.getParameter("save") != null) {
 				new AppointmentBlockValidator().validate(appointmentBlock, result);
 				if (result.hasErrors()) {
@@ -138,7 +135,11 @@ public class AppointmentBlockFormController {
 				} else {
 					//Error checking
 					if (!appointmentBlock.getStartDate().before(appointmentBlock.getEndDate())) {
-						result.rejectValue("endDate", "appointment.AppointmentBlock.error.InvalidDateInterval");
+						result.rejectValue("endDate", "appointment.AppointmentBlock.error.invalidDateInterval");
+						return null;
+					}
+					if (appointmentBlock.getStartDate().before(Context.getDateTimeFormat().getCalendar().getTime())) {
+						result.rejectValue("startDate", "appointment.AppointmentBlock.error.dateCannotBeInThePast");
 						return null;
 					}
 					if (timeSlotLength.isEmpty() || Integer.parseInt(timeSlotLength) <= 0) {
@@ -187,15 +188,9 @@ public class AppointmentBlockFormController {
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentBlock.saved");
 				}
 			}
-
-			// if the user is unvoiding the AppointmentBlock
-			else if (request.getParameter("unvoid") != null) {
-				appointmentService.unvoidAppointmentBlock(appointmentBlock);
-				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentBlock.unvoidedSuccessfully");
-			}
 			
 		}
 		
-		return "redirect:appointmentBlockList.list";
+		return "redirect:appointmentBlockList.list?timeSlotLength=" + timeSlotLength;
 	}
 }
