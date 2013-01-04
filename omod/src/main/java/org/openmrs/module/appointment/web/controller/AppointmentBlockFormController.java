@@ -121,13 +121,18 @@ public class AppointmentBlockFormController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public String onSubmit(HttpServletRequest request, AppointmentBlock appointmentBlock, BindingResult result,
-	        @RequestParam(value = "timeSlotLength", required = false) String timeSlotLength) throws Exception {
+	        @RequestParam(value = "timeSlotLength", required = false) String timeSlotLength,
+	        @RequestParam(value = "emptyTypes", required = false) String emptyTypes) throws Exception {
 		
 		HttpSession httpSession = request.getSession();
 		
 		if (Context.isAuthenticated()) {
-			AppointmentService appointmentService = Context.getService(AppointmentService.class);
+			if (emptyTypes.equals("yes")) {
+				//need to nullify the appointment types.
+				appointmentBlock.setTypes(null);
+			}
 			
+			AppointmentService appointmentService = Context.getService(AppointmentService.class);
 			if (request.getParameter("save") != null) {
 				new AppointmentBlockValidator().validate(appointmentBlock, result);
 				if (result.hasErrors()) {
@@ -138,7 +143,8 @@ public class AppointmentBlockFormController {
 						result.rejectValue("endDate", "appointment.AppointmentBlock.error.invalidDateInterval");
 						return null;
 					}
-					if (appointmentBlock.getStartDate().before(Context.getDateTimeFormat().getCalendar().getTime())) {
+					Context.getDateFormat().getCalendar();
+					if (appointmentBlock.getStartDate().before(Calendar.getInstance().getTime())) {
 						result.rejectValue("startDate", "appointment.AppointmentBlock.error.dateCannotBeInThePast");
 						return null;
 					}

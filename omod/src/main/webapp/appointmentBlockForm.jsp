@@ -49,6 +49,9 @@
 	    	{
 				selectedAppointmentTypes.options[i].selected = true;
 		    }
+	        if(selectedAppointmentTypes.options.length == 0){
+	        	document.getElementById("emptyTypes").value = "yes";
+	        }
 	}
 	function updateToDate(object) {
 		if (object.value == '') {
@@ -178,8 +181,9 @@
 		<br /> <input type="submit" class="appointmentButton" onClick="selectAllTypes()"
 			value="<spring:message code="appointment.AppointmentBlock.save"/>"
 			name="save">
-
+		
 	</fieldset>
+		<input type="hidden" name="emptyTypes" id="emptyTypes" value="no" />
 </form:form>
 
 <br />
