@@ -16,10 +16,13 @@ package org.openmrs.module.appointment.api.db.hibernate;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
+import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
+import org.openmrs.api.APIException;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
@@ -62,5 +65,43 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 			return (Appointment) appointment.get(0);
 		else
 			return null;
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider,
+	        AppointmentType appointmentType, String status) throws APIException {
+		if (fromDate != null && toDate != null && !fromDate.before(toDate))
+			throw new APIException("fromDate can not be later than toDate");
+		
+		else {
+			String stringQuery = "SELECT appointment FROM Appointment AS appointment WHERE appointment.voided = 0";
+			
+			if (fromDate != null)
+				stringQuery += " AND appointment.timeSlot.startDate >= :fromDate";
+			if (toDate != null)
+				stringQuery += " AND appointment.timeSlot.endDate <= :endDate";
+			if (provider != null)
+				stringQuery += " AND appointment.timeSlot.appointmentBlock.provider = :provider";
+			if (status != null)
+				stringQuery += " AND appointment.status=:status";
+			if (appointmentType != null)
+				stringQuery += " AND appointment.appointmentType=:appointmentType";
+			
+			Query query = super.sessionFactory.getCurrentSession().createQuery(stringQuery);
+			
+			if (fromDate != null)
+				query.setParameter("fromDate", fromDate);
+			if (toDate != null)
+				query.setParameter("endDate", toDate);
+			if (provider != null)
+				query.setParameter("provider", provider);
+			if (status != null)
+				query.setParameter("status", status);
+			if (appointmentType != null)
+				query.setParameter("appointmentType", appointmentType);
+			
+			return query.list();
+		}
 	}
 }

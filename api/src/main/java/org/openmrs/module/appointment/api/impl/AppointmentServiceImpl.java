@@ -520,4 +520,32 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		return descendants;
 	}
 	
+	@Override
+	public List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Location location, Provider provider,
+	        AppointmentType type, String status) throws APIException {
+		
+		List<Appointment> appointments = appointmentDAO.getAppointmentsByConstraints(fromDate, toDate, provider, type,
+		    status);
+		
+		List<Appointment> appointmentsInLocation = new LinkedList<Appointment>();
+		
+		Set<Location> relevantLocations = getAllLocationDescendants(location, null);
+		relevantLocations.add(location);
+		
+		for (Appointment appointment : appointments) {
+			boolean satisfyingConstraints = true;
+			
+			//Filter by location
+			if (location != null) {
+				if (relevantLocations.contains(appointment.getTimeSlot().getAppointmentBlock().getLocation()))
+					appointmentsInLocation.add(appointment);
+			} else
+				appointmentsInLocation.add(appointment);
+			
+		}
+		
+		return appointmentsInLocation;
+		
+	}
+	
 }

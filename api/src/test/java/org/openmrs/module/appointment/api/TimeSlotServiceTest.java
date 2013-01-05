@@ -299,9 +299,9 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		Provider provider = Context.getProviderService().getProvider(1);
 		Assert.assertNotNull(provider);
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-		Date fromDate = format.parse("2000-01-01 00:00:00.0");
-		Date toDate = format.parse("2013-01-01 00:00:00.0");
-		List<TimeSlot> availableTimeSlots = service.getTimeSlotsByConstraints(null, toDate, fromDate, provider, null);
+		Date fromDate = format.parse("2013-01-01 00:00:00.0");
+		Date toDate = format.parse("2001-01-01 00:00:00.0");
+		List<TimeSlot> availableTimeSlots = service.getTimeSlotsByConstraints(null, fromDate, toDate, provider, null);
 	}
 	
 	@Test

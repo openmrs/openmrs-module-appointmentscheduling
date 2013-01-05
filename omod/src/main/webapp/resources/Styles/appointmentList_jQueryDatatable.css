@@ -22,7 +22,6 @@ table.display thead th {
 thead tr th{
 	cursor:pointer;
 	font-weight:bold !important;
-	font-size:20px;
 }
 
 .dataTables_empty{
@@ -41,12 +40,14 @@ thead tr th{
 }
 
 .dataTables_paginate{
-	padding:3px;
+	padding:8px;
+	clear:both;
 	float:right;
 }
 
 .dataTables_length{
 	margin-left:5px;
+	margin-top:10px;
 }
 
 .fg-button{
@@ -63,6 +64,22 @@ thead tr th{
 	margin-left:5px;
 }
 
+.dataTables_filter{
+	margin:5px;
+	margin-top:22px;
+	font-size:14px;
+}
 
+#filtersTable{
+	padding:8px;
+}
 
+#filtersTable td{
+	padding:4px;
+}
 
+.statusDiv{
+	padding:8px;
+	float:right;
+	display:block;
+}

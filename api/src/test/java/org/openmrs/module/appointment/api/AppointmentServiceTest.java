@@ -17,6 +17,8 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -29,7 +31,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.Patient;
+import org.openmrs.Provider;
 import org.openmrs.Visit;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentType;
@@ -37,10 +41,8 @@ import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
-import com.mchange.util.AssertException;
-
 /**
- * Tests Appointment methods in the {@link $ AppointmentService}}.
+ * Tests Appointment methods in the {@link $ AppointmentService} .
  */
 public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	
@@ -255,4 +257,102 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		
 		assertEquals(descendants, service.getAllLocationDescendants(location, null));
 	}
+	
+	@Test(expected = APIException.class)
+	@Verifies(value = "should throw exception if an illegal date interval was given", method = "getAppointmentsByConstraints(Date, Date, Location, Provider, AppointmentType, String)")
+	public void shouldThrowAPIException_getAppointmentsByConstraints() throws ParseException {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		Date fromDate = format.parse("2013-01-01 00:00:00.0");
+		Date toDate = format.parse("2000-01-01 00:00:00.0");
+		service.getAppointmentsByConstraints(fromDate, toDate, null, null, null, null);
+	}
+	
+	@Test
+	@Verifies(value = "Should Get All unvoided Appointments", method = "getAppointmentsByConstraints(Date, Date, Location, Provider, AppointmentType, String)")
+	public void shouldGetAllUnvoidedAppointments_getAppointmentsByConstraints() {
+		List<Appointment> appointments = service.getAppointmentsByConstraints(null, null, null, null, null, null);
+		assertEquals(amountOfAppointments - 1, appointments.size());
+	}
+	
+	@Test
+	@Verifies(value = "Should Get All unvoided Appointments in the given Date Interval", method = "getAppointmentsByConstraints(Date, Date, Location, Provider, AppointmentType, String)")
+	public void shouldGetAllUnvoidedAppointmentsByADateInterval_getAppointmentsByConstraints() throws ParseException {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		Date fromDate = format.parse("2006-01-01 00:00:00.0");
+		
+		List<Appointment> appointments = service.getAppointmentsByConstraints(fromDate, null, null, null, null, null);
+		assertEquals(3, appointments.size());
+		
+		Date toDate = format.parse("2006-01-01 01:00:00.3");
+		appointments = service.getAppointmentsByConstraints(null, toDate, null, null, null, null);
+		assertEquals(3, appointments.size());
+		
+		fromDate = format.parse("2007-01-01 00:00:00.0");
+		toDate = format.parse("2007-01-01 01:00:00.1");
+		Appointment specificAppointment = service.getAppointment(4);
+		assertNotNull(specificAppointment);
+		appointments = service.getAppointmentsByConstraints(fromDate, toDate, null, null, null, null);
+		assertEquals(specificAppointment, appointments.iterator().next());
+		assertEquals(1, appointments.size());
+	}
+	
+	@Test
+	@Verifies(value = "Should get all unvoided appointments by provider", method = "getAppointmentsByConstraints(Date, Date, Location, Provider, AppointmentType, String)")
+	public void shouldGetAllUnvoidedAppointmentsByProvider_getAppointmentsByConstraints() {
+		Provider provider = Context.getProviderService().getProvider(1);
+		assertNotNull(provider);
+		List<Appointment> appointments = service.getAppointmentsByConstraints(null, null, null, provider, null, null);
+		assertEquals((Integer) (amountOfAppointments - 1), (Integer) appointments.size());
+	}
+	
+	@Test
+	@Verifies(value = "Should get all unvoided appointments by appointment type", method = "getAppointmentsByConstraints(Date, Date, Location, Provider, AppointmentType, String)")
+	public void shouldGetAllUnvoidedAppointmentsByType_getAppointmentsByConstraints() {
+		AppointmentType type = service.getAppointmentType(1);
+		assertNotNull(type);
+		List<Appointment> appointments = service.getAppointmentsByConstraints(null, null, null, null, type, null);
+		assertEquals((Integer) 2, (Integer) appointments.size());
+		
+		type = service.getAppointmentType(3);
+		Appointment specificAppointment = service.getAppointment(4);
+		appointments = service.getAppointmentsByConstraints(null, null, null, null, type, null);
+		assertEquals(specificAppointment, appointments.iterator().next());
+		assertEquals(1, appointments.size());
+	}
+	
+	@Test
+	@Verifies(value = "Should get all unvoided appointments by location", method = "getAppointmentsByConstraints(Date, Date, Location, Provider, AppointmentType, String)")
+	public void shouldGetAllUnvoidedAppointmentsByLocation_getAppointmentsByConstraints() {
+		Location location = Context.getLocationService().getLocation(3);
+		assertNotNull(location);
+		List<Appointment> appointments = service.getAppointmentsByConstraints(null, null, location, null, null, null);
+		assertEquals(3, appointments.size());
+		
+		location = Context.getLocationService().getLocation(2);
+		assertNotNull(location);
+		appointments = service.getAppointmentsByConstraints(null, null, location, null, null, null);
+		assertEquals(3, appointments.size());
+		
+		location = Context.getLocationService().getLocation(4);
+		assertNotNull(location);
+		appointments = service.getAppointmentsByConstraints(null, null, location, null, null, null);
+		assertTrue(appointments.isEmpty());
+		
+	}
+	
+	@Test
+	@Verifies(value = "Should get all unvoided appointments by status", method = "getAppointmentsByConstraints(Date, Date, Location, Provider, AppointmentType, String)")
+	public void should_getAppointmentsByConstraints() {
+		String scheduled = "SCHEDULED";
+		String missed = "MISSED";
+		
+		List<Appointment> appointments = service.getAppointmentsByConstraints(null, null, null, null, null, scheduled);
+		assertEquals(2, appointments.size());
+		
+		appointments = service.getAppointmentsByConstraints(null, null, null, null, null, missed);
+		Appointment specificAppointment = service.getAppointment(2);
+		assertEquals(specificAppointment, appointments.iterator().next());
+		assertEquals(1, appointments.size());
+	}
+	
 }
