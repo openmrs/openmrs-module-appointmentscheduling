@@ -49,26 +49,9 @@
                         document.getElementById('appointmentBlocksTable').innerHTML='';
                       }
                       count++;
-                      tableContent += '<tr>';
+                      tableContent += '<tr class="notSelectedRow">';
                       tableContent += '<td align="center">'+'<input type="radio" name="appointmentBlockRadios" value="'+appointmentBlocks[i].appointmentBlockId+'"/></td>';
-                      var location = appointmentBlocks[i].location;
-                      var locationString = "";
-                      //levels for the location tree.
-                      while(location != null){
-                      if(location.id != locationId)
-                      {
-                        locationString = location.name + locationString;
-                        locationString = "\\" + locationString;
-                      }
-                      else{
-                        if(locationString==""){
-                            locationString = location.name;
-                        }
-                        break;
-                            }
-                          location = location.parentLocation;
-                        }
-                      tableContent += '<td align="center">'+locationString+"</td>";
+                      tableContent += '<td align="center">'+appointmentBlocks[i].location.name+"</td>";
                       tableContent += '<td align="center">'+appointmentBlocks[i].provider.name+"</td>";
                       //Linking the appointment types in a string.
                       var appointmentTypes = "";
@@ -107,7 +90,7 @@
                              }
                             $j('#appointmentBlocksTable').dataTable({
                                 "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
-                                "iDisplayLength": -1,
+                                "iDisplayLength": 25,
                                 "bLengthChange": true,
                                 "bFilter": false,
                                 "bInfo": true,
@@ -117,20 +100,21 @@
                             //Toggle Checked Row
                             $j('.dataTables_wrapper tbody tr').live('click',
                               function(){
-                            var table = $j('#appointmentBlocksTable').dataTable();
-                            var nNodes = table.fnGetNodes();
-                            $j('input:radio', this).attr('checked',true);
-                            //update the hidden input in order to update the appointmentBlockId model attribute
-                            document.getElementById('appointmentBlockId').value= $j('input:radio', this).attr('value');
-                            for(var i=0; i<nNodes.length; i++){
-                                $j(nNodes[i]).removeClass('selectedRow');
-                                $j(nNodes[i]).addClass('notSelectedRow');
-                            }
-                            $j(this).addClass('selectedRow');
-                            $j(this).removeClass('notSelectedRow');
+		                            var table = $j('#appointmentBlocksTable').dataTable();
+		                            var nNodes = table.fnGetNodes();
+		                            $j('input:radio', this).attr('checked',true);
+		                            //update the hidden input in order to update the appointmentBlockId model attribute
+		                            document.getElementById('appointmentBlockId').value= $j('input:radio', this).attr('value');
+		                            for(var i=0; i<nNodes.length; i++){
+		                                $j(nNodes[i]).removeClass('selectedRow');
+		                             	$j(nNodes[i]).addClass('notSelectedRow');
+                           			 }
+		                            $j(this).addClass('selectedRow');
+		                            $j(this).removeClass('notSelectedRow');
                               }
                             );
                             var theTable = $j('#appointmentBlocksTable').dataTable();
+                            theTable.fnSort([[4,'asc']]);
                             theTable.fnAdjustColumnSizing();
                             var nNodes = theTable.fnGetNodes();
                             for(var i=0; i<nNodes.length; i++){
@@ -173,6 +157,7 @@
                 //data table
                 $j('#appointmentBlocksTable').dataTable({
                  "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                 "aoColumnDefs": [{ "bSearchable": false, "bVisible": false, "aTargets": [ 0 ] }],
                  "iDisplayLength": -1,
                  "bLengthChange": true,
                  "bFilter": false,
@@ -230,7 +215,7 @@
 		        <tr>
 		        <td><input type="submit" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.add"/>" name="add"> </td>
 		        <td><input type="submit" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.edit"/>" name="edit"> </td>
-		         <td><input type="submit" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.delete"/>" name="void"> </td>
+		         <td><input type="submit" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.delete"/>" name="delete"> </td>
 		        </tr>
 		</table>
  </form>

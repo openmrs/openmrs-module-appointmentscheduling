@@ -16,19 +16,19 @@
 	}	
 	function updateAppointmentTypes(add){
 	
-        var allAppointmentTypes = document.getElementById("appointmentTypeSelect");
+        var availableAppointmentTypes = document.getElementById("appointmentTypeSelect");
         var selectedAppointmentTypes = document.getElementById("currentApoointmentTypes");
         var from;
         var to;
 
         if(add==true)
        	{
-        	from = allAppointmentTypes;
+        	from = availableAppointmentTypes;
         	to = selectedAppointmentTypes;
         }
         else
         	{
-        		to = allAppointmentTypes;
+        		to = availableAppointmentTypes;
         		from = selectedAppointmentTypes;
         	}
         
@@ -47,10 +47,20 @@
 	        var selectedAppointmentTypes = document.getElementById("currentApoointmentTypes");	
 	        for(var i=0;i<selectedAppointmentTypes.options.length;i++)
 	    	{
-			selectedAppointmentTypes.options[i].selected = true;
-		}
+				selectedAppointmentTypes.options[i].selected = true;
+		    }
+	        if(selectedAppointmentTypes.options.length == 0){
+	        	document.getElementById("emptyTypes").value = "yes";
+	        }
 	}
-
+	function updateToDate(object) {
+		if (object.value == '') {
+			var startDate = document.getElementById('startDate').value;
+			if (startDate != '')
+				object.value = startDate;
+		}
+		showDateTimePicker(object);
+	}
 </script>
 
 <script type="text/javascript">
@@ -68,7 +78,7 @@
 	<spring:message code="fix.error" />
 	<br />
 </spring:hasBindErrors>
-<form method="post">
+<form:form modelAttribute="appointmentBlock" method="post">
 	<fieldset>
 		<table id="appointmentBlockFormTable">
 			<tr>
@@ -79,28 +89,35 @@
 						<option value="${provider.providerId}" <c:if test="${provider.providerId == status.value}">selected="selected"</c:if>>${provider.name}</option>
 					</c:forEach>
 					</select>
-				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>           
-				</spring:bind>
 				</td>
+				<td>
+				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>    
+				</td>       
+				</spring:bind>
+				
 			</tr>
 			<tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.selectLocation"/></td></tr>
 			<tr>
 				<td><spring:bind path="appointmentBlock.location">
               			      <openmrs_tag:locationField formFieldName="location" initialValue="${status.value}"/>
+           			         </td>
+           			         <td></td>
+              			      <td>
               			      <c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
              			       </spring:bind>
           				     </td>
 			</tr>
 			<tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.selectAppointmentTypes"/></td></tr>
 			<tr>
-				<td><fieldset align="center"><legend><spring:message code="appointment.AppointmentBlock.availableTypes"/></legend>
-				<select multiple name="appointmentTypeSelect" ondblclick="updateAppointmentTypes(true)"
-					id="appointmentTypeSelect">
-						<c:forEach var="appointmentType" items="${appointmentTypeList}">
-							<option value="${appointmentType.appointmentTypeId}"
-								${param.appointmentTypeSelect==appointmentType.appointmentTypeId ? 'selected' : ''}>${appointmentType.name}</option>
-						</c:forEach>
-					</select></fieldset>
+				<td>
+					<fieldset align="center"><legend><spring:message code="appointment.AppointmentBlock.availableTypes"/></legend>
+					<select multiple name="appointmentTypeSelect" ondblclick="updateAppointmentTypes(true)"
+						id="appointmentTypeSelect">
+							<c:forEach var="appointmentType" items="${appointmentTypeList}">
+							<option value="${appointmentType.appointmentTypeId}" ${param.appointmentTypeSelect==appointmentType.appointmentTypeId ? 'selected' : ''}>${appointmentType.name}</option>
+							</c:forEach>
+
+						</select></fieldset>
 				</td>
 				<td>
 				<table>
@@ -146,7 +163,7 @@
 					<spring:bind path="appointmentBlock.endDate">
                     <fieldset align="center"><legend><spring:message code="appointment.AppointmentBlock.endDate"/></legend>
 					<input type="text" name="endDate" id="endDate" size="16" value="${status.value}"
-					onfocus="showDateTimePicker(this)" /> <img
+					onfocus="updateToDate(this)" /> <img
 					src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png"
 					class="calendarIcon" alt=""
 					onClick="document.getElementById('endDate').focus();" />
@@ -157,40 +174,19 @@
 			</tr>
 <tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.defineTimeSlotLength"/></td></tr>
 			<tr>
-				<td><input type="text" dir="rtl" name="timeSlotLength" id="timeSlotLength" value="${timeSlotLength}" size="12" />
+				<td><input type="text" name="timeSlotLength" id="timeSlotLength" value="${timeSlotLength}" size="8" />
 				<spring:message code="appointment.AppointmentBlock.minutes"/></td>
 			</tr>
-			<c:if test="${!(appointmentBlock.creator == null)}">
-			<tr>
-				<td><spring:message code="general.createdBy" /></td>
-				<td><openmrs:format user="${appointmentBlock.creator}"/></td>
-			</tr>
-			</c:if>
 		</table>
 		<br /> <input type="submit" class="appointmentButton" onClick="selectAllTypes()"
 			value="<spring:message code="appointment.AppointmentBlock.save"/>"
 			name="save">
-
+		
 	</fieldset>
-</form>
+		<input type="hidden" name="emptyTypes" id="emptyTypes" value="no" />
+</form:form>
 
 <br />
-
-<c:if
-	test="${appointmentBlock.voided && not empty appointmentBlock.appointmentBlockId}">
-	<form method="post">
-		<fieldset>
-			<h4>
-				<spring:message
-					code="appointment.AppointmentBlock.unvoidAppointmentBlock" />
-			</h4>
-			<input type="submit" class="appointmentButton" 
-				value='<spring:message code="appointment.AppointmentBlock.unvoidAppointmentBlock"/>'
-				name="unvoid" />
-		</fieldset>
-	</form>
-</c:if>
-
 
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>

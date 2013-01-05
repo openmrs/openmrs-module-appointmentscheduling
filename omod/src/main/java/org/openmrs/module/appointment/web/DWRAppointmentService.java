@@ -87,9 +87,14 @@ public class DWRAppointmentService {
 			        .getAppointmentBlocks(fromAsDate, toAsDate, buildLocationList(location));
 			
 			for (AppointmentBlock appointmentBlock : appointmentBlockList) {
-				appointmentBlockDatalist.add(new AppointmentBlockData(appointmentBlock.getId(), appointmentBlock
-				        .getLocation(), appointmentBlock.getProvider(), appointmentBlock.getTypes(), appointmentBlock
-				        .getStartDate(), appointmentBlock.getEndDate(), this.getTimeSlotLength(appointmentBlock.getId())));
+				//don't include voided appointment blocks
+				if (!appointmentBlock.isVoided()) {
+					appointmentBlockDatalist
+					        .add(new AppointmentBlockData(appointmentBlock.getId(), appointmentBlock.getLocation(),
+					                appointmentBlock.getProvider(), appointmentBlock.getTypes(), appointmentBlock
+					                        .getStartDate(), appointmentBlock.getEndDate(), this
+					                        .getTimeSlotLength(appointmentBlock.getId())));
+				}
 			}
 		}
 		return appointmentBlockDatalist;

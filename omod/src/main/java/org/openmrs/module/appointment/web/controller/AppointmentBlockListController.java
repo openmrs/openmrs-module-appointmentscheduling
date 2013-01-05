@@ -13,13 +13,12 @@
  */
 package org.openmrs.module.appointment.web.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import net.sourceforge.jtds.jdbc.DateTime;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -75,7 +74,7 @@ public class AppointmentBlockListController {
 				appointmentBlock = appointmentService.getAppointmentBlock(appointmentBlockId);
 			}
 			//If the user is voiding the AppointmentBlock
-			if (request.getParameter("void") != null) {
+			if (request.getParameter("delete") != null) {
 				if (appointmentBlock != null) {
 					String voidReason = "Some Reason";//request.getParameter("voidReason");
 					if (!(StringUtils.hasText(voidReason))) {
@@ -83,47 +82,72 @@ public class AppointmentBlockListController {
 						    "appointment.AppointmentBlock.error.voidReasonEmpty");
 						return null;
 					}
-					//appointment block can't be voided if an appointment is scheduled in it.
+					//appointment block can't pureged if an appointment is scheduled in it.
 					List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
-					boolean delete = true;
+					boolean shouldVoid = false;
 					for (TimeSlot timeSlot : currentTimeSlots) {
-						List<Appointment> currentAppointments = appointmentService.getAppointmentsInTimeSlot(timeSlot);
-						if (!currentAppointments.isEmpty()) {
-							delete = false;
+						if (!appointmentService.getAppointmentsInTimeSlot(timeSlot).isEmpty()) {
+							shouldVoid = true;
 							break;
 						}
 					}
-					if (delete) {
+					if (shouldVoid) {
+						//voiding appointment block
 						appointmentService.voidAppointmentBlock(appointmentBlock, voidReason);
+						//voiding time slots
+						for (TimeSlot timeSlot : currentTimeSlots) {
+							appointmentService.voidTimeSlot(timeSlot, voidReason);
+						}
 						httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
 						    "appointment.AppointmentBlock.voidedSuccessfully");
 					} else {
-						httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,
-						    "appointment.AppointmentBlock.error.appointmentsExist");
+						//In case there are appointments within the appointment block we don't mind to purge it
+						//purging the appointment block
+						try {
+							//purging the time slots
+							for (TimeSlot timeSlot : currentTimeSlots) {
+								appointmentService.purgeTimeSlot(timeSlot);
+							}
+							appointmentService.purgeAppointmentBlock(appointmentBlock);
+							httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
+							    "appointment.AppointmentBlock.purgedSuccessfully");
+						}
+						catch (DataIntegrityViolationException e) {
+							httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "error.object.inuse.cannot.purge");
+						}
+						catch (APIException e) {
+							httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "error.general: "
+							        + e.getLocalizedMessage());
+						}
 					}
 					return null;
 				} else
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
 					    "appointment.AppointmentBlock.error.selectAppointmentBlock");
 			}
-			// if the is purging the AppointmentBlock 
-			else if (appointmentBlock != null && request.getParameter("purge") != null) {
-				try {
-					appointmentService.purgeAppointmentBlock(appointmentBlock);
-					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
-					    "appointment.AppointmentBlock.purgedSuccessfully");
-				}
-				catch (DataIntegrityViolationException e) {
-					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "error.object.inuse.cannot.purge");
-				}
-				catch (APIException e) {
-					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "error.general: " + e.getLocalizedMessage());
-				}
-			}
 
 			// if the user is unvoiding the AppointmentBlock
 			else if (request.getParameter("unvoid") != null) {
+				List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
+				List<Appointment> appointmentsThatShouldBeUnvoided = new ArrayList<Appointment>();
+				for (TimeSlot timeSlot : currentTimeSlots) {
+					List<Appointment> currentAppointments = appointmentService.getAppointmentsInTimeSlot(timeSlot);
+					for (Appointment appointment : currentAppointments) {
+						if (!appointmentsThatShouldBeUnvoided.contains(appointment))
+							appointmentsThatShouldBeUnvoided.add(appointment);
+					}
+				}
+				//unvoiding the appointment block
 				appointmentService.unvoidAppointmentBlock(appointmentBlock);
+				//unvoiding the appointments
+				for (Appointment appointment : appointmentsThatShouldBeUnvoided) {
+					appointmentService.unvoidAppointment(appointment);
+				}
+				//unvoiding the time slots
+				for (TimeSlot timeSlot : currentTimeSlots) {
+					appointmentService.unvoidTimeSlot(timeSlot);
+				}
+				
 				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentBlock.unvoidedSuccessfully");
 			}
 
