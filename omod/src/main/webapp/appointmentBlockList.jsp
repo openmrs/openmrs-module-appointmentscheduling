@@ -22,7 +22,7 @@
                var fromDate = document.getElementById('fromDate').value;
                var toDate = document.getElementById('toDate').value;
 	           var selectedLocation = document.getElementById("locationId");
-	           var modelAttributeSelectedLocation = "${selectedLocation}";
+	           var modelAttributeSelectedLocation = "${chosenLocation}";
 	           var locationId = null;
 	           if(selectedLocation == null){
 	           		locationId = $j("[name='locationId']")[0].value;
@@ -34,7 +34,7 @@
 				if(locationId ==""){
 					//If the location widget is not loaded yet
 					if(modelAttributeSelectedLocation != null){
-						locationId = "${selectedLocation.id}";
+						locationId = "${chosenLocation.id}";
 					}
 					else locationId = null;				
 				}
@@ -116,44 +116,12 @@
                             var theTable = $j('#appointmentBlocksTable').dataTable();
                             theTable.fnSort([[4,'asc']]);
                             theTable.fnAdjustColumnSizing();
-                            var nNodes = theTable.fnGetNodes();
-                            for(var i=0; i<nNodes.length; i++){
-                                $j(nNodes[i]).removeClass('selectedRow');
-                                $j(nNodes[i]).addClass('notSelectedRow');
-                            }
-
                   }
 
                 });
         }
-		//Gets the date format needed
-        function getDateTimeFormat(date){
-		   	var newFormat = "";
-			if((date.getDate()+"").length == 1){
-				newFormat += "0";
-			}
-			newFormat += date.getDate()+"/";
-			if(((date.getMonth()+1)+"").length == 1){
-				newFormat += "0";
-			}
-			newFormat += (date.getMonth()+1)+"/"+date.getFullYear();
-			newFormat += " "+date.toLocaleTimeString();
-			return newFormat;	
-         }
 		//On the page load updates some necessary stuff
          $j(document).ready(function() {
-        	    //Initialization to the date time start and end
-        	 	if(document.getElementById('fromDate').value == "" && document.getElementById('fromDate').value == ""){
-	                var currentDate = new Date();
-	                currentDate.setHours(0,0,0,0);
-	                var currentTime = new Date();
-	                var days = 6;
-	                currentTime.setTime(currentTime.getTime() + (days * 24 * 60 * 60 * 1000));
-	                var nextWeekDate = new Date(currentTime);
-	                nextWeekDate.setHours(23,59,59,999);
-	                document.getElementById('fromDate').value = getDateTimeFormat(currentDate);
-	                document.getElementById('toDate').value = getDateTimeFormat(nextWeekDate);
-        	 	}
                 //data table
                 $j('#appointmentBlocksTable').dataTable({
                  "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
@@ -179,12 +147,12 @@
                 <table>
                         <tr>
                                 <td class="formLabel"><spring:message code="appointment.AppointmentBlock.pickDate"/>: </td>
-                                <td><input type="text" name="fromDate" id="fromDate" size="18" value="${param.fromDate}" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('fromDate').focus();"/></td>
-                                <td><input type="text" name="toDate" id="toDate" size="18" value="${param.toDate}" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('toDate').focus();"/></td>
+                                <td><input type="text" name="fromDate" id="fromDate" size="18" value="${fromDate}" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('fromDate').focus();"/></td>
+                                <td><input type="text" name="toDate" id="toDate" size="18" value="${toDate}" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('toDate').focus();"/></td>
                         </tr>
                         <tr>
                             <td class="formLabel"><spring:message code="appointment.AppointmentBlock.column.location"/>: </td>
-                            <td><openmrs_tag:locationField formFieldName="locationId" initialValue="${selectedLocation}" optionHeader="[blank]"/></td>
+                            <td><openmrs_tag:locationField formFieldName="locationId" initialValue="${chosenLocation}" optionHeader="[blank]"/></td>
                         </tr>
                         <tr>
                                 <td><input type="button" class="appointmentButton" value=<spring:message code="appointment.AppointmentBlock.apply"/> onClick="updateAppointmentBlockTable()"></td>

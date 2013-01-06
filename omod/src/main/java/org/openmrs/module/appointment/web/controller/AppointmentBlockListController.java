@@ -13,7 +13,9 @@
  */
 package org.openmrs.module.appointment.web.controller;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -49,11 +51,31 @@ public class AppointmentBlockListController {
 	protected final Log log = LogFactory.getLog(getClass());
 	
 	@RequestMapping(value = "/module/appointment/appointmentBlockList", method = RequestMethod.GET)
-	public void showForm(ModelMap model) {
+	public void showForm(HttpServletRequest request, ModelMap model) throws ParseException {
 		model.addAttribute("appointmentBlockId", null);
+		if (Context.isAuthenticated()) {
+			if (request.getSession().getAttribute("chosenLocation") != null) {
+				Location location = (Location) request.getSession().getAttribute("chosenLocation");
+				model.addAttribute("chosenLocation", location);
+			}
+			String fromDate = (String) request.getSession().getAttribute("fromDate");
+			String toDate = (String) request.getSession().getAttribute("toDate");
+			Calendar cal = Context.getDateTimeFormat().getCalendar();
+			if (fromDate == null && toDate == null) {
+				cal.setTime(new Date());
+				cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE), 0, 0, 0);
+				fromDate = Context.getDateTimeFormat().format(cal.getTime()).toString();
+				cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE), 23, 59, 59);
+				cal.add(Calendar.DAY_OF_MONTH, 6);
+				toDate = Context.getDateTimeFormat().format(cal.getTime()).toString();
+			}
+			model.addAttribute("fromDate", fromDate);
+			model.addAttribute("toDate", toDate);
+		}
+		
 	}
 	
-	@ModelAttribute("selectedLocation")
+	@ModelAttribute("chosenLocation")
 	public Location getLocation(@RequestParam(value = "locationId", required = false) Location location) {
 		if (location != null)
 			return location;
@@ -66,7 +88,12 @@ public class AppointmentBlockListController {
 	        @RequestParam(value = "toDate", required = false) Date toDate,
 	        @RequestParam(value = "locationId", required = false) Location location,
 	        @RequestParam(value = "appointmentBlockId", required = false) Integer appointmentBlockId) throws Exception {
+		//save details from the appointment block list page using http session
 		HttpSession httpSession = request.getSession();
+		httpSession.setAttribute("chosenLocation", location);
+		httpSession.setAttribute("fromDate", Context.getDateTimeFormat().format(fromDate).toString());
+		httpSession.setAttribute("toDate", Context.getDateTimeFormat().format(toDate).toString());
+		
 		AppointmentBlock appointmentBlock = null;
 		if (Context.isAuthenticated()) {
 			AppointmentService appointmentService = Context.getService(AppointmentService.class);
