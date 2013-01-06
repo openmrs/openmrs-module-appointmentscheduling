@@ -219,7 +219,7 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		
 		appointmentBlocks = service.getAppointmentBlocks(null, null, locaitons);
 		assertNotNull(appointmentBlocks);
-		assertEquals(2, appointmentBlocks.size());
+		assertEquals(1, appointmentBlocks.size());
 		
 		appointmentBlocks = service.getAppointmentBlocks(null, null, "");
 		assertEquals(3, appointmentBlocks.size());

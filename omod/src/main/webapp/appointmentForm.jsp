@@ -34,7 +34,10 @@
 	$j(document)
 			.ready(
 					function() {
-
+						//Prevent date keyboard input
+						$j("#fromDate").keypress(function(event) {event.preventDefault();});
+						$j("#toDate").keypress(function(event) {event.preventDefault();});
+						
 						//Focus "search patient"
 						$j('#patient_id_selection').focus();
 						

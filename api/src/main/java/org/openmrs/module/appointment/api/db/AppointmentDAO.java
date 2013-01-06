@@ -16,9 +16,11 @@ package org.openmrs.module.appointment.api.db;
 import java.util.Date;
 import java.util.List;
 
+import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
+import org.openmrs.api.APIException;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
@@ -34,5 +36,8 @@ public interface AppointmentDAO extends SingleClassDAO {
 	Appointment getAppointmentByVisit(Visit visit);
 	
 	Appointment getLastAppointment(Patient patient);
+	
+	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider, AppointmentType type,
+	        String status) throws APIException;
 	
 }

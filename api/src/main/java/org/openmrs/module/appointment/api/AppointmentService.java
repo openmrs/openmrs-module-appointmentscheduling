@@ -509,4 +509,19 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return A set that contains all of the descendants of the given location.
 	 */
 	Set<Location> getAllLocationDescendants(Location location, Set<Location> descendants);
+	
+	/**
+	 * 
+	 * Retrieves Appointments that satisfy the given constraints
+	 * 
+	 * @param fromDate - The appointment start date
+	 * @param toDate - The appointment end date
+	 * @param location - The appointment location
+	 * @param provider - The appointment provider
+	 * @param type - The appointment type
+	 * @param status - The appointment status
+	 * @return a list of appointments that satisfy the given constraints
+	 */
+	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Location location, Provider provider,
+	        AppointmentType type, String status) throws APIException;
 }
