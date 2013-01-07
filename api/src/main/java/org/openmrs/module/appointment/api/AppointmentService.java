@@ -304,6 +304,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return all the appointments for the given patient id.
 	 * @should return all of the appointments for the given patient.
 	 */
+	@Transactional(readOnly = true)
 	List<Appointment> getAppointmentsOfPatient(Patient patient);
 	
 	/**
@@ -312,6 +313,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param visitId the visit id to search by.
 	 * @return the appointment that is related to this visit, null if there isnt any.
 	 */
+	@Transactional(readOnly = true)
 	Appointment getAppointmentByVisit(Visit visit);
 	
 	/*
@@ -402,6 +404,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param timeSlot the time slot to search by.
 	 * @return the appointments in the given time slot.
 	 */
+	@Transactional(readOnly = true)
 	List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot);
 	
 	/**
@@ -476,6 +479,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return List of TimeSlots that stands within the given constraints, null if illegal values
 	 *         (fromDate>toDate or null appointmentType)
 	 */
+	@Transactional(readOnly = true)
 	List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate, Provider provider,
 	        Location location) throws APIException;
 	
@@ -488,6 +492,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param patient the patient.
 	 * @return a list of strings where each string represents an identifier of the patient.
 	 */
+	@Transactional(readOnly = true)
 	List<String> getPatientIdentifiersRepresentation(Patient patient);
 	
 	/**
@@ -497,6 +502,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return The amount of minutes left in the given time slot. Returns null if the given time
 	 *         slot was null;
 	 */
+	@Transactional(readOnly = true)
 	Integer getTimeLeftInTimeSlot(TimeSlot timeSlot);
 	
 	/**
@@ -508,6 +514,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param descendants the result set which is being built recursively.
 	 * @return A set that contains all of the descendants of the given location.
 	 */
+	@Transactional(readOnly = true)
 	Set<Location> getAllLocationDescendants(Location location, Set<Location> descendants);
 	
 	/**
@@ -522,6 +529,26 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param status - The appointment status
 	 * @return a list of appointments that satisfy the given constraints
 	 */
+	@Transactional(readOnly = true)
 	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Location location, Provider provider,
 	        AppointmentType type, String status) throws APIException;
+	
+	/**
+	 * 
+	 * Retrives the start date of the current status of a given appointment.
+	 * 
+	 * @param appointment - The appointment.
+	 * @return the start date of the current status of a given appointment.
+	 */
+	@Transactional(readOnly = true)
+	Date getAppointmentCurrentStatusStartDate(Appointment appointment);
+	
+	/**
+	 * 
+	 * Changes the given appointment status.
+	 * 
+	 * @param appointment - The appointment
+	 * @param newStatus - The new status
+	 */
+	void changeAppointmentStatus(Appointment appointment, String newStatus);
 }

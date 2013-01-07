@@ -5,6 +5,7 @@
 
 
 <openmrs:htmlInclude file="/moduleResources/appointment/Scripts/timepicker.js" />
+<openmrs:htmlInclude file="/moduleResources/appointment/Scripts/date.format.js" />
 <openmrs:htmlInclude
 	file="/moduleResources/appointment/Scripts/jquery.dataTables.js" />
 <openmrs:htmlInclude
@@ -26,12 +27,14 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <script type="text/javascript">
+	var timeout = null;
+
 	$j(document)
 			.ready(
 					function() {
 						//Init Dates FIltering
 						//Causes Errors
-						//InitDateFilter();
+						InitDateFilter();
 
 						//Prevent date keyboard input
 						$j("#fromDate").keypress(function(event) {event.preventDefault();});
@@ -46,7 +49,7 @@
 											"aoColumns" : [ {
 												"bVisible"  : true												
 											}, { 
-												"iDataSort" : 8
+												"iDataSort" : 9
 											}, {
 												"bSortable" : true
 											}, {
@@ -56,6 +59,8 @@
 											}, {
 												"bSortable" : true
 											}, {
+												"bSortable" : true
+											} ,{
 												"bSortable" : true
 											} ,{
 												"bSortable" : true
@@ -80,7 +85,7 @@
 														.prepend(
 																"<table style='margin:10px; float:right; display:inline-block;' >"+
 																	"<tr><td>"+
-																		"<input type=\"checkbox\" name=\"includeCancelled\" value=\"true\" onchange='this.form.submit();' ${param.includeCancelled=='true' ? 'checked' : ''}>"+
+																		"<input type=\"checkbox\" name=\"includeCancelled\" value=\"true\" onchange='this.form.submit();' ${(param.includeCancelled=='true' || param.appointmentStatusSelect=='Cancelled') ? 'checked' : ''}>"+
 																			"<spring:message code='appointment.Appointment.list.label.showCancelled' />"+
 																	"</td></tr>"+
 																	"<tr><td>"+
@@ -90,11 +95,11 @@
 												$j(".statusDiv").html("");
 												$j('.statusDiv')
 														.prepend(
-																"<input type='button' id='startConsultButton' class='appointmentButton buttonShadow' value='Start Consultation' disabled />"+
-																"<input type='button' id='endConsultButton' class='appointmentButton buttonShadow' value='End Consultation' disabled />"+
-																"<input type='button' id='checkInButton' class='appointmentButton buttonShadow' style='margin-left:16px; margin-right:16px;' value='Check-In' disabled />"+
-																"<input type='button' id='missButton' class='appointmentButton buttonShadow' value='Miss Appointment' disabled />"+
-																"<input type='button' id='cancelButton' class='appointmentButton buttonShadow' value='Cancel Appointment' disabled />"+
+																"<input type='submit' name='startConsultation' id='startConsultButton' class='appointmentButton buttonShadow' value='<spring:message code='appointment.Appointment.list.button.startConsultation'/>' disabled />"+
+																"<input type='submit' name='endConsultation' id='endConsultButton' class='appointmentButton buttonShadow' value='<spring:message code='appointment.Appointment.list.button.endConsultation'/>' disabled />"+
+																"<input type='submit' name='checkIn' id='checkInButton' class='appointmentButton buttonShadow' style='margin-left:16px; margin-right:16px;' value='<spring:message code='appointment.Appointment.list.button.checkIn'/>' disabled />"+
+																"<input type='submit' name='missAppointment' id='missButton' class='appointmentButton buttonShadow' value='<spring:message code='appointment.Appointment.list.button.missAppointment'/>' disabled />"+
+																"<input type='submit' name='cancelAppointment' id='cancelButton' class='appointmentButton buttonShadow' value='<spring:message code='appointment.Appointment.list.button.cancelAppointment'/>' disabled />"+
 																"<br/>"
 																);
 											},
@@ -124,6 +129,17 @@
 										});
 							//Initialize status buttons availability
 							initStatusButtons();
+							
+							//Init timeout time
+							var propertyValue = "${pageTimeout}";
+							if(propertyValue!=null){
+								timeout = parseInt(propertyValue) * 1000;
+								if(timeout>0){
+									window.setInterval(function() {
+										document.forms['manageAppointmentsForm'].submit();
+									}, timeout);
+								}
+							}
 
 					});
 	//Navigate to appointmentForm.form
@@ -146,25 +162,13 @@
             todayStart.setHours(0,0,0,0);
             var todayEnd = new Date();
             todayEnd.setHours(23,59,59,999);
-            document.getElementById('fromDate').value = getDateTimeFormat(todayStart);
-            document.getElementById('toDate').value = getDateTimeFormat(todayEnd);
+            document.getElementById('fromDate').value = todayStart.format(jsDateFormat+' HH:MM');
+            document.getElementById('toDate').value = todayEnd.format(jsDateFormat+' HH:MM');
+		}
 	}
 
-	//Gets the date format needed
-        function getDateTimeFormat(date){
-		   	var newFormat = "";
-			if((date.getDate()+"").length == 1){
-				newFormat += "0";
-			}
-			newFormat += date.getDate()+"/";
-			if(((date.getMonth()+1)+"").length == 1){
-				newFormat += "0";
-			}
-			newFormat += (date.getMonth()+1)+"/"+date.getFullYear();
-			newFormat += " "+date.toLocaleTimeString();
-			return newFormat;	
-         }
-}
+
+	
 </script>
 
 <h2>
@@ -192,9 +196,6 @@
 			src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png"
 			class="calendarIcon" alt=""
 			onClick="document.getElementById('toDate').focus();" /></td>
-			<td>
-				<!-- TODO handle toDate<fromDate -->
-			</td>
 	</tr>
 	<tr>
 		<td class="formLabel"><spring:message
@@ -212,7 +213,7 @@
 					</option>
 					<c:forEach var="provider" items="${providerList}">
 						<option value="${provider.providerId}"
-							${provider.providerId==param.providerSelect ? 'selected' : ''}>${provider.name}</option>
+							${provider.providerId==selectedProvider.providerId ? 'selected' : ''}>${provider.name}</option>
 					</c:forEach>
 			</select></td>
 		</tr>
@@ -264,14 +265,15 @@
 				<th><spring:message code='appointment.Appointment.list.column.location'/></th>
 				<th><spring:message code='appointment.Appointment.list.column.type'/></th>
 				<th><spring:message code='appointment.Appointment.list.column.status'/></th>
+				<th>Waiting Time</th>
 				<th></th>
 			</tr>
 		</thead>
 		<tbody>
 			<c:forEach var="appointment" items="${appointmentList}">
-				<tr ${appointment==param.selectAppointment ? 'class="selectedRow"' : 'class="notSelectedRow"'}>
+				<tr ${appointment.appointmentId==param.selectAppointment ? 'class="selectedRow"' : 'class="notSelectedRow"'}>
 					<td>
-						<input type="radio" value="${appointment}" ${param.selectAppointment==appointment ? 'checked' : ''} name="selectAppointment" />
+						<input type="radio" value="${appointment.appointmentId}" ${param.selectAppointment==appointment.appointmentId ? 'checked' : ''} name="selectAppointment" />
 					</td>
 					<td>
 						<c:forEach var="name" items="${appointment.patient.names}" end="0">
@@ -289,6 +291,7 @@
 					<td>${appointment.timeSlot.appointmentBlock.location.name}</td>
 					<td>${appointment.appointmentType.name}</td>
 					<td>${appointment.status}</td>
+					<td>${waitingTimes[appointment.appointmentId]}</td>
 					<td><fmt:formatDate type="date" value="${appointment.timeSlot.startDate}"
 										pattern="yyyyMMddHHmm" /></td>
 				</tr>

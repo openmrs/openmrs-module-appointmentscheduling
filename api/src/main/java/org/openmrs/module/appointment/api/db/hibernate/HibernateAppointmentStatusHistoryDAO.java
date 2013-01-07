@@ -13,12 +13,14 @@
  */
 package org.openmrs.module.appointment.api.db.hibernate;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentStatusHistory;
 import org.openmrs.module.appointment.api.db.AppointmentStatusHistoryDAO;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +38,17 @@ public class HibernateAppointmentStatusHistoryDAO extends HibernateSingleClassDA
 		criteria.add(Restrictions.like("status", status, MatchMode.EXACT));
 		criteria.addOrder(Order.asc("status"));
 		return criteria.list();
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public Date getStartDateOfCurrentStatus(Appointment appointment) {
+		String query = "Select Max(endDate) from AppointmentStatusHistory where appointment=:appointment";
+		Date endDate = (Date) super.sessionFactory.getCurrentSession().createQuery(query).setParameter("appointment",
+		    appointment).uniqueResult();
+		endDate = (endDate == null && appointment != null) ? appointment.getDateCreated() : endDate;
+		
+		return endDate;
 	}
 	
 }

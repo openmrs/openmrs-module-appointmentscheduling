@@ -15,11 +15,11 @@ package org.openmrs.module.appointment.api;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -34,7 +34,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 /**
- * Tests Appointment Status History methods in the {@link ${AppointmentService}}.
+ * Tests Appointment Status History methods in the {@link $ AppointmentService}}.
  */
 public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensitiveTest {
 	
@@ -128,4 +128,30 @@ public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensit
 		assertEquals(3, service.getAllAppointmentStatusHistories().size());
 	}
 	
+	@Test
+	@Verifies(value = "Should get correct start date of current status", method = "getAppointmentCurrentStatusStartDate(Appointment) ")
+	public void getAppointmentCurrentStatusStartDate_shouldGetCorrectDate() throws ParseException {
+		Date startDate = service.getAppointmentCurrentStatusStartDate(null);
+		Assert.assertNull(startDate);
+		
+		Appointment appointment = service.getAppointment(1);
+		assertNotNull(appointment);
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		startDate = format.parse("2005-01-01 02:00:00.0");
+		assertEquals(startDate, service.getAppointmentCurrentStatusStartDate(appointment));
+	}
+	
+	@Test
+	@Verifies(value = "Should change appointment status correctly", method = "changeAppointmentStatus(Appointment, String)")
+	public void changeAppointmentStatus_shouldChangeCorrectly() {
+		Appointment appointment = service.getAppointment(1);
+		assertNotNull(appointment);
+		
+		service.changeAppointmentStatus(appointment, "Completed");
+		//Should add new history
+		assertEquals(4, service.getAllAppointmentStatusHistories().size());
+		
+		//Should not add new appointment
+		assertEquals(4, service.getAllAppointments().size());
+	}
 }

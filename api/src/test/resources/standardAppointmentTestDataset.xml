@@ -36,8 +36,8 @@
 	<appointment appointment_id="3" time_slot_id="1" appointment_type_id="2" patient_id="2" status="FINISHED" uuid="c0c579b0-8e59-401d-8a4a-976a0b183603" date_created="2005-01-01 00:00:00.0" voided="true" creator="1" void_reason="some void reason"/>
 	<appointment appointment_id="4" time_slot_id="3" appointment_type_id="3" patient_id="1" status="SCHEDULED" uuid="c0c579b0-8e59-401d-8a4a-976a0b183604" date_created="2005-01-01 00:00:00.0" voided="false" creator="1"/>
 	
-	<appointment_status_history appointment_status_history_id="1" appointment_id="1" status="Waiting" start_date="2005-01-01 00:00:00.0" end_date="2005-01-01 00:00:00.0"/>
-	<appointment_status_history appointment_status_history_id="2" appointment_id="1" status="In-Consultation" start_date="2005-01-01 00:00:00.0" end_date="2005-01-01 00:00:00.0"/>
+	<appointment_status_history appointment_status_history_id="1" appointment_id="1" status="Waiting" start_date="2005-01-01 00:00:00.0" end_date="2005-01-01 01:00:00.0"/>
+	<appointment_status_history appointment_status_history_id="2" appointment_id="1" status="In-Consultation" start_date="2005-01-01 01:00:00.0" end_date="2005-01-01 02:00:00.0"/>
 	<appointment_status_history appointment_status_history_id="3" appointment_id="2" status="Missed" start_date="2005-01-01 00:00:00.0" end_date="2005-01-01 00:00:00.0"/>
 	
 	<location location_id="2" name="Xanadu" description="A metaphor for opulence, most famously in the English Romantic Samuel Taylor Coleridge&apos;s poem Kubla Khan." address1="800 Boylston Street" address2="" city_village="Boston" state_province="MA" postal_code="02115" country="USA" latitude="" longitude="" creator="1" date_created="2008-08-15 13:46:50.0" retired="false" uuid="9356400c-a5a2-4532-8f2b-2361b3446eb7"/>

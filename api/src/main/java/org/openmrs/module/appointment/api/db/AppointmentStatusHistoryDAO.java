@@ -13,12 +13,24 @@
  */
 package org.openmrs.module.appointment.api.db;
 
-import java.util.List;
+import java.util.Date;
 
-import org.openmrs.module.appointment.AppointmentStatusHistory;
+import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.api.AppointmentService;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Database methods for {@link AppointmentService}.
  */
-public interface AppointmentStatusHistoryDAO extends SingleClassDAO {}
+public interface AppointmentStatusHistoryDAO extends SingleClassDAO {
+	
+	/**
+	 * 
+	 * Retrives the start date of the current status of a given appointment.
+	 * 
+	 * @param appointment - The appointment.
+	 * @return the start date of the current status of a given appointment.
+	 */
+	@Transactional(readOnly = true)
+	public Date getStartDateOfCurrentStatus(Appointment appointment);
+}
