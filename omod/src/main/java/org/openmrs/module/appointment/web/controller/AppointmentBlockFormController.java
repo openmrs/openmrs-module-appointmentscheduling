@@ -160,13 +160,32 @@ public class AppointmentBlockFormController {
 						    "appointment.AppointmentBlock.error.maximalTimeSlot");
 						return null;
 					}
-					
+					List<TimeSlot> currentTimeSlots = null;
+					//if the appointment block is already created and now is being updated
+					if (appointmentBlock.getCreator() != null) {
+						boolean canBeUpdated = true;
+						currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
+						for (TimeSlot timeSlot : currentTimeSlots) {
+							if (appointmentService.getAppointmentsInTimeSlot(timeSlot).size() > 0) {
+								canBeUpdated = false;
+								break;
+							}
+						}
+						if (!canBeUpdated) {
+							httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,
+							    "appointment.AppointmentBlock.error.appointmentsExist");
+							return null;
+							
+						}
+					}
 					//First we need to save the appointment block (before creating the time slot
 					appointmentService.saveAppointmentBlock(appointmentBlock);
 					//Create the time slots.
 					Integer slotLength = Integer.parseInt(timeSlotLength);
 					int howManyTimeSlotsToCreate = (int) (appointmentBlocklengthInMinutes / slotLength);
-					List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
+					if (currentTimeSlots == null) {
+						currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
+					}
 					if (currentTimeSlots.size() != howManyTimeSlotsToCreate) { //the time slot length changed therefore we need to update.
 						//First we will purge the current time slots.
 						for (TimeSlot timeSlot : currentTimeSlots) {
