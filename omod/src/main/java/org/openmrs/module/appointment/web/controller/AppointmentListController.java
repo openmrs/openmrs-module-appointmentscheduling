@@ -67,7 +67,7 @@ public class AppointmentListController {
 	}
 	
 	@ModelAttribute("appointmentList")
-	public List<Appointment> getAppointmentList(
+	public List<Appointment> getAppointmentList(HttpServletRequest request,
 	        @RequestParam(value = "includeCancelled", required = false) String includeCancelled,
 	        @RequestParam(value = "fromDate", required = false) Date fromDate,
 	        @RequestParam(value = "toDate", required = false) Date toDate,
@@ -78,7 +78,25 @@ public class AppointmentListController {
 		status = (status == null || status.isEmpty()) ? null : status;
 		
 		if (Context.isAuthenticated()) {
+			
 			List<Appointment> appointments = new LinkedList<Appointment>();
+			if (RequestMethod.GET.toString().equalsIgnoreCase(request.getMethod())) {
+				//Default date filter - today 00:00 till 23:59
+				Calendar cal = Calendar.getInstance();
+				fromDate = new Date();
+				cal.setTime(fromDate);
+				cal.set(Calendar.HOUR_OF_DAY, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				cal.set(Calendar.MILLISECOND, 0);
+				fromDate = cal.getTime();
+				
+				cal.set(Calendar.HOUR_OF_DAY, 23);
+				cal.set(Calendar.MINUTE, 59);
+				cal.set(Calendar.SECOND, 59);
+				cal.set(Calendar.MILLISECOND, 999);
+				toDate = cal.getTime();
+			}
 			try {
 				appointments = Context.getService(AppointmentService.class).getAppointmentsByConstraints(fromDate, toDate,
 				    location, provider, appointmentType, status);
@@ -107,12 +125,44 @@ public class AppointmentListController {
 			return new LinkedList<Appointment>();
 	}
 	
+	@ModelAttribute("providerSelect")
+	public Provider getSelectedProvider(HttpServletRequest request,
+	        @RequestParam(value = "providerSelect", required = false) Provider selectedProvider) {
+		if (RequestMethod.GET.toString().equalsIgnoreCase(request.getMethod())) {
+			//Default provider filter - if user is provider, set to user
+			Provider provider = null;
+			Person person = Context.getAuthenticatedUser().getPerson();
+			for (Provider providerIterator : Context.getProviderService().getAllProviders()) {
+				if (providerIterator.getPerson() != null && providerIterator.getPerson().equals(person)) {
+					provider = providerIterator;
+					break;
+				}
+			}
+			return provider;
+		} else
+			return selectedProvider;
+	}
+	
 	@ModelAttribute("selectedLocation")
-	public Location getLocation(@RequestParam(value = "locationId", required = false) Location location) {
-		if (location != null)
+	public Location getLocation(HttpServletRequest request,
+	        @RequestParam(value = "locationId", required = false) Location location) {
+		if (RequestMethod.GET.toString().equalsIgnoreCase(request.getMethod())) {
+			//Default provider filter - if user is provider, set location to user default
+			Provider provider = null;
+			Person person = Context.getAuthenticatedUser().getPerson();
+			for (Provider providerIterator : Context.getProviderService().getAllProviders()) {
+				if (providerIterator.getPerson() != null && providerIterator.getPerson().equals(person)) {
+					provider = providerIterator;
+					break;
+				}
+			}
+			Location defaultLocation = null;
+			if (provider != null)
+				defaultLocation = Context.getUserContext().getLocation();
+			
+			return defaultLocation;
+		} else
 			return location;
-		else
-			return null;
 	}
 	
 	@ModelAttribute("providerList")
@@ -142,8 +192,13 @@ public class AppointmentListController {
 	}
 	
 	@ModelAttribute("waitingTimes")
-	public Map<Integer, String> getWaitingTimes(@ModelAttribute("appointmentList") List<Appointment> appointments) {
+	public Map<Integer, String> getWaitingTimes(ModelMap model,
+	        @ModelAttribute("appointmentList") List<Appointment> appointments) {
+		//Mapping appointment Id to waiting time left string
 		Map<Integer, String> times = new HashMap<Integer, String>();
+		
+		//Mapping appointment Id to sortable number of the waiting time left
+		Map<Integer, Integer> sortableTimes = new HashMap<Integer, Integer>();
 		
 		for (Appointment appointment : appointments) {
 			//TODO change to use enum
@@ -172,48 +227,21 @@ public class AppointmentListController {
 					representation += diffMinutes + " " + minutes + " ";
 				
 				times.put(appointment.getId(), representation);
+				sortableTimes.put(appointment.getId(), (diffMinutes + 60 * diffHours + 60 * 24 * diffDays));
 				
-			} else
+			} else {
 				times.put(appointment.getId(), "");
+				sortableTimes.put(appointment.getId(), 0);
+			}
 		}
 		
+		model.put("sortableWaitingTimes", sortableTimes);
 		return times;
 	}
 	
 	@RequestMapping(value = "/module/appointment/appointmentList", method = RequestMethod.GET)
 	public void showForm(ModelMap model) {
-		if (Context.isAuthenticated()) {
-			//Default date filter - today 00:00 till 23:59
-			Calendar cal = Calendar.getInstance();
-			Date todayStart = new Date();
-			cal.setTime(todayStart);
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MILLISECOND, 0);
-			todayStart = cal.getTime();
-			
-			cal.set(Calendar.HOUR_OF_DAY, 23);
-			cal.set(Calendar.MINUTE, 59);
-			cal.set(Calendar.SECOND, 59);
-			cal.set(Calendar.MILLISECOND, 999);
-			Date todayEnd = cal.getTime();
-			
-			//Default provider filter - if user is provider, set to user
-			Provider provider = null;
-			Person person = Context.getAuthenticatedUser().getPerson();
-			for (Provider providerIterator : Context.getProviderService().getAllProviders()) {
-				if (providerIterator.getPerson() != null && providerIterator.getPerson().equals(person)) {
-					provider = providerIterator;
-					break;
-				}
-			}
-			if (provider != null)
-				model.put("selectedProvider", provider);
-			
-			List<Appointment> appointments = getAppointmentList(null, todayStart, todayEnd, null, provider, null, null);
-			model.put("appointmentList", appointments);
-		}
+		
 	}
 	
 	@RequestMapping(value = "/module/appointment/appointmentList", method = RequestMethod.POST)
@@ -223,6 +251,7 @@ public class AppointmentListController {
 	        @RequestParam(value = "toDate", required = false) Date toDate) {
 		if (fromDate != null && toDate != null && !fromDate.before(toDate)) {
 			errors.reject("appointment.Appointment.error.InvalidDateInterval");
+			model.put("errors", errors);
 			return;
 		}
 		//TODO change to use enum

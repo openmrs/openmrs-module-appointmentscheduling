@@ -31,9 +31,11 @@
 
 	$j(document)
 			.ready(
-					function() {
+					function() {		
+						//Hide errors div
+						$j('#errorsDiv').hide();
+						
 						//Init Dates FIltering
-						//Causes Errors
 						InitDateFilter();
 
 						//Prevent date keyboard input
@@ -63,7 +65,9 @@
 											} ,{
 												"bSortable" : true
 											} ,{
-												"bSortable" : true
+												"iDataSort" : 10
+											}, {
+												"bVisible" : false
 											}, {
 												"bVisible" : false
 											}],
@@ -167,19 +171,31 @@
 		}
 	}
 
-
+	//validate startDate<toDate
+	function validateDates(){
+		var fromDate = new Date($j('#fromDate')[0].value);
+		var toDate = new Date($j('#toDate')[0].value);
+		if(toDate<fromDate){
+			$j('#errorsDiv').show();
+			$j('#errorsDiv').html("<spring:message code='appointment.Appointment.error.InvalidDateInterval' />");
+			return false;
+		}
+		else
+			return true;
+	}
 	
 </script>
 
 <h2>
 	<spring:message code="appointment.Appointment.list.manage.title" />
 </h2>
+<form:form method="post" modelAttribute="selectedAppointment" id="manageAppointmentsForm" onsubmit='return validateDates()'>
 
-<form:form method="post" modelAttribute="selectedAppointment" id="manageAppointmentsForm">
 <br />
 <br />
 <b class="boxHeader"><spring:message
 		code="appointment.Appointment.list.filterTitle" /></b>
+<div class="error" id="errorsDiv" ></div>
 <fieldset>
 <table>
 <tr>
@@ -213,7 +229,7 @@
 					</option>
 					<c:forEach var="provider" items="${providerList}">
 						<option value="${provider.providerId}"
-							${provider.providerId==selectedProvider.providerId ? 'selected' : ''}>${provider.name}</option>
+							${provider.providerId==providerSelect.providerId ? 'selected' : ''}>${provider.name}</option>
 					</c:forEach>
 			</select></td>
 		</tr>
@@ -265,8 +281,9 @@
 				<th><spring:message code='appointment.Appointment.list.column.location'/></th>
 				<th><spring:message code='appointment.Appointment.list.column.type'/></th>
 				<th><spring:message code='appointment.Appointment.list.column.status'/></th>
-				<th>Waiting Time</th>
-				<th></th>
+				<th><spring:message code='appointment.Appointment.list.column.waitingTime'/></th>
+				<th>Hidden sortable dates</th>
+				<th>Hidden sortable waiting time</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -294,6 +311,7 @@
 					<td>${waitingTimes[appointment.appointmentId]}</td>
 					<td><fmt:formatDate type="date" value="${appointment.timeSlot.startDate}"
 										pattern="yyyyMMddHHmm" /></td>
+					<td>${sortableWaitingTimes[appointment.appointmentId]}</td>
 				</tr>
 			</c:forEach>
 		</tbody>

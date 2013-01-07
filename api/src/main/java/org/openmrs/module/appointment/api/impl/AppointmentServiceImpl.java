@@ -515,7 +515,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 			descendants = new HashSet<Location>();
 		
 		if (location != null) {
-			for (Location childLocation : location.getChildLocations()) {
+			Set<Location> childLocations = location.getChildLocations();
+			for (Location childLocation : childLocations) {
 				descendants.add(childLocation);
 				getAllLocationDescendants(childLocation, descendants);
 			}
