@@ -423,6 +423,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public Appointment getLastAppointment(Patient patient) {
 		return getAppointmentDAO().getLastAppointment(patient);
 	}
@@ -461,6 +462,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public List<String> getPatientIdentifiersRepresentation(Patient patient) {
 		LinkedList<String> identifiers = new LinkedList<String>();
 		
@@ -483,6 +485,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public Integer getTimeLeftInTimeSlot(TimeSlot timeSlot) {
 		Integer timeLeft = null;
 		
@@ -506,12 +509,14 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public Set<Location> getAllLocationDescendants(Location location, Set<Location> descendants) {
 		if (descendants == null)
 			descendants = new HashSet<Location>();
 		
 		if (location != null) {
-			for (Location childLocation : location.getChildLocations()) {
+			Set<Location> childLocations = location.getChildLocations();
+			for (Location childLocation : childLocations) {
 				descendants.add(childLocation);
 				getAllLocationDescendants(childLocation, descendants);
 			}
@@ -521,6 +526,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Location location, Provider provider,
 	        AppointmentType type, String status) throws APIException {
 		
@@ -545,6 +551,30 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		}
 		
 		return appointmentsInLocation;
+		
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public Date getAppointmentCurrentStatusStartDate(Appointment appointment) {
+		return appointmentStatusHistoryDAO.getStartDateOfCurrentStatus(appointment);
+	}
+	
+	@Override
+	public void changeAppointmentStatus(Appointment appointment, String newStatus) {
+		//TODO change to use enum
+		if (appointment != null) {
+			AppointmentStatusHistory history = new AppointmentStatusHistory();
+			history.setAppointment(appointment);
+			history.setEndDate(new Date());
+			history.setStartDate(getAppointmentCurrentStatusStartDate(appointment));
+			history.setStatus(appointment.getStatus());
+			
+			saveAppointmentStatusHistory(history);
+			
+			appointment.setStatus(newStatus);
+			saveAppointment(appointment);
+		}
 		
 	}
 	

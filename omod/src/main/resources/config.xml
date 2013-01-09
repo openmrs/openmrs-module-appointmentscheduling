@@ -22,6 +22,11 @@
 		<defaultValue>8</defaultValue>
 		<description>Person attribute type id for the phone number.
 		</description>
+		<property>${project.parent.artifactId}.manageAppointmentsFormTimout
+		</property>
+		<defaultValue>60</defaultValue>
+		<description>Refresh the manage appointments page after this number of seconds. (-1 to disable)
+		</description>
 	</globalProperty>
 
 	<!-- Module Activator -->
