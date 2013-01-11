@@ -52,7 +52,7 @@ public class AppointmentBlockListController {
 	
 	@RequestMapping(value = "/module/appointment/appointmentBlockList", method = RequestMethod.GET)
 	public void showForm(HttpServletRequest request, ModelMap model) throws ParseException {
-		model.addAttribute("appointmentBlockId", null);
+		model.addAttribute("appointmentsCount", "");
 		if (Context.isAuthenticated()) {
 			if (request.getSession().getAttribute("chosenLocation") != null) {
 				Location location = (Location) request.getSession().getAttribute("chosenLocation");
@@ -84,10 +84,12 @@ public class AppointmentBlockListController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public String onSubmit(HttpServletRequest request, @RequestParam(value = "fromDate", required = false) Date fromDate,
+	public String onSubmit(HttpServletRequest request, ModelMap model,
+	        @RequestParam(value = "fromDate", required = false) Date fromDate,
 	        @RequestParam(value = "toDate", required = false) Date toDate,
 	        @RequestParam(value = "locationId", required = false) Location location,
-	        @RequestParam(value = "appointmentBlockId", required = false) Integer appointmentBlockId) throws Exception {
+	        @RequestParam(value = "appointmentBlockId", required = false) Integer appointmentBlockId,
+	        @RequestParam(value = "toVoid", required = false) String toVoid) throws Exception {
 		//save details from the appointment block list page using http session
 		HttpSession httpSession = request.getSession();
 		httpSession.setAttribute("chosenLocation", location);
@@ -100,8 +102,7 @@ public class AppointmentBlockListController {
 			if (appointmentBlockId != null) {
 				appointmentBlock = appointmentService.getAppointmentBlock(appointmentBlockId);
 			}
-			//If the user is voiding the AppointmentBlock
-			if (request.getParameter("delete") != null) {
+			if (toVoid != null && toVoid.equals("true")) {
 				if (appointmentBlock != null) {
 					String voidReason = "Some Reason";//request.getParameter("voidReason");
 					if (!(StringUtils.hasText(voidReason))) {
@@ -109,24 +110,50 @@ public class AppointmentBlockListController {
 						    "appointment.AppointmentBlock.error.voidReasonEmpty");
 						return null;
 					}
-					//appointment block can't pureged if an appointment is scheduled in it.
 					List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
-					boolean shouldVoid = false;
+					List<Appointment> appointments = new ArrayList<Appointment>();
 					for (TimeSlot timeSlot : currentTimeSlots) {
-						if (!appointmentService.getAppointmentsInTimeSlot(timeSlot).isEmpty()) {
-							shouldVoid = true;
-							break;
+						List<Appointment> appointmentsInSlot = appointmentService.getAppointmentsInTimeSlot(timeSlot);
+						for (Appointment appointment : appointmentsInSlot) {
+							appointments.add(appointment);
 						}
 					}
-					if (shouldVoid) {
-						//voiding appointment block
-						appointmentService.voidAppointmentBlock(appointmentBlock, voidReason);
-						//voiding time slots
-						for (TimeSlot timeSlot : currentTimeSlots) {
-							appointmentService.voidTimeSlot(timeSlot, voidReason);
+					//set appointments statuses to "Cancelled"
+					for (Appointment appointment : appointments) {
+						
+						appointmentService.changeAppointmentStatus(appointment, "Cancelled");
+						//TODO check with Tobin if I should delete this line
+						//appointmentService.voidAppointment(appointment, voidReason);
+					}
+					//voiding appointment block
+					appointmentService.voidAppointmentBlock(appointmentBlock, voidReason);
+					//voiding time slots
+					for (TimeSlot timeSlot : currentTimeSlots) {
+						appointmentService.voidTimeSlot(timeSlot, voidReason);
+						
+					}
+					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
+					    "appointment.AppointmentBlock.voidedSuccessfully");
+					model.addAttribute("toVoid", "false");
+				}
+			}
+			//If the user is deleting the AppointmentBlock
+			else if (request.getParameter("delete") != null) {
+				if (appointmentBlock != null) {
+					//appointment block can't pureged if an appointment is scheduled in it.
+					List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
+					List<Appointment> appointments = new ArrayList<Appointment>();
+					for (TimeSlot timeSlot : currentTimeSlots) {
+						List<Appointment> appointmentsInSlot = appointmentService.getAppointmentsInTimeSlot(timeSlot);
+						for (Appointment appointment : appointmentsInSlot) {
+							appointments.add(appointment);
 						}
-						httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
-						    "appointment.AppointmentBlock.voidedSuccessfully");
+					}
+					if (appointments.size() > 0) {
+						model.addAttribute("appointmentsCount", appointments.size());
+						model.addAttribute("appointmentBlockId", appointmentBlockId);
+						model.addAttribute("toVoid", "true");
+						return null;
 					} else {
 						//In case there are appointments within the appointment block we don't mind to purge it
 						//purging the appointment block
@@ -192,8 +219,8 @@ public class AppointmentBlockListController {
 					    "appointment.AppointmentBlock.error.selectAppointmentBlock");
 				}
 			}
+			
 		}
-		
 		return null;
 	}
 }

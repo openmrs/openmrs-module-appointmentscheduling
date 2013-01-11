@@ -104,7 +104,7 @@
 		                            var nNodes = table.fnGetNodes();
 		                            $j('input:radio', this).attr('checked',true);
 		                            //update the hidden input in order to update the appointmentBlockId model attribute
-		                            document.getElementById('appointmentBlockId').value= $j('input:radio', this).attr('value');
+		                            document.getElementById('appointmentBlockId').value	= $j('input:radio', this).attr('value');
 		                            for(var i=0; i<nNodes.length; i++){
 		                                $j(nNodes[i]).removeClass('selectedRow');
 		                             	$j(nNodes[i]).addClass('notSelectedRow');
@@ -122,6 +122,18 @@
         }
 		//On the page load updates some necessary stuff
          $j(document).ready(function() {
+        	 	var appointmentsCount = document.getElementById('appointmentsCount').value;
+        	 	if(appointmentsCount != ""){
+					var r=confirm("Deleting this appointment block will cancel "+appointmentsCount+" appointments, are you sure you want to proceed?");
+					if (r==true)
+					  {
+						document.forms['appointmentBlockListForm'].submit();
+					  }
+					else
+					  {
+					  x="You pressed Cancel!";
+					  }
+        	 	}
                 //data table
                 $j('#appointmentBlocksTable').dataTable({
                  "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
@@ -139,8 +151,7 @@
 </script>
 <h2><spring:message code="appointment.AppointmentBlock.manage.title"/></h2>
 <br/><br/>
- 
- <form method="post">
+ <form method="post" name="appointmentBlockListForm">
 <fieldset style="clear: both">
         <legend><spring:message code="appointment.AppointmentBlock.legend.properties"/></legend>
         <div style="margin: 0.5em 0;">
@@ -179,11 +190,13 @@
 
         </table>
 	<input type="hidden" name="appointmentBlockId" id="appointmentBlockId" value="${appointmentBlockId}" />
+		<input type="hidden" name="toVoid" id="toVoid" value="${toVoid}" />
+		<input type="hidden" name="appointmentsCount" id="appointmentsCount" value="${appointmentsCount}" />
 		<table align="center">
 		        <tr>
 		        <td><input type="submit" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.add"/>" name="add"> </td>
 		        <td><input type="submit" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.edit"/>" name="edit"> </td>
-		         <td><input type="submit" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.delete"/>" name="delete"> </td>
+		         <td><input type="submit" id="deleteBtn" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.delete"/>" name="delete"> </td>
 		        </tr>
 		</table>
  </form>
