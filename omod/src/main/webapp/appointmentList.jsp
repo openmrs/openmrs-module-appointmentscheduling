@@ -110,7 +110,7 @@
 										});
 						
 										//Toggle Checked Row
-										$j('.dataTables_wrapper tbody tr').live(
+										$j('#appointmentsTable tbody tr').live(
 												'click',
 												function() {
 													var table = $j('#appointmentsTable')
@@ -138,12 +138,79 @@
 							var propertyValue = "${pageTimeout}";
 							if(propertyValue!=null){
 								timeout = parseInt(propertyValue) * 1000;
-								if(timeout>0){
+								//Minimum 60 seconds
+								if(timeout>60000){
 									window.setInterval(function() {
-										document.forms['manageAppointmentsForm'].submit();
+										if($j("#patientDialog").dialog( "isOpen" )==false){
+											document.forms['manageAppointmentsForm'].submit();
+										}
 									}, timeout);
 								}
 							}
+							
+								
+							//Dialog
+							//Register live to find out who opened the dialog
+							$j('a').live('click',function(){
+							  $j('#patientDialog').data('opener', this);
+							});
+							//Configure dialog
+							$j('#patientDialog').dialog({
+								autoOpen: false,
+								height: 250,
+								width: 300,
+								modal: true,
+								resizable: false,
+								buttons: {
+									"<spring:message code='general.cancel' />": function() {
+										$j(this).dialog("close");
+									},
+									"<spring:message code='general.submit' />": function() {
+										var navigationURL = $j('input[name="selectDialogAction"]:radio:checked')[0].value;
+										if(navigationURL=="startConsultation"){
+											//Simluate StartConsultButton and post the form
+											$j('#manageAppointmentsForm').append("<input type='hidden' name='startConsultation' value='' />");
+											$j('#manageAppointmentsForm').submit();
+										}
+										else{
+											var appointmentId = $j('input[name="selectAppointment"]:radio:checked')[0].value;
+											var patientId = $j('#patientId'+appointmentId)[0].value;
+											window.location = navigationURL + patientId;
+										}
+									}
+								},
+								open: function(){
+									//Clear previous selection
+									var selectedOption = $j('input[name="selectDialogAction"]:radio:checked');
+									if(selectedOption!=null)
+										selectedOption.attr('checked', false);
+									//Select first as default
+									$j('input[name="selectDialogAction"]:radio:first').attr('checked', true);
+									
+									//Check whether to show the option to start consultation
+									var table = $j('#appointmentsTable')
+											.dataTable();
+									var nNodes = table.fnGetNodes();
+									var selectedRow = null;
+									var showStartConsultOption = false;
+									for ( var i = 0; i < nNodes.length; i++) {
+										if($j('input:radio', nNodes[i]).attr('checked')){
+											var appointmentStatus = $j('td:eq(7)', nNodes[i]).text();
+											appointmentStatus = appointmentStatus.toLowerCase();
+											appointmentStatus = appointmentStatus.replace("-","");
+											//Check whether current status can change to "In-Consultation"
+											if(statusButtons['startConsultButton'][appointmentStatus])
+												showStartConsultOption = true;
+											break;
+										}
+									}
+									if(showStartConsultOption==true)
+										$j('#startConsultOption').css("display", "table-row");
+									else
+										$j('#startConsultOption').css("display", "none");
+								}
+							});
+							
 
 					});
 	//Navigate to appointmentForm.form
@@ -175,13 +242,20 @@
 	function validateDates(){
 		var fromDate = new Date($j('#fromDate')[0].value);
 		var toDate = new Date($j('#toDate')[0].value);
-		if(toDate<fromDate){
+		if(toDate!=null && fromDate!=null && toDate<fromDate){
 			$j('#errorsDiv').show();
 			$j('#errorsDiv').html("<spring:message code='appointment.Appointment.error.InvalidDateInterval' />");
 			return false;
 		}
 		else
 			return true;
+	}
+
+	function patientClick(e,event) {
+		var currentRow = $j(e).parent().parent();
+		currentRow.click();
+		$j('#patientDialog').dialog('open');
+		event.stopPropagation();
 	}
 	
 </script>
@@ -273,7 +347,7 @@
 	<table id="appointmentsTable">
 		<thead>
 			<tr>
-				<th>Select</th>
+				<th style="display:none;">Select</th>
 				<th><spring:message code='appointment.Appointment.list.column.patient'/></th>
 				<th><spring:message code='appointment.Appointment.list.column.date'/></th>
 				<th><spring:message code='appointment.Appointment.list.column.time'/></th>
@@ -287,18 +361,24 @@
 			</tr>
 		</thead>
 		<tbody>
+			<c:if test="${fn:length(availableTimes)>0}" >
+				<tr style="display:none;"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+			</c:if>
 			<c:forEach var="appointment" items="${appointmentList}">
 				<tr ${appointment.appointmentId==param.selectAppointment ? 'class="selectedRow"' : 'class="notSelectedRow"'}>
-					<td>
+					<td style="display:none;">
 						<input type="radio" value="${appointment.appointmentId}" ${param.selectAppointment==appointment.appointmentId ? 'checked' : ''} name="selectAppointment" />
 					</td>
 					<td>
-						<c:forEach var="name" items="${appointment.patient.names}" end="0">
-     						<c:out value="${name}" />
-						</c:forEach> 
-						<c:forEach var="identifier" items="${appointment.patient.identifiers}" >
-							<c:if test="${identifier.preferred}">(${identifier})</c:if>
-						</c:forEach>
+						<a href="javascript:void(0)" onclick="patientClick(this, event)">
+							<c:forEach var="name" items="${appointment.patient.names}" end="0">
+	     						<c:out value="${name}" />
+							</c:forEach> 
+							<c:forEach var="identifier" items="${appointment.patient.identifiers}" >
+								<c:if test="${identifier.preferred}">(${identifier})</c:if>
+							</c:forEach>
+						</a>
+						<input type="hidden" id="patientId${appointment.appointmentId}" value="${appointment.patient.patientId}" />
 					</td>
 					<td><fmt:formatDate type="date" value="${appointment.timeSlot.startDate}"/></td>
 					<td><fmt:formatDate type="time" pattern="HH:mm"
@@ -317,5 +397,14 @@
 		</tbody>
 	</table>
 </form:form>
+
+<div id="patientDialog" >
+	<table id='patientDialogOptions'>
+		<tr><td><h2><spring:message code='appointment.Appointment.list.label.selectAnAction' /></h2></td></tr>
+		<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/patientDashboard.form?patientId="><spring:message code='appointment.Appointment.create.link.viewPatient' /></input></td></tr>
+		<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/admin/patients/shortPatientForm.form?patientId="><spring:message code='appointment.Appointment.create.link.editPatient' /></input></td></tr>
+		<tr><td><div id="startConsultOption" style="display:none;" ><input type='radio' name='selectDialogAction'value='startConsultation'><spring:message code='appointment.Appointment.list.button.startConsultation' /></div></td></tr>
+		</table>
+</div>
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>

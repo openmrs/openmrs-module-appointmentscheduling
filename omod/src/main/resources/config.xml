@@ -25,7 +25,7 @@
 		<property>${project.parent.artifactId}.manageAppointmentsFormTimout
 		</property>
 		<defaultValue>60</defaultValue>
-		<description>Refresh the manage appointments page after this number of seconds. (-1 to disable)
+		<description>Refresh the manage appointments page after this number of seconds. (60 Seconds Minimum,-1 to Disable auto Refresh)
 		</description>
 	</globalProperty>
 

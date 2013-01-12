@@ -298,7 +298,7 @@ function addQueryParameter(paramName){
 					<table id="availableTimesTable" cellspacing="0">
 						<thead>
 							<tr>
-								<th><spring:message
+								<th style="display:none;"><spring:message
 										code="appointment.Appointment.create.header.selectedOption" /></th>
 								<th><spring:message
 										code="appointment.Appointment.create.header.clinician" /></th>
@@ -313,10 +313,13 @@ function addQueryParameter(paramName){
 							</tr>
 						</thead>
 						<tbody>
+							<c:if test="${fn:length(availableTimes)>0}" >
+								<tr style="display:none;"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>						
+							</c:if>
 							<c:forEach var="slot" items="${availableTimes}">
 								<tr
 									${slot.timeSlotId==appointment.timeSlot.timeSlotId ? 'class="selectedRow"' : 'class="notSelectedRow"'} />
-								<td><spring:bind path="appointment.timeSlot">
+								<td style="display:none;"><spring:bind path="appointment.timeSlot">
 										<input type="radio" name="${status.expression}"
 											value="${slot.timeSlotId}"
 											${slot.timeSlotId==appointment.timeSlot.timeSlotId ? 'checked' : ''} />

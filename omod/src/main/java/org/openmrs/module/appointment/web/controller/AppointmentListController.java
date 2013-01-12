@@ -1,5 +1,6 @@
 package org.openmrs.module.appointment.web.controller;
 
+import java.security.Provider.Service;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.Person;
 import org.openmrs.Provider;
+import org.openmrs.Visit;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
@@ -167,12 +169,12 @@ public class AppointmentListController {
 	
 	@ModelAttribute("providerList")
 	public List<Provider> getProviderList() {
-		return Context.getProviderService().getAllProviders();
+		return Context.getProviderService().getAllProviders(false);
 	}
 	
 	@ModelAttribute("appointmentTypeList")
-	public Set<AppointmentType> getAppointmentTypeList() {
-		return Context.getService(AppointmentService.class).getAllAppointmentTypes();
+	public List<AppointmentType> getAppointmentTypeList() {
+		return Context.getService(AppointmentService.class).getAllAppointmentTypes(false);
 	}
 	
 	@ModelAttribute("appointmentStatusList")
@@ -255,15 +257,41 @@ public class AppointmentListController {
 			return;
 		}
 		//TODO change to use enum
-		if (request.getParameter("startConsultation") != null)
+		if (request.getParameter("startConsultation") != null) {
 			Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "In-Consultation");
-		else if (request.getParameter("endConsultation") != null)
+			
+			//Start a new visit
+			//			Visit visit = new Visit(selectedAppointment.getPatient(), null, new Date());
+			//			selectedAppointment.setVisit(visit);
+			//			Context.getService(AppointmentService.class).saveAppointment(selectedAppointment);
+			//			Context.getVisitService().saveVisit(visit);
+		} else if (request.getParameter("endConsultation") != null) {
 			Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "Completed");
-		else if (request.getParameter("checkIn") != null)
+			
+			//End visit
+			//			Visit visit = selectedAppointment.getVisit();
+			//			if(visit!=null){
+			//				Context.getVisitService().endVisit(visit, new Date());
+			//				Context.getVisitService().saveVisit(visit);
+			//			}
+		} else if (request.getParameter("checkIn") != null)
 			Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "Waiting");
 		else if (request.getParameter("missAppointment") != null)
 			Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "Missed");
 		else if (request.getParameter("cancelAppointment") != null)
 			Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "Cancelled");
+		
+		if (selectedAppointment != null) {
+			Map<Integer, String> waitingTimes = (Map<Integer, String>) model.get("waitingTimes");
+			String representation = (selectedAppointment.getStatus().equalsIgnoreCase("Waiting") ? "0 "
+			        + Context.getMessageSourceService().getMessage("appointment.Appointment.minutes") : "");
+			waitingTimes.put(selectedAppointment.getId(), representation);
+			model.put("waitingTimes", waitingTimes);
+			
+			Map<Integer, Integer> sortableTimes = (Map<Integer, Integer>) model.get("sortableWaitingTimes");
+			Integer sortable = (selectedAppointment.getStatus().equalsIgnoreCase("Waiting") ? 1 : 0);
+			sortableTimes.put(selectedAppointment.getId(), sortable);
+			model.put("sortableWaitingTimes", sortableTimes);
+		}
 	}
 }
