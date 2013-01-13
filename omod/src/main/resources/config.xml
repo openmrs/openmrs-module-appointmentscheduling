@@ -27,6 +27,11 @@
 		<defaultValue>60</defaultValue>
 		<description>Refresh the manage appointments page after this number of seconds. (60 Seconds Minimum,-1 to Disable auto Refresh)
 		</description>
+		<property>${project.parent.artifactId}.defaultVisitType
+		</property>
+		<defaultValue>0</defaultValue>
+		<description>Default Visit Type for the in consultation state change.
+		</description>
 	</globalProperty>
 
 	<!-- Module Activator -->

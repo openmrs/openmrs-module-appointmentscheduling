@@ -270,7 +270,8 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		fromDate = format.parse("2006-01-01 00:00:00.0");
 		availableTimeSlots = service.getTimeSlotsByConstraints(appointmentType, fromDate, toDate, provider, null);
 		assertTrue(availableTimeSlots.contains(service.getTimeSlot(4)));
-		assertTrue(availableTimeSlots.size() == 1);
+		assertTrue(availableTimeSlots.contains(service.getTimeSlot(2)));
+		assertTrue(availableTimeSlots.size() == 2);
 		
 		//Filter by provider
 		provider = Context.getProviderService().getProvider(2);

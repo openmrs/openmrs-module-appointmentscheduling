@@ -71,6 +71,9 @@
 											}, {
 												"bVisible" : false
 											}],
+											"oLanguage": {
+		 										"sZeroRecords": "<spring:message code='appointment.Appointment.list.table.empty' />"
+											},
 											"aLengthMenu" : [
 													[2, 25, 50, -1 ],
 													[2, 25, 50, "All" ] ],
@@ -84,6 +87,7 @@
 											"bJQueryUI" : true,
 
 											"fnDrawCallback" : function() {
+												//Clear and prepend the schedule appointment button and cancelled checkbox
 												$j(".addons").html("");
 												$j(".addons")
 														.prepend(
@@ -96,6 +100,7 @@
 																		"<input type='button' value='<spring:message code='appointment.Appointment.add'/>' class='saveButton buttonShadow' onclick='addNewAppointment()'/>"+
 																	"</tr></td>"+
 																"</table>");
+												//Clear and prepend the status buttons
 												$j(".statusDiv").html("");
 												$j('.statusDiv')
 														.prepend(
@@ -213,6 +218,7 @@
 							
 
 					});
+	
 	//Navigate to appointmentForm.form
 	function addNewAppointment(){
 		window.location = "appointmentForm.form";
@@ -250,7 +256,8 @@
 		else
 			return true;
 	}
-
+	
+	//Correctly execute click event on patient name (parent event before child event)
 	function patientClick(e,event) {
 		var currentRow = $j(e).parent().parent();
 		currentRow.click();
@@ -361,7 +368,8 @@
 			</tr>
 		</thead>
 		<tbody>
-			<c:if test="${fn:length(availableTimes)>0}" >
+			<!-- "Ghost" line to resolve first row auto selection bug, c:if in order to prevent from not showing empty table message -->
+			<c:if test="${fn:length(appointmentList)>0}" >
 				<tr style="display:none;"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 			</c:if>
 			<c:forEach var="appointment" items="${appointmentList}">
@@ -399,11 +407,11 @@
 </form:form>
 
 <div id="patientDialog" >
-	<table id='patientDialogOptions'>
-		<tr><td><h2><spring:message code='appointment.Appointment.list.label.selectAnAction' /></h2></td></tr>
-		<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/patientDashboard.form?patientId="><spring:message code='appointment.Appointment.create.link.viewPatient' /></input></td></tr>
-		<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/admin/patients/shortPatientForm.form?patientId="><spring:message code='appointment.Appointment.create.link.editPatient' /></input></td></tr>
+	<table id='patientDialogOptions' class="dialogTable">
+		<tr><td><h2><spring:message code='appointment.Appointment.list.label.selectAnAction'/></h2></td></tr>
 		<tr><td><div id="startConsultOption" style="display:none;" ><input type='radio' name='selectDialogAction'value='startConsultation'><spring:message code='appointment.Appointment.list.button.startConsultation' /></div></td></tr>
+		<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/admin/patients/shortPatientForm.form?patientId="><spring:message code='appointment.Appointment.create.link.editPatient' /></input></td></tr>
+		<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/patientDashboard.form?patientId="><spring:message code='appointment.Appointment.create.link.viewPatient' /></input></td></tr>
 		</table>
 </div>
 

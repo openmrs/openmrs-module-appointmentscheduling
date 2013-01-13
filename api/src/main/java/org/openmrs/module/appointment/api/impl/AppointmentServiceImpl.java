@@ -499,9 +499,12 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		timeLeft = (int) ((endDate.getTime() / 60000) - (startDate.getTime() / 60000));
 		
 		//Subtract from time left the amounts of minutes already scheduled
+		//Should not take into consideration cancelled or missed appointments 
+		//TODO use enum values
 		List<Appointment> appointments = getAppointmentsInTimeSlot(timeSlot);
 		for (Appointment appointment : appointments) {
-			if (!appointment.isVoided())
+			if (!appointment.isVoided() && !appointment.getStatus().equalsIgnoreCase("cancelled")
+			        && !appointment.getStatus().equalsIgnoreCase("missed"))
 				timeLeft -= appointment.getAppointmentType().getDuration();
 		}
 		
