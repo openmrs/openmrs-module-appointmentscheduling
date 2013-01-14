@@ -46,12 +46,6 @@ public class DWRAppointmentService {
 		return patientData;
 	}
 	
-	public List<TimeSlot> getAvailableTimeSlots() {
-		//TODO change to include constraints.
-		List<TimeSlot> timeSlots = Context.getService(AppointmentService.class).getAllTimeSlots();
-		return timeSlots;
-	}
-	
 	public List<AppointmentBlockData> getAppointmentBlocks(String fromDate, String toDate, Integer locationId)
 	        throws ParseException {
 		List<AppointmentBlock> appointmentBlockList = new ArrayList<AppointmentBlock>();
