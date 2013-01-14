@@ -75,8 +75,8 @@
 		 										"sZeroRecords": "<spring:message code='appointment.Appointment.list.table.empty' />"
 											},
 											"aLengthMenu" : [
-													[2, 25, 50, -1 ],
-													[2, 25, 50, "All" ] ],
+													[25, 50, -1 ],
+													[25, 50, "All" ] ],
 											"iDisplayLength" : 25,
 											"sDom" : "<'fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix' <'addons'>fl>t<'fg-toolbar ui-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-helper-clearfix'<'statusDiv'>ip<'toolbar' T>>",
 
@@ -332,7 +332,7 @@
 	</tr>
 	<tr>
 		<td class="formLabel"><spring:message
-				code="appointment.Appointment.create.label.appointmentStatus" /></td>
+				code="appointment.Appointment.list.label.appointmentStatus" /></td>
 		<td><select name="appointmentStatusSelect" id="appointmentStatusSelect">
 				<option value="" ${null==param.appointmentStatusSelect ? 'selected' : ''}>
 					<spring:message

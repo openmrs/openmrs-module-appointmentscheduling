@@ -22,11 +22,15 @@
 		<defaultValue>8</defaultValue>
 		<description>Person attribute type id for the phone number.
 		</description>
+	</globalProperty>
+	<globalProperty>
 		<property>${project.parent.artifactId}.manageAppointmentsFormTimout
 		</property>
 		<defaultValue>60</defaultValue>
 		<description>Refresh the manage appointments page after this number of seconds. (60 Seconds Minimum,-1 to Disable auto Refresh)
 		</description>
+	</globalProperty>
+	<globalProperty>
 		<property>${project.parent.artifactId}.defaultVisitType
 		</property>
 		<defaultValue>0</defaultValue>
@@ -50,7 +54,6 @@
 			<create creator="new" javascript="DWRAppointmentService">
 				<param name="class" value="org.openmrs.module.appointment.web.DWRAppointmentService" />
 				<include method="getPatientDescription" />
-				<include method="getAvailableTimeSlots" />
 				<include method="getAppointmentBlocks"/>
 
 			</create>
@@ -61,10 +64,6 @@
             import org.openmrs.module.appointment.web.DWRAppointmentService;
             DWRAppointmentService.getPatientDescription(Integer patientId);
             DWRAppointmentService.getAppointmentBlocks(String fromDate,String toDate,Integer locationId);
-            ]]>
-             <![CDATA[
-            import org.openmrs.module.appointment.web.DWRAppointmentService;
-            DWRAppointmentService.getAvailableTimeSlots();
             ]]>
 		</signatures>
 	</dwr>
