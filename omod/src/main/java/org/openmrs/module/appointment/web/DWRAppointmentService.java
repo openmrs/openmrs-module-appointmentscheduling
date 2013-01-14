@@ -5,26 +5,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.directwebremoting.WebContext;
-import org.directwebremoting.WebContextFactory;
-
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.PersonAttribute;
-import org.openmrs.Provider;
-import org.openmrs.api.APIException;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.AppointmentService;
-import org.openmrs.web.WebConstants;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * DWR patient methods. The methods in here are used in the webapp to get data from the database via
@@ -100,6 +89,28 @@ public class DWRAppointmentService {
 		return appointmentBlockDatalist;
 	}
 	
+	public Integer getNumberOfAppointmentsInAppointmentBlock(Integer appointmentBlockId) {
+		Integer numberOfAppointments = null;
+		if (Context.isAuthenticated()) {
+			AppointmentService as = Context.getService(AppointmentService.class);
+			if (appointmentBlockId != null) {
+				//Assumption - Exists such an appointment block in the data base with the given Id
+				AppointmentBlock appointmentBlock = as.getAppointmentBlock(appointmentBlockId);
+				List<Appointment> appointments = new ArrayList<Appointment>();
+				//Getting the timeslots of the given appointment block
+				List<TimeSlot> timeSlots = as.getTimeSlotsInAppointmentBlock(appointmentBlock);
+				for (TimeSlot timeSlot : timeSlots) {
+					List<Appointment> appointmentsInTimeSlot = as.getAppointmentsInTimeSlot(timeSlot);
+					for (Appointment appointment : appointmentsInTimeSlot) {
+						appointments.add(appointment);
+					}
+				}
+				numberOfAppointments = new Integer(appointments.size());
+			}
+		}
+		return numberOfAppointments;
+	}
+	
 	private String buildLocationList(Location location) {
 		String ans = "";
 		if (location != null) {
@@ -129,4 +140,5 @@ public class DWRAppointmentService {
 		}
 		return "";
 	}
+	
 }

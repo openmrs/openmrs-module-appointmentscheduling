@@ -52,7 +52,7 @@ public class AppointmentBlockListController {
 	
 	@RequestMapping(value = "/module/appointment/appointmentBlockList", method = RequestMethod.GET)
 	public void showForm(HttpServletRequest request, ModelMap model) throws ParseException {
-		model.addAttribute("appointmentsCount", "");
+		//Initializing the default properties of the appointment block list page.
 		if (Context.isAuthenticated()) {
 			if (request.getSession().getAttribute("chosenLocation") != null) {
 				Location location = (Location) request.getSession().getAttribute("chosenLocation");
@@ -89,7 +89,7 @@ public class AppointmentBlockListController {
 	        @RequestParam(value = "toDate", required = false) Date toDate,
 	        @RequestParam(value = "locationId", required = false) Location location,
 	        @RequestParam(value = "appointmentBlockId", required = false) Integer appointmentBlockId,
-	        @RequestParam(value = "toVoid", required = false) String toVoid) throws Exception {
+	        @RequestParam(value = "action", required = false) String action) throws Exception {
 		//save details from the appointment block list page using http session
 		HttpSession httpSession = request.getSession();
 		httpSession.setAttribute("chosenLocation", location);
@@ -99,89 +99,90 @@ public class AppointmentBlockListController {
 		AppointmentBlock appointmentBlock = null;
 		if (Context.isAuthenticated()) {
 			AppointmentService appointmentService = Context.getService(AppointmentService.class);
-			if (appointmentBlockId != null) {
+			// if the user is adding a new AppointmentBlock
+			if (request.getParameter("add") != null) {
+				return "redirect:appointmentBlockForm.form";
+			} else if (appointmentBlockId != null) {
 				appointmentBlock = appointmentService.getAppointmentBlock(appointmentBlockId);
 			}
-			if (toVoid != null && toVoid.equals("true")) {
-				if (appointmentBlock != null) {
-					String voidReason = "Some Reason";//request.getParameter("voidReason");
-					if (!(StringUtils.hasText(voidReason))) {
-						httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,
-						    "appointment.AppointmentBlock.error.voidReasonEmpty");
-						return null;
-					}
-					List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
-					List<Appointment> appointments = new ArrayList<Appointment>();
-					for (TimeSlot timeSlot : currentTimeSlots) {
-						List<Appointment> appointmentsInSlot = appointmentService.getAppointmentsInTimeSlot(timeSlot);
-						for (Appointment appointment : appointmentsInSlot) {
-							appointments.add(appointment);
-						}
-					}
-					//set appointments statuses to "Cancelled"
-					for (Appointment appointment : appointments) {
-						
-						appointmentService.changeAppointmentStatus(appointment, "Cancelled");
-						//TODO check with Tobin if I should delete this line
-						//appointmentService.voidAppointment(appointment, voidReason);
-					}
-					//voiding appointment block
-					appointmentService.voidAppointmentBlock(appointmentBlock, voidReason);
-					//voiding time slots
-					for (TimeSlot timeSlot : currentTimeSlots) {
-						appointmentService.voidTimeSlot(timeSlot, voidReason);
-						
-					}
-					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
-					    "appointment.AppointmentBlock.voidedSuccessfully");
-					model.addAttribute("toVoid", "false");
-				}
-			}
-			//If the user is deleting the AppointmentBlock
-			else if (request.getParameter("delete") != null) {
-				if (appointmentBlock != null) {
-					//appointment block can't pureged if an appointment is scheduled in it.
-					List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
-					List<Appointment> appointments = new ArrayList<Appointment>();
-					for (TimeSlot timeSlot : currentTimeSlots) {
-						List<Appointment> appointmentsInSlot = appointmentService.getAppointmentsInTimeSlot(timeSlot);
-						for (Appointment appointment : appointmentsInSlot) {
-							appointments.add(appointment);
-						}
-					}
-					if (appointments.size() > 0) {
-						model.addAttribute("appointmentsCount", appointments.size());
-						model.addAttribute("appointmentBlockId", appointmentBlockId);
-						model.addAttribute("toVoid", "true");
-						return null;
-					} else {
-						//In case there are appointments within the appointment block we don't mind to purge it
-						//purging the appointment block
-						try {
-							//purging the time slots
-							for (TimeSlot timeSlot : currentTimeSlots) {
-								appointmentService.purgeTimeSlot(timeSlot);
-							}
-							appointmentService.purgeAppointmentBlock(appointmentBlock);
-							httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
-							    "appointment.AppointmentBlock.purgedSuccessfully");
-						}
-						catch (DataIntegrityViolationException e) {
-							httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "error.object.inuse.cannot.purge");
-						}
-						catch (APIException e) {
-							httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "error.general: "
-							        + e.getLocalizedMessage());
-						}
-					}
-					return null;
-				} else
+			//if the user is voiding the selected appointmnet block
+			if (action != null && action.equals("void")) {
+				if (appointmentBlockId == null) {
+					//In case appointment block was not selected
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
 					    "appointment.AppointmentBlock.error.selectAppointmentBlock");
+					return null;
+				}
+				String voidReason = "Some Reason";//request.getParameter("voidReason");
+				if (!(StringUtils.hasText(voidReason))) {
+					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,
+					    "appointment.AppointmentBlock.error.voidReasonEmpty");
+					return null;
+				}
+				List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
+				List<Appointment> appointments = new ArrayList<Appointment>();
+				for (TimeSlot timeSlot : currentTimeSlots) {
+					List<Appointment> appointmentsInSlot = appointmentService.getAppointmentsInTimeSlot(timeSlot);
+					for (Appointment appointment : appointmentsInSlot) {
+						appointments.add(appointment);
+					}
+				}
+				//set appointments statuses to "Cancelled"
+				for (Appointment appointment : appointments) {
+					
+					appointmentService.changeAppointmentStatus(appointment, "Cancelled");
+					//TODO check with Tobin if I should delete this line
+					//appointmentService.voidAppointment(appointment, voidReason);
+				}
+				//voiding appointment block
+				appointmentService.voidAppointmentBlock(appointmentBlock, voidReason);
+				//voiding time slots
+				for (TimeSlot timeSlot : currentTimeSlots) {
+					appointmentService.voidTimeSlot(timeSlot, voidReason);
+					
+				}
+				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentBlock.voidedSuccessfully");
+				
+				return "redirect:appointmentBlockList.list";
+			}
+			//If the user is purging the AppointmentBlock
+			else if (action != null && action.equals("purge")) {
+				if (appointmentBlockId == null) {
+					//In case appointment block was not selected
+					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
+					    "appointment.AppointmentBlock.error.selectAppointmentBlock");
+					return null;
+				}
+				List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
+				//In case there are appointments within the appointment block we don't mind to purge it
+				//purging the appointment block
+				try {
+					//purging the time slots
+					for (TimeSlot timeSlot : currentTimeSlots) {
+						appointmentService.purgeTimeSlot(timeSlot);
+					}
+					appointmentService.purgeAppointmentBlock(appointmentBlock);
+					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
+					    "appointment.AppointmentBlock.purgedSuccessfully");
+				}
+				catch (DataIntegrityViolationException e) {
+					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "error.object.inuse.cannot.purge");
+				}
+				catch (APIException e) {
+					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "error.general: " + e.getLocalizedMessage());
+				}
+				return "redirect:appointmentBlockList.list";
+				
 			}
 
 			// if the user is unvoiding the AppointmentBlock
 			else if (request.getParameter("unvoid") != null) {
+				if (appointmentBlockId == null) {
+					//In case appointment block was not selected
+					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
+					    "appointment.AppointmentBlock.error.selectAppointmentBlock");
+					return null;
+				}
 				List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
 				List<Appointment> appointmentsThatShouldBeUnvoided = new ArrayList<Appointment>();
 				for (TimeSlot timeSlot : currentTimeSlots) {
@@ -203,24 +204,34 @@ public class AppointmentBlockListController {
 				}
 				
 				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentBlock.unvoidedSuccessfully");
-			}
-
-			// if the user is adding a new AppointmentBlock
-			else if (request.getParameter("add") != null) {
-				return "redirect:appointmentBlockForm.form";
+				
+				return "redirect:appointmentBlockList.list";
 			}
 
 			// if the user is editing an existing AppointmentBlock
 			else if (request.getParameter("edit") != null) {
+				if (appointmentBlockId == null) {
+					//In case appointment block was not selected
+					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
+					    "appointment.AppointmentBlock.error.selectAppointmentBlock");
+					return null;
+				}
 				if (appointmentBlockId != null) {
 					return "redirect:appointmentBlockForm.form?appointmentBlockId=" + appointmentBlockId;
 				} else {
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
 					    "appointment.AppointmentBlock.error.selectAppointmentBlock");
 				}
+			} else if (action != null && action.equals("notifyToSelectAppointmentBlock")) {
+				if (appointmentBlockId == null) {
+					//In case appointment block was not selected
+					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
+					    "appointment.AppointmentBlock.error.selectAppointmentBlock");
+					return null;
+				}
 			}
 			
-		}
+		} // Context authentication.
 		return null;
 	}
 }

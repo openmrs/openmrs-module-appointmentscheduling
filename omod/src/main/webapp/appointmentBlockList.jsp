@@ -50,7 +50,7 @@
                       }
                       count++;
                       tableContent += '<tr class="notSelectedRow">';
-                      tableContent += '<td align="center">'+'<input type="radio" name="appointmentBlockRadios" value="'+appointmentBlocks[i].appointmentBlockId+'"/></td>';
+                      tableContent += '<td align="center" style="display:none;">'+'<input type="radio" name="appointmentBlockRadios" value="'+appointmentBlocks[i].appointmentBlockId+'"/></td>';
                       tableContent += '<td align="center">'+appointmentBlocks[i].location.name+"</td>";
                       tableContent += '<td align="center">'+appointmentBlocks[i].provider.name+"</td>";
                       //Linking the appointment types in a string.
@@ -120,21 +120,63 @@
 
                 });
         }
-		//On the page load updates some necessary stuff
-         $j(document).ready(function() {
-        	 	var appointmentsCount = document.getElementById('appointmentsCount').value;
-        	 	if(appointmentsCount != ""){
-					var r=confirm("Deleting this appointment block will cancel "+appointmentsCount+" appointments, are you sure you want to proceed?");
-					if (r==true)
-					  {
-						document.forms['appointmentBlockListForm'].submit();
-					  }
-					else
-					  {
-					  x="You pressed Cancel!";
-					  }
-        	 	}
-                //data table
+		
+	   	function deleteFuncionality(e,event) {
+	   			//Initialize the action to do nothing.
+				document.getElementById('action').value = "";
+	   			var selectedAppointmentBlockId = document.getElementById("appointmentBlockId").value;
+	   			if(selectedAppointmentBlockId != null){
+		   			//calling the DWR method in order to check how many appointments are exits in the selected appointment block.
+		   			DWRAppointmentService.getNumberOfAppointmentsInAppointmentBlock(selectedAppointmentBlockId,function(appointmentsCount){
+		   				if(appointmentsCount != null && appointmentsCount != 0){
+		   					//TODO - need to this using spring.message
+					   		document.getElementById("dialogText").innerHTML = "Deleting this appointment block will cancel "+appointmentsCount+" appointments, are you sure you want to proceed?";
+					   		$j('#deleteDialog').dialog('open');
+					   		event.stopPropagation();
+		   				}
+		   				else{ 
+		   					//update the aciton to "purge" because there are no appointments assiciated with the selected appointment block.
+		   					document.getElementById('action').value = "purge";
+							//POST back to the controller in order to purge the selected appointment block.
+		   					document.forms['appointmentBlockListForm'].submit();
+		   				}
+		   			});
+	   			}
+	   			else{
+	   				//update the action to notify the user to select an appointment block
+	   				document.getElementById('action').value = "notifyToSelectAppointmentBlock";
+	   				//POST in order to notify the user to select an appointmnet block 
+	   				document.forms['appointmentBlockListForm'].submit();
+	   			}
+	   	}
+		
+		//On the page load updates necessary stuff
+         $j(document).ready(function() {      	 
+	   			//Initialize the action to do nothing (for page refresh bugs)
+				document.getElementById('action').value = "";
+				//Delete dialog configeration 
+				$j('#deleteDialog').dialog({
+					autoOpen: false,
+					height: 250,
+					width: 300,
+					modal: true,
+					resizable: false,
+					buttons: {
+						"<spring:message code='general.cancel' />": function() {
+							//update the aciton to do nothing.
+							document.getElementById('action').value = "";
+							//close the dialog.
+							$j(this).dialog("close");
+						},
+						"<spring:message code='general.confirm' />": function() {
+								//update the aciton to "void" because there are appointments assiciated with the selected appointment block and the user clicked "Submit".
+			   					document.getElementById('action').value = "void";
+								//POST back to the controller in order to void the selected appointment block.
+								document.forms['appointmentBlockListForm'].submit();
+						}
+					}
+				});
+                //data table initialization
                 $j('#appointmentBlocksTable').dataTable({
                  "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                  "aoColumnDefs": [{ "bSearchable": false, "bVisible": false, "aTargets": [ 0 ] }],
@@ -177,7 +219,7 @@
         <table id="appointmentBlocksTable" cellspacing="0">
                 <thead>
                     <tr>
-                        <th align="center"><spring:message code="appointment.AppointmentBlock.column.select"/></th>
+                        <th align="center" style="display:none;"><spring:message code="appointment.AppointmentBlock.column.select"/></th>
                         <th align="center"> <spring:message code="appointment.AppointmentBlock.column.location"/> </th>
                         <th align="center"> <spring:message code="appointment.AppointmentBlock.column.provider"/> </th>
                         <th align="center"> <spring:message code="appointment.AppointmentBlock.column.appointmentTypes"/> </th>
@@ -189,17 +231,22 @@
                 </thead>
 
         </table>
-	<input type="hidden" name="appointmentBlockId" id="appointmentBlockId" value="${appointmentBlockId}" />
-		<input type="hidden" name="toVoid" id="toVoid" value="${toVoid}" />
-		<input type="hidden" name="appointmentsCount" id="appointmentsCount" value="${appointmentsCount}" />
+		<input type="hidden" name="appointmentBlockId" id="appointmentBlockId" value="${appointmentBlockId}" />
+		<input type="hidden" name="action" id="action" value="${action}" />
 		<table align="center">
 		        <tr>
 		        <td><input type="submit" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.add"/>" name="add"> </td>
 		        <td><input type="submit" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.edit"/>" name="edit"> </td>
-		         <td><input type="submit" id="deleteBtn" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.delete"/>" name="delete"> </td>
+		         <td><input type="button" id="deleteBtn" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.delete"/>" onclick="deleteFuncionality(this, event)"> </td>
 		        </tr>
 		</table>
  </form>
  
+ <div id="deleteDialog" >
+	<table id='deleteDialogOptions' class="dialogTable">
+		<tr><td><h2><spring:message code="appointment.AppointmentBlock.deleteDialog.title"/></h2></td></tr>
+		<tr><td><div id="dialogText"></div></td></tr>
+	</table>
+</div>
  
 <%@ include file="/WEB-INF/template/footer.jsp" %>
