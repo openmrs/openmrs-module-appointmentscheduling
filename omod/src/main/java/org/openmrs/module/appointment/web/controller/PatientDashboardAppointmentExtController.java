@@ -26,6 +26,9 @@ public class PatientDashboardAppointmentExtController {
 			Visit visit = appointment.getVisit();
 			Context.getVisitService().endVisit(visit, new Date());
 			Context.getVisitService().saveVisit(visit);
+			//TODO change to use enum
+			appointment.setStatus("Completed");
+			Context.getService(AppointmentService.class).saveAppointment(appointment);
 			
 			return "redirect:/patientDashboard.form?patientId=" + patientId;
 		}
