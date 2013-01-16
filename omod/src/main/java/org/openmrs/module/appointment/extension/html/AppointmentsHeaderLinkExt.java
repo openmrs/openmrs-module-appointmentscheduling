@@ -3,7 +3,7 @@ package org.openmrs.module.appointment.extension.html;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.web.extension.LinkExt;
 
-public class ManageAppointmentsHeaderLink extends LinkExt {
+public class AppointmentsHeaderLinkExt extends LinkExt {
 	
 	@Override
 	public String getLabel() {

@@ -80,12 +80,12 @@
 	</extension>
 	<extension>
 		<point>org.openmrs.patientDashboard.Header</point>
-		<class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.PatientScheduleAppointment
+		<class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.PatientDashboardAppointmentExt
 		</class>
 	</extension>
 	<extension>
 		<point>org.openmrs.gutter.tools</point>
-		<class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.ManageAppointmentsHeaderLink
+		<class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.AppointmentsHeaderLinkExt
 		</class>
 	</extension>
 
