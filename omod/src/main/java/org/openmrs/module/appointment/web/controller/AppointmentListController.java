@@ -1,6 +1,8 @@
 package org.openmrs.module.appointment.web.controller;
 
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,6 +14,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
@@ -139,7 +142,7 @@ public class AppointmentListController {
 			//Set Default provider filter on GET request - if user is provider, set to user
 			Provider provider = null;
 			Person person = Context.getAuthenticatedUser().getPerson();
-			for (Provider providerIterator : Context.getProviderService().getAllProviders()) {
+			for (Provider providerIterator : Context.getProviderService().getAllProviders(false)) {
 				if (providerIterator.getPerson() != null && providerIterator.getPerson().equals(person)) {
 					provider = providerIterator;
 					break;
@@ -174,12 +177,26 @@ public class AppointmentListController {
 	
 	@ModelAttribute("providerList")
 	public List<Provider> getProviderList() {
-		return Context.getProviderService().getAllProviders(false);
+		List<Provider> providers = Context.getProviderService().getAllProviders(false);
+		Collections.sort(providers, new Comparator<Provider>() {
+			
+			public int compare(Provider pr1, Provider pr2) {
+				return pr1.getName().compareTo(pr2.getName());
+			}
+		});
+		return providers;
 	}
 	
 	@ModelAttribute("appointmentTypeList")
 	public List<AppointmentType> getAppointmentTypeList() {
-		return Context.getService(AppointmentService.class).getAllAppointmentTypes(false);
+		List<AppointmentType> appointmentTypes = Context.getService(AppointmentService.class).getAllAppointmentTypes(false);
+		Collections.sort(appointmentTypes, new Comparator<AppointmentType>() {
+			
+			public int compare(AppointmentType at1, AppointmentType at2) {
+				return at1.getName().compareTo(at2.getName());
+			}
+		});
+		return appointmentTypes;
 	}
 	
 	@ModelAttribute("appointmentStatusList")
@@ -255,7 +272,9 @@ public class AppointmentListController {
 	
 	@RequestMapping(value = "/module/appointment/appointmentList", method = RequestMethod.GET)
 	public void showForm(ModelMap model) {
-		
+		if (Context.isAuthenticated()) {
+			return;
+		}
 	}
 	
 	@RequestMapping(value = "/module/appointment/appointmentList", method = RequestMethod.POST)
@@ -264,74 +283,76 @@ public class AppointmentListController {
 	        ModelMap model, @RequestParam(value = "fromDate", required = false) Date fromDate,
 	        @RequestParam(value = "toDate", required = false) Date toDate) {
 		
-		//Handle Status changes
-		//TODO change to use enum
-		if (request.getParameter("startConsultation") != null) {
-			Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "In-Consultation");
-			
-			String patientId = selectedAppointment.getPatient().getId().toString();
-			
-			return "redirect:/patientDashboard.form?patientId=" + patientId;
-			
-		} else if (request.getParameter("endConsultation") != null) {
-			//End visit
-			Visit visit = selectedAppointment.getVisit();
-			if (visit != null) {
-				Context.getVisitService().endVisit(visit, new Date());
-				Context.getVisitService().saveVisit(visit);
+		if (Context.isAuthenticated()) {
+			//Handle Status changes
+			//TODO change to use enum
+			if (request.getParameter("startConsultation") != null) {
+				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "In-Consultation");
+				
+				String patientId = selectedAppointment.getPatient().getId().toString();
+				
+				return "redirect:/patientDashboard.form?patientId=" + patientId;
+				
+			} else if (request.getParameter("endConsultation") != null) {
+				//End visit
+				Visit visit = selectedAppointment.getVisit();
+				if (visit != null) {
+					Context.getVisitService().endVisit(visit, new Date());
+					Context.getVisitService().saveVisit(visit);
+				}
+				
+				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "Completed");
+				
+			} else if (request.getParameter("checkIn") != null) {
+				
+				String visitTypeIdString = Context.getAdministrationService().getGlobalProperty(
+				    "appointment.defaultVisitType");
+				Integer visitTypeId = Integer.parseInt(visitTypeIdString);
+				VisitType defaultVisitType = Context.getVisitService().getVisitType(visitTypeId);
+				
+				//Start a new visit
+				Visit visit = new Visit(selectedAppointment.getPatient(), defaultVisitType, new Date());
+				visit = Context.getVisitService().saveVisit(visit);
+				selectedAppointment.setVisit(visit);
+				Context.getService(AppointmentService.class).saveAppointment(selectedAppointment);
+				
+				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "Waiting");
+				
+			} else if (request.getParameter("missAppointment") != null) {
+				//End visit
+				Visit visit = selectedAppointment.getVisit();
+				if (visit != null) {
+					Context.getVisitService().endVisit(visit, new Date());
+					Context.getVisitService().saveVisit(visit);
+				}
+				
+				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "Missed");
+				
+			} else if (request.getParameter("cancelAppointment") != null) {
+				//End visit
+				Visit visit = selectedAppointment.getVisit();
+				if (visit != null) {
+					Context.getVisitService().endVisit(visit, new Date());
+					Context.getVisitService().saveVisit(visit);
+				}
+				
+				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "Cancelled");
+				
 			}
-			
-			Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "Completed");
-			
-		} else if (request.getParameter("checkIn") != null) {
-			
-			String visitTypeIdString = Context.getAdministrationService().getGlobalProperty("appointment.defaultVisitType");
-			Integer visitTypeId = Integer.parseInt(visitTypeIdString);
-			VisitType defaultVisitType = Context.getVisitService().getVisitType(visitTypeId);
-			
-			//Start a new visit
-			Visit visit = new Visit(selectedAppointment.getPatient(), defaultVisitType, new Date());
-			visit = Context.getVisitService().saveVisit(visit);
-			selectedAppointment.setVisit(visit);
-			Context.getService(AppointmentService.class).saveAppointment(selectedAppointment);
-			
-			Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "Waiting");
-			
-		} else if (request.getParameter("missAppointment") != null) {
-			//End visit
-			Visit visit = selectedAppointment.getVisit();
-			if (visit != null) {
-				Context.getVisitService().endVisit(visit, new Date());
-				Context.getVisitService().saveVisit(visit);
+			if (selectedAppointment != null) {
+				//Update waiting time according to new status
+				Map<Integer, String> waitingTimes = (Map<Integer, String>) model.get("waitingTimes");
+				String representation = (selectedAppointment.getStatus().equalsIgnoreCase("Waiting") ? "0 "
+				        + Context.getMessageSourceService().getMessage("appointment.Appointment.minutes") : "");
+				waitingTimes.put(selectedAppointment.getId(), representation);
+				model.put("waitingTimes", waitingTimes);
+				
+				Map<Integer, Integer> sortableTimes = (Map<Integer, Integer>) model.get("sortableWaitingTimes");
+				Integer sortable = (selectedAppointment.getStatus().equalsIgnoreCase("Waiting") ? 1 : 0);
+				sortableTimes.put(selectedAppointment.getId(), sortable);
+				model.put("sortableWaitingTimes", sortableTimes);
 			}
-			
-			Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "Missed");
-			
-		} else if (request.getParameter("cancelAppointment") != null) {
-			//End visit
-			Visit visit = selectedAppointment.getVisit();
-			if (visit != null) {
-				Context.getVisitService().endVisit(visit, new Date());
-				Context.getVisitService().saveVisit(visit);
-			}
-			
-			Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "Cancelled");
-			
 		}
-		if (selectedAppointment != null) {
-			//Update waiting time according to new status
-			Map<Integer, String> waitingTimes = (Map<Integer, String>) model.get("waitingTimes");
-			String representation = (selectedAppointment.getStatus().equalsIgnoreCase("Waiting") ? "0 "
-			        + Context.getMessageSourceService().getMessage("appointment.Appointment.minutes") : "");
-			waitingTimes.put(selectedAppointment.getId(), representation);
-			model.put("waitingTimes", waitingTimes);
-			
-			Map<Integer, Integer> sortableTimes = (Map<Integer, Integer>) model.get("sortableWaitingTimes");
-			Integer sortable = (selectedAppointment.getStatus().equalsIgnoreCase("Waiting") ? 1 : 0);
-			sortableTimes.put(selectedAppointment.getId(), sortable);
-			model.put("sortableWaitingTimes", sortableTimes);
-		}
-		
 		return null;
 	}
 }
