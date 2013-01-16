@@ -90,8 +90,12 @@ public class AppointmentBlockListController {
 	        @RequestParam(value = "locationId", required = false) Location location,
 	        @RequestParam(value = "appointmentBlockId", required = false) Integer appointmentBlockId,
 	        @RequestParam(value = "action", required = false) String action) throws Exception {
-		//save details from the appointment block list page using http session
 		HttpSession httpSession = request.getSession();
+		if (!fromDate.before(toDate)) {
+			httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,
+			    "appointment.AppointmentBlock.error.InvalidDateInterval");
+		}
+		//save details from the appointment block list page using http session
 		httpSession.setAttribute("chosenLocation", location);
 		httpSession.setAttribute("fromDate", Context.getDateTimeFormat().format(fromDate).toString());
 		httpSession.setAttribute("toDate", Context.getDateTimeFormat().format(toDate).toString());

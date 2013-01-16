@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 
 <%@ include file="/WEB-INF/template/header.jsp"%>
-<openmrs:htmlInclude file="/moduleResources/appointment/Styles/createAppointmentStyle.css"/>
+<openmrs:htmlInclude file="/moduleResources/appointment/Styles/AppointmentBlockStyle.css"/>
 <openmrs:htmlInclude file="/scripts/timepicker/timepicker.js" />
 <openmrs:htmlInclude
 	file="/moduleResources/appointment/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css" />
@@ -15,9 +15,8 @@
 		}
 	}	
 	function updateAppointmentTypes(add){
-	
         var availableAppointmentTypes = document.getElementById("appointmentTypeSelect");
-        var selectedAppointmentTypes = document.getElementById("currentApoointmentTypes");
+        var selectedAppointmentTypes = document.getElementById("currentAppointmentTypes");
         var from;
         var to;
 
@@ -44,7 +43,7 @@
 	}
 	function selectAllTypes()
 	{
-	        var selectedAppointmentTypes = document.getElementById("currentApoointmentTypes");	
+	        var selectedAppointmentTypes = document.getElementById("currentAppointmentTypes");	
 	        for(var i=0;i<selectedAppointmentTypes.options.length;i++)
 	    	{
 				selectedAppointmentTypes.options[i].selected = true;
@@ -52,6 +51,26 @@
 	        if(selectedAppointmentTypes.options.length == 0){
 	        	document.getElementById("emptyTypes").value = "yes";
 	        }
+	}
+	function updateAvailableAppointmentTypes(){
+        var availableAppointmentTypes = document.getElementById("appointmentTypeSelect");
+        var selectedAppointmentTypes = document.getElementById("currentAppointmentTypes");
+		var i=0;
+		var match = false;
+		while(i<availableAppointmentTypes.options.length){
+        	for(var j=0;j<selectedAppointmentTypes.options.length;j++){
+        		//check if the appointment type is already selected
+        		if(availableAppointmentTypes[i].value == selectedAppointmentTypes[j].value){
+					match = true;
+        			//remove from available because the type is already selected
+        			availableAppointmentTypes.remove(i);
+					break;
+        		}
+        	}
+			if(!match)
+				i++;
+			match = false;			
+    	}
 	}
 	function updateToDate(object) {
 		if (object.value == '') {
@@ -61,6 +80,9 @@
 		}
 		showDateTimePicker(object);
 	}
+    $j(document).ready(function() { 
+    	updateAvailableAppointmentTypes();
+    });
 </script>
 
 <script type="text/javascript">
@@ -78,7 +100,7 @@
 	<spring:message code="fix.error" />
 	<br />
 </spring:hasBindErrors>
-<form:form modelAttribute="appointmentBlock" method="post">
+<form method="post">
 	<fieldset>
 		<table id="appointmentBlockFormTable">
 			<tr>
@@ -114,22 +136,22 @@
 					<select multiple name="appointmentTypeSelect" ondblclick="updateAppointmentTypes(true)"
 						id="appointmentTypeSelect">
 							<c:forEach var="appointmentType" items="${appointmentTypeList}">
-							<option value="${appointmentType.appointmentTypeId}" ${param.appointmentTypeSelect==appointmentType.appointmentTypeId ? 'selected' : ''}>${appointmentType.name}</option>
+							<option value="${appointmentType.appointmentTypeId}">${appointmentType.name}</option>
 							</c:forEach>
 
 						</select></fieldset>
 				</td>
 				<td>
 				<table>
-				<tr><td align="center"><input type="button" class="appointmentButton" id="addButton" value="->" onClick="updateAppointmentTypes(true)"></td></tr>
-				<tr><td align="center"><input type="button" class="appointmentButton" id="removeButton" value="<-" onClick="updateAppointmentTypes(false)"></td></tr>
+				<tr><td align="center"><input type="button" class="appointmentBlockButton" id="addButton" value="->" onClick="updateAppointmentTypes(true)"></td></tr>
+				<tr><td align="center"><input type="button" class="appointmentBlockButton" id="removeButton" value="<-" onClick="updateAppointmentTypes(false)"></td></tr>
 				</table>
 				</td>
 				<td>
 
 				<spring:bind path="appointmentBlock.types">
 				<fieldset align="center"><legend><spring:message code="appointment.AppointmentBlock.chosenTypes"/></legend>
-				<select multiple name="${status.expression}" ondblclick="updateAppointmentTypes(false)" id="currentApoointmentTypes">
+				<select multiple name="${status.expression}" ondblclick="updateAppointmentTypes(false)" id="currentAppointmentTypes">
 						<c:forEach var="appointmentType" items="${appointmentBlock.types}">
 							<option value="${appointmentType.appointmentTypeId}"
 								${param.appointmentTypeSelect==appointmentType.appointmentTypeId ? 'selected' : ''}>${appointmentType.name}</option>
@@ -178,13 +200,14 @@
 				<spring:message code="appointment.AppointmentBlock.minutes"/></td>
 			</tr>
 		</table>
-		<br /> <input type="submit" class="appointmentButton" onClick="selectAllTypes()"
+		<br /> <input type="submit" class="appointmentBlockButton" onClick="selectAllTypes()"
 			value="<spring:message code="appointment.AppointmentBlock.save"/>"
 			name="save">
 		
 	</fieldset>
 		<input type="hidden" name="emptyTypes" id="emptyTypes" value="no" />
-</form:form>
+		<input type="hidden" name="appointmentBlockObject" id="appointmentBlockObject" value="${appointmentBlock}" />
+</form>
 
 <br />
 

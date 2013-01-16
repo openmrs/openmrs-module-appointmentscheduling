@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
+import org.directwebremoting.WebContext;
+import org.directwebremoting.WebContextFactory;
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.PersonAttribute;
@@ -14,6 +18,7 @@ import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.AppointmentService;
+import org.openmrs.web.WebConstants;
 
 /**
  * DWR patient methods. The methods in here are used in the webapp to get data from the database via
@@ -103,6 +108,17 @@ public class DWRAppointmentService {
 			}
 		}
 		return numberOfAppointments;
+	}
+	
+	public boolean validateDates(String fromDate, String toDate) throws ParseException {
+		boolean error = false;
+		WebContext webContext = WebContextFactory.get();
+		HttpSession httpSession = webContext.getHttpServletRequest().getSession();
+		//date validation
+		if (!Context.getDateTimeFormat().parse(fromDate).before(Context.getDateTimeFormat().parse(toDate))) {
+			error = true;
+		}
+		return error;
 	}
 	
 	private String buildLocationList(Location location) {

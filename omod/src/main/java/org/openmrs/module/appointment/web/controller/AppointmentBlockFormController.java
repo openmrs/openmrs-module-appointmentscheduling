@@ -15,7 +15,6 @@ package org.openmrs.module.appointment.web.controller;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -36,7 +35,6 @@ import org.openmrs.module.appointment.web.AppointmentTypeEditor;
 import org.openmrs.module.appointment.web.ProviderEditor;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -107,20 +105,9 @@ public class AppointmentBlockFormController {
 	}
 	
 	@ModelAttribute("appointmentTypeList")
-	public Set<AppointmentType> getAppointmentTypeList(
-	        @RequestParam(value = "appointmentBlock", required = false) AppointmentBlock appointmentBlock) {
-		Set<AppointmentType> allTypes = Context.getService(AppointmentService.class).getAllAppointmentTypes();
-		if (appointmentBlock != null) {
-			Set<AppointmentType> toShow = new HashSet<AppointmentType>();
-			Set<AppointmentType> currentTypes = appointmentBlock.getTypes();
-			for (AppointmentType appointmentType : allTypes) {
-				if (!currentTypes.contains(appointmentType)) {
-					toShow.add(appointmentType);
-				}
-			}
-			return toShow;
-		} else
-			return allTypes;
+	public List<AppointmentType> getAppointmentTypeList() {
+		AppointmentService appointmentService = Context.getService(AppointmentService.class);
+		return appointmentService.getAllAppointmentTypes(false);
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)

@@ -5,7 +5,7 @@
 <openmrs:htmlInclude file="/scripts/jquery/jsTree/jquery.tree.min.js" />
 <openmrs:htmlInclude file="/scripts/jquery/jsTree/themes/classic/style.css" />
 <openmrs:htmlInclude file="/moduleResources/appointment/Scripts/jquery.dataTables.js" />
-<openmrs:htmlInclude file="/moduleResources/appointment/Styles/createAppointmentStyle.css" />
+<openmrs:htmlInclude file="/moduleResources/appointment/Styles/AppointmentBlockStyle.css" />
 <openmrs:htmlInclude file="/moduleResources/appointment/Styles/appointmentBlock_jQueryDatatable.css"/>
 <openmrs:htmlInclude file="/moduleResources/appointment/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css"/>
 
@@ -21,6 +21,13 @@
        {
                var fromDate = document.getElementById('fromDate').value;
                var toDate = document.getElementById('toDate').value;
+               //date valdition
+               DWRAppointmentService.validateDates(fromDate,toDate,function(error){
+            	   if(error == true){
+            		   //need to post/refresh the page in order to show the message.
+            		   document.forms['appointmentBlockListForm'].submit();
+            	   }
+               });
 	           var selectedLocation = document.getElementById("locationId");
 	           var modelAttributeSelectedLocation = "${chosenLocation}";
 	           var locationId = null;
@@ -168,7 +175,7 @@
 							//close the dialog.
 							$j(this).dialog("close");
 						},
-						"<spring:message code='general.confirm' />": function() {
+						"<spring:message code='general.submit' />": function() {
 								//update the aciton to "void" because there are appointments assiciated with the selected appointment block and the user clicked "Submit".
 			   					document.getElementById('action').value = "void";
 								//POST back to the controller in order to void the selected appointment block.
@@ -187,6 +194,10 @@
                  "bPaginate": true,
                  "bJQueryUI": true
                 });
+                //Some more visual settings
+                var theTable = $j('#appointmentBlocksTable').dataTable();
+                theTable.fnAdjustColumnSizing();
+                //Fill the content of the appointmnet blocks table
  	        	updateAppointmentBlockTable();
         });
  
@@ -208,7 +219,7 @@
                             <td><openmrs_tag:locationField formFieldName="locationId" initialValue="${chosenLocation}" optionHeader="[blank]"/></td>
                         </tr>
                         <tr>
-                                <td><input type="button" class="appointmentButton" value=<spring:message code="appointment.AppointmentBlock.apply"/> onClick="updateAppointmentBlockTable()"></td>
+                                <td><input type="button" class="appointmentBlockButton" value=<spring:message code="appointment.AppointmentBlock.apply"/> onClick="updateAppointmentBlockTable()"></td>
                         </tr>
                 </table>
         </div>
@@ -235,9 +246,9 @@
 		<input type="hidden" name="action" id="action" value="${action}" />
 		<table align="center">
 		        <tr>
-		        <td><input type="submit" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.add"/>" name="add"> </td>
-		        <td><input type="submit" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.edit"/>" name="edit"> </td>
-		         <td><input type="button" id="deleteBtn" class="appointmentButton" value="<spring:message code="appointment.AppointmentBlock.delete"/>" onclick="deleteFuncionality(this, event)"> </td>
+		        <td><input type="submit" class="appointmentBlockButton" value="<spring:message code="appointment.AppointmentBlock.add"/>" name="add"> </td>
+		        <td><input type="submit" class="appointmentBlockButton" value="<spring:message code="appointment.AppointmentBlock.edit"/>" name="edit"> </td>
+		         <td><input type="button" id="deleteBtn" class="appointmentBlockButton" value="<spring:message code="appointment.AppointmentBlock.delete"/>" onclick="deleteFuncionality(this, event)"> </td>
 		        </tr>
 		</table>
  </form>

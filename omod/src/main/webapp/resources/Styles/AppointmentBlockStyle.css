@@ -1,29 +1,3 @@
-#createAppointmentTable {
-	width:100%;
-}
-
-#createAppointmentTable td {
-	padding: 5px;
-	padding-left: 15px;
-}
-
-.formIcon{
-	width:24px;
-	height:24px;
-	margin-right:6px;
-}
-
-#patient_id_selection{
-	width:170px;
-	float:left;
-	top:0%;
-}
-
-#patientLinkDiv{
-	display:inline-block;
-	margin-left:10px;
-}
-
 #headline {
 	font-size: x-large;
 	font-weight: bold;
@@ -31,7 +5,7 @@
 	padding: 7px;
 }
 
-.appointmentButton {
+.appointmentBlockButton {
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #E0E0E0), color-stop(1, #CCCCCC) );
 	background: -moz-linear-gradient(center top, #E0E0E0 0%, #CCCCCC 100%   );
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E0E0E0',
@@ -45,7 +19,7 @@
 	border-radius:6px;
 }
 
-.appointmentButton:hover:enabled {
+.appointmentBlockButton:hover:enabled {
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #CCCCCC
 		), color-stop(1, #E0E0E0) );
 	background: -moz-linear-gradient(center top, #CCCCCC 0%, #E0E0E0 100%   );
@@ -55,7 +29,7 @@
 	cursor:pointer;
 }
 
-.appointmentButton:active:enabled {
+.appointmentBlockButton:active:enabled {
 	position: relative;
 	top: 1px;
 	cursor:pointer;
@@ -121,6 +95,7 @@
 
 #appointmentBlocksTable{
 	border-collapse: collapse;
+	width:100%;
 }
 
 .tableHeader {
