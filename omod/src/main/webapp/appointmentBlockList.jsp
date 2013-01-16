@@ -88,6 +88,7 @@
                       tableContent += '<td align="center">'+startDate.toLocaleTimeString()+'</td>';
                       tableContent += '<td align="center">'+endDate.toLocaleTimeString()+'</td>';
                       tableContent += '<td align="center">'+appointmentBlocks[i].timeSlotLength+'</td>';
+					  tableContent += '<td align="center">'+startDate+'</td>';
                       tableContent += "</tr>";
                       //If we got to the end
                       if(count == appointmentBlocks.length){
@@ -107,6 +108,25 @@
                                 oTable.fnDestroy();
                              }
                             $j('#appointmentBlocksTable').dataTable({
+								"aoColumns" : [ {
+									"bVisible"  : true												
+								}, { 
+									"bSortable" : true
+								}, {
+									"bSortable" : true
+								}, {
+									"bSortable" : true
+								} ,{
+									"iDataSort" : 8
+								}, {
+									"bSortable" : true
+								}, {
+									"bSortable" : true
+								} ,{
+									"bSortable" : true
+								} ,{
+									"bVisible" : false
+								}],
                                 "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                                 "iDisplayLength": 25,
                                 "bLengthChange": true,
@@ -197,7 +217,25 @@
                 //data table initialization
                 $j('#appointmentBlocksTable').dataTable({
                  "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
-                 "aoColumnDefs": [{ "bSearchable": false, "bVisible": false, "aTargets": [ 0 ] }],
+				"aoColumns" : [ {
+					"bVisible"  : true												
+				}, { 
+					"bSortable" : true
+				}, {
+					"bSortable" : true
+				}, {
+					"bSortable" : true
+				} ,{
+					"iDataSort" : 8
+				}, {
+					"bSortable" : true
+				}, {
+					"bSortable" : true
+				} ,{
+					"bSortable" : true
+				} ,{
+					"bVisible" : false
+								}],
                  "iDisplayLength": -1,
                  "bLengthChange": true,
                  "bFilter": false,
@@ -241,7 +279,7 @@
         <table id="appointmentBlocksTable" cellspacing="0">
                 <thead>
                     <tr>
-                        <th align="center" style="display:none;"><spring:message code="appointment.AppointmentBlock.column.select"/></th>
+                        <th align="center" style="display:none;">select</th>
                         <th align="center"> <spring:message code="appointment.AppointmentBlock.column.location"/> </th>
                         <th align="center"> <spring:message code="appointment.AppointmentBlock.column.provider"/> </th>
                         <th align="center"> <spring:message code="appointment.AppointmentBlock.column.appointmentTypes"/> </th>
@@ -249,6 +287,7 @@
                         <th align="center"> <spring:message code="appointment.AppointmentBlock.column.startTime"/> </th>
                         <th align="center"> <spring:message code="appointment.AppointmentBlock.column.endTime"/> </th>
                         <th align="center"> <spring:message code="appointment.AppointmentBlock.slotLength"/> </th>
+                        <th>Hidden sortable dates</th>
                     </tr>
                 </thead>
 
