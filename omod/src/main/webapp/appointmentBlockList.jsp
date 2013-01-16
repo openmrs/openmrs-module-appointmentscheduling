@@ -88,6 +88,7 @@
                       tableContent += '<td align="center">'+startDate.toLocaleTimeString()+'</td>';
                       tableContent += '<td align="center">'+endDate.toLocaleTimeString()+'</td>';
                       tableContent += '<td align="center">'+appointmentBlocks[i].timeSlotLength+'</td>';
+					  tableContent += '<td align="center">'+startDate+'</td>';
                       tableContent += "</tr>";
                       //If we got to the end
                       if(count == appointmentBlocks.length){
@@ -116,7 +117,7 @@
 								}, {
 									"bSortable" : true
 								} ,{
-									"iDataSort" : 9
+									"iDataSort" : 8
 								}, {
 									"bSortable" : true
 								}, {
@@ -216,25 +217,25 @@
                 //data table initialization
                 $j('#appointmentBlocksTable').dataTable({
                  "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
-					"aoColumns" : [ {
-						"bVisible"  : true												
-					}, { 
-						"bSortable" : true
-					}, {
-						"bSortable" : true
-					}, {
-						"bSortable" : true
-					} ,{
-						"iDataSort" : 9
-					}, {
-						"bSortable" : true
-					}, {
-						"bSortable" : true
-					} ,{
-						"bSortable" : true
-					} ,{
-						"bVisible" : false
-					}],
+				"aoColumns" : [ {
+					"bVisible"  : true												
+				}, { 
+					"bSortable" : true
+				}, {
+					"bSortable" : true
+				}, {
+					"bSortable" : true
+				} ,{
+					"iDataSort" : 8
+				}, {
+					"bSortable" : true
+				}, {
+					"bSortable" : true
+				} ,{
+					"bSortable" : true
+				} ,{
+					"bVisible" : false
+								}],
                  "iDisplayLength": -1,
                  "bLengthChange": true,
                  "bFilter": false,
