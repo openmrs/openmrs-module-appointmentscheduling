@@ -17,17 +17,28 @@
 
 <script type="text/javascript">
 		//updates the table if changes occurred
-       function updateAppointmentBlockTable()
+       function updateAppointmentBlockTable(firstTime)
        {
                var fromDate = document.getElementById('fromDate').value;
                var toDate = document.getElementById('toDate').value;
-               //date valdition
-               DWRAppointmentService.validateDates(fromDate,toDate,function(error){
-            	   if(error == true){
-            		   //need to post/refresh the page in order to show the message.
-            		   document.forms['appointmentBlockListForm'].submit();
-            	   }
-               });
+			   //date valdition
+			   DWRAppointmentService.validateDates(fromDate,toDate,function(error){
+				   if(error == true){
+					   if(!firstTime){
+					   //need to post/refresh the page in order to show the message.
+					   document.forms['appointmentBlockListForm'].submit();
+					   }
+					   else return;
+				   }
+				   else{
+						//remove error if it displays in the page. otherwise continue.
+						var errorDiv = document.getElementById("openmrs_error");
+						if(errorDiv!=null){
+							//If an error desplays in the page but the error is checked and it's false(no error) - remove it.
+							errorDiv.parentNode.removeChild(errorDiv);
+						}
+				   }
+			   });
 	           var selectedLocation = document.getElementById("locationId");
 	           var modelAttributeSelectedLocation = "${chosenLocation}";
 	           var locationId = null;
@@ -198,7 +209,7 @@
                 var theTable = $j('#appointmentBlocksTable').dataTable();
                 theTable.fnAdjustColumnSizing();
                 //Fill the content of the appointmnet blocks table
- 	        	updateAppointmentBlockTable();
+ 	        	updateAppointmentBlockTable(true);
         });
  
 </script>
@@ -219,7 +230,7 @@
                             <td><openmrs_tag:locationField formFieldName="locationId" initialValue="${chosenLocation}" optionHeader="[blank]"/></td>
                         </tr>
                         <tr>
-                                <td><input type="button" class="appointmentBlockButton" value=<spring:message code="appointment.AppointmentBlock.apply"/> onClick="updateAppointmentBlockTable()"></td>
+                                <td><input type="button" class="appointmentBlockButton" value=<spring:message code="appointment.AppointmentBlock.apply"/> onClick="updateAppointmentBlockTable(false)"></td>
                         </tr>
                 </table>
         </div>
