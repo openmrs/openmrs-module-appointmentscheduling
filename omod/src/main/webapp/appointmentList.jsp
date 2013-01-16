@@ -45,7 +45,7 @@
 						TableToolsInit.sSwfPath = "${pageContext.request.contextPath}/moduleResources/appointment/TableTools/media/swf/ZeroClipboard.swf";
 
 						//Datatables.net
-						$j('#appointmentsTable')
+						var oTable = $j('#appointmentsTable')
 								.dataTable(
 										{
 											"aoColumns" : [ {
@@ -136,6 +136,19 @@
 													var appointmentStatus = $j('td:eq(7)', this).text();
 													updateStatusButtonsAvailabilty(appointmentStatus);
 										});
+											
+							//Default sort: ascending by date
+							oTable.fnSort([[2,'asc']]);	
+									
+							//If the user is using "Simple" version
+							if ($j('#locationId').length > 0) {
+								var selectLocation = $j('#locationId');
+								//Set the Null option text (Default is empty string)
+								if (selectLocation[0][0].innerHTML == '')
+									selectLocation[0][0].innerHTML = "<spring:message code='appointment.Appointment.create.label.locationNotSpecified'/>";
+
+							}
+							
 							//Initialize status buttons availability
 							initStatusButtons();
 							

@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.appointment.web.controller;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -124,12 +126,26 @@ public class AppointmentFormController {
 	
 	@ModelAttribute("providerList")
 	public List<Provider> getProviderList() {
-		return Context.getProviderService().getAllProviders();
+		List<Provider> providers = Context.getProviderService().getAllProviders(false);
+		Collections.sort(providers, new Comparator<Provider>() {
+			
+			public int compare(Provider pr1, Provider pr2) {
+				return pr1.getName().compareTo(pr2.getName());
+			}
+		});
+		return providers;
 	}
 	
 	@ModelAttribute("appointmentTypeList")
-	public Set<AppointmentType> getAppointmentTypeList() {
-		return Context.getService(AppointmentService.class).getAllAppointmentTypes();
+	public List<AppointmentType> getAppointmentTypeList() {
+		List<AppointmentType> appointmentTypes = Context.getService(AppointmentService.class).getAllAppointmentTypes(false);
+		Collections.sort(appointmentTypes, new Comparator<AppointmentType>() {
+			
+			public int compare(AppointmentType at1, AppointmentType at2) {
+				return at1.getName().compareTo(at2.getName());
+			}
+		});
+		return appointmentTypes;
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)

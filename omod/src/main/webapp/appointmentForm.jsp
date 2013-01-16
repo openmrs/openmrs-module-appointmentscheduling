@@ -48,7 +48,7 @@
 						});
 						
 						//Datatables.net
-						$j('#availableTimesTable').dataTable(
+						var oTable = $j('#availableTimesTable').dataTable(
 								{
 									"aoColumns" : [ {
 										"bSortable" : true
@@ -78,8 +78,10 @@
 									"bJQueryUI" : true
 								});
 
+						//Default sort: ascending by date
+						oTable.fnSort([[3,'asc']]);	
+								
 						//If the user is using "Simple" version
-
 						if ($j('#locationId').length > 0) {
 							var selectLocation = $j('#locationId');
 							//Set the Null option text (Default is empty string)
