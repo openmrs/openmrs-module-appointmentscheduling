@@ -83,6 +83,11 @@
 		<class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.PatientScheduleAppointment
 		</class>
 	</extension>
+	<extension>
+		<point>org.openmrs.gutter.tools</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.ManageAppointmentsHeaderLink
+		</class>
+	</extension>
 
 	<!-- Maps hibernate file's, if present -->
 	<mappingFiles>
