@@ -296,7 +296,8 @@ public class AppointmentListController {
 			} else if (request.getParameter("endConsultation") != null) {
 				//End visit
 				Visit visit = selectedAppointment.getVisit();
-				if (visit != null) {
+				//also check whether the visit ended
+				if (visit != null && visit.getStopDatetime() != null) {
 					Context.getVisitService().endVisit(visit, new Date());
 					Context.getVisitService().saveVisit(visit);
 				}
@@ -321,7 +322,8 @@ public class AppointmentListController {
 			} else if (request.getParameter("missAppointment") != null) {
 				//End visit
 				Visit visit = selectedAppointment.getVisit();
-				if (visit != null) {
+				//also check whether the visit ended
+				if (visit != null && visit.getStopDatetime() != null) {
 					Context.getVisitService().endVisit(visit, new Date());
 					Context.getVisitService().saveVisit(visit);
 				}
@@ -331,7 +333,8 @@ public class AppointmentListController {
 			} else if (request.getParameter("cancelAppointment") != null) {
 				//End visit
 				Visit visit = selectedAppointment.getVisit();
-				if (visit != null) {
+				//also check whether the visit ended
+				if (visit != null && visit.getStopDatetime() != null) {
 					Context.getVisitService().endVisit(visit, new Date());
 					Context.getVisitService().saveVisit(visit);
 				}
