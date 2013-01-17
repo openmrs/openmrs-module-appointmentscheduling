@@ -30,7 +30,7 @@ public class PatientDashboardAppointmentExtController {
 			appointment.setStatus(AppointmentStatus.COMPLETED);
 			Context.getService(AppointmentService.class).saveAppointment(appointment);
 			
-			return "redirect:/patientDashboard.form?patientId=" + patientId;
+			return "redirect:/module/appointment/appointmentList.list";
 		}
 		//Schedule new appointment
 		else {
