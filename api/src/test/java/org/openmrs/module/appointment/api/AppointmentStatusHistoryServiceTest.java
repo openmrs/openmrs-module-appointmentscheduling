@@ -30,6 +30,7 @@ import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.AppointmentStatusHistory;
 import org.openmrs.module.appointment.TimeSlot;
+import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
@@ -58,15 +59,15 @@ public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensit
 	public void getAppointmentStatusHistory_shouldGetCorrectAppointmentStatusHistory() throws Exception {
 		AppointmentStatusHistory appointmentStatusHistory = service.getAppointmentStatusHistory(1);
 		assertNotNull(appointmentStatusHistory);
-		assertEquals("Waiting", appointmentStatusHistory.getStatus());
+		assertEquals(AppointmentStatus.WAITING, appointmentStatusHistory.getStatus());
 		
 		appointmentStatusHistory = service.getAppointmentStatusHistory(2);
 		assertNotNull(appointmentStatusHistory);
-		assertEquals("In-Consultation", appointmentStatusHistory.getStatus());
+		assertEquals(AppointmentStatus.INCONSULTATION, appointmentStatusHistory.getStatus());
 		
 		appointmentStatusHistory = service.getAppointmentStatusHistory(3);
 		assertNotNull(appointmentStatusHistory);
-		assertEquals("Missed", appointmentStatusHistory.getStatus());
+		assertEquals(AppointmentStatus.MISSED, appointmentStatusHistory.getStatus());
 		
 		appointmentStatusHistory = service.getAppointmentStatusHistory(5);
 		Assert.assertNull(appointmentStatusHistory);
@@ -75,35 +76,30 @@ public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensit
 	@Test
 	@Verifies(value = "should get correct appointment status histories", method = "getAppointmentStatusHistories(String)")
 	public void getAppointmentStatusHistories_shouldGetCorrentAppointmentStatusHistories() throws Exception {
-		List<AppointmentStatusHistory> appointmentStatusHistories = service.getAppointmentStatusHistories("Waiting");
+		List<AppointmentStatusHistory> appointmentStatusHistories = service
+		        .getAppointmentStatusHistories(AppointmentStatus.WAITING);
 		assertNotNull(appointmentStatusHistories);
 		assertEquals(1, appointmentStatusHistories.size());
-		assertEquals("Waiting", appointmentStatusHistories.get(0).getStatus());
+		assertEquals(AppointmentStatus.WAITING, appointmentStatusHistories.get(0).getStatus());
 		
-		appointmentStatusHistories = service.getAppointmentStatusHistories("Missed");
+		appointmentStatusHistories = service.getAppointmentStatusHistories(AppointmentStatus.MISSED);
 		assertNotNull(appointmentStatusHistories);
 		assertEquals(1, appointmentStatusHistories.size());
-		assertEquals("Missed", appointmentStatusHistories.get(0).getStatus());
-		
-		appointmentStatusHistories = service.getAppointmentStatusHistories("newStatus");
-		assertNotNull(appointmentStatusHistories);
-		assertEquals(0, appointmentStatusHistories.size());
+		assertEquals(AppointmentStatus.MISSED, appointmentStatusHistories.get(0).getStatus());
 	}
 	
 	@Test
 	@Verifies(value = "should save new appointment status history", method = "saveAppointmentStatusHistory(AppointmentStatusHistory)")
 	public void saveAppointmentStatusHistory_shouldSaveNewAppointmentStatusHistory() throws Exception {
-		List<AppointmentStatusHistory> appointmentStatusHistories = service.getAppointmentStatusHistories("Some Status");
-		assertEquals(0, appointmentStatusHistories.size());
-		
 		AppointmentBlock appointmentBlock = service.getAppointmentBlock(1);
 		TimeSlot timeSlot = new TimeSlot(appointmentBlock, new Date(), new Date());
 		Appointment appointment = service.getAppointment(1);
-		AppointmentStatusHistory appointmentStatusHistory = new AppointmentStatusHistory(appointment, "Some Status",
-		        new Date(), new Date());
+		AppointmentStatusHistory appointmentStatusHistory = new AppointmentStatusHistory(appointment,
+		        AppointmentStatus.SCHEDULED, new Date(), new Date());
 		service.saveAppointmentStatusHistory(appointmentStatusHistory);
 		
-		appointmentStatusHistories = service.getAppointmentStatusHistories("Some Status");
+		List<AppointmentStatusHistory> appointmentStatusHistories = service
+		        .getAppointmentStatusHistories(AppointmentStatus.SCHEDULED);
 		assertEquals(1, appointmentStatusHistories.size());
 		
 		//Should create a new appointment status history row.
@@ -115,14 +111,14 @@ public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensit
 	public void saveAppointmentStatusHistory_shouldSaveEditedAppointmentStatusHistory() throws Exception {
 		AppointmentStatusHistory appointmentStatusHistory = service.getAppointmentStatusHistory(1);
 		assertNotNull(appointmentStatusHistory);
-		assertEquals("Waiting", appointmentStatusHistory.getStatus());
+		assertEquals(AppointmentStatus.WAITING, appointmentStatusHistory.getStatus());
 		
-		appointmentStatusHistory.setStatus("Edited Status");
+		appointmentStatusHistory.setStatus(AppointmentStatus.RESCHEDULED);
 		service.saveAppointmentStatusHistory(appointmentStatusHistory);
 		
 		appointmentStatusHistory = service.getAppointmentStatusHistory(1);
 		assertNotNull(appointmentStatusHistory);
-		assertEquals("Edited Status", appointmentStatusHistory.getStatus());
+		assertEquals(AppointmentStatus.RESCHEDULED, appointmentStatusHistory.getStatus());
 		
 		//Should not change the number of appointment status histories.
 		assertEquals(3, service.getAllAppointmentStatusHistories().size());
@@ -147,7 +143,7 @@ public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensit
 		Appointment appointment = service.getAppointment(1);
 		assertNotNull(appointment);
 		
-		service.changeAppointmentStatus(appointment, "Completed");
+		service.changeAppointmentStatus(appointment, AppointmentStatus.COMPLETED);
 		//Should add new history
 		assertEquals(4, service.getAllAppointmentStatusHistories().size());
 		

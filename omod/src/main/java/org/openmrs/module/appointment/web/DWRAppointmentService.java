@@ -15,10 +15,10 @@ import org.openmrs.PersonAttribute;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
+import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.AppointmentService;
-import org.openmrs.web.WebConstants;
 
 /**
  * DWR patient methods. The methods in here are used in the webapp to get data from the database via
@@ -43,8 +43,8 @@ public class DWRAppointmentService {
 			patientData.setPhoneNumber(phoneAttribute.getValue());
 		//Checks if patient missed his/her last appointment.
 		Appointment lastAppointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
-		//TODO: change hard coded "MISSED" to correct enum value
-		if (lastAppointment != null && lastAppointment.getStatus() == "MISSED")
+		if (lastAppointment != null
+		        && lastAppointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.MISSED.toString()))
 			patientData.setDateMissedLastAppointment(Context.getDateFormat().format(
 			    lastAppointment.getTimeSlot().getStartDate()));
 		

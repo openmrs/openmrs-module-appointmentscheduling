@@ -38,6 +38,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
+import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
@@ -110,7 +111,8 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		timeSlot.setAppointmentBlock(service.getAppointmentBlock(1));
 		service.saveTimeSlot(timeSlot);
 		AppointmentType appointmentType = service.getAppointmentType(1);
-		Appointment appointment = new Appointment(timeSlot, new Visit(1), new Patient(1), appointmentType, "SCHEDULED");
+		Appointment appointment = new Appointment(timeSlot, new Visit(1), new Patient(1), appointmentType,
+		        AppointmentStatus.SCHEDULED);
 		service.saveAppointment(appointment);
 		
 		//Should create a new appointment type row.
@@ -125,12 +127,12 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(appointment);
 		assertEquals((Integer) 1, appointment.getId());
 		
-		appointment.setStatus("TEST_CHANGED");
+		appointment.setStatus(AppointmentStatus.MISSED);
 		service.saveAppointment(appointment);
 		
 		appointment = service.getAppointment(1);
 		assertNotNull(appointment);
-		assertEquals("TEST_CHANGED", appointment.getStatus());
+		assertEquals(AppointmentStatus.MISSED, appointment.getStatus());
 		
 		//Should not change the number of appointment types.
 		assertEquals(amountOfAppointments, (Integer) service.getAllAppointments().size());
@@ -321,7 +323,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	@Test
-	@Verifies(value = "Should get all unvoided appointments by location", method = "getAppointmentsByConstraints(Date, Date, Location, Provider, AppointmentType, String)")
+	@Verifies(value = "Should get all unvoided appointments by location", method = "getAppointmentsByConstraints(Date, Date, Location, Provider, AppointmentType, AppointmentStatus)")
 	public void shouldGetAllUnvoidedAppointmentsByLocation_getAppointmentsByConstraints() {
 		Location location = Context.getLocationService().getLocation(3);
 		assertNotNull(location);
@@ -341,15 +343,14 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	@Test
-	@Verifies(value = "Should get all unvoided appointments by status", method = "getAppointmentsByConstraints(Date, Date, Location, Provider, AppointmentType, String)")
+	@Verifies(value = "Should get all unvoided appointments by status", method = "getAppointmentsByConstraints(Date, Date, Location, Provider, AppointmentType, AppointmentStatus)")
 	public void should_getAppointmentsByConstraints() {
-		String scheduled = "SCHEDULED";
-		String missed = "MISSED";
 		
-		List<Appointment> appointments = service.getAppointmentsByConstraints(null, null, null, null, null, scheduled);
+		List<Appointment> appointments = service.getAppointmentsByConstraints(null, null, null, null, null,
+		    AppointmentStatus.SCHEDULED);
 		assertEquals(2, appointments.size());
 		
-		appointments = service.getAppointmentsByConstraints(null, null, null, null, null, missed);
+		appointments = service.getAppointmentsByConstraints(null, null, null, null, null, AppointmentStatus.MISSED);
 		Appointment specificAppointment = service.getAppointment(2);
 		assertEquals(specificAppointment, appointments.iterator().next());
 		assertEquals(1, appointments.size());

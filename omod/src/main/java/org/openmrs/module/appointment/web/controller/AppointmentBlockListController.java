@@ -28,6 +28,7 @@ import org.openmrs.Location;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
+import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.AppointmentService;
@@ -134,8 +135,7 @@ public class AppointmentBlockListController {
 				//set appointments statuses to "Cancelled"
 				for (Appointment appointment : appointments) {
 					
-					appointmentService.changeAppointmentStatus(appointment, "Cancelled");
-					//TODO check with Tobin if I should delete this line
+					appointmentService.changeAppointmentStatus(appointment, AppointmentStatus.CANCELLED);
 					//appointmentService.voidAppointment(appointment, voidReason);
 				}
 				//voiding appointment block

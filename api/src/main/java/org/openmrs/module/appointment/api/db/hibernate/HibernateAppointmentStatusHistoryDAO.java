@@ -22,6 +22,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentStatusHistory;
+import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.openmrs.module.appointment.api.db.AppointmentStatusHistoryDAO;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,7 @@ public class HibernateAppointmentStatusHistoryDAO extends HibernateSingleClassDA
 	@Transactional(readOnly = true)
 	public List<AppointmentStatusHistory> getAll(String status) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mappedClass);
-		criteria.add(Restrictions.like("status", status, MatchMode.EXACT));
+		criteria.add(Restrictions.eq("status", AppointmentStatus.getEnum(status)));
 		criteria.addOrder(Order.asc("status"));
 		return criteria.list();
 	}

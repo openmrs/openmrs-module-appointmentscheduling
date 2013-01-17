@@ -28,6 +28,7 @@ import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.AppointmentStatusHistory;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
+import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -316,10 +317,6 @@ public interface AppointmentService extends OpenmrsService {
 	@Transactional(readOnly = true)
 	Appointment getAppointmentByVisit(Visit visit);
 	
-	/*
-	 * TODO: add status to appointment.
-	 */
-
 	//TimeSlot
 	
 	/**
@@ -446,7 +443,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @should get correct appointment status histories
 	 */
 	@Transactional(readOnly = true)
-	List<AppointmentStatusHistory> getAppointmentStatusHistories(String status);
+	List<AppointmentStatusHistory> getAppointmentStatusHistories(AppointmentStatus status);
 	
 	/**
 	 * Creates or updates the given appointment status history in the database.
@@ -531,7 +528,7 @@ public interface AppointmentService extends OpenmrsService {
 	 */
 	@Transactional(readOnly = true)
 	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Location location, Provider provider,
-	        AppointmentType type, String status) throws APIException;
+	        AppointmentType type, AppointmentStatus status) throws APIException;
 	
 	/**
 	 * 
@@ -550,5 +547,5 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param appointment - The appointment
 	 * @param newStatus - The new status
 	 */
-	void changeAppointmentStatus(Appointment appointment, String newStatus);
+	void changeAppointmentStatus(Appointment appointment, AppointmentStatus newStatus);
 }

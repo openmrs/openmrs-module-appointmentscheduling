@@ -14,7 +14,6 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
@@ -25,6 +24,7 @@ import org.openmrs.VisitType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
+import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.api.AppointmentService;
 import org.openmrs.module.appointment.web.AppointmentEditor;
@@ -108,7 +108,7 @@ public class AppointmentListController {
 			}
 			try {
 				appointments = Context.getService(AppointmentService.class).getAppointmentsByConstraints(fromDate, toDate,
-				    location, provider, appointmentType, status);
+				    location, provider, appointmentType, AppointmentStatus.getEnum(status));
 			}
 			catch (APIException ex) {
 				return new LinkedList<Appointment>();
@@ -120,8 +120,7 @@ public class AppointmentListController {
 			for (Appointment appointment : appointments) {
 				boolean valid = true;
 				if (includeCancelled == null) {
-					//TODO use enum status
-					if (appointment.getStatus().toLowerCase().equals("cancelled"))
+					if (appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.CANCELLED.toString()))
 						valid = false;
 				}
 				
@@ -201,16 +200,9 @@ public class AppointmentListController {
 	
 	@ModelAttribute("appointmentStatusList")
 	public Set<String> getAppointmentStatusList() {
-		//TODO centeralize this in an enum
 		Set<String> statuses = new HashSet<String>();
-		statuses.add("Scheduled");
-		statuses.add("Rescheduled");
-		statuses.add("Walk-In");
-		statuses.add("Waiting");
-		statuses.add("In-Consultation");
-		statuses.add("Completed");
-		statuses.add("Missed");
-		statuses.add("Cancelled");
+		for (AppointmentStatus status : AppointmentStatus.values())
+			statuses.add(status.toString());
 		
 		return statuses;
 	}
@@ -228,8 +220,7 @@ public class AppointmentListController {
 		
 		//Calculate for each waiting appointment the waiting time
 		for (Appointment appointment : appointments) {
-			//TODO change to use enum
-			if (appointment.getStatus().toLowerCase().equals("waiting")) {
+			if (appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.WAITING.toString())) {
 				Date lastChanged = Context.getService(AppointmentService.class).getAppointmentCurrentStatusStartDate(
 				    appointment);
 				Date now = new Date();
@@ -285,9 +276,9 @@ public class AppointmentListController {
 		
 		if (Context.isAuthenticated()) {
 			//Handle Status changes
-			//TODO change to use enum
 			if (request.getParameter("startConsultation") != null) {
-				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "In-Consultation");
+				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment,
+				    AppointmentStatus.INCONSULTATION);
 				
 				String patientId = selectedAppointment.getPatient().getId().toString();
 				
@@ -297,12 +288,13 @@ public class AppointmentListController {
 				//End visit
 				Visit visit = selectedAppointment.getVisit();
 				//also check whether the visit ended
-				if (visit != null && visit.getStopDatetime() != null) {
+				if (visit != null && visit.getStopDatetime() == null) {
 					Context.getVisitService().endVisit(visit, new Date());
 					Context.getVisitService().saveVisit(visit);
 				}
 				
-				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "Completed");
+				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment,
+				    AppointmentStatus.COMPLETED);
 				
 			} else if (request.getParameter("checkIn") != null) {
 				
@@ -317,41 +309,46 @@ public class AppointmentListController {
 				selectedAppointment.setVisit(visit);
 				Context.getService(AppointmentService.class).saveAppointment(selectedAppointment);
 				
-				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "Waiting");
+				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment,
+				    AppointmentStatus.WAITING);
 				
 			} else if (request.getParameter("missAppointment") != null) {
 				//End visit
 				Visit visit = selectedAppointment.getVisit();
 				//also check whether the visit ended
-				if (visit != null && visit.getStopDatetime() != null) {
+				if (visit != null && visit.getStopDatetime() == null) {
 					Context.getVisitService().endVisit(visit, new Date());
 					Context.getVisitService().saveVisit(visit);
 				}
 				
-				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "Missed");
+				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment,
+				    AppointmentStatus.MISSED);
 				
 			} else if (request.getParameter("cancelAppointment") != null) {
 				//End visit
 				Visit visit = selectedAppointment.getVisit();
 				//also check whether the visit ended
-				if (visit != null && visit.getStopDatetime() != null) {
+				if (visit != null && visit.getStopDatetime() == null) {
 					Context.getVisitService().endVisit(visit, new Date());
 					Context.getVisitService().saveVisit(visit);
 				}
 				
-				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "Cancelled");
+				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment,
+				    AppointmentStatus.CANCELLED);
 				
 			}
 			if (selectedAppointment != null) {
 				//Update waiting time according to new status
 				Map<Integer, String> waitingTimes = (Map<Integer, String>) model.get("waitingTimes");
-				String representation = (selectedAppointment.getStatus().equalsIgnoreCase("Waiting") ? "0 "
+				String representation = (selectedAppointment.getStatus().toString().equalsIgnoreCase(
+				    AppointmentStatus.WAITING.toString()) ? "0 "
 				        + Context.getMessageSourceService().getMessage("appointment.Appointment.minutes") : "");
 				waitingTimes.put(selectedAppointment.getId(), representation);
 				model.put("waitingTimes", waitingTimes);
 				
 				Map<Integer, Integer> sortableTimes = (Map<Integer, Integer>) model.get("sortableWaitingTimes");
-				Integer sortable = (selectedAppointment.getStatus().equalsIgnoreCase("Waiting") ? 1 : 0);
+				Integer sortable = (selectedAppointment.getStatus().toString().equalsIgnoreCase(
+				    AppointmentStatus.WAITING.toString()) ? 1 : 0);
 				sortableTimes.put(selectedAppointment.getId(), sortable);
 				model.put("sortableWaitingTimes", sortableTimes);
 			}

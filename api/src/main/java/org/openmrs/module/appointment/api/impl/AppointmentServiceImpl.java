@@ -33,6 +33,7 @@ import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.AppointmentStatusHistory;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
+import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.openmrs.module.appointment.api.AppointmentService;
 import org.openmrs.module.appointment.api.db.AppointmentBlockDAO;
 import org.openmrs.module.appointment.api.db.AppointmentDAO;
@@ -409,8 +410,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	 * @see org.openmrs.module.appointment.api.AppointmentService#getAppointmentStatusHistories(java.lang.String)
 	 */
 	@Transactional(readOnly = true)
-	public List<AppointmentStatusHistory> getAppointmentStatusHistories(String status) {
-		return getAppointmentStatusHistoryDAO().getAll(status);
+	public List<AppointmentStatusHistory> getAppointmentStatusHistories(AppointmentStatus status) {
+		return getAppointmentStatusHistoryDAO().getAll(status.toString());
 	}
 	
 	/**
@@ -500,11 +501,11 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		
 		//Subtract from time left the amounts of minutes already scheduled
 		//Should not take into consideration cancelled or missed appointments 
-		//TODO use enum values
 		List<Appointment> appointments = getAppointmentsInTimeSlot(timeSlot);
 		for (Appointment appointment : appointments) {
-			if (!appointment.isVoided() && !appointment.getStatus().equalsIgnoreCase("cancelled")
-			        && !appointment.getStatus().equalsIgnoreCase("missed"))
+			if (!appointment.isVoided()
+			        && !appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.CANCELLED.toString())
+			        && !appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.MISSED.toString()))
 				timeLeft -= appointment.getAppointmentType().getDuration();
 		}
 		
@@ -531,7 +532,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Override
 	@Transactional(readOnly = true)
 	public List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Location location, Provider provider,
-	        AppointmentType type, String status) throws APIException {
+	        AppointmentType type, AppointmentStatus status) throws APIException {
 		
 		List<Appointment> appointments = appointmentDAO.getAppointmentsByConstraints(fromDate, toDate, provider, type,
 		    status);
@@ -564,8 +565,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	@Override
-	public void changeAppointmentStatus(Appointment appointment, String newStatus) {
-		//TODO change to use enum
+	public void changeAppointmentStatus(Appointment appointment, AppointmentStatus newStatus) {
 		if (appointment != null) {
 			AppointmentStatusHistory history = new AppointmentStatusHistory();
 			history.setAppointment(appointment);
