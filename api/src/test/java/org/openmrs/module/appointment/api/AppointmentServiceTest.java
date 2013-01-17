@@ -247,19 +247,6 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(identifiers, toCompare);
 	}
 	
-	@Test
-	@Verifies(value = "should retrieve correct descendants", method = "getAllLocationDescendants(Location , Set<Location> )")
-	public void getAllLocationDescendants_shouldGetCorrectDescendants() {
-		Location location = Context.getLocationService().getLocation(2);
-		assertNotNull(location);
-		
-		Set<Location> descendants = new HashSet<Location>();
-		descendants.add(Context.getLocationService().getLocation(3));
-		descendants.add(Context.getLocationService().getLocation(4));
-		
-		assertEquals(descendants, service.getAllLocationDescendants(location, null));
-	}
-	
 	@Test(expected = APIException.class)
 	@Verifies(value = "should throw exception if an illegal date interval was given", method = "getAppointmentsByConstraints(Date, Date, Location, Provider, AppointmentType, String)")
 	public void shouldThrowAPIException_getAppointmentsByConstraints() throws ParseException {

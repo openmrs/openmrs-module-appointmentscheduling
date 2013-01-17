@@ -176,26 +176,12 @@ public class AppointmentListController {
 	
 	@ModelAttribute("providerList")
 	public List<Provider> getProviderList() {
-		List<Provider> providers = Context.getProviderService().getAllProviders(false);
-		Collections.sort(providers, new Comparator<Provider>() {
-			
-			public int compare(Provider pr1, Provider pr2) {
-				return pr1.getName().compareTo(pr2.getName());
-			}
-		});
-		return providers;
+		return Context.getService(AppointmentService.class).getAllProvidersSorted(false);
 	}
 	
 	@ModelAttribute("appointmentTypeList")
 	public List<AppointmentType> getAppointmentTypeList() {
-		List<AppointmentType> appointmentTypes = Context.getService(AppointmentService.class).getAllAppointmentTypes(false);
-		Collections.sort(appointmentTypes, new Comparator<AppointmentType>() {
-			
-			public int compare(AppointmentType at1, AppointmentType at2) {
-				return at1.getName().compareTo(at2.getName());
-			}
-		});
-		return appointmentTypes;
+		return Context.getService(AppointmentService.class).getAllAppointmentTypesSorted(false);
 	}
 	
 	@ModelAttribute("appointmentStatusList")

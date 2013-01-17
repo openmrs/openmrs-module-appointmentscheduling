@@ -216,7 +216,8 @@ public interface AppointmentService extends OpenmrsService {
 	 * Gets appointment blocks which have a given date and location.
 	 * 
 	 * @return a list of appointment block objects.
-	 * @should get all appointment blocks which have contains in a given date interval and corresponds to a given locations.
+	 * @should get all appointment blocks which have contains in a given date interval and
+	 *         corresponds to a given locations.
 	 */
 	@Transactional(readOnly = true)
 	List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, String locations);
@@ -503,9 +504,8 @@ public interface AppointmentService extends OpenmrsService {
 	Integer getTimeLeftInTimeSlot(TimeSlot timeSlot);
 	
 	/**
-	 * Utility Method
-	 * Returns all the descendants of a given location recursively.
-	 * Call with null descendants.
+	 * [Utility Method] Returns all the descendants of a given location recursively. Call with null
+	 * descendants.
 	 * 
 	 * @param location the location that is ancestor to all of the location in the returned set.
 	 * @param descendants the result set which is being built recursively.
@@ -515,7 +515,6 @@ public interface AppointmentService extends OpenmrsService {
 	Set<Location> getAllLocationDescendants(Location location, Set<Location> descendants);
 	
 	/**
-	 * 
 	 * Retrieves Appointments that satisfy the given constraints
 	 * 
 	 * @param fromDate - The appointment start date
@@ -531,7 +530,6 @@ public interface AppointmentService extends OpenmrsService {
 	        AppointmentType type, AppointmentStatus status) throws APIException;
 	
 	/**
-	 * 
 	 * Retrives the start date of the current status of a given appointment.
 	 * 
 	 * @param appointment - The appointment.
@@ -541,11 +539,28 @@ public interface AppointmentService extends OpenmrsService {
 	Date getAppointmentCurrentStatusStartDate(Appointment appointment);
 	
 	/**
-	 * 
 	 * Changes the given appointment status.
 	 * 
 	 * @param appointment - The appointment
 	 * @param newStatus - The new status
 	 */
 	void changeAppointmentStatus(Appointment appointment, AppointmentStatus newStatus);
+	
+	/**
+	 * [Utility Method] Retrieves all providers sorted ascending alphabetically
+	 * 
+	 * @param includeRetired whether to include retired providers
+	 * @return sorted list of providers
+	 */
+	@Transactional(readOnly = true)
+	List<Provider> getAllProvidersSorted(boolean includeRetired);
+	
+	/**
+	 * [Utility Method] Retrieves all appointment types sorted ascending alphabetically
+	 * 
+	 * @param includeRetired whether to include retired appointment types
+	 * @return sorted list of appointment types
+	 */
+	@Transactional(readOnly = true)
+	List<AppointmentType> getAllAppointmentTypesSorted(boolean includeRetired);
 }

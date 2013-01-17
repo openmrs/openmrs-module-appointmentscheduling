@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.appointment.api.impl;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -27,13 +29,14 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.appointment.Appointment;
+import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.AppointmentStatusHistory;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
-import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.openmrs.module.appointment.api.AppointmentService;
 import org.openmrs.module.appointment.api.db.AppointmentBlockDAO;
 import org.openmrs.module.appointment.api.db.AppointmentDAO;
@@ -579,6 +582,33 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 			saveAppointment(appointment);
 		}
 		
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Provider> getAllProvidersSorted(boolean includeRetired) {
+		List<Provider> providers = Context.getProviderService().getAllProviders(includeRetired);
+		Collections.sort(providers, new Comparator<Provider>() {
+			
+			public int compare(Provider pr1, Provider pr2) {
+				return pr1.getName().compareTo(pr2.getName());
+			}
+		});
+		return providers;
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<AppointmentType> getAllAppointmentTypesSorted(boolean includeRetired) {
+		List<AppointmentType> appointmentTypes = Context.getService(AppointmentService.class).getAllAppointmentTypes(
+		    includeRetired);
+		Collections.sort(appointmentTypes, new Comparator<AppointmentType>() {
+			
+			public int compare(AppointmentType at1, AppointmentType at2) {
+				return at1.getName().compareTo(at2.getName());
+			}
+		});
+		return appointmentTypes;
 	}
 	
 }
