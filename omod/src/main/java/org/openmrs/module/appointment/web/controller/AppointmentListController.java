@@ -30,6 +30,7 @@ import org.openmrs.module.appointment.api.AppointmentService;
 import org.openmrs.module.appointment.web.AppointmentEditor;
 import org.openmrs.module.appointment.web.AppointmentTypeEditor;
 import org.openmrs.module.appointment.web.ProviderEditor;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.Errors;
@@ -67,11 +68,6 @@ public class AppointmentListController {
 		}
 		//Do not auto refresh
 		return -1;
-	}
-	
-	@ModelAttribute("selectedProvider")
-	public Provider getSelectedProvider(@RequestParam(value = "providerSelect", required = false) Provider provider) {
-		return provider;
 	}
 	
 	@ModelAttribute("providerSelect")
@@ -197,27 +193,19 @@ public class AppointmentListController {
 	        @RequestParam(value = "providerSelect", required = false) Provider provider,
 	        @RequestParam(value = "appointmentTypeSelect", required = false) AppointmentType appointmentType,
 	        @RequestParam(value = "appointmentStatusSelect", required = false) String status) {
+		
 		status = (status == null || status.isEmpty()) ? null : status;
+		List<Appointment> filteredAppointments = new LinkedList<Appointment>();
 		
 		if (Context.isAuthenticated()) {
-			
 			List<Appointment> appointments = new LinkedList<Appointment>();
 			if (RequestMethod.GET.toString().equalsIgnoreCase(request.getMethod())) {
 				//Set Default date filter on GET request - today 00:00 till 23:59
-				Calendar cal = Calendar.getInstance();
 				fromDate = new Date();
-				cal.setTime(fromDate);
-				cal.set(Calendar.HOUR_OF_DAY, 0);
-				cal.set(Calendar.MINUTE, 0);
-				cal.set(Calendar.SECOND, 0);
-				cal.set(Calendar.MILLISECOND, 0);
-				fromDate = cal.getTime();
+				fromDate = OpenmrsUtil.firstSecondOfDay(fromDate);
 				
-				cal.set(Calendar.HOUR_OF_DAY, 23);
-				cal.set(Calendar.MINUTE, 59);
-				cal.set(Calendar.SECOND, 59);
-				cal.set(Calendar.MILLISECOND, 999);
-				toDate = cal.getTime();
+				toDate = new Date();
+				toDate = OpenmrsUtil.getLastMomentOfDay(toDate);
 				
 				provider = this.getSelectedProvider(request, provider);
 				location = this.getLocation(request, location);
@@ -229,8 +217,6 @@ public class AppointmentListController {
 			catch (APIException ex) {
 				return new LinkedList<Appointment>();
 			}
-			
-			List<Appointment> filteredAppointments = new LinkedList<Appointment>();
 			
 			//Filter appointments by includeCancelled checkbox
 			for (Appointment appointment : appointments) {
@@ -247,7 +233,7 @@ public class AppointmentListController {
 			return filteredAppointments;
 			
 		} else
-			return new LinkedList<Appointment>();
+			return filteredAppointments;
 	}
 	
 	@RequestMapping(value = "/module/appointment/appointmentList", method = RequestMethod.GET)
@@ -294,6 +280,7 @@ public class AppointmentListController {
 				
 				//Start a new visit
 				Visit visit = new Visit(selectedAppointment.getPatient(), defaultVisitType, new Date());
+				visit.setLocation(selectedAppointment.getTimeSlot().getAppointmentBlock().getLocation());
 				visit = Context.getVisitService().saveVisit(visit);
 				selectedAppointment.setVisit(visit);
 				Context.getService(AppointmentService.class).saveAppointment(selectedAppointment);
