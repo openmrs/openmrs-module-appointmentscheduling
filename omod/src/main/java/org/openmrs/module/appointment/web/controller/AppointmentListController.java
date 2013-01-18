@@ -74,66 +74,6 @@ public class AppointmentListController {
 		return provider;
 	}
 	
-	//Filter the appointments by the given filters and save in list
-	@ModelAttribute("appointmentList")
-	public List<Appointment> getAppointmentList(HttpServletRequest request, HttpSession session,
-	        @RequestParam(value = "includeCancelled", required = false) String includeCancelled,
-	        @RequestParam(value = "fromDate", required = false) Date fromDate,
-	        @RequestParam(value = "toDate", required = false) Date toDate,
-	        @RequestParam(value = "locationId", required = false) Location location,
-	        @RequestParam(value = "providerSelect", required = false) Provider provider,
-	        @RequestParam(value = "appointmentTypeSelect", required = false) AppointmentType appointmentType,
-	        @RequestParam(value = "appointmentStatusSelect", required = false) String status) {
-		status = (status == null || status.isEmpty()) ? null : status;
-		
-		if (Context.isAuthenticated()) {
-			
-			List<Appointment> appointments = new LinkedList<Appointment>();
-			if (RequestMethod.GET.toString().equalsIgnoreCase(request.getMethod())) {
-				//Set Default date filter on GET request - today 00:00 till 23:59
-				Calendar cal = Calendar.getInstance();
-				fromDate = new Date();
-				cal.setTime(fromDate);
-				cal.set(Calendar.HOUR_OF_DAY, 0);
-				cal.set(Calendar.MINUTE, 0);
-				cal.set(Calendar.SECOND, 0);
-				cal.set(Calendar.MILLISECOND, 0);
-				fromDate = cal.getTime();
-				
-				cal.set(Calendar.HOUR_OF_DAY, 23);
-				cal.set(Calendar.MINUTE, 59);
-				cal.set(Calendar.SECOND, 59);
-				cal.set(Calendar.MILLISECOND, 999);
-				toDate = cal.getTime();
-			}
-			try {
-				appointments = Context.getService(AppointmentService.class).getAppointmentsByConstraints(fromDate, toDate,
-				    location, provider, appointmentType, AppointmentStatus.getEnum(status));
-			}
-			catch (APIException ex) {
-				return new LinkedList<Appointment>();
-			}
-			
-			List<Appointment> filteredAppointments = new LinkedList<Appointment>();
-			
-			//Filter appointments by includeCancelled checkbox
-			for (Appointment appointment : appointments) {
-				boolean valid = true;
-				if (includeCancelled == null) {
-					if (appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.CANCELLED.toString()))
-						valid = false;
-				}
-				
-				if (valid)
-					filteredAppointments.add(appointment);
-			}
-			
-			return filteredAppointments;
-			
-		} else
-			return new LinkedList<Appointment>();
-	}
-	
 	@ModelAttribute("providerSelect")
 	public Provider getSelectedProvider(HttpServletRequest request,
 	        @RequestParam(value = "providerSelect", required = false) Provider selectedProvider) {
@@ -245,6 +185,69 @@ public class AppointmentListController {
 		
 		model.put("sortableWaitingTimes", sortableTimes);
 		return times;
+	}
+	
+	//Filter the appointments by the given filters and save in list
+	@ModelAttribute("appointmentList")
+	public List<Appointment> getAppointmentList(HttpServletRequest request, HttpSession session,
+	        @RequestParam(value = "includeCancelled", required = false) String includeCancelled,
+	        @RequestParam(value = "fromDate", required = false) Date fromDate,
+	        @RequestParam(value = "toDate", required = false) Date toDate,
+	        @RequestParam(value = "locationId", required = false) Location location,
+	        @RequestParam(value = "providerSelect", required = false) Provider provider,
+	        @RequestParam(value = "appointmentTypeSelect", required = false) AppointmentType appointmentType,
+	        @RequestParam(value = "appointmentStatusSelect", required = false) String status) {
+		status = (status == null || status.isEmpty()) ? null : status;
+		
+		if (Context.isAuthenticated()) {
+			
+			List<Appointment> appointments = new LinkedList<Appointment>();
+			if (RequestMethod.GET.toString().equalsIgnoreCase(request.getMethod())) {
+				//Set Default date filter on GET request - today 00:00 till 23:59
+				Calendar cal = Calendar.getInstance();
+				fromDate = new Date();
+				cal.setTime(fromDate);
+				cal.set(Calendar.HOUR_OF_DAY, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				cal.set(Calendar.MILLISECOND, 0);
+				fromDate = cal.getTime();
+				
+				cal.set(Calendar.HOUR_OF_DAY, 23);
+				cal.set(Calendar.MINUTE, 59);
+				cal.set(Calendar.SECOND, 59);
+				cal.set(Calendar.MILLISECOND, 999);
+				toDate = cal.getTime();
+				
+				provider = this.getSelectedProvider(request, provider);
+				location = this.getLocation(request, location);
+			}
+			try {
+				appointments = Context.getService(AppointmentService.class).getAppointmentsByConstraints(fromDate, toDate,
+				    location, provider, appointmentType, AppointmentStatus.getEnum(status));
+			}
+			catch (APIException ex) {
+				return new LinkedList<Appointment>();
+			}
+			
+			List<Appointment> filteredAppointments = new LinkedList<Appointment>();
+			
+			//Filter appointments by includeCancelled checkbox
+			for (Appointment appointment : appointments) {
+				boolean valid = true;
+				if (includeCancelled == null) {
+					if (appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.CANCELLED.toString()))
+						valid = false;
+				}
+				
+				if (valid)
+					filteredAppointments.add(appointment);
+			}
+			
+			return filteredAppointments;
+			
+		} else
+			return new LinkedList<Appointment>();
 	}
 	
 	@RequestMapping(value = "/module/appointment/appointmentList", method = RequestMethod.GET)
