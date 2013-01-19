@@ -129,9 +129,61 @@ public class AppointmentListController {
 		return statuses;
 	}
 	
-	@ModelAttribute("waitingTimes")
-	public Map<Integer, String> getWaitingTimes(ModelMap model,
-	        @ModelAttribute("appointmentList") List<Appointment> appointments) {
+	//Filter the appointments by the given filters and save in list
+	@ModelAttribute("appointmentList")
+	public List<Appointment> getAppointmentList(HttpServletRequest request, HttpSession session, ModelMap model,
+	        @RequestParam(value = "includeCancelled", required = false) String includeCancelled,
+	        @RequestParam(value = "fromDate", required = false) Date fromDate,
+	        @RequestParam(value = "toDate", required = false) Date toDate,
+	        @RequestParam(value = "locationId", required = false) Location location,
+	        @RequestParam(value = "providerSelect", required = false) Provider provider,
+	        @RequestParam(value = "appointmentTypeSelect", required = false) AppointmentType appointmentType,
+	        @RequestParam(value = "appointmentStatusSelect", required = false) String status) {
+		
+		status = (status == null || status.isEmpty()) ? null : status;
+		List<Appointment> filteredAppointments = new LinkedList<Appointment>();
+		
+		if (Context.isAuthenticated()) {
+			List<Appointment> appointments = new LinkedList<Appointment>();
+			if (RequestMethod.GET.toString().equalsIgnoreCase(request.getMethod())) {
+				//Set Default date filter on GET request - today 00:00 till 23:59
+				fromDate = new Date();
+				fromDate = OpenmrsUtil.firstSecondOfDay(fromDate);
+				
+				toDate = new Date();
+				toDate = OpenmrsUtil.getLastMomentOfDay(toDate);
+				
+				provider = this.getSelectedProvider(request, provider);
+				location = this.getLocation(request, location);
+			}
+			try {
+				appointments = Context.getService(AppointmentService.class).getAppointmentsByConstraints(fromDate, toDate,
+				    location, provider, appointmentType, AppointmentStatus.getEnum(status));
+			}
+			catch (APIException ex) {
+				return new LinkedList<Appointment>();
+			}
+			
+			//Filter appointments by includeCancelled checkbox
+			for (Appointment appointment : appointments) {
+				boolean valid = true;
+				if (includeCancelled == null) {
+					if (appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.CANCELLED.toString()))
+						valid = false;
+				}
+				
+				if (valid)
+					filteredAppointments.add(appointment);
+			}
+			
+			getWaitingTimes(model, filteredAppointments);
+			return filteredAppointments;
+			
+		} else
+			return filteredAppointments;
+	}
+	
+	public void getWaitingTimes(ModelMap model, List<Appointment> appointments) {
 		//Mapping of waiting times to use in the "Waiting Time" column
 		
 		//Mapping appointment Id to waiting time left string
@@ -178,62 +230,8 @@ public class AppointmentListController {
 				sortableTimes.put(appointment.getId(), 0);
 			}
 		}
-		
+		model.put("waitingTimes", times);
 		model.put("sortableWaitingTimes", sortableTimes);
-		return times;
-	}
-	
-	//Filter the appointments by the given filters and save in list
-	@ModelAttribute("appointmentList")
-	public List<Appointment> getAppointmentList(HttpServletRequest request, HttpSession session,
-	        @RequestParam(value = "includeCancelled", required = false) String includeCancelled,
-	        @RequestParam(value = "fromDate", required = false) Date fromDate,
-	        @RequestParam(value = "toDate", required = false) Date toDate,
-	        @RequestParam(value = "locationId", required = false) Location location,
-	        @RequestParam(value = "providerSelect", required = false) Provider provider,
-	        @RequestParam(value = "appointmentTypeSelect", required = false) AppointmentType appointmentType,
-	        @RequestParam(value = "appointmentStatusSelect", required = false) String status) {
-		
-		status = (status == null || status.isEmpty()) ? null : status;
-		List<Appointment> filteredAppointments = new LinkedList<Appointment>();
-		
-		if (Context.isAuthenticated()) {
-			List<Appointment> appointments = new LinkedList<Appointment>();
-			if (RequestMethod.GET.toString().equalsIgnoreCase(request.getMethod())) {
-				//Set Default date filter on GET request - today 00:00 till 23:59
-				fromDate = new Date();
-				fromDate = OpenmrsUtil.firstSecondOfDay(fromDate);
-				
-				toDate = new Date();
-				toDate = OpenmrsUtil.getLastMomentOfDay(toDate);
-				
-				provider = this.getSelectedProvider(request, provider);
-				location = this.getLocation(request, location);
-			}
-			try {
-				appointments = Context.getService(AppointmentService.class).getAppointmentsByConstraints(fromDate, toDate,
-				    location, provider, appointmentType, AppointmentStatus.getEnum(status));
-			}
-			catch (APIException ex) {
-				return new LinkedList<Appointment>();
-			}
-			
-			//Filter appointments by includeCancelled checkbox
-			for (Appointment appointment : appointments) {
-				boolean valid = true;
-				if (includeCancelled == null) {
-					if (appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.CANCELLED.toString()))
-						valid = false;
-				}
-				
-				if (valid)
-					filteredAppointments.add(appointment);
-			}
-			
-			return filteredAppointments;
-			
-		} else
-			return filteredAppointments;
 	}
 	
 	@RequestMapping(value = "/module/appointment/appointmentList", method = RequestMethod.GET)
@@ -271,7 +269,8 @@ public class AppointmentListController {
 				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment,
 				    AppointmentStatus.COMPLETED);
 				
-			} else if (request.getParameter("checkIn") != null) {
+			} else if (request.getParameter("checkIn") != null
+			        && selectedAppointment.getStatus() != AppointmentStatus.WAITING) {
 				
 				String visitTypeIdString = Context.getAdministrationService().getGlobalProperty(
 				    "appointment.defaultVisitType");
