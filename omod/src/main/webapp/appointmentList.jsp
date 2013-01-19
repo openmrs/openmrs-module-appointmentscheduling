@@ -254,9 +254,12 @@
             todayStart.setHours(0,0,0,0);
             var todayEnd = new Date();
             todayEnd.setHours(23,59,59,999);
-			var timeFormat = (jsTimeFormat=='hh:mm') ? 'HH:mm' : jsTimeFormat;
+			var fixedjsTimeFormat = jsTimeFormat.replace('m','M');
+			fixedjsTimeFormat = fixedjsTimeFormat.replace('m','M');
+			
+			var timeFormat = (fixedjsTimeFormat=='hh:MM') ? 'HH:MM' : fixedjsTimeFormat;
 			//Handle Italy locale
-			timeFormat = (jsTimeFormat=='hh.mm') ? 'hh.mm' : jsTimeFormat;
+			timeFormat = (fixedjsTimeFormat=='hh.MM') ? 'HH.MM' : timeFormat;
 			
             document.getElementById('fromDate').value = todayStart.format(jsDateFormat+' '+timeFormat);
             document.getElementById('toDate').value = todayEnd.format(jsDateFormat+' '+timeFormat);
