@@ -28,5 +28,15 @@
 	
 	<context:component-scan base-package="org.openmrs.module.appointment.web.controller" />
  
-		
+	<bean id="AppointmentsPortletUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="order">
+			<value>1</value>
+		</property>
+		<property name="mappings">
+			 <props>
+ 				 <prop key="**/appointments.portlet">AppointmentsPortletController</prop>
+ 			</props>
+		</property>
+		</bean>
+	<bean id="AppointmentsPortletController" class="org.openmrs.module.appointment.web.controller.AppointmentsPortletController"></bean>
 </beans>

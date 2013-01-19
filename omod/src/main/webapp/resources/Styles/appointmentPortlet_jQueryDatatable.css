@@ -1,0 +1,65 @@
+.dataTable{
+	position:static;
+	width:100% !important;
+}
+
+table.display thead th {
+	border-bottom: 1px solid black;
+	cursor: pointer;
+	font-weight: bold;
+	padding: 3px 18px 3px 10px;
+}
+
+.dataTables_wrapper{
+	border:thin gainsboro solid;
+	border-radius:6px;
+}
+
+.dataTables_info{
+	font-weight:normal;
+	padding:3px;
+}
+
+thead tr th{
+	cursor:pointer;
+	font-weight:bold !important;
+}
+
+.sorting_1{
+	background-color:transparent;
+}
+
+.dataTables_empty{
+	padding:5px;
+	background-color:#FFFFFF !important;
+}
+
+.even{  	
+	background-color:#FFFFFF;
+}
+
+.odd{
+	background-color:#D4D4D4;
+}
+
+.dataTables_paginate{
+	padding:3px;
+	float:right;
+}
+
+.dataTables_length{
+	margin-left:5px;
+}
+
+.fg-button{
+	margin-left: 10px !important;
+	width:20px !important;
+	height:20px !important;
+}
+
+
+
+
+
+
+

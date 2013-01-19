@@ -49,7 +49,10 @@
 			<convert converter="bean" match="org.openmrs.module.appointment.TimeSlot"/>
 			<convert converter="bean" match="org.openmrs.module.appointment.AppointmentBlock"/>
 			<convert converter="bean" match="org.openmrs.module.appointment.AppointmentType"/>
+			<convert converter="bean" match="org.openmrs.module.appointment.Appointment"/>
 			<convert converter="bean" match="org.openmrs.Provider"/>
+			<convert converter="bean" match="org.openmrs.Visit"/>
+			<convert converter="bean" match="org.openmrs.Patient"/>
 			<convert converter="bean" match="org.openmrs.Location"/>
 			<create creator="new" javascript="DWRAppointmentService">
 				<param name="class" value="org.openmrs.module.appointment.web.DWRAppointmentService" />
@@ -88,7 +91,10 @@
 		<class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.AppointmentsHeaderLinkExt
 		</class>
 	</extension>
-
+	<extension> 
+	    <point>org.openmrs.patientDashboardTab</point>
+	    <class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.PatientDashboardAppointmentTabExt</class> 
+	</extension>
 	<!-- Maps hibernate file's, if present -->
 	<mappingFiles>
 		Appointment.hbm.xml

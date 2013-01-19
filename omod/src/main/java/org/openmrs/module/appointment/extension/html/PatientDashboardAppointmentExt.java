@@ -31,7 +31,7 @@ public class PatientDashboardAppointmentExt extends Extension {
 		String action = "";
 		
 		//Check if there is an ongoing visit
-		if (appointment != null && appointment.getVisit().getStopDatetime() == null) {
+		if (appointment != null && appointment.getVisit() != null && appointment.getVisit().getStopDatetime() == null) {
 			value = Context.getMessageSourceService().getMessage("appointment.Appointment.list.button.endConsultation");
 			action = "endConsult";
 		}

@@ -1,0 +1,97 @@
+
+.appointmentPortletButton {
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #E0E0E0), color-stop(1, #CCCCCC) );
+	background: -moz-linear-gradient(center top, #E0E0E0 0%, #CCCCCC 100%   );
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E0E0E0',
+		endColorstr='#CCCCCC' );
+	background-color: #a2dec8;
+	border: 1px solid #CCCCCC;
+	display: inline-block;
+	color: #000000;
+	padding: 3px 20px;
+	text-decoration: none;
+	border-radius:6px;
+}
+
+.appointmentPortletButton:hover:enabled {
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #CCCCCC
+		), color-stop(1, #E0E0E0) );
+	background: -moz-linear-gradient(center top, #CCCCCC 0%, #E0E0E0 100%   );
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#CCCCCC',
+		endColorstr='#E0E0E0' );
+	background-color: #a2dec8;
+	cursor:pointer;
+}
+
+.appointmentPortletButton:active:enabled {
+	position: relative;
+	top: 1px;
+	cursor:pointer;
+}
+.saveButton {
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #A3A3A3
+		), color-stop(1, #757575) );
+	background: -moz-linear-gradient(center top, #A3A3A3 0%, #757575 100%   );
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#A3A3A3',
+		endColorstr='#757575' );
+	background-color: #a2dec8;
+	border: 1px solid #CCCCCC;
+	display: inline-block;
+	color: #ffffff;
+	padding: 8px 35px;
+	text-decoration: none;
+	text-shadow: 1px 1px 0px #666666;
+	font-weight: bold;
+	font-size:16px;
+	border-radius:6px;
+}
+
+.saveButton:hover:enabled {
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #757575
+		), color-stop(1, #A3A3A3) );
+	background: -moz-linear-gradient(center top, #757575 0%, #A3A3A3 100%   );
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#757575',
+		endColorstr='#A3A3A3' );
+	background-color: #a2dec8;
+	cursor:pointer;
+}
+
+.saveButton:active:enabled {
+	position: relative;
+	top: 1px;
+	cursor:pointer;
+}
+#AppointmentsTable{
+	border-collapse: collapse;
+	width:100%;
+}
+
+.tableHeader {
+	background-color: #666666;
+	font-weight: bold;
+	color: white;
+	height: 20px;
+}
+
+.selectedRow{
+	background-color:#7fbffa !important;
+}
+
+.notSelectedRow:hover{
+	background-color:#efffd0 !important;
+	cursor:pointer;
+}
+
+
+.buttonShadow{
+	margin:3px;
+	-webkit-box-shadow: 0px 0px 9px rgba(50, 50, 50, 0.25);
+	-moz-box-shadow:    0px 0px 9px rgba(50, 50, 50, 0.25);
+	box-shadow:         0px 0px 9px rgba(50, 50, 50, 0.25);
+	border:thin gray solid;
+}
+
+.buttonShadow:disabled{
+	background-color:silver;
+	color:gray;
+}
