@@ -25,16 +25,19 @@ public class PatientDashboardAppointmentExtController {
 			Patient patient = Context.getPatientService().getPatient(patientId);
 			Appointment appointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
 			Visit visit = appointment.getVisit();
-			Context.getVisitService().endVisit(visit, new Date());
-			Context.getVisitService().saveVisit(visit);
+			
+			//Check if was ended already
+			if (visit.getStopDatetime() == null) {
+				Context.getVisitService().endVisit(visit, new Date());
+				Context.getVisitService().saveVisit(visit);
+			}
+			
 			appointment.setStatus(AppointmentStatus.COMPLETED);
 			Context.getService(AppointmentService.class).saveAppointment(appointment);
 			
 			return "redirect:/module/appointment/appointmentList.list";
 		}
-		//Schedule new appointment
-		else {
-			return "redirect:/module/appointment/appointmentForm.form?patientId=" + patientId;
-		}
+		
+		return "";
 	}
 }

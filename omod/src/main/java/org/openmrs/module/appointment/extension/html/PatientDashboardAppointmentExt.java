@@ -6,6 +6,7 @@ import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.Extension;
 import org.openmrs.module.appointment.Appointment;
+import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.openmrs.module.appointment.api.AppointmentService;
 
 public class PatientDashboardAppointmentExt extends Extension {
@@ -27,22 +28,20 @@ public class PatientDashboardAppointmentExt extends Extension {
 		Patient patient = Context.getPatientService().getPatient(Integer.parseInt(patientId));
 		Appointment appointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
 		
-		String value = "";
-		String action = "";
-		
-		//Check if there is an ongoing visit
-		if (appointment != null && appointment.getVisit() != null && appointment.getVisit().getStopDatetime() == null) {
-			value = Context.getMessageSourceService().getMessage("appointment.Appointment.list.button.endConsultation");
-			action = "endConsult";
+		//Check if latest appointment is finished
+		if (appointment != null && appointment.getStatus() != AppointmentStatus.CANCELLED
+		        && appointment.getStatus() != AppointmentStatus.MISSED
+		        && appointment.getStatus() != AppointmentStatus.COMPLETED) {
+			String value = Context.getMessageSourceService().getMessage(
+			    "appointment.Appointment.list.button.endConsultation");
+			String action = "endConsult";
+			
+			return "<input type=\"button\" value=\"" + value
+			        + "\" onclick=\"window.location.href='module/appointment/patientDashboardAppointmentExt.form?patientId="
+			        + patientId + "&action=" + action + "'\" />";
 		}
-		//No ongoing visit
-		else {
-			value = Context.getMessageSourceService().getMessage("appointment.Appointment.add");
-			action = "scheduleAppointment";
-		}
 		
-		return "<input type=\"button\" value=\"" + value
-		        + "\" onclick=\"window.location.href='module/appointment/patientDashboardAppointmentExt.form?patientId="
-		        + patientId + "&action=" + action + "'\" />";
+		return "";
+		
 	}
 }
