@@ -73,7 +73,7 @@ public class AppointmentListController {
 	@ModelAttribute("providerSelect")
 	public Provider getSelectedProvider(HttpServletRequest request,
 	        @RequestParam(value = "providerSelect", required = false) Provider selectedProvider) {
-		if (RequestMethod.GET.toString().equalsIgnoreCase(request.getMethod())) {
+		if (RequestMethod.GET.toString().equalsIgnoreCase(request.getMethod()) && Context.getAuthenticatedUser() != null) {
 			//Set Default provider filter on GET request - if user is provider, set to user
 			Provider provider = null;
 			Person person = Context.getAuthenticatedUser().getPerson();
@@ -91,7 +91,7 @@ public class AppointmentListController {
 	@ModelAttribute("selectedLocation")
 	public Location getLocation(HttpServletRequest request,
 	        @RequestParam(value = "locationId", required = false) Location location) {
-		if (RequestMethod.GET.toString().equalsIgnoreCase(request.getMethod())) {
+		if (RequestMethod.GET.toString().equalsIgnoreCase(request.getMethod()) && Context.getAuthenticatedUser() != null) {
 			//Set Default provider filter on GET request - if user is provider, set location to user default
 			Provider provider = null;
 			Person person = Context.getAuthenticatedUser().getPerson();
@@ -236,9 +236,6 @@ public class AppointmentListController {
 	
 	@RequestMapping(value = "/module/appointment/appointmentList", method = RequestMethod.GET)
 	public void showForm(ModelMap model) {
-		if (Context.isAuthenticated()) {
-			return;
-		}
 	}
 	
 	@RequestMapping(value = "/module/appointment/appointmentList", method = RequestMethod.POST)
