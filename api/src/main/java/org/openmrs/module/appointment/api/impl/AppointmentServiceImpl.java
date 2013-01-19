@@ -591,7 +591,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		Collections.sort(providers, new Comparator<Provider>() {
 			
 			public int compare(Provider pr1, Provider pr2) {
-				return pr1.getName().compareTo(pr2.getName());
+				return pr1.getName().toLowerCase().compareTo(pr2.getName().toLowerCase());
 			}
 		});
 		return providers;
@@ -605,7 +605,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		Collections.sort(appointmentTypes, new Comparator<AppointmentType>() {
 			
 			public int compare(AppointmentType at1, AppointmentType at2) {
-				return at1.getName().compareTo(at2.getName());
+				return at1.getName().toLowerCase().compareTo(at2.getName().toLowerCase());
 			}
 		});
 		return appointmentTypes;

@@ -137,16 +137,17 @@ function addQueryParameter(paramName){
 									return;
 								}
 								var phone = "<spring:message code='appointment.Appointment.create.patientNoPhoneNumber'/>";
-								var dateMissedLastAppointment = "<spring:message code='appointment.Appointment.create.patientNotMissedLastAppointment'/>";
+								var dateMissedLastAppointment = null;
 								if (details.phoneNumber)
 									phone = details.phoneNumber;
 								if (details.dateMissedLastAppointment)
 									dateMissedLastAppointment = details.dateMissedLastAppointment;
 								var detailsText = "<b><spring:message code='appointment.Appointment.create.patientPhoneNumber'/></b>"
-										+ phone
-										+ "<br/><b><spring:message code='appointment.Appointment.create.patientMissedMeeting'/></b>"
-										+ dateMissedLastAppointment
-										+ "<br/><br/>";
+										+ phone;
+								if(dateMissedLastAppointment){
+									detailsText += "<br/><spring:message code='appointment.Appointment.create.patientMissedMeeting'/><div style='color:red; display:inline-block;'><b>"+dateMissedLastAppointment+"</b></div>";
+								}
+								detailsText += "<br/><br/>";
 								for ( var i = 0; i < details.identifiers.length; i++) {
 									var array = details.identifiers[i]
 											.split(":");

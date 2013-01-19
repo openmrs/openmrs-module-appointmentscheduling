@@ -28,13 +28,21 @@ public class PatientDashboardAppointmentExt extends Extension {
 		Patient patient = Context.getPatientService().getPatient(Integer.parseInt(patientId));
 		Appointment appointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
 		
-		//Check if latest appointment is finished
-		if (appointment != null && appointment.getStatus() != AppointmentStatus.CANCELLED
-		        && appointment.getStatus() != AppointmentStatus.MISSED
-		        && appointment.getStatus() != AppointmentStatus.COMPLETED) {
+		//Check if latest appointment is In Consultation
+		if (appointment != null && appointment.getStatus() == AppointmentStatus.INCONSULTATION) {
 			String value = Context.getMessageSourceService().getMessage(
 			    "appointment.Appointment.list.button.endConsultation");
 			String action = "endConsult";
+			
+			return "<input type=\"button\" value=\"" + value
+			        + "\" onclick=\"window.location.href='module/appointment/patientDashboardAppointmentExt.form?patientId="
+			        + patientId + "&action=" + action + "'\" />";
+		}
+		//Check if latest appointment is Waiting
+		else if (appointment != null && appointment.getStatus() == AppointmentStatus.WAITING) {
+			String value = Context.getMessageSourceService().getMessage(
+			    "appointment.Appointment.list.button.startConsultation");
+			String action = "startConsult";
 			
 			return "<input type=\"button\" value=\"" + value
 			        + "\" onclick=\"window.location.href='module/appointment/patientDashboardAppointmentExt.form?patientId="

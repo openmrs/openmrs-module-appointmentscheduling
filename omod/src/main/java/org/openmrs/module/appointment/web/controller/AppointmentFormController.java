@@ -149,6 +149,7 @@ public class AppointmentFormController {
 				if (result.hasErrors())
 					return null;
 				else {
+					appointment.setDateCreated(new Date());
 					appointment.setStatus(AppointmentStatus.SCHEDULED);
 					appointmentService.saveAppointment(appointment);
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.Appointment.saved");

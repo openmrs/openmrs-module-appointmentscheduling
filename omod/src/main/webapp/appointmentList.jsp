@@ -224,8 +224,10 @@
 									}
 									if(showStartConsultOption==true)
 										$j('#startConsultOption').css("display", "table-row");
-									else
+									else{
 										$j('#startConsultOption').css("display", "none");
+										$j('#editPatientOption:input:radio').attr("checked",true);
+									}
 								}
 							});
 							
@@ -252,8 +254,12 @@
             todayStart.setHours(0,0,0,0);
             var todayEnd = new Date();
             todayEnd.setHours(23,59,59,999);
-            document.getElementById('fromDate').value = todayStart.format(jsDateFormat+' HH:MM');
-            document.getElementById('toDate').value = todayEnd.format(jsDateFormat+' HH:MM');
+			var timeFormat = (jsTimeFormat=='hh:mm') ? 'HH:mm' : jsTimeFormat;
+			//Handle Italy locale
+			timeFormat = (jsTimeFormat=='hh.mm') ? 'hh.mm' : jsTimeFormat;
+			
+            document.getElementById('fromDate').value = todayStart.format(jsDateFormat+' '+timeFormat);
+            document.getElementById('toDate').value = todayEnd.format(jsDateFormat+' '+timeFormat);
 		}
 	}
 
@@ -423,8 +429,8 @@
 	<table id='patientDialogOptions' class="dialogTable">
 		<tr><td><h2><spring:message code='appointment.Appointment.list.label.selectAnAction'/></h2></td></tr>
 		<tr><td><div id="startConsultOption" style="display:none;" ><input type='radio' name='selectDialogAction'value='startConsultation'><spring:message code='appointment.Appointment.list.button.startConsultation' /></div></td></tr>
-		<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/admin/patients/shortPatientForm.form?patientId="><spring:message code='appointment.Appointment.create.link.editPatient' /></input></td></tr>
-		<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/patientDashboard.form?patientId="><spring:message code='appointment.Appointment.create.link.viewPatient' /></input></td></tr>
+		<tr><td><input type="radio" id="editPatientOption" name="selectDialogAction" value="${pageContext.request.contextPath}/admin/patients/shortPatientForm.form?patientId="><spring:message code='appointment.Appointment.create.link.editPatient' /></input></td></tr>
+		<tr><td><input type="radio" id="viewPatientOption" name="selectDialogAction" value="${pageContext.request.contextPath}/patientDashboard.form?patientId="><spring:message code='appointment.Appointment.create.link.viewPatient' /></input></td></tr>
 		</table>
 </div>
 

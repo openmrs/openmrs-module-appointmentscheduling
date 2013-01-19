@@ -36,6 +36,14 @@ public class PatientDashboardAppointmentExtController {
 			Context.getService(AppointmentService.class).saveAppointment(appointment);
 			
 			return "redirect:/module/appointment/appointmentList.list";
+		} else if (action.equals("startConsult")) {
+			Patient patient = Context.getPatientService().getPatient(patientId);
+			Appointment appointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
+			
+			appointment.setStatus(AppointmentStatus.INCONSULTATION);
+			Context.getService(AppointmentService.class).saveAppointment(appointment);
+			
+			return "redirect:/patientDashboard.form?patientId=" + patientId;
 		}
 		
 		return "";
