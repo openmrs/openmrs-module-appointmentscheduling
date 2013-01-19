@@ -26,6 +26,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
+import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.openmrs.module.appointment.api.db.AppointmentDAO;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,7 +71,7 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 	@Override
 	@Transactional(readOnly = true)
 	public List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider,
-	        AppointmentType appointmentType, String status) throws APIException {
+	        AppointmentType appointmentType, AppointmentStatus status) throws APIException {
 		if (fromDate != null && toDate != null && !fromDate.before(toDate))
 			throw new APIException("fromDate can not be later than toDate");
 		

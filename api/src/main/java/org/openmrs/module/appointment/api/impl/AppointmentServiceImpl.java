@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.appointment.api.impl;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -27,8 +29,10 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.appointment.Appointment;
+import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.AppointmentStatusHistory;
 import org.openmrs.module.appointment.AppointmentType;
@@ -409,8 +413,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	 * @see org.openmrs.module.appointment.api.AppointmentService#getAppointmentStatusHistories(java.lang.String)
 	 */
 	@Transactional(readOnly = true)
-	public List<AppointmentStatusHistory> getAppointmentStatusHistories(String status) {
-		return getAppointmentStatusHistoryDAO().getAll(status);
+	public List<AppointmentStatusHistory> getAppointmentStatusHistories(AppointmentStatus status) {
+		return getAppointmentStatusHistoryDAO().getAll(status.toString());
 	}
 	
 	/**
@@ -500,11 +504,11 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		
 		//Subtract from time left the amounts of minutes already scheduled
 		//Should not take into consideration cancelled or missed appointments 
-		//TODO use enum values
 		List<Appointment> appointments = getAppointmentsInTimeSlot(timeSlot);
 		for (Appointment appointment : appointments) {
-			if (!appointment.isVoided() && !appointment.getStatus().equalsIgnoreCase("cancelled")
-			        && !appointment.getStatus().equalsIgnoreCase("missed"))
+			if (!appointment.isVoided()
+			        && !appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.CANCELLED.toString())
+			        && !appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.MISSED.toString()))
 				timeLeft -= appointment.getAppointmentType().getDuration();
 		}
 		
@@ -531,7 +535,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Override
 	@Transactional(readOnly = true)
 	public List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Location location, Provider provider,
-	        AppointmentType type, String status) throws APIException {
+	        AppointmentType type, AppointmentStatus status) throws APIException {
 		
 		List<Appointment> appointments = appointmentDAO.getAppointmentsByConstraints(fromDate, toDate, provider, type,
 		    status);
@@ -564,8 +568,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	@Override
-	public void changeAppointmentStatus(Appointment appointment, String newStatus) {
-		//TODO change to use enum
+	public void changeAppointmentStatus(Appointment appointment, AppointmentStatus newStatus) {
 		if (appointment != null) {
 			AppointmentStatusHistory history = new AppointmentStatusHistory();
 			history.setAppointment(appointment);
@@ -579,6 +582,33 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 			saveAppointment(appointment);
 		}
 		
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Provider> getAllProvidersSorted(boolean includeRetired) {
+		List<Provider> providers = Context.getProviderService().getAllProviders(includeRetired);
+		Collections.sort(providers, new Comparator<Provider>() {
+			
+			public int compare(Provider pr1, Provider pr2) {
+				return pr1.getName().compareTo(pr2.getName());
+			}
+		});
+		return providers;
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<AppointmentType> getAllAppointmentTypesSorted(boolean includeRetired) {
+		List<AppointmentType> appointmentTypes = Context.getService(AppointmentService.class).getAllAppointmentTypes(
+		    includeRetired);
+		Collections.sort(appointmentTypes, new Comparator<AppointmentType>() {
+			
+			public int compare(AppointmentType at1, AppointmentType at2) {
+				return at1.getName().compareTo(at2.getName());
+			}
+		});
+		return appointmentTypes;
 	}
 	
 }

@@ -14,7 +14,13 @@
 		<many-to-one name="timeSlot" column="time_slot_id" class="TimeSlot" not-null="true" />
 		<many-to-one name="visit" column="visit_id" class="org.openmrs.Visit" not-null="false" />
 		<many-to-one name="patient" column="patient_id" class="org.openmrs.Patient" not-null="true" />
-		<property name="status" type="java.lang.String" column="status" length="255" not-null="true" />
+		
+		<property name="status" column="status" length="255" not-null="true">
+			<type name="org.openmrs.util.HibernateEnumType">
+				<param name="enumClassName">org.openmrs.module.appointment.Appointment$AppointmentStatus</param>
+			</type>
+		</property>
+		
 		<property name="reason" type="java.lang.String" column="reason" length="1024" not-null="false" />
 		<many-to-one name="appointmentType" class="AppointmentType" column="appointment_type_id" not-null="true" />
 		

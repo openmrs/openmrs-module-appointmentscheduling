@@ -8,6 +8,7 @@ import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
+import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.openmrs.module.appointment.api.AppointmentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,17 +25,19 @@ public class PatientDashboardAppointmentExtController {
 			Patient patient = Context.getPatientService().getPatient(patientId);
 			Appointment appointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
 			Visit visit = appointment.getVisit();
-			Context.getVisitService().endVisit(visit, new Date());
-			Context.getVisitService().saveVisit(visit);
-			//TODO change to use enum
-			appointment.setStatus("Completed");
+			
+			//Check if was ended already
+			if (visit.getStopDatetime() == null) {
+				Context.getVisitService().endVisit(visit, new Date());
+				Context.getVisitService().saveVisit(visit);
+			}
+			
+			appointment.setStatus(AppointmentStatus.COMPLETED);
 			Context.getService(AppointmentService.class).saveAppointment(appointment);
 			
-			return "redirect:/patientDashboard.form?patientId=" + patientId;
+			return "redirect:/module/appointment/appointmentList.list";
 		}
-		//Schedule new appointment
-		else {
-			return "redirect:/module/appointment/appointmentForm.form?patientId=" + patientId;
-		}
+		
+		return "";
 	}
 }

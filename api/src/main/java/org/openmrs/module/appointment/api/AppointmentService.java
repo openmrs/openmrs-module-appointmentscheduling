@@ -28,6 +28,7 @@ import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.AppointmentStatusHistory;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
+import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -215,7 +216,8 @@ public interface AppointmentService extends OpenmrsService {
 	 * Gets appointment blocks which have a given date and location.
 	 * 
 	 * @return a list of appointment block objects.
-	 * @should get all appointment blocks which have contains in a given date interval and corresponds to a given locations.
+	 * @should get all appointment blocks which have contains in a given date interval and
+	 *         corresponds to a given locations.
 	 */
 	@Transactional(readOnly = true)
 	List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, String locations);
@@ -316,10 +318,6 @@ public interface AppointmentService extends OpenmrsService {
 	@Transactional(readOnly = true)
 	Appointment getAppointmentByVisit(Visit visit);
 	
-	/*
-	 * TODO: add status to appointment.
-	 */
-
 	//TimeSlot
 	
 	/**
@@ -446,7 +444,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @should get correct appointment status histories
 	 */
 	@Transactional(readOnly = true)
-	List<AppointmentStatusHistory> getAppointmentStatusHistories(String status);
+	List<AppointmentStatusHistory> getAppointmentStatusHistories(AppointmentStatus status);
 	
 	/**
 	 * Creates or updates the given appointment status history in the database.
@@ -506,9 +504,8 @@ public interface AppointmentService extends OpenmrsService {
 	Integer getTimeLeftInTimeSlot(TimeSlot timeSlot);
 	
 	/**
-	 * Utility Method
-	 * Returns all the descendants of a given location recursively.
-	 * Call with null descendants.
+	 * [Utility Method] Returns all the descendants of a given location recursively. Call with null
+	 * descendants.
 	 * 
 	 * @param location the location that is ancestor to all of the location in the returned set.
 	 * @param descendants the result set which is being built recursively.
@@ -518,7 +515,6 @@ public interface AppointmentService extends OpenmrsService {
 	Set<Location> getAllLocationDescendants(Location location, Set<Location> descendants);
 	
 	/**
-	 * 
 	 * Retrieves Appointments that satisfy the given constraints
 	 * 
 	 * @param fromDate - The appointment start date
@@ -531,10 +527,9 @@ public interface AppointmentService extends OpenmrsService {
 	 */
 	@Transactional(readOnly = true)
 	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Location location, Provider provider,
-	        AppointmentType type, String status) throws APIException;
+	        AppointmentType type, AppointmentStatus status) throws APIException;
 	
 	/**
-	 * 
 	 * Retrives the start date of the current status of a given appointment.
 	 * 
 	 * @param appointment - The appointment.
@@ -544,11 +539,28 @@ public interface AppointmentService extends OpenmrsService {
 	Date getAppointmentCurrentStatusStartDate(Appointment appointment);
 	
 	/**
-	 * 
 	 * Changes the given appointment status.
 	 * 
 	 * @param appointment - The appointment
 	 * @param newStatus - The new status
 	 */
-	void changeAppointmentStatus(Appointment appointment, String newStatus);
+	void changeAppointmentStatus(Appointment appointment, AppointmentStatus newStatus);
+	
+	/**
+	 * [Utility Method] Retrieves all providers sorted ascending alphabetically
+	 * 
+	 * @param includeRetired whether to include retired providers
+	 * @return sorted list of providers
+	 */
+	@Transactional(readOnly = true)
+	List<Provider> getAllProvidersSorted(boolean includeRetired);
+	
+	/**
+	 * [Utility Method] Retrieves all appointment types sorted ascending alphabetically
+	 * 
+	 * @param includeRetired whether to include retired appointment types
+	 * @return sorted list of appointment types
+	 */
+	@Transactional(readOnly = true)
+	List<AppointmentType> getAllAppointmentTypesSorted(boolean includeRetired);
 }

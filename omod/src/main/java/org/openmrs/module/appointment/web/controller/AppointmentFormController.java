@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -28,6 +27,7 @@ import org.openmrs.Location;
 import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
+import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.AppointmentService;
@@ -126,26 +126,12 @@ public class AppointmentFormController {
 	
 	@ModelAttribute("providerList")
 	public List<Provider> getProviderList() {
-		List<Provider> providers = Context.getProviderService().getAllProviders(false);
-		Collections.sort(providers, new Comparator<Provider>() {
-			
-			public int compare(Provider pr1, Provider pr2) {
-				return pr1.getName().compareTo(pr2.getName());
-			}
-		});
-		return providers;
+		return Context.getService(AppointmentService.class).getAllProvidersSorted(false);
 	}
 	
 	@ModelAttribute("appointmentTypeList")
 	public List<AppointmentType> getAppointmentTypeList() {
-		List<AppointmentType> appointmentTypes = Context.getService(AppointmentService.class).getAllAppointmentTypes(false);
-		Collections.sort(appointmentTypes, new Comparator<AppointmentType>() {
-			
-			public int compare(AppointmentType at1, AppointmentType at2) {
-				return at1.getName().compareTo(at2.getName());
-			}
-		});
-		return appointmentTypes;
+		return Context.getService(AppointmentService.class).getAllAppointmentTypesSorted(false);
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
@@ -163,8 +149,7 @@ public class AppointmentFormController {
 				if (result.hasErrors())
 					return null;
 				else {
-					//TODO: change to enum
-					appointment.setStatus("SCHEDULED");
+					appointment.setStatus(AppointmentStatus.SCHEDULED);
 					appointmentService.saveAppointment(appointment);
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.Appointment.saved");
 					return "redirect:appointmentList.list";

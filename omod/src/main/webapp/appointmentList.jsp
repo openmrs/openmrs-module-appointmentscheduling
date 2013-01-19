@@ -408,7 +408,7 @@
 					<td>${appointment.timeSlot.appointmentBlock.provider.name}</td>
 					<td>${appointment.timeSlot.appointmentBlock.location.name}</td>
 					<td>${appointment.appointmentType.name}</td>
-					<td>${appointment.status}</td>
+					<td>${appointment.status.name}</td>
 					<td>${waitingTimes[appointment.appointmentId]}</td>
 					<td><fmt:formatDate type="date" value="${appointment.timeSlot.startDate}"
 										pattern="yyyyMMddHHmm" /></td>

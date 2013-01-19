@@ -29,6 +29,34 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
+	public enum AppointmentStatus {
+		SCHEDULED("Scheduled"), RESCHEDULED("Rescheduled"), WALKIN("Walk-In"), CANCELLED("Cancelled"), WAITING("Waiting"), INCONSULTATION(
+		        "In-Consultation"), COMPLETED("Completed"), MISSED("Missed");
+		
+		private final String name;
+		
+		public String getName() {
+			return this.name;
+		}
+		
+		private AppointmentStatus(final String name) {
+			this.name = name;
+		}
+		
+		public static AppointmentStatus getEnum(String value) {
+			for (AppointmentStatus v : values())
+				if (v.toString().equalsIgnoreCase(value))
+					return v;
+			return null;
+		}
+		
+		@Override
+		public String toString() {
+			return name;
+		}
+		
+	}
+	
 	private Integer appointmentId;
 	
 	private TimeSlot timeSlot;
@@ -37,7 +65,7 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 	
 	private Patient patient;
 	
-	private String status;
+	private AppointmentStatus status;
 	
 	private String reason;
 	
@@ -51,7 +79,8 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 		setId(appointmentId);
 	}
 	
-	public Appointment(TimeSlot timeSlot, Visit visit, Patient patient, AppointmentType appointmentType, String status) {
+	public Appointment(TimeSlot timeSlot, Visit visit, Patient patient, AppointmentType appointmentType,
+	    AppointmentStatus status) {
 		setTimeSlot(timeSlot);
 		setVisit(visit);
 		setPatient(patient);
@@ -107,11 +136,11 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 		this.patient = patient;
 	}
 	
-	public String getStatus() {
+	public AppointmentStatus getStatus() {
 		return status;
 	}
 	
-	public void setStatus(String status) {
+	public void setStatus(AppointmentStatus status) {
 		this.status = status;
 	}
 	

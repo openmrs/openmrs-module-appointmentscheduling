@@ -14,7 +14,6 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
@@ -25,11 +24,13 @@ import org.openmrs.VisitType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
+import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.api.AppointmentService;
 import org.openmrs.module.appointment.web.AppointmentEditor;
 import org.openmrs.module.appointment.web.AppointmentTypeEditor;
 import org.openmrs.module.appointment.web.ProviderEditor;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.Errors;
@@ -67,72 +68,6 @@ public class AppointmentListController {
 		}
 		//Do not auto refresh
 		return -1;
-	}
-	
-	@ModelAttribute("selectedProvider")
-	public Provider getSelectedProvider(@RequestParam(value = "providerSelect", required = false) Provider provider) {
-		return provider;
-	}
-	
-	//Filter the appointments by the given filters and save in list
-	@ModelAttribute("appointmentList")
-	public List<Appointment> getAppointmentList(HttpServletRequest request, HttpSession session,
-	        @RequestParam(value = "includeCancelled", required = false) String includeCancelled,
-	        @RequestParam(value = "fromDate", required = false) Date fromDate,
-	        @RequestParam(value = "toDate", required = false) Date toDate,
-	        @RequestParam(value = "locationId", required = false) Location location,
-	        @RequestParam(value = "providerSelect", required = false) Provider provider,
-	        @RequestParam(value = "appointmentTypeSelect", required = false) AppointmentType appointmentType,
-	        @RequestParam(value = "appointmentStatusSelect", required = false) String status) {
-		status = (status == null || status.isEmpty()) ? null : status;
-		
-		if (Context.isAuthenticated()) {
-			
-			List<Appointment> appointments = new LinkedList<Appointment>();
-			if (RequestMethod.GET.toString().equalsIgnoreCase(request.getMethod())) {
-				//Set Default date filter on GET request - today 00:00 till 23:59
-				Calendar cal = Calendar.getInstance();
-				fromDate = new Date();
-				cal.setTime(fromDate);
-				cal.set(Calendar.HOUR_OF_DAY, 0);
-				cal.set(Calendar.MINUTE, 0);
-				cal.set(Calendar.SECOND, 0);
-				cal.set(Calendar.MILLISECOND, 0);
-				fromDate = cal.getTime();
-				
-				cal.set(Calendar.HOUR_OF_DAY, 23);
-				cal.set(Calendar.MINUTE, 59);
-				cal.set(Calendar.SECOND, 59);
-				cal.set(Calendar.MILLISECOND, 999);
-				toDate = cal.getTime();
-			}
-			try {
-				appointments = Context.getService(AppointmentService.class).getAppointmentsByConstraints(fromDate, toDate,
-				    location, provider, appointmentType, status);
-			}
-			catch (APIException ex) {
-				return new LinkedList<Appointment>();
-			}
-			
-			List<Appointment> filteredAppointments = new LinkedList<Appointment>();
-			
-			//Filter appointments by includeCancelled checkbox
-			for (Appointment appointment : appointments) {
-				boolean valid = true;
-				if (includeCancelled == null) {
-					//TODO use enum status
-					if (appointment.getStatus().toLowerCase().equals("cancelled"))
-						valid = false;
-				}
-				
-				if (valid)
-					filteredAppointments.add(appointment);
-			}
-			
-			return filteredAppointments;
-			
-		} else
-			return new LinkedList<Appointment>();
 	}
 	
 	@ModelAttribute("providerSelect")
@@ -177,47 +112,78 @@ public class AppointmentListController {
 	
 	@ModelAttribute("providerList")
 	public List<Provider> getProviderList() {
-		List<Provider> providers = Context.getProviderService().getAllProviders(false);
-		Collections.sort(providers, new Comparator<Provider>() {
-			
-			public int compare(Provider pr1, Provider pr2) {
-				return pr1.getName().compareTo(pr2.getName());
-			}
-		});
-		return providers;
+		return Context.getService(AppointmentService.class).getAllProvidersSorted(false);
 	}
 	
 	@ModelAttribute("appointmentTypeList")
 	public List<AppointmentType> getAppointmentTypeList() {
-		List<AppointmentType> appointmentTypes = Context.getService(AppointmentService.class).getAllAppointmentTypes(false);
-		Collections.sort(appointmentTypes, new Comparator<AppointmentType>() {
-			
-			public int compare(AppointmentType at1, AppointmentType at2) {
-				return at1.getName().compareTo(at2.getName());
-			}
-		});
-		return appointmentTypes;
+		return Context.getService(AppointmentService.class).getAllAppointmentTypesSorted(false);
 	}
 	
 	@ModelAttribute("appointmentStatusList")
 	public Set<String> getAppointmentStatusList() {
-		//TODO centeralize this in an enum
 		Set<String> statuses = new HashSet<String>();
-		statuses.add("Scheduled");
-		statuses.add("Rescheduled");
-		statuses.add("Walk-In");
-		statuses.add("Waiting");
-		statuses.add("In-Consultation");
-		statuses.add("Completed");
-		statuses.add("Missed");
-		statuses.add("Cancelled");
+		for (AppointmentStatus status : AppointmentStatus.values())
+			statuses.add(status.toString());
 		
 		return statuses;
 	}
 	
-	@ModelAttribute("waitingTimes")
-	public Map<Integer, String> getWaitingTimes(ModelMap model,
-	        @ModelAttribute("appointmentList") List<Appointment> appointments) {
+	//Filter the appointments by the given filters and save in list
+	@ModelAttribute("appointmentList")
+	public List<Appointment> getAppointmentList(HttpServletRequest request, HttpSession session, ModelMap model,
+	        @RequestParam(value = "includeCancelled", required = false) String includeCancelled,
+	        @RequestParam(value = "fromDate", required = false) Date fromDate,
+	        @RequestParam(value = "toDate", required = false) Date toDate,
+	        @RequestParam(value = "locationId", required = false) Location location,
+	        @RequestParam(value = "providerSelect", required = false) Provider provider,
+	        @RequestParam(value = "appointmentTypeSelect", required = false) AppointmentType appointmentType,
+	        @RequestParam(value = "appointmentStatusSelect", required = false) String status) {
+		
+		status = (status == null || status.isEmpty()) ? null : status;
+		List<Appointment> filteredAppointments = new LinkedList<Appointment>();
+		
+		if (Context.isAuthenticated()) {
+			List<Appointment> appointments = new LinkedList<Appointment>();
+			if (RequestMethod.GET.toString().equalsIgnoreCase(request.getMethod())) {
+				//Set Default date filter on GET request - today 00:00 till 23:59
+				fromDate = new Date();
+				fromDate = OpenmrsUtil.firstSecondOfDay(fromDate);
+				
+				toDate = new Date();
+				toDate = OpenmrsUtil.getLastMomentOfDay(toDate);
+				
+				provider = this.getSelectedProvider(request, provider);
+				location = this.getLocation(request, location);
+			}
+			try {
+				appointments = Context.getService(AppointmentService.class).getAppointmentsByConstraints(fromDate, toDate,
+				    location, provider, appointmentType, AppointmentStatus.getEnum(status));
+			}
+			catch (APIException ex) {
+				return new LinkedList<Appointment>();
+			}
+			
+			//Filter appointments by includeCancelled checkbox
+			for (Appointment appointment : appointments) {
+				boolean valid = true;
+				if (includeCancelled == null) {
+					if (appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.CANCELLED.toString()))
+						valid = false;
+				}
+				
+				if (valid)
+					filteredAppointments.add(appointment);
+			}
+			
+			getWaitingTimes(model, filteredAppointments);
+			return filteredAppointments;
+			
+		} else
+			return filteredAppointments;
+	}
+	
+	public void getWaitingTimes(ModelMap model, List<Appointment> appointments) {
 		//Mapping of waiting times to use in the "Waiting Time" column
 		
 		//Mapping appointment Id to waiting time left string
@@ -228,8 +194,7 @@ public class AppointmentListController {
 		
 		//Calculate for each waiting appointment the waiting time
 		for (Appointment appointment : appointments) {
-			//TODO change to use enum
-			if (appointment.getStatus().toLowerCase().equals("waiting")) {
+			if (appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.WAITING.toString())) {
 				Date lastChanged = Context.getService(AppointmentService.class).getAppointmentCurrentStatusStartDate(
 				    appointment);
 				Date now = new Date();
@@ -265,9 +230,8 @@ public class AppointmentListController {
 				sortableTimes.put(appointment.getId(), 0);
 			}
 		}
-		
+		model.put("waitingTimes", times);
 		model.put("sortableWaitingTimes", sortableTimes);
-		return times;
 	}
 	
 	@RequestMapping(value = "/module/appointment/appointmentList", method = RequestMethod.GET)
@@ -285,9 +249,9 @@ public class AppointmentListController {
 		
 		if (Context.isAuthenticated()) {
 			//Handle Status changes
-			//TODO change to use enum
 			if (request.getParameter("startConsultation") != null) {
-				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "In-Consultation");
+				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment,
+				    AppointmentStatus.INCONSULTATION);
 				
 				String patientId = selectedAppointment.getPatient().getId().toString();
 				
@@ -297,14 +261,16 @@ public class AppointmentListController {
 				//End visit
 				Visit visit = selectedAppointment.getVisit();
 				//also check whether the visit ended
-				if (visit != null && visit.getStopDatetime() != null) {
+				if (visit != null && visit.getStopDatetime() == null) {
 					Context.getVisitService().endVisit(visit, new Date());
 					Context.getVisitService().saveVisit(visit);
 				}
 				
-				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "Completed");
+				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment,
+				    AppointmentStatus.COMPLETED);
 				
-			} else if (request.getParameter("checkIn") != null) {
+			} else if (request.getParameter("checkIn") != null
+			        && selectedAppointment.getStatus() != AppointmentStatus.WAITING) {
 				
 				String visitTypeIdString = Context.getAdministrationService().getGlobalProperty(
 				    "appointment.defaultVisitType");
@@ -313,45 +279,51 @@ public class AppointmentListController {
 				
 				//Start a new visit
 				Visit visit = new Visit(selectedAppointment.getPatient(), defaultVisitType, new Date());
+				visit.setLocation(selectedAppointment.getTimeSlot().getAppointmentBlock().getLocation());
 				visit = Context.getVisitService().saveVisit(visit);
 				selectedAppointment.setVisit(visit);
 				Context.getService(AppointmentService.class).saveAppointment(selectedAppointment);
 				
-				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "Waiting");
+				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment,
+				    AppointmentStatus.WAITING);
 				
 			} else if (request.getParameter("missAppointment") != null) {
 				//End visit
 				Visit visit = selectedAppointment.getVisit();
 				//also check whether the visit ended
-				if (visit != null && visit.getStopDatetime() != null) {
+				if (visit != null && visit.getStopDatetime() == null) {
 					Context.getVisitService().endVisit(visit, new Date());
 					Context.getVisitService().saveVisit(visit);
 				}
 				
-				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "Missed");
+				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment,
+				    AppointmentStatus.MISSED);
 				
 			} else if (request.getParameter("cancelAppointment") != null) {
 				//End visit
 				Visit visit = selectedAppointment.getVisit();
 				//also check whether the visit ended
-				if (visit != null && visit.getStopDatetime() != null) {
+				if (visit != null && visit.getStopDatetime() == null) {
 					Context.getVisitService().endVisit(visit, new Date());
 					Context.getVisitService().saveVisit(visit);
 				}
 				
-				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment, "Cancelled");
+				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment,
+				    AppointmentStatus.CANCELLED);
 				
 			}
 			if (selectedAppointment != null) {
 				//Update waiting time according to new status
 				Map<Integer, String> waitingTimes = (Map<Integer, String>) model.get("waitingTimes");
-				String representation = (selectedAppointment.getStatus().equalsIgnoreCase("Waiting") ? "0 "
+				String representation = (selectedAppointment.getStatus().toString().equalsIgnoreCase(
+				    AppointmentStatus.WAITING.toString()) ? "0 "
 				        + Context.getMessageSourceService().getMessage("appointment.Appointment.minutes") : "");
 				waitingTimes.put(selectedAppointment.getId(), representation);
 				model.put("waitingTimes", waitingTimes);
 				
 				Map<Integer, Integer> sortableTimes = (Map<Integer, Integer>) model.get("sortableWaitingTimes");
-				Integer sortable = (selectedAppointment.getStatus().equalsIgnoreCase("Waiting") ? 1 : 0);
+				Integer sortable = (selectedAppointment.getStatus().toString().equalsIgnoreCase(
+				    AppointmentStatus.WAITING.toString()) ? 1 : 0);
 				sortableTimes.put(selectedAppointment.getId(), sortable);
 				model.put("sortableWaitingTimes", sortableTimes);
 			}
