@@ -15,7 +15,7 @@
 		//Navigate to appointmentForm.form
 		function addNewAppointment(){
 			var patientId = document.getElementById("patientId").value;
-			window.location = "module/appointment/patientDashboardAppointmentExt.form?patientId="+patientId;
+			window.location = "module/appointment/appointmentForm.form?patientId="+patientId;
 		}		
 		//On the page load updates necessary stuff
          $j(document).ready(function() {      	 
