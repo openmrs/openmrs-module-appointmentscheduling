@@ -563,8 +563,4 @@ public interface AppointmentService extends OpenmrsService {
 	 */
 	@Transactional(readOnly = true)
 	List<AppointmentType> getAllAppointmentTypesSorted(boolean includeRetired);
-	
-	//TODO remove if not helping
-	@Transactional(readOnly = true)
-	Set<Location> getChildLocations(Location location);
 }

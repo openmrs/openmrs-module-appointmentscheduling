@@ -14,12 +14,9 @@
 package org.openmrs.module.appointment.api.db.hibernate;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.Query;
-import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Location;
 import org.openmrs.Patient;
@@ -27,8 +24,9 @@ import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.api.APIException;
 import org.openmrs.module.appointment.Appointment;
-import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.openmrs.module.appointment.AppointmentType;
+import org.openmrs.module.appointment.TimeSlot;
+import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.openmrs.module.appointment.api.db.AppointmentDAO;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -106,17 +104,5 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 			
 			return query.list();
 		}
-	}
-	
-	@Override
-	@Transactional(readOnly = true)
-	public Set<Location> getChildLocations(Location location) {
-		Set<Location> children = new HashSet<Location>();
-		Session session = super.sessionFactory.getCurrentSession();
-		children = new HashSet<Location>(session.createQuery("from org.openmrs.Location where parentLocation=:location")
-		        .setParameter("location", location).list());
-		
-		return children;
-		
 	}
 }

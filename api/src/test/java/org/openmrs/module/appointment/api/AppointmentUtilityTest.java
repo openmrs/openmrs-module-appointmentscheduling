@@ -89,9 +89,8 @@ public class AppointmentUtilityTest extends BaseModuleContextSensitiveTest {
 		Set<Location> descendants = new HashSet<Location>();
 		descendants.add(Context.getLocationService().getLocation(3));
 		descendants.add(Context.getLocationService().getLocation(4));
-		Set<Location> locations = service.getAllLocationDescendants(location, null);
 		
-		assertEquals(descendants, locations);
+		assertEquals(descendants, service.getAllLocationDescendants(location, null));
 	}
 	
 }
