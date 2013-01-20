@@ -15,7 +15,9 @@ package org.openmrs.module.appointment.api.db;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
@@ -39,4 +41,6 @@ public interface AppointmentDAO extends SingleClassDAO {
 	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider, AppointmentType type,
 	        AppointmentStatus status) throws APIException;
 	
+	//TODO remove if not helping
+	Set<Location> getChildLocations(Location location);
 }

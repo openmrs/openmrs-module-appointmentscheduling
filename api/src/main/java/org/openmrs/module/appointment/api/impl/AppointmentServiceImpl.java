@@ -522,7 +522,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 			descendants = new HashSet<Location>();
 		
 		if (location != null) {
-			Set<Location> childLocations = location.getChildLocations();
+			Set<Location> childLocations = (Set<Location>) ((HashSet<Location>) getChildLocations(location)).clone();
 			for (Location childLocation : childLocations) {
 				descendants.add(childLocation);
 				getAllLocationDescendants(childLocation, descendants);
@@ -609,6 +609,12 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 			}
 		});
 		return appointmentTypes;
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public Set<Location> getChildLocations(Location location) {
+		return appointmentDAO.getChildLocations(location);
 	}
 	
 }
