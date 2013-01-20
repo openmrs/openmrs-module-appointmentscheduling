@@ -245,16 +245,20 @@ public class AppointmentListController {
 	        @RequestParam(value = "toDate", required = false) Date toDate) {
 		
 		if (Context.isAuthenticated()) {
+			AppointmentStatus newStatus = null;
+			
 			//Handle Status changes
-			if (request.getParameter("startConsultation") != null) {
+			if (request.getParameter("startConsultation") != null
+			        && selectedAppointment.getStatus() != AppointmentStatus.INCONSULTATION) {
 				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment,
 				    AppointmentStatus.INCONSULTATION);
 				
 				String patientId = selectedAppointment.getPatient().getId().toString();
 				
-				return "redirect:/patientDashboard.form?patientId=" + patientId;
+				newStatus = AppointmentStatus.INCONSULTATION;
 				
-			} else if (request.getParameter("endConsultation") != null) {
+			} else if (request.getParameter("endConsultation") != null
+			        && selectedAppointment.getStatus() != AppointmentStatus.COMPLETED) {
 				//End visit
 				Visit visit = selectedAppointment.getVisit();
 				//also check whether the visit ended
@@ -265,6 +269,8 @@ public class AppointmentListController {
 				
 				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment,
 				    AppointmentStatus.COMPLETED);
+				
+				newStatus = AppointmentStatus.COMPLETED;
 				
 			} else if (request.getParameter("checkIn") != null
 			        && selectedAppointment.getStatus() != AppointmentStatus.WAITING) {
@@ -284,7 +290,10 @@ public class AppointmentListController {
 				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment,
 				    AppointmentStatus.WAITING);
 				
-			} else if (request.getParameter("missAppointment") != null) {
+				newStatus = AppointmentStatus.WAITING;
+				
+			} else if (request.getParameter("missAppointment") != null
+			        && selectedAppointment.getStatus() != AppointmentStatus.MISSED) {
 				//End visit
 				Visit visit = selectedAppointment.getVisit();
 				//also check whether the visit ended
@@ -296,7 +305,10 @@ public class AppointmentListController {
 				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment,
 				    AppointmentStatus.MISSED);
 				
-			} else if (request.getParameter("cancelAppointment") != null) {
+				newStatus = AppointmentStatus.MISSED;
+				
+			} else if (request.getParameter("cancelAppointment") != null
+			        && selectedAppointment.getStatus() != AppointmentStatus.CANCELLED) {
 				//End visit
 				Visit visit = selectedAppointment.getVisit();
 				//also check whether the visit ended
@@ -308,21 +320,36 @@ public class AppointmentListController {
 				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment,
 				    AppointmentStatus.CANCELLED);
 				
+				newStatus = AppointmentStatus.CANCELLED;
+				
 			}
 			if (selectedAppointment != null) {
-				//Update waiting time according to new status
-				Map<Integer, String> waitingTimes = (Map<Integer, String>) model.get("waitingTimes");
-				String representation = (selectedAppointment.getStatus().toString().equalsIgnoreCase(
-				    AppointmentStatus.WAITING.toString()) ? "0 "
-				        + Context.getMessageSourceService().getMessage("appointment.Appointment.minutes") : "");
-				waitingTimes.put(selectedAppointment.getId(), representation);
-				model.put("waitingTimes", waitingTimes);
+				if (newStatus == AppointmentStatus.WAITING) {
+					//Update waiting time according to new status
+					Map<Integer, String> waitingTimes = (Map<Integer, String>) model.get("waitingTimes");
+					waitingTimes.put(selectedAppointment.getId(), "0 "
+					        + Context.getMessageSourceService().getMessage("appointment.Appointment.minutes"));
+					model.put("waitingTimes", waitingTimes);
+					
+					Map<Integer, Integer> sortableTimes = (Map<Integer, Integer>) model.get("sortableWaitingTimes");
+					sortableTimes.put(selectedAppointment.getId(), 1);
+					model.put("sortableWaitingTimes", sortableTimes);
+				} else if (newStatus == AppointmentStatus.CANCELLED || newStatus == AppointmentStatus.INCONSULTATION
+				        || newStatus == AppointmentStatus.MISSED) {
+					//Update waiting time according to new status
+					Map<Integer, String> waitingTimes = (Map<Integer, String>) model.get("waitingTimes");
+					waitingTimes.put(selectedAppointment.getId(), "");
+					model.put("waitingTimes", waitingTimes);
+					
+					Map<Integer, Integer> sortableTimes = (Map<Integer, Integer>) model.get("sortableWaitingTimes");
+					sortableTimes.put(selectedAppointment.getId(), 0);
+					model.put("sortableWaitingTimes", sortableTimes);
+				}
 				
-				Map<Integer, Integer> sortableTimes = (Map<Integer, Integer>) model.get("sortableWaitingTimes");
-				Integer sortable = (selectedAppointment.getStatus().toString().equalsIgnoreCase(
-				    AppointmentStatus.WAITING.toString()) ? 1 : 0);
-				sortableTimes.put(selectedAppointment.getId(), sortable);
-				model.put("sortableWaitingTimes", sortableTimes);
+				if (newStatus == AppointmentStatus.INCONSULTATION)
+					return "redirect:/patientDashboard.form?patientId="
+					        + selectedAppointment.getPatient().getId().toString();
+				
 			}
 		}
 		return null;

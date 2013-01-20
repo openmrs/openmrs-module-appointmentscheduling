@@ -51,11 +51,11 @@
 											"aoColumns" : [ {
 												"bVisible"  : true												
 											}, { 
+												"bSortable" : true
+											}, {
 												"iDataSort" : 9
 											}, {
-												"bSortable" : true
-											}, {
-												"bSortable" : true
+												"iDataSort" : 9
 											} ,{
 												"bSortable" : true
 											}, {
