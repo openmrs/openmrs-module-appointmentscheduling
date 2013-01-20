@@ -440,6 +440,11 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		    provider);
 		
 		List<TimeSlot> availableTimeSlots = new LinkedList<TimeSlot>();
+		
+		// Used to update the session to the correct one
+		if (location != null)
+			location = Context.getLocationService().getLocation(location.getId());
+		
 		Set<Location> relevantLocations = getAllLocationDescendants(location, null);
 		relevantLocations.add(location);
 		
@@ -541,6 +546,10 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		    status);
 		
 		List<Appointment> appointmentsInLocation = new LinkedList<Appointment>();
+		
+		// Used to update the session to the correct one
+		if (location != null)
+			location = Context.getLocationService().getLocation(location.getId());
 		
 		Set<Location> relevantLocations = getAllLocationDescendants(location, null);
 		relevantLocations.add(location);
