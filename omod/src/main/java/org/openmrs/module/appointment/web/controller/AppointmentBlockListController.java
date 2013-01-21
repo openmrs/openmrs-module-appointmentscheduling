@@ -132,10 +132,11 @@ public class AppointmentBlockListController {
 						appointments.add(appointment);
 					}
 				}
-				//set appointments statuses to "Cancelled"
+				//set appointments statuses from "Scheduled" to "Cancelled".
 				for (Appointment appointment : appointments) {
-					
-					appointmentService.changeAppointmentStatus(appointment, AppointmentStatus.CANCELLED);
+					if (appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.SCHEDULED.toString())) {
+						appointmentService.changeAppointmentStatus(appointment, AppointmentStatus.CANCELLED);
+					}
 					//appointmentService.voidAppointment(appointment, voidReason);
 				}
 				//voiding appointment block

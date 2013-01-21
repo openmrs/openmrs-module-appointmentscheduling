@@ -88,26 +88,37 @@ public class DWRAppointmentService {
 		return appointmentBlockDatalist;
 	}
 	
-	public Integer getNumberOfAppointmentsInAppointmentBlock(Integer appointmentBlockId) {
-		Integer numberOfAppointments = null;
+	public Integer[] getNumberOfAppointmentsInAppointmentBlock(Integer appointmentBlockId) {
+		Integer[] appointmentsCount = null;
 		if (Context.isAuthenticated()) {
 			AppointmentService as = Context.getService(AppointmentService.class);
 			if (appointmentBlockId != null) {
+				appointmentsCount = new Integer[3];
+				appointmentsCount[0] = 0;
+				appointmentsCount[1] = 0;
+				appointmentsCount[2] = 0;
 				//Assumption - Exists such an appointment block in the data base with the given Id
 				AppointmentBlock appointmentBlock = as.getAppointmentBlock(appointmentBlockId);
-				List<Appointment> appointments = new ArrayList<Appointment>();
 				//Getting the timeslots of the given appointment block
 				List<TimeSlot> timeSlots = as.getTimeSlotsInAppointmentBlock(appointmentBlock);
 				for (TimeSlot timeSlot : timeSlots) {
 					List<Appointment> appointmentsInTimeSlot = as.getAppointmentsInTimeSlot(timeSlot);
 					for (Appointment appointment : appointmentsInTimeSlot) {
-						appointments.add(appointment);
+						if (appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.INCONSULTATION.toString())
+						        || appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.WAITING.toString())) {
+							//Active appointments
+							appointmentsCount[0]++;
+						} else if (appointment.getStatus().toString().equalsIgnoreCase(
+						    AppointmentStatus.SCHEDULED.toString())) {
+							appointmentsCount[1]++; //Scheduled appointments
+						} else {
+							appointmentsCount[2]++; //Missed/Cancelled/Completed appointments
+						}
 					}
 				}
-				numberOfAppointments = new Integer(appointments.size());
 			}
 		}
-		return numberOfAppointments;
+		return appointmentsCount;
 	}
 	
 	public boolean validateDates(String fromDate, String toDate) throws ParseException {

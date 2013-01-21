@@ -166,11 +166,30 @@
 	   			if(selectedAppointmentBlockId != null){
 		   			//calling the DWR method in order to check how many appointments are exits in the selected appointment block.
 		   			DWRAppointmentService.getNumberOfAppointmentsInAppointmentBlock(selectedAppointmentBlockId,function(appointmentsCount){
-		   				if(appointmentsCount != null && appointmentsCount != 0){
-		   					//TODO - need to this using spring.message
-					   		document.getElementById("dialogText").innerHTML = "Deleting this appointment block will cancel "+appointmentsCount+" appointments, are you sure you want to proceed?";
-					   		$j('#deleteDialog').dialog('open');
-					   		event.stopPropagation();
+		   				var totalAppointments = appointmentsCount[0]+appointmentsCount[1]+appointmentsCount[2];
+		   				if(appointmentsCount != null && totalAppointments != 0){
+		   					//TODO - need to do this using spring.message
+		   					if(appointmentsCount[0]>0){	
+		   						//Notify the user that the block cannot be deleted because it have active appointments
+		   						document.getElementById("notifyDialogText").innerHTML = "The block can not be deleted because patients are currently in-conultation or waiting ("+appointmentsCount[0]+" appointments"+")";
+								$j('#notifyDialog').dialog('open');
+								event.stopPropagation();
+		   					}
+		   					else{
+		   						if(appointmentsCount[1]>0){
+		   							//cancel appointments that have the status : "Scheduled" but don't do anything the the other appointments with the statuses : Missed/Cancelled/Completed (If there are any).
+							   		document.getElementById("dialogText").innerHTML = "Deleting this appointment block will cancel "+appointmentsCount[1]+" appointments, are you sure you want to proceed?";
+									$j('#deleteDialog').dialog('open');
+									event.stopPropagation();
+		   						}
+		   						else{
+		   							//only appointments which have the statuses : Missed/Cancelled/Completed.	
+				   					//update the aciton to "void".
+				   					document.getElementById('action').value = "void";
+									//POST back to the controller in order to void the selected appointment block.
+				   					document.forms['appointmentBlockListForm'].submit();
+		   						}
+		   					}
 		   				}
 		   				else{ 
 		   					//update the aciton to "purge" because there are no appointments assiciated with the selected appointment block.
@@ -187,33 +206,47 @@
 	   				document.forms['appointmentBlockListForm'].submit();
 	   			}
 	   	}
-		
+		function initializeDialog(){
+					//Dialog with buttons
+					$j('#deleteDialog').dialog({
+						autoOpen: false,
+						height: 250,
+						width: 300,
+						modal: true,
+						resizable: false,
+						buttons: {
+							"<spring:message code='general.cancel' />": function() {
+								//update the aciton to do nothing.
+								document.getElementById('action').value = "";
+								//close the dialog.
+								$j(this).dialog("close");
+							},
+							"<spring:message code='general.submit' />": function() {
+									//update the aciton to "void" because there are appointments assiciated with the selected appointment block and the user clicked "Submit".
+									document.getElementById('action').value = "void";
+									//POST back to the controller in order to void the selected appointment block.
+									document.forms['appointmentBlockListForm'].submit();
+							}
+						}
+					});
+
+					//Dialog without buttons 
+					$j('#notifyDialog').dialog({
+						autoOpen: false,
+						height: 250,
+						width: 300,
+						modal: true,
+						resizable: false
+					});
+				
+				
+		}
 		//On the page load updates necessary stuff
          $j(document).ready(function() {      	 
 	   			//Initialize the action to do nothing (for page refresh bugs)
 				document.getElementById('action').value = "";
-				//Delete dialog configeration 
-				$j('#deleteDialog').dialog({
-					autoOpen: false,
-					height: 250,
-					width: 300,
-					modal: true,
-					resizable: false,
-					buttons: {
-						"<spring:message code='general.cancel' />": function() {
-							//update the aciton to do nothing.
-							document.getElementById('action').value = "";
-							//close the dialog.
-							$j(this).dialog("close");
-						},
-						"<spring:message code='general.submit' />": function() {
-								//update the aciton to "void" because there are appointments assiciated with the selected appointment block and the user clicked "Submit".
-			   					document.getElementById('action').value = "void";
-								//POST back to the controller in order to void the selected appointment block.
-								document.forms['appointmentBlockListForm'].submit();
-						}
-					}
-				});
+	   			//Initialize the dialogs
+				initializeDialog();
                 //data table initialization
                 $j('#appointmentBlocksTable').dataTable({
                  "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
@@ -307,6 +340,12 @@
 	<table id='deleteDialogOptions' class="dialogTable">
 		<tr><td><h2><spring:message code="appointment.AppointmentBlock.deleteDialog.title"/></h2></td></tr>
 		<tr><td><div id="dialogText"></div></td></tr>
+	</table>
+</div>
+ <div id="notifyDialog" >
+	<table id='notifyDialogOptions' class="dialogTable">
+		<tr><td><h2><spring:message code="appointment.AppointmentBlock.deleteDialog.title"/></h2></td></tr>
+		<tr><td><div id="notifyDialogText"></div></td></tr>
 	</table>
 </div>
  
