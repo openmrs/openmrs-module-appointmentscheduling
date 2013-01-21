@@ -220,6 +220,8 @@ public class AppointmentListController {
 					representation += diffHours + " " + hours + " ";
 				if (diffMinutes > 0)
 					representation += diffMinutes + " " + minutes + " ";
+				if (representation.length() == 0)
+					representation = "0 " + minutes;
 				
 				times.put(appointment.getId(), representation);
 				sortableTimes.put(appointment.getId(), (diffMinutes + 60 * diffHours + 60 * 24 * diffDays));
