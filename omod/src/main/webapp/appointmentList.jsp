@@ -156,8 +156,9 @@
 							var propertyValue = "${pageTimeout}";
 							if(propertyValue!=null){
 								timeout = parseInt(propertyValue) * 1000;
+								timeout = (timeout>0 && timeout<60000) ? 60000 : timeout;
 								//Minimum 60 seconds
-								if(timeout>60000){
+								if(timeout>=60000){
 									window.setInterval(function() {
 										if($j("#patientDialog").dialog( "isOpen" )==false){
 											document.forms['manageAppointmentsForm'].submit();
