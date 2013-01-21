@@ -7,8 +7,7 @@ public class AppointmentsHeaderLinkExt extends LinkExt {
 	
 	@Override
 	public String getLabel() {
-		String label = Context.getMessageSourceService().getMessage("appointment.header.link");
-		return label;
+		return Context.getMessageSourceService().getMessage("appointment.header.link");
 	}
 	
 	@Override

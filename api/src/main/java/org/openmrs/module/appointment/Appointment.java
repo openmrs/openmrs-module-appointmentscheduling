@@ -43,13 +43,6 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 			this.name = name;
 		}
 		
-		public static AppointmentStatus getEnum(String value) {
-			for (AppointmentStatus v : values())
-				if (v.toString().equalsIgnoreCase(value))
-					return v;
-			return null;
-		}
-		
 		@Override
 		public String toString() {
 			return name;

@@ -57,19 +57,6 @@ public class AppointmentListController {
 		binder.registerCustomEditor(Provider.class, new ProviderEditor());
 	}
 	
-	@ModelAttribute("pageTimeout")
-	public Integer getPageTimout() {
-		if (Context.isAuthenticated()) {
-			//Get the number of seconds to auto refresh by from the global property.
-			String timeoutString = Context.getAdministrationService().getGlobalProperty(
-			    "appointment.manageAppointmentsFormTimout");
-			Integer timeout = Integer.parseInt(timeoutString);
-			return timeout;
-		}
-		//Do not auto refresh
-		return -1;
-	}
-	
 	@ModelAttribute("providerSelect")
 	public Provider getSelectedProvider(HttpServletRequest request,
 	        @RequestParam(value = "providerSelect", required = false) Provider selectedProvider) {
@@ -121,10 +108,10 @@ public class AppointmentListController {
 	}
 	
 	@ModelAttribute("appointmentStatusList")
-	public Set<String> getAppointmentStatusList() {
-		Set<String> statuses = new HashSet<String>();
+	public Set<AppointmentStatus> getAppointmentStatusList() {
+		Set<AppointmentStatus> statuses = new HashSet<AppointmentStatus>();
 		for (AppointmentStatus status : AppointmentStatus.values())
-			statuses.add(status.toString());
+			statuses.add(status);
 		
 		return statuses;
 	}
@@ -138,9 +125,8 @@ public class AppointmentListController {
 	        @RequestParam(value = "locationId", required = false) Location location,
 	        @RequestParam(value = "providerSelect", required = false) Provider provider,
 	        @RequestParam(value = "appointmentTypeSelect", required = false) AppointmentType appointmentType,
-	        @RequestParam(value = "appointmentStatusSelect", required = false) String status) {
+	        @RequestParam(value = "appointmentStatusSelect", required = false) AppointmentStatus status) {
 		
-		status = (status == null || status.isEmpty()) ? null : status;
 		List<Appointment> filteredAppointments = new LinkedList<Appointment>();
 		
 		if (Context.isAuthenticated()) {
@@ -158,7 +144,7 @@ public class AppointmentListController {
 			}
 			try {
 				appointments = Context.getService(AppointmentService.class).getAppointmentsByConstraints(fromDate, toDate,
-				    location, provider, appointmentType, AppointmentStatus.getEnum(status));
+				    location, provider, appointmentType, status);
 			}
 			catch (APIException ex) {
 				return new LinkedList<Appointment>();
@@ -168,7 +154,7 @@ public class AppointmentListController {
 			for (Appointment appointment : appointments) {
 				boolean valid = true;
 				if (includeCancelled == null) {
-					if (appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.CANCELLED.toString()))
+					if (appointment.getStatus() == AppointmentStatus.CANCELLED)
 						valid = false;
 				}
 				
@@ -194,7 +180,7 @@ public class AppointmentListController {
 		
 		//Calculate for each waiting appointment the waiting time
 		for (Appointment appointment : appointments) {
-			if (appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.WAITING.toString())) {
+			if (appointment.getStatus() == AppointmentStatus.WAITING) {
 				Date lastChanged = Context.getService(AppointmentService.class).getAppointmentCurrentStatusStartDate(
 				    appointment);
 				Date now = new Date();

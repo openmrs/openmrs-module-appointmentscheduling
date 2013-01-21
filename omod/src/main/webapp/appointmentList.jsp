@@ -153,7 +153,7 @@
 							initStatusButtons();
 							
 							//Init timeout time
-							var propertyValue = "${pageTimeout}";
+							var propertyValue = "<openmrs:globalProperty key='appointment.manageAppointmentsFormTimout' />";
 							if(propertyValue!=null){
 								timeout = parseInt(propertyValue) * 1000;
 								timeout = (timeout>0 && timeout<60000) ? 60000 : timeout;
@@ -362,7 +362,7 @@
 						code="appointment.Appointment.create.label.clinicianNotSpecified" />
 				</option>
 				<c:forEach var="status" items="${appointmentStatusList}" >
-					<option value="${status}" ${status==param.appointmentStatusSelect ? 'selected' : ''}>${status}</option>
+					<option value="${status}" ${status==param.appointmentStatusSelect ? 'selected' : ''}>${status.name}</option>
 				</c:forEach>
 		</select></td>
 	</tr>
