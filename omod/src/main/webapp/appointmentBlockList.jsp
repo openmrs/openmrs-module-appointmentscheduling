@@ -168,17 +168,17 @@
 		   			DWRAppointmentService.getNumberOfAppointmentsInAppointmentBlock(selectedAppointmentBlockId,function(appointmentsCount){
 		   				var totalAppointments = appointmentsCount[0]+appointmentsCount[1]+appointmentsCount[2];
 		   				if(appointmentsCount != null && totalAppointments != 0){
-		   					//TODO - need to do this using spring.message
+		   					//TODO - need to do the string to using spring.message |||||||||||||||||||||||||||||||||
 		   					if(appointmentsCount[0]>0){	
 		   						//Notify the user that the block cannot be deleted because it have active appointments
-		   						document.getElementById("notifyDialogText").innerHTML = "The block can not be deleted because patients are currently in-conultation or waiting ("+appointmentsCount[0]+" appointments"+")";
+		   						document.getElementById("notifyDialogText").innerHTML = "The block can not be deleted because "+appointmentsCount[0]+" patient(s) are currently in-consultation or waiting";
 								$j('#notifyDialog').dialog('open');
 								event.stopPropagation();
 		   					}
 		   					else{
 		   						if(appointmentsCount[1]>0){
 		   							//cancel appointments that have the status : "Scheduled" but don't do anything the the other appointments with the statuses : Missed/Cancelled/Completed (If there are any).
-							   		document.getElementById("dialogText").innerHTML = "Deleting this appointment block will cancel "+appointmentsCount[1]+" appointments, are you sure you want to proceed?";
+							   		document.getElementById("dialogText").innerHTML = "Deleting this appointment block will cancel "+appointmentsCount[1]+" scheduled appointments, are you sure you want to proceed?";
 									$j('#deleteDialog').dialog('open');
 									event.stopPropagation();
 		   						}
