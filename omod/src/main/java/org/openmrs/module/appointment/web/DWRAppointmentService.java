@@ -19,6 +19,7 @@ import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.AppointmentService;
+import org.openmrs.util.OpenmrsUtil;
 
 /**
  * DWR patient methods. The methods in here are used in the webapp to get data from the database via

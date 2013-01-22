@@ -51,11 +51,11 @@
 											"aoColumns" : [ {
 												"bVisible"  : true												
 											}, { 
+												"iDataSort" : 9
+											}, {
 												"bSortable" : true
 											}, {
-												"iDataSort" : 9
-											}, {
-												"iDataSort" : 9
+												"bSortable" : true
 											} ,{
 												"bSortable" : true
 											}, {
@@ -156,9 +156,8 @@
 							var propertyValue = "${pageTimeout}";
 							if(propertyValue!=null){
 								timeout = parseInt(propertyValue) * 1000;
-								timeout = (timeout>0 && timeout<60000) ? 60000 : timeout;
 								//Minimum 60 seconds
-								if(timeout>=60000){
+								if(timeout>60000){
 									window.setInterval(function() {
 										if($j("#patientDialog").dialog( "isOpen" )==false){
 											document.forms['manageAppointmentsForm'].submit();
@@ -225,10 +224,8 @@
 									}
 									if(showStartConsultOption==true)
 										$j('#startConsultOption').css("display", "table-row");
-									else{
+									else
 										$j('#startConsultOption').css("display", "none");
-										$j('#editPatientOption:input:radio').attr("checked",true);
-									}
 								}
 							});
 							
@@ -255,15 +252,8 @@
             todayStart.setHours(0,0,0,0);
             var todayEnd = new Date();
             todayEnd.setHours(23,59,59,999);
-			var fixedjsTimeFormat = jsTimeFormat.replace('m','M');
-			fixedjsTimeFormat = fixedjsTimeFormat.replace('m','M');
-			
-			var timeFormat = (fixedjsTimeFormat=='hh:MM') ? 'HH:MM' : fixedjsTimeFormat;
-			//Handle Italy locale
-			timeFormat = (fixedjsTimeFormat=='hh.MM') ? 'HH.MM' : timeFormat;
-			
-            document.getElementById('fromDate').value = todayStart.format(jsDateFormat+' '+timeFormat);
-            document.getElementById('toDate').value = todayEnd.format(jsDateFormat+' '+timeFormat);
+            document.getElementById('fromDate').value = todayStart.format(jsDateFormat+' HH:MM');
+            document.getElementById('toDate').value = todayEnd.format(jsDateFormat+' HH:MM');
 		}
 	}
 
@@ -433,8 +423,8 @@
 	<table id='patientDialogOptions' class="dialogTable">
 		<tr><td><h2><spring:message code='appointment.Appointment.list.label.selectAnAction'/></h2></td></tr>
 		<tr><td><div id="startConsultOption" style="display:none;" ><input type='radio' name='selectDialogAction'value='startConsultation'><spring:message code='appointment.Appointment.list.button.startConsultation' /></div></td></tr>
-		<tr><td><input type="radio" id="editPatientOption" name="selectDialogAction" value="${pageContext.request.contextPath}/admin/patients/shortPatientForm.form?patientId="><spring:message code='appointment.Appointment.create.link.editPatient' /></input></td></tr>
-		<tr><td><input type="radio" id="viewPatientOption" name="selectDialogAction" value="${pageContext.request.contextPath}/patientDashboard.form?patientId="><spring:message code='appointment.Appointment.create.link.viewPatient' /></input></td></tr>
+		<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/admin/patients/shortPatientForm.form?patientId="><spring:message code='appointment.Appointment.create.link.editPatient' /></input></td></tr>
+		<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/patientDashboard.form?patientId="><spring:message code='appointment.Appointment.create.link.viewPatient' /></input></td></tr>
 		</table>
 </div>
 

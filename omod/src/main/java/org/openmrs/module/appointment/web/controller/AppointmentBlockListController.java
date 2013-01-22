@@ -100,7 +100,15 @@ public class AppointmentBlockListController {
 		httpSession.setAttribute("chosenLocation", location);
 		httpSession.setAttribute("fromDate", Context.getDateTimeFormat().format(fromDate).toString());
 		httpSession.setAttribute("toDate", Context.getDateTimeFormat().format(toDate).toString());
-		
+		//if the user is notified to selected appointment block
+		if (action != null && action.equals("notifyToSelectAppointmentBlock")) {
+			if (appointmentBlockId == null) {
+				//In case appointment block was not selected
+				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
+				    "appointment.AppointmentBlock.error.selectAppointmentBlock");
+				return null;
+			}
+		}
 		AppointmentBlock appointmentBlock = null;
 		if (Context.isAuthenticated()) {
 			AppointmentService appointmentService = Context.getService(AppointmentService.class);
@@ -110,7 +118,7 @@ public class AppointmentBlockListController {
 			} else if (appointmentBlockId != null) {
 				appointmentBlock = appointmentService.getAppointmentBlock(appointmentBlockId);
 			}
-			//if the user is voiding the selected appointmnet block
+			//if the user is voiding the selected appointment block
 			if (action != null && action.equals("void")) {
 				if (appointmentBlockId == null) {
 					//In case appointment block was not selected

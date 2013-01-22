@@ -45,7 +45,7 @@ public class AppointmentsPortletController extends PortletController {
 		int patientId = ServletRequestUtils.getIntParameter(request, "patientId", 0);
 		List<Appointment> patientAppointments = null;
 		if (Context.isAuthenticated()) {
-			Patient patient = (patientId > 0) ? Context.getPatientService().getPatient(patientId) : null;
+			Patient patient = Context.getPatientService().getPatient(patientId);
 			AppointmentService appointmentService = Context.getService(AppointmentService.class);
 			if (patient != null) {
 				patientAppointments = appointmentService.getAppointmentsOfPatient(patient);

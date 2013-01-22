@@ -166,37 +166,43 @@
 	   			if(selectedAppointmentBlockId != null){
 		   			//calling the DWR method in order to check how many appointments are exits in the selected appointment block.
 		   			DWRAppointmentService.getNumberOfAppointmentsInAppointmentBlock(selectedAppointmentBlockId,function(appointmentsCount){
-		   				var totalAppointments = appointmentsCount[0]+appointmentsCount[1]+appointmentsCount[2];
-		   				if(appointmentsCount != null && totalAppointments != 0){
-		   					//TODO - need to do the string to using spring.message |||||||||||||||||||||||||||||||||
-		   					if(appointmentsCount[0]>0){	
-		   						//Notify the user that the block cannot be deleted because it have active appointments
-		   						document.getElementById("notifyDialogText").innerHTML = "The block can not be deleted because "+appointmentsCount[0]+" patient(s) are currently in-consultation or waiting";
-								$j('#notifyDialog').dialog('open');
-								event.stopPropagation();
-		   					}
-		   					else{
-		   						if(appointmentsCount[1]>0){
-		   							//cancel appointments that have the status : "Scheduled" but don't do anything the the other appointments with the statuses : Missed/Cancelled/Completed (If there are any).
-							   		document.getElementById("dialogText").innerHTML = "Deleting this appointment block will cancel "+appointmentsCount[1]+" scheduled appointments, are you sure you want to proceed?";
-									$j('#deleteDialog').dialog('open');
+		   				if(appointmentsCount != null){
+							var totalAppointments = appointmentsCount[0]+appointmentsCount[1]+appointmentsCount[2];
+							if(totalAppointments != 0){
+								if(appointmentsCount[0]>0){	
+									//Notify the user that the block cannot be deleted because it have active appointments
+									document.getElementById("notifyDialogText").innerHTML = '<spring:message code="appointment.AppointmentBlock.cannotBeDeleted.part1"/> '+appointmentsCount[0]+' <spring:message code="appointment.AppointmentBlock.cannotBeDeleted.part2"/>';
+									$j('#notifyDialog').dialog('open');
 									event.stopPropagation();
-		   						}
-		   						else{
-		   							//only appointments which have the statuses : Missed/Cancelled/Completed.	
-				   					//update the aciton to "void".
-				   					document.getElementById('action').value = "void";
-									//POST back to the controller in order to void the selected appointment block.
-				   					document.forms['appointmentBlockListForm'].submit();
-		   						}
-		   					}
-		   				}
-		   				else{ 
-		   					//update the aciton to "purge" because there are no appointments assiciated with the selected appointment block.
-		   					document.getElementById('action').value = "purge";
-							//POST back to the controller in order to purge the selected appointment block.
-		   					document.forms['appointmentBlockListForm'].submit();
-		   				}
+								}
+								else{
+									if(appointmentsCount[1]>0){
+										//cancel appointments that have the status : "Scheduled" but don't do anything the the other appointments with the statuses : Missed/Cancelled/Completed (If there are any).
+										document.getElementById("dialogText").innerHTML = '<spring:message code="appointment.AppointmentBlock.deletingConfirmation.part1"/> '+appointmentsCount[1]+' <spring:message code="appointment.AppointmentBlock.deletingConfirmation.part2"/>';
+										$j('#deleteDialog').dialog('open');
+										event.stopPropagation();
+									}
+									else{
+										//only appointments which have the statuses : Missed/Cancelled/Completed.	
+										//update the aciton to "void".
+										document.getElementById('action').value = "void";
+										//POST back to the controller in order to void the selected appointment block.
+										document.forms['appointmentBlockListForm'].submit();
+									}
+								}
+							}
+							else{ 
+								//update the aciton to "purge" because there are no appointments assiciated with the selected appointment block.
+								document.getElementById('action').value = "purge";
+								//POST back to the controller in order to purge the selected appointment block.
+								document.forms['appointmentBlockListForm'].submit();
+							}
+						}
+						else{
+							//notify the user to select an appointment block.
+							document.getElementById('action').value = "notifyToSelectAppointmentBlock";
+							document.forms['appointmentBlockListForm'].submit();
+						}
 		   			});
 	   			}
 	   			else{
