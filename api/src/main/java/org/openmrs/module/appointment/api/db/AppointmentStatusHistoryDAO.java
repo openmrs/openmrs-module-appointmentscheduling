@@ -14,8 +14,11 @@
 package org.openmrs.module.appointment.api.db;
 
 import java.util.Date;
+import java.util.List;
 
 import org.openmrs.module.appointment.Appointment;
+import org.openmrs.module.appointment.Appointment.AppointmentStatus;
+import org.openmrs.module.appointment.AppointmentStatusHistory;
 import org.openmrs.module.appointment.api.AppointmentService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,4 +36,7 @@ public interface AppointmentStatusHistoryDAO extends SingleClassDAO {
 	 */
 	@Transactional(readOnly = true)
 	public Date getStartDateOfCurrentStatus(Appointment appointment);
+	
+	@Transactional(readOnly = true)
+	public List<AppointmentStatusHistory> getAll(AppointmentStatus status);
 }

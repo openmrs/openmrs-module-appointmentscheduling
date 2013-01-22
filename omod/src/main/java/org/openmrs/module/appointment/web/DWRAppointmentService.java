@@ -44,8 +44,7 @@ public class DWRAppointmentService {
 			patientData.setPhoneNumber(phoneAttribute.getValue());
 		//Checks if patient missed his/her last appointment.
 		Appointment lastAppointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
-		if (lastAppointment != null
-		        && lastAppointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.MISSED.toString()))
+		if (lastAppointment != null && lastAppointment.getStatus() == AppointmentStatus.MISSED)
 			patientData.setDateMissedLastAppointment(Context.getDateFormat().format(
 			    lastAppointment.getTimeSlot().getStartDate()));
 		

@@ -414,7 +414,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	 */
 	@Transactional(readOnly = true)
 	public List<AppointmentStatusHistory> getAppointmentStatusHistories(AppointmentStatus status) {
-		return getAppointmentStatusHistoryDAO().getAll(status.toString());
+		return getAppointmentStatusHistoryDAO().getAll(status);
 	}
 	
 	/**
@@ -511,9 +511,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		//Should not take into consideration cancelled or missed appointments 
 		List<Appointment> appointments = getAppointmentsInTimeSlot(timeSlot);
 		for (Appointment appointment : appointments) {
-			if (!appointment.isVoided()
-			        && !appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.CANCELLED.toString())
-			        && !appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.MISSED.toString()))
+			if (!appointment.isVoided() && appointment.getStatus() != AppointmentStatus.CANCELLED
+			        && appointment.getStatus() != AppointmentStatus.MISSED)
 				timeLeft -= appointment.getAppointmentType().getDuration();
 		}
 		
