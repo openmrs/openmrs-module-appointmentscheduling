@@ -60,19 +60,22 @@ public class AppointmentListController {
 	@ModelAttribute("providerSelect")
 	public Provider getSelectedProvider(HttpServletRequest request,
 	        @RequestParam(value = "providerSelect", required = false) Provider selectedProvider) {
-		if (RequestMethod.GET.toString().equalsIgnoreCase(request.getMethod()) && Context.getAuthenticatedUser() != null) {
-			//Set Default provider filter on GET request - if user is provider, set to user
-			Provider provider = null;
-			Person person = Context.getAuthenticatedUser().getPerson();
-			for (Provider providerIterator : Context.getProviderService().getAllProviders(false)) {
-				if (providerIterator.getPerson() != null && providerIterator.getPerson().equals(person)) {
-					provider = providerIterator;
-					break;
-				}
-			}
-			return provider;
-		} else
-			return selectedProvider;
+		return selectedProvider;
+		
+		//Usability issuese with default provider to user (if user is a provider)
+		//		if (RequestMethod.GET.toString().equalsIgnoreCase(request.getMethod()) && Context.getAuthenticatedUser() != null) {
+		//			//Set Default provider filter on GET request - if user is provider, set to user
+		//			Provider provider = null;
+		//			Person person = Context.getAuthenticatedUser().getPerson();
+		//			for (Provider providerIterator : Context.getProviderService().getAllProviders(false)) {
+		//				if (providerIterator.getPerson() != null && providerIterator.getPerson().equals(person)) {
+		//					provider = providerIterator;
+		//					break;
+		//				}
+		//			}
+		//			return provider;
+		//		} else
+		//			return selectedProvider;
 	}
 	
 	@ModelAttribute("selectedLocation")
@@ -139,7 +142,8 @@ public class AppointmentListController {
 				toDate = new Date();
 				toDate = OpenmrsUtil.getLastMomentOfDay(toDate);
 				
-				provider = this.getSelectedProvider(request, provider);
+				//Usability issuese with default provider to user (if user is a provider)
+				//provider = this.getSelectedProvider(request, provider);
 				location = this.getLocation(request, location);
 			}
 			try {
