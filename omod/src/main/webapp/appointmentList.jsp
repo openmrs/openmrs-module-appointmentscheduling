@@ -19,8 +19,8 @@
 
 <openmrs:htmlInclude
 	file="/moduleResources/appointment/TableTools/media/js/TableTools.js" />
-<openmrs:htmlInclude
-	file="/moduleResources/appointment/TableTools/media/ZeroClipboard/ZeroClipBoard.js" />
+<!-- <openmrs:htmlInclude  -->
+<!-- 	file="/moduleResources/appointment/TableTools/media/ZeroClipboard/ZeroClipBoard.js" /> -->
 <openmrs:htmlInclude
 	file="/moduleResources/appointment/TableTools/media/css/TableTools.css" />
 
@@ -42,7 +42,7 @@
 						$j("#fromDate").keypress(function(event) {event.preventDefault();});
 						$j("#toDate").keypress(function(event) {event.preventDefault();});
 						
-						TableToolsInit.sSwfPath = "${pageContext.request.contextPath}/moduleResources/appointment/TableTools/media/swf/ZeroClipboard.swf";
+						<!-- TableToolsInit.sSwfPath = "${pageContext.request.contextPath}/moduleResources/appointment/TableTools/media/swf/ZeroClipboard.swf"; -->
 
 						//Datatables.net
 						var oTable = $j('#appointmentsTable')
