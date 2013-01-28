@@ -10,6 +10,7 @@
 <openmrs:htmlInclude file="/moduleResources/appointment/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css"/>
 
  <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<openmrs:require privilege="View Providers" otherwise="/login.htm" redirect="/module/appointment/appointmentBlockList.list" />
 
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/engine.js'></script>
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/util.js'></script>
