@@ -17,12 +17,12 @@
 <openmrs:htmlInclude
 	file="/moduleResources/appointment/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css" />
 
-<openmrs:htmlInclude
+<!--<openmrs:htmlInclude
 	file="/moduleResources/appointment/TableTools/media/js/TableTools.js" />
-<!-- <openmrs:htmlInclude  -->
-<!-- 	file="/moduleResources/appointment/TableTools/media/ZeroClipboard/ZeroClipBoard.js" /> -->
+ <openmrs:htmlInclude 
+	file="/moduleResources/appointment/TableTools/media/ZeroClipboard/ZeroClipBoard.js" /> 
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/TableTools/media/css/TableTools.css" />
+	file="/moduleResources/appointment/TableTools/media/css/TableTools.css" />-->
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
