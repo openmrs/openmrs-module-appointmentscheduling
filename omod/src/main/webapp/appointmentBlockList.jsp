@@ -8,6 +8,8 @@
 <openmrs:htmlInclude file="/moduleResources/appointment/Styles/AppointmentBlockStyle.css" />
 <openmrs:htmlInclude file="/moduleResources/appointment/Styles/appointmentBlock_jQueryDatatable.css"/>
 <openmrs:htmlInclude file="/moduleResources/appointment/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css"/>
+<openmrs:htmlInclude file="/moduleResources/appointment/Scripts/date.format.js" />
+
 
  <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <openmrs:require privilege="View Providers" otherwise="/login.htm" redirect="/module/appointment/appointmentBlockList.list" />
@@ -86,8 +88,8 @@
                       var startDate = appointmentBlocks[i].startDate;
                       var endDate = appointmentBlocks[i].endDate;
                       tableContent += '<td align="center">'+startDate.getDate()+"/"+(startDate.getMonth()+1)+"/"+startDate.getFullYear()+'</td>';
-                      tableContent += '<td align="center">'+startDate.toLocaleTimeString()+'</td>';
-                      tableContent += '<td align="center">'+endDate.toLocaleTimeString()+'</td>';
+                      tableContent += '<td align="center">'+startDate.format('HH:MM:ss')+'</td>';
+                      tableContent += '<td align="center">'+endDate.format('HH:MM:ss')+'</td>';
                       tableContent += '<td align="center">'+appointmentBlocks[i].timeSlotLength+'</td>';
 					  tableContent += '<td align="center">'+startDate+'</td>';
                       tableContent += "</tr>";
