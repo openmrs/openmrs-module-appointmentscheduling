@@ -77,7 +77,7 @@
 											"aLengthMenu" : [
 													[25, 50, -1 ],
 													[25, 50, "All" ] ],
-											"iDisplayLength" : 25,
+											"iDisplayLength" : 50,
 											"sDom" : "<'fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix' <'addons'>fl>t<'fg-toolbar ui-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-helper-clearfix'<'statusDiv'>ip<'toolbar' T>>",
 
 											"bLengthChange" : true,
