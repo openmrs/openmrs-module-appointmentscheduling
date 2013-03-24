@@ -26,20 +26,35 @@
         	to = selectedAppointmentTypes;
         }
         else
-        	{
-        		to = availableAppointmentTypes;
-        		from = selectedAppointmentTypes;
-        	}
+       	{
+       		to = availableAppointmentTypes;
+       		from = selectedAppointmentTypes;
+       	}
         
         for(var i=0;i<from.options.length;i++)
-        	{
-        		if(from.options[i].selected == true)
-        			{
-        				to[to.options.length] = new Option(from.options[i].text,from.options[i].value);
-        				from.remove(i);
-        			}
-        	
-        	}
+       	{
+       		if(from.options[i].selected == true)
+       			{
+       				to[to.options.length] = new Option(from.options[i].text,from.options[i].value);
+       				from.remove(i);
+       			}
+       	}
+		
+		//Need to sort only the destination element
+		if(add)
+			$j("#currentAppointmentTypes").html($j("#currentAppointmentTypes option").sort(sortOptionsFunction));
+		else
+			$j("#appointmentTypeSelect").html($j("#appointmentTypeSelect option").sort(sortOptionsFunction));
+	}
+	
+	//This function is used to sort an array of OptionElements alphabetically (ascending)
+	function sortOptionsFunction(optionA, optionB){
+		if(optionA.text<optionB.text)
+			return -1;
+		else if(optionA.text>optionB.text)
+			return 1;
+		else
+			return 0;
 	}
 	function selectAllTypes()
 	{

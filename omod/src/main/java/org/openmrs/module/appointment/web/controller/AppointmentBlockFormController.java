@@ -106,7 +106,7 @@ public class AppointmentBlockFormController {
 	@ModelAttribute("appointmentTypeList")
 	public List<AppointmentType> getAppointmentTypeList() {
 		AppointmentService appointmentService = Context.getService(AppointmentService.class);
-		return appointmentService.getAllAppointmentTypes(false);
+		return appointmentService.getAllAppointmentTypesSorted(false);
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
