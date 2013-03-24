@@ -86,10 +86,18 @@ public class AppointmentBlockFormController {
 		if (timeSlotLength == null) {
 			if (Context.isAuthenticated()) {
 				AppointmentService as = Context.getService(AppointmentService.class);
+				//If the AppointmentBlock is being Edited than load its slot duration.
 				if (appointmentBlock.getCreator() != null) {
 					TimeSlot timeSlot = Context.getService(AppointmentService.class).getTimeSlotsInAppointmentBlock(
 					    appointmentBlock).get(0);
 					return (timeSlot.getEndDate().getTime() - timeSlot.getStartDate().getTime()) / 60000 + "";
+				}
+				//Else display the default slot length, defined by the global property 'defaultTimeSlotDuration'
+				else {
+					String defaultTimeSlotLength = (Context.getAdministrationService()
+					        .getGlobalProperty("appointment.defaultTimeSlotDuration"));
+					
+					return defaultTimeSlotLength;
 				}
 			}
 		} else

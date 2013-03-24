@@ -37,6 +37,13 @@
 		<description>Default Visit Type for the in consultation state change.
 		</description>
 	</globalProperty>
+	<globalProperty>
+		<property>${project.parent.artifactId}.defaultTimeSlotDuration
+		</property>
+		<defaultValue>60</defaultValue>
+		<description>Default Time Slot Duration. (In Minutes)
+		</description>
+	</globalProperty>
 
 	<!-- Module Activator -->
 	<activator>${project.parent.groupId}.${project.parent.artifactId}.AppointmentActivator
