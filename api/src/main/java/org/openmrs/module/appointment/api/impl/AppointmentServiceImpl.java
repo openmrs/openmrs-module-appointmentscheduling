@@ -242,6 +242,15 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		return getAppointmentBlockDAO().getAppointmentBlocks(fromDate, toDate, locations);
 	}
 	
+	/**
+	 * @see org.openmrs.module.appointment.api.AppointmentService#getOverlappingAppointmentBlocks(org.openmrs.AppointmentBlock)
+	 *      )
+	 */
+	@Transactional(readOnly = true)
+	public List<AppointmentBlock> getOverlappingAppointmentBlocks(AppointmentBlock appointmentBlock) {
+		return getAppointmentBlockDAO().getOverlappingAppointmentBlocks(appointmentBlock);
+	}
+	
 	//Appointment
 	/**
 	 * @return the appointment dao

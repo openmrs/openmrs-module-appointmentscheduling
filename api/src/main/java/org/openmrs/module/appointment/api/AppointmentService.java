@@ -222,6 +222,15 @@ public interface AppointmentService extends OpenmrsService {
 	@Transactional(readOnly = true)
 	List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, String locations);
 	
+	/**
+	 * Gets appointment blocks which overlap to the given appointment block
+	 * 
+	 * @return a list of appointment block objects.
+	 * @should get all appointment blocks which overlap to the given appointment block
+	 */
+	@Transactional(readOnly = true)
+	List<AppointmentBlock> getOverlappingAppointmentBlocks(AppointmentBlock appointmentBlock);
+	
 	//Appointment
 	/**
 	 * Gets all appointments.

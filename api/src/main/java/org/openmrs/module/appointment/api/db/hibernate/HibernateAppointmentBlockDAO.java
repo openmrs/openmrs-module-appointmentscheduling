@@ -13,14 +13,14 @@
  */
 package org.openmrs.module.appointment.api.db.hibernate;
 
-import java.security.Provider.Service;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
-import org.openmrs.Location;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.AppointmentBlock;
@@ -62,5 +62,43 @@ public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implem
 			criteria.add(Restrictions.le("endDate", toDate));
 		}
 		return criteria.list();
+	}
+	
+	/**
+	 * Returns the overlapping appointment blocks to the given appointment block.
+	 * 
+	 * @param appointmentBlock is the appointment block for which we want to test overlap.
+	 * @return the appointment blocks that overlaps to the given appointment block.
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(readOnly = true)
+	public List<AppointmentBlock> getOverlappingAppointmentBlocks(AppointmentBlock appointmentBlock) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(AppointmentBlock.class);
+		Disjunction disjunction = Restrictions.disjunction();
+		if (appointmentBlock != null) {
+			Date fromDate = appointmentBlock.getStartDate();
+			Date toDate = appointmentBlock.getEndDate();
+			if (fromDate != null && toDate != null) {
+				//let givenAppointmentBlock.startDate = fromDate, givenAppointmentBlock.endDate = toDate.
+				//let checkedAppointmentBlock.startDate = fromDate' , checkedAppointmentBlock.endDate = toDate'.
+				
+				//1) create the conjunction - (fromDate>=fromDate' AND fromDate<toDate') 
+				Conjunction conjunction = Restrictions.conjunction();
+				conjunction.add(Restrictions.le("startDate", fromDate));
+				conjunction.add(Restrictions.gt("endDate", fromDate));
+				//add the conjunction to the disjunction
+				disjunction.add(conjunction);
+				//2) create the conjunction - (fromDate<fromDate' AND toDate>fromDate')
+				conjunction = Restrictions.conjunction();
+				conjunction.add(Restrictions.gt("startDate", fromDate));
+				conjunction.add(Restrictions.lt("startDate", toDate));
+				//add the conjunction to the disjunction
+				disjunction.add(conjunction); //the final disjunction - (fromDate>=fromDate' AND fromDate<toDate') OR (fromDate<fromDate' AND toDate>fromDate')
+				criteria.add(disjunction);
+				return criteria.list();
+			}
+		}
+		return new ArrayList<AppointmentBlock>();
 	}
 }

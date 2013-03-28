@@ -17,6 +17,8 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -35,7 +37,7 @@ import org.openmrs.test.Verifies;
 import org.openmrs.util.OpenmrsUtil;
 
 /**
- * Tests Appointment Block methods in the {@link ${AppointmentService}}.
+ * Tests Appointment Block methods in the {@link $ AppointmentService}}.
  */
 public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest {
 	
@@ -223,5 +225,94 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		
 		appointmentBlocks = service.getAppointmentBlocks(null, null, "");
 		assertEquals(3, appointmentBlocks.size());
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Test
+	@Verifies(value = "should get all the appointment blocks that overlaps to a given appointment block", method = "getOverlappingAppointmentBlocks(AppointmentBlock)")
+	public void getOverlappingAppointmentBlocksToTheGivenAppointmentBlock_shouldGetAllCorrectAppointmentBlock()
+	        throws Exception {
+		AppointmentBlock appointmentBlock = service.getAppointmentBlock(1);
+		List<AppointmentBlock> appointmentBlocks = null;
+		AppointmentBlock testedAppointmentBlock = new AppointmentBlock(appointmentBlock.getStartDate(), appointmentBlock
+		        .getEndDate(), appointmentBlock.getProvider(), appointmentBlock.getLocation(), appointmentBlock.getTypes());
+		//Full overlap
+		appointmentBlocks = service.getOverlappingAppointmentBlocks(testedAppointmentBlock);
+		assertNotNull(appointmentBlocks);
+		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
+		
+		//Partial overlaps
+		Calendar cal = Calendar.getInstance();
+		
+		cal.setTime(appointmentBlock.getStartDate());
+		cal.add(Calendar.DAY_OF_MONTH, -1);
+		testedAppointmentBlock.setStartDate(new Timestamp(cal.getTime().getTime()));
+		appointmentBlocks = service.getOverlappingAppointmentBlocks(testedAppointmentBlock);
+		assertNotNull(appointmentBlocks);
+		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
+		
+		//Case 1
+		cal.setTime(appointmentBlock.getStartDate());
+		cal.add(Calendar.HOUR_OF_DAY, 1);
+		testedAppointmentBlock.setStartDate(new Timestamp(cal.getTime().getTime()));
+		cal.setTime(appointmentBlock.getEndDate());
+		cal.add(Calendar.HOUR_OF_DAY, -1);
+		testedAppointmentBlock.setEndDate(new Timestamp(cal.getTime().getTime()));
+		appointmentBlocks = service.getOverlappingAppointmentBlocks(testedAppointmentBlock);
+		assertNotNull(appointmentBlocks);
+		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
+		
+		//Case 2
+		cal.setTime(appointmentBlock.getStartDate());
+		cal.add(Calendar.HOUR_OF_DAY, -1);
+		testedAppointmentBlock.setStartDate(new Timestamp(cal.getTime().getTime()));
+		cal.setTime(appointmentBlock.getEndDate());
+		cal.add(Calendar.HOUR_OF_DAY, 1);
+		testedAppointmentBlock.setEndDate(new Timestamp(cal.getTime().getTime()));
+		appointmentBlocks = service.getOverlappingAppointmentBlocks(testedAppointmentBlock);
+		assertNotNull(appointmentBlocks);
+		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
+		
+		//Case 3
+		cal.setTime(appointmentBlock.getStartDate());
+		cal.add(Calendar.HOUR_OF_DAY, 1);
+		testedAppointmentBlock.setStartDate(new Timestamp(cal.getTime().getTime()));
+		cal.setTime(appointmentBlock.getEndDate());
+		cal.add(Calendar.HOUR_OF_DAY, 1);
+		testedAppointmentBlock.setEndDate(new Timestamp(cal.getTime().getTime()));
+		appointmentBlocks = service.getOverlappingAppointmentBlocks(testedAppointmentBlock);
+		assertNotNull(appointmentBlocks);
+		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
+		
+		//Case 4
+		cal.setTime(appointmentBlock.getStartDate());
+		cal.add(Calendar.HOUR_OF_DAY, -1);
+		testedAppointmentBlock.setStartDate(new Timestamp(cal.getTime().getTime()));
+		cal.setTime(appointmentBlock.getEndDate());
+		cal.add(Calendar.HOUR_OF_DAY, -1);
+		testedAppointmentBlock.setEndDate(new Timestamp(cal.getTime().getTime()));
+		appointmentBlocks = service.getOverlappingAppointmentBlocks(testedAppointmentBlock);
+		assertNotNull(appointmentBlocks);
+		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
+		
+		//Empty Case
+		cal.setTime(appointmentBlock.getStartDate());
+		cal.add(Calendar.HOUR_OF_DAY, -11);
+		testedAppointmentBlock.setStartDate(new Timestamp(cal.getTime().getTime()));
+		cal.setTime(appointmentBlock.getEndDate());
+		cal.add(Calendar.HOUR_OF_DAY, -11);
+		testedAppointmentBlock.setEndDate(new Timestamp(cal.getTime().getTime()));
+		appointmentBlocks = service.getOverlappingAppointmentBlocks(testedAppointmentBlock);
+		assertNotNull(appointmentBlocks);
+		assertEquals(new Integer(0), new Integer(appointmentBlocks.size()));
+		
+		//Special Case
+		cal.setTime(appointmentBlock.getEndDate());
+		cal.add(Calendar.DAY_OF_MONTH, 4);
+		testedAppointmentBlock.setEndDate(new Timestamp(cal.getTime().getTime()));
+		appointmentBlocks = service.getOverlappingAppointmentBlocks(testedAppointmentBlock);
+		assertNotNull(appointmentBlocks);
+		assertEquals(new Integer(3), new Integer(appointmentBlocks.size()));
+		
 	}
 }

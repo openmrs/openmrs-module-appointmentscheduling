@@ -173,7 +173,13 @@ public class AppointmentBlockFormController {
 							return null;
 						}
 					}
-					//First we need to save the appointment block (before creating the time slot
+					//Check if overlapping appointment blocks exist in the system(We will consider Time And Provider only)
+					if (appointmentService.getOverlappingAppointmentBlocks(appointmentBlock).size() > 0) { //Overlapping exists
+						httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,
+						    "appointment.AppointmentBlock.error.appointmentBlockOverlap");
+						return null;
+					}
+					//First we need to save the appointment block (before creating the time slot)
 					appointmentService.saveAppointmentBlock(appointmentBlock);
 					//Create the time slots.
 					Integer slotLength = Integer.parseInt(timeSlotLength);
