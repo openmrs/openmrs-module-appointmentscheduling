@@ -51,9 +51,9 @@
 											"aoColumns" : [ {
 												"bVisible"  : true												
 											}, { 
-												"iDataSort" : 9
-											}, {
 												"bSortable" : true
+											}, {
+												"iDataSort" : 9
 											}, {
 												"bSortable" : true
 											} ,{
@@ -67,8 +67,10 @@
 											} ,{
 												"iDataSort" : 10
 											}, {
+												"sType": 'numeric',
 												"bVisible" : false
 											}, {
+												"sType": 'numeric',
 												"bVisible" : false
 											}],
 											"oLanguage": {
