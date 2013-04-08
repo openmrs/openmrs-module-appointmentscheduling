@@ -63,8 +63,10 @@ public class AppointmentBlockFormController {
 	public void showForm(ModelMap model, HttpServletRequest request) {
 		if (Context.isAuthenticated()) {
 			if (request.getParameter("appointmentBlockId") != null) {
-				model.put("appointmentBlock", getAppointmentBlock(Integer.parseInt(request
-				        .getParameter("appointmentBlockId"))));
+				AppointmentBlock appointmentBlock = getAppointmentBlock(Integer.parseInt(request
+				        .getParameter("appointmentBlockId")));
+				model.put("appointmentBlock", appointmentBlock);
+				model.put("timeSlotLength", getTimeSlotLength(appointmentBlock, null));
 			}
 		}
 	}
