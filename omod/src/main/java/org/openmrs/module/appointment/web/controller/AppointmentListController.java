@@ -140,8 +140,7 @@ public class AppointmentListController {
 				toDate = new Date();
 				toDate = OpenmrsUtil.getLastMomentOfDay(toDate);
 				
-				//Usability issuese with default provider to user (if user is a provider)
-				//provider = this.getSelectedProvider(request, provider);
+				provider = this.getSelectedProvider(request, provider);
 				location = this.getLocation(request, location);
 			}
 			try {
