@@ -58,7 +58,10 @@
 			<convert converter="bean" match="org.openmrs.module.appointment.AppointmentType"/>
 			<convert converter="bean" match="org.openmrs.module.appointment.Appointment"/>
 			<convert converter="bean" match="org.openmrs.Provider"/>
+			<convert converter="bean" match="org.openmrs.Person"/>
+			<convert converter="bean" match="org.openmrs.PersonName"/>
 			<convert converter="bean" match="org.openmrs.Visit"/>
+			<convert converter="bean" match="org.openmrs.User"/>
 			<convert converter="bean" match="org.openmrs.Patient"/>
 			<convert converter="bean" match="org.openmrs.Location"/>
 			<create creator="new" javascript="DWRAppointmentService">

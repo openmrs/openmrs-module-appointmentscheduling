@@ -96,6 +96,8 @@ public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implem
 				//add the conjunction to the disjunction
 				disjunction.add(conjunction); //the final disjunction - (fromDate>=fromDate' AND fromDate<toDate') OR (fromDate<fromDate' AND toDate>fromDate')
 				criteria.add(disjunction);
+				//Add a restriction for the provider
+				criteria.add(Restrictions.eq("provider", appointmentBlock.getProvider()));
 				return criteria.list();
 			}
 		}

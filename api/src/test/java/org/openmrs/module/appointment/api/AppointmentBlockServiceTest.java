@@ -314,5 +314,10 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		assertNotNull(appointmentBlocks);
 		assertEquals(new Integer(3), new Integer(appointmentBlocks.size()));
 		
+		//Different provider
+		testedAppointmentBlock.setProvider(new Provider(2));
+		appointmentBlocks = service.getOverlappingAppointmentBlocks(testedAppointmentBlock);
+		assertNotNull(appointmentBlocks);
+		assertEquals(new Integer(0), new Integer(appointmentBlocks.size()));
 	}
 }
