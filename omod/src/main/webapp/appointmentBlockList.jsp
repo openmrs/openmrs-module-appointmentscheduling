@@ -72,14 +72,14 @@
                       count++;
                       tableContent += '<tr class="notSelectedRow">';
                       tableContent += '<td align="center" style="display:none;">'+'<input type="radio" name="appointmentBlockRadios" value="'+appointmentBlocks[i].appointmentBlockId+'"/></td>';
-                      tableContent += '<td align="center">'+appointmentBlocks[i].location.name+"</td>";
-                      tableContent += '<td align="center">'+appointmentBlocks[i].provider.name+"</td>";
+                      tableContent += '<td align="center">'+appointmentBlocks[i].location+"</td>";
+                      tableContent += '<td align="center">'+appointmentBlocks[i].provider+"</td>";
                       //Linking the appointment types in a string.
                       var appointmentTypes = "";
                       var appointmentTypesArray = appointmentBlocks[i].types;
                       for(var j=0;j<appointmentTypesArray.length;j++)
                       {
-                            appointmentTypes += appointmentTypesArray[j].name;
+                            appointmentTypes += appointmentTypesArray[j];
                             if(j<(appointmentTypesArray.length - 1)){
                                 appointmentTypes += ", ";
                             }

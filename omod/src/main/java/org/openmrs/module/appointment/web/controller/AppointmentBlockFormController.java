@@ -34,6 +34,7 @@ import org.openmrs.module.appointment.web.AppointmentTypeEditor;
 import org.openmrs.module.appointment.web.ProviderEditor;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -59,8 +60,13 @@ public class AppointmentBlockFormController {
 	}
 	
 	@RequestMapping(value = "/module/appointment/appointmentBlockForm", method = RequestMethod.GET)
-	public void showForm() {
-		
+	public void showForm(ModelMap model, HttpServletRequest request) {
+		if (Context.isAuthenticated()) {
+			if (request.getParameter("appointmentBlockId") != null) {
+				model.put("appointmentBlock", getAppointmentBlock(Integer.parseInt(request
+				        .getParameter("appointmentBlockId"))));
+			}
+		}
 	}
 	
 	@ModelAttribute("appointmentBlock")

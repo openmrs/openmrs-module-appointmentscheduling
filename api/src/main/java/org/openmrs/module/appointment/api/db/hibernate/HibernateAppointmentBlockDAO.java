@@ -98,6 +98,10 @@ public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implem
 				criteria.add(disjunction);
 				//Add a restriction for the provider
 				criteria.add(Restrictions.eq("provider", appointmentBlock.getProvider()));
+				if (appointmentBlock.getAppointmentBlockId() != null) {
+					//restriction for not comparing the same appointment blocks
+					criteria.add(Restrictions.ne("appointmentBlockId", appointmentBlock.getAppointmentBlockId()));
+				}
 				return criteria.list();
 			}
 		}

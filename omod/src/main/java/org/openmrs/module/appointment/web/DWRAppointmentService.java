@@ -3,7 +3,9 @@ package org.openmrs.module.appointment.web;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -17,9 +19,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.openmrs.module.appointment.AppointmentBlock;
+import org.openmrs.module.appointment.AppointmentType;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.AppointmentService;
-import org.openmrs.util.OpenmrsUtil;
 
 /**
  * DWR patient methods. The methods in here are used in the webapp to get data from the database via
@@ -77,11 +79,15 @@ public class DWRAppointmentService {
 			for (AppointmentBlock appointmentBlock : appointmentBlockList) {
 				//don't include voided appointment blocks
 				if (!appointmentBlock.isVoided()) {
-					appointmentBlockDatalist
-					        .add(new AppointmentBlockData(appointmentBlock.getId(), appointmentBlock.getLocation(),
-					                appointmentBlock.getProvider(), appointmentBlock.getTypes(), appointmentBlock
-					                        .getStartDate(), appointmentBlock.getEndDate(), this
-					                        .getTimeSlotLength(appointmentBlock.getId())));
+					Set<String> typesDescription = new HashSet<String>();
+					Set<AppointmentType> appointmentTypes = appointmentBlock.getTypes();
+					for (AppointmentType appointmentType : appointmentTypes) {
+						typesDescription.add(appointmentType.getDescription());
+					}
+					appointmentBlockDatalist.add(new AppointmentBlockData(appointmentBlock.getId(), appointmentBlock
+					        .getLocation().getName(), appointmentBlock.getProvider().getName(), typesDescription,
+					        appointmentBlock.getStartDate(), appointmentBlock.getEndDate(), this
+					                .getTimeSlotLength(appointmentBlock.getId())));
 				}
 			}
 		}

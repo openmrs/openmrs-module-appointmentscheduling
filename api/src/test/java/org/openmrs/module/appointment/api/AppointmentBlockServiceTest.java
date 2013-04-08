@@ -315,7 +315,15 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		assertEquals(new Integer(3), new Integer(appointmentBlocks.size()));
 		
 		//Different provider
-		testedAppointmentBlock.setProvider(new Provider(2));
+		testedAppointmentBlock.setProvider(Context.getProviderService().getProvider(2));
+		appointmentBlocks = service.getOverlappingAppointmentBlocks(testedAppointmentBlock);
+		assertNotNull(appointmentBlocks);
+		assertEquals(new Integer(0), new Integer(appointmentBlocks.size()));
+		
+		//Update an appointment block
+		cal.setTime(appointmentBlock.getEndDate());
+		cal.add(Calendar.HOUR_OF_DAY, 1);
+		appointmentBlock.setEndDate(new Timestamp(cal.getTime().getTime()));
 		appointmentBlocks = service.getOverlappingAppointmentBlocks(testedAppointmentBlock);
 		assertNotNull(appointmentBlocks);
 		assertEquals(new Integer(0), new Integer(appointmentBlocks.size()));

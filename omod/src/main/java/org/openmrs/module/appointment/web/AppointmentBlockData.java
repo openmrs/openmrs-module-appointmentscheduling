@@ -11,11 +11,11 @@ public class AppointmentBlockData {
 	
 	Integer appointmentBlockId;
 	
-	Location location;
+	String location;
 	
-	Provider provider;
+	String provider;
 	
-	Set<AppointmentType> types;
+	Set<String> types;
 	
 	Date startDate;
 	
@@ -26,8 +26,8 @@ public class AppointmentBlockData {
 	public AppointmentBlockData() {
 	}
 	
-	public AppointmentBlockData(Integer appointmentBlockId, Location location, Provider provider,
-	    Set<AppointmentType> types, Date startDate, Date endDate, String timeSlotLength) {
+	public AppointmentBlockData(Integer appointmentBlockId, String location, String provider, Set<String> types,
+	    Date startDate, Date endDate, String timeSlotLength) {
 		setAppointmentBlockId(appointmentBlockId);
 		setLocation(location);
 		setProvider(provider);
@@ -45,27 +45,27 @@ public class AppointmentBlockData {
 		this.appointmentBlockId = appointmentBlockId;
 	}
 	
-	public Location getLocation() {
+	public String getLocation() {
 		return location;
 	}
 	
-	public void setLocation(Location location) {
+	public void setLocation(String location) {
 		this.location = location;
 	}
 	
-	public Provider getProvider() {
+	public String getProvider() {
 		return provider;
 	}
 	
-	public void setProvider(Provider provider) {
+	public void setProvider(String provider) {
 		this.provider = provider;
 	}
 	
-	public Set<AppointmentType> getTypes() {
+	public Set<String> getTypes() {
 		return types;
 	}
 	
-	public void setTypes(Set<AppointmentType> types) {
+	public void setTypes(Set<String> types) {
 		this.types = types;
 	}
 	
