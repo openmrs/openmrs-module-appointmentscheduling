@@ -79,15 +79,16 @@ public class DWRAppointmentService {
 			for (AppointmentBlock appointmentBlock : appointmentBlockList) {
 				//don't include voided appointment blocks
 				if (!appointmentBlock.isVoided()) {
-					Set<String> typesDescription = new HashSet<String>();
+					Set<String> typesNames = new HashSet<String>();
 					Set<AppointmentType> appointmentTypes = appointmentBlock.getTypes();
 					for (AppointmentType appointmentType : appointmentTypes) {
-						typesDescription.add(appointmentType.getDescription());
+						typesNames.add(appointmentType.getName());
 					}
-					appointmentBlockDatalist.add(new AppointmentBlockData(appointmentBlock.getId(), appointmentBlock
-					        .getLocation().getName(), appointmentBlock.getProvider().getName(), typesDescription,
-					        appointmentBlock.getStartDate(), appointmentBlock.getEndDate(), this
-					                .getTimeSlotLength(appointmentBlock.getId())));
+					appointmentBlockDatalist
+					        .add(new AppointmentBlockData(appointmentBlock.getId(),
+					                appointmentBlock.getLocation().getName(), appointmentBlock.getProvider().getName(),
+					                typesNames, appointmentBlock.getStartDate(), appointmentBlock.getEndDate(), this
+					                        .getTimeSlotLength(appointmentBlock.getId())));
 				}
 			}
 		}
