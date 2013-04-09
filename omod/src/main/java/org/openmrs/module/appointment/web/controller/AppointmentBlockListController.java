@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -32,6 +33,7 @@ import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.openmrs.module.appointment.AppointmentBlock;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.AppointmentService;
+import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.web.WebConstants;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -59,17 +61,36 @@ public class AppointmentBlockListController {
 				Location location = (Location) request.getSession().getAttribute("chosenLocation");
 				model.addAttribute("chosenLocation", location);
 			}
-			String fromDate = (String) request.getSession().getAttribute("fromDate");
-			String toDate = (String) request.getSession().getAttribute("toDate");
+			String fromDate;
+			String toDate;
+			
+			fromDate = (String) request.getSession().getAttribute("fromDate");
+			toDate = (String) request.getSession().getAttribute("toDate");
 			Calendar cal = Context.getDateTimeFormat().getCalendar();
 			if (fromDate == null && toDate == null) {
-				cal.setTime(new Date());
-				cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE), 0, 0, 0);
-				fromDate = Context.getDateTimeFormat().format(cal.getTime()).toString();
-				cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE), 23, 59, 59);
+				//In case the user loaded the page for the first time, we will set to default the time interval (1 week from today).
+				fromDate = Context.getDateTimeFormat().format(OpenmrsUtil.firstSecondOfDay(new Date()));
+				cal.setTime(OpenmrsUtil.getLastMomentOfDay(new Date()));
 				cal.add(Calendar.DAY_OF_MONTH, 6);
-				toDate = Context.getDateTimeFormat().format(cal.getTime()).toString();
+				toDate = Context.getDateTimeFormat().format(cal.getTime());
+			} else {
+				//Session is not empty and we need to change the locale if we have to.
+				Locale lastLocale = (Locale) request.getSession().getAttribute("lastLocale");
+				Locale currentLocale = Context.getLocale();
+				//check if the last locale equals to the current locale
+				if (lastLocale.toString().compareTo(currentLocale.toString()) != 0) {
+					//if the locals are different 
+					fromDate = Context.getDateTimeFormat().format(OpenmrsUtil.getDateTimeFormat(lastLocale).parse(fromDate));
+					toDate = Context.getDateTimeFormat().format(OpenmrsUtil.getDateTimeFormat(lastLocale).parse(toDate));
+				}
 			}
+			//Update session variables - this will be updated in every locale change.
+			HttpSession httpSession = request.getSession();
+			httpSession.setAttribute("fromDate", fromDate);
+			httpSession.setAttribute("toDate", toDate);
+			httpSession.setAttribute("lastLocale", Context.getLocale());
+			
+			//Update model variables - what the page shows.
 			model.addAttribute("fromDate", fromDate);
 			model.addAttribute("toDate", toDate);
 		}
@@ -100,6 +121,7 @@ public class AppointmentBlockListController {
 		httpSession.setAttribute("chosenLocation", location);
 		httpSession.setAttribute("fromDate", Context.getDateTimeFormat().format(fromDate).toString());
 		httpSession.setAttribute("toDate", Context.getDateTimeFormat().format(toDate).toString());
+		httpSession.setAttribute("lastLocale", Context.getLocale());
 		//if the user is notified to selected appointment block
 		if (action != null && action.equals("notifyToSelectAppointmentBlock")) {
 			if (appointmentBlockId == null) {

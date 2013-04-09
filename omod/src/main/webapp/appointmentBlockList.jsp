@@ -85,11 +85,12 @@
                             }
                       }
                       tableContent += '<td align="center">'+appointmentTypes+"</td>";
-                      var startDate = appointmentBlocks[i].startDate;
-                      var endDate = appointmentBlocks[i].endDate;
-                      tableContent += '<td align="center">'+startDate.getDate()+"/"+(startDate.getMonth()+1)+"/"+startDate.getFullYear()+'</td>';
-                      tableContent += '<td align="center">'+startDate.format('HH:MM:ss')+'</td>';
-                      tableContent += '<td align="center">'+endDate.format('HH:MM:ss')+'</td>';
+                      var date = appointmentBlocks[i].date;
+                      var startTime = appointmentBlocks[i].startTime;
+                      var endTime = appointmentBlocks[i].endTime;
+                      tableContent += '<td align="center">'+date+'</td>';
+                      tableContent += '<td align="center">'+startTime+'</td>';
+                      tableContent += '<td align="center">'+endTime+'</td>';
                       tableContent += '<td align="center">'+appointmentBlocks[i].timeSlotLength+'</td>';
 					  tableContent += '<td align="center">'+startDate+'</td>';
                       tableContent += "</tr>";

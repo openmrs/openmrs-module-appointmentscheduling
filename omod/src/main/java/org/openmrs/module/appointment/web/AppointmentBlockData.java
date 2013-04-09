@@ -1,11 +1,6 @@
 package org.openmrs.module.appointment.web;
 
-import java.util.Date;
 import java.util.Set;
-
-import org.openmrs.Location;
-import org.openmrs.Provider;
-import org.openmrs.module.appointment.AppointmentType;
 
 public class AppointmentBlockData {
 	
@@ -17,9 +12,11 @@ public class AppointmentBlockData {
 	
 	Set<String> types;
 	
-	Date startDate;
+	String date;
 	
-	Date endDate;
+	String startTime;
+	
+	String endTime;
 	
 	String timeSlotLength;
 	
@@ -27,13 +24,14 @@ public class AppointmentBlockData {
 	}
 	
 	public AppointmentBlockData(Integer appointmentBlockId, String location, String provider, Set<String> types,
-	    Date startDate, Date endDate, String timeSlotLength) {
+	    String date, String startTime, String endTime, String timeSlotLength) {
 		setAppointmentBlockId(appointmentBlockId);
 		setLocation(location);
 		setProvider(provider);
 		setTypes(types);
-		setStartDate(startDate);
-		setEndDate(endDate);
+		setDate(date);
+		setStartTime(startTime);
+		setEndTime(endTime);
 		setTimeSlotLength(timeSlotLength);
 	}
 	
@@ -69,20 +67,28 @@ public class AppointmentBlockData {
 		this.types = types;
 	}
 	
-	public Date getStartDate() {
-		return startDate;
+	public String getDate() {
+		return date;
 	}
 	
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
+	public void setDate(String date) {
+		this.date = date;
 	}
 	
-	public Date getEndDate() {
-		return endDate;
+	public String getStartTime() {
+		return startTime;
 	}
 	
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
+	}
+	
+	public String getEndTime() {
+		return endTime;
+	}
+	
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
 	}
 	
 	public String getTimeSlotLength() {

@@ -84,11 +84,13 @@ public class DWRAppointmentService {
 					for (AppointmentType appointmentType : appointmentTypes) {
 						typesNames.add(appointmentType.getName());
 					}
-					appointmentBlockDatalist
-					        .add(new AppointmentBlockData(appointmentBlock.getId(),
-					                appointmentBlock.getLocation().getName(), appointmentBlock.getProvider().getName(),
-					                typesNames, appointmentBlock.getStartDate(), appointmentBlock.getEndDate(), this
-					                        .getTimeSlotLength(appointmentBlock.getId())));
+					String dateOnly = Context.getDateFormat().format(appointmentBlock.getStartDate());
+					String startTimeOnly = Context.getTimeFormat().format(appointmentBlock.getStartDate());
+					String endTimeOnly = Context.getTimeFormat().format(appointmentBlock.getEndDate());
+					
+					appointmentBlockDatalist.add(new AppointmentBlockData(appointmentBlock.getId(), appointmentBlock
+					        .getLocation().getName(), appointmentBlock.getProvider().getName(), typesNames, dateOnly,
+					        startTimeOnly, endTimeOnly, this.getTimeSlotLength(appointmentBlock.getId())));
 				}
 			}
 		}
