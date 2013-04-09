@@ -92,7 +92,7 @@
                       tableContent += '<td align="center">'+startTime+'</td>';
                       tableContent += '<td align="center">'+endTime+'</td>';
                       tableContent += '<td align="center">'+appointmentBlocks[i].timeSlotLength+'</td>';
-					  tableContent += '<td align="center">'+startDate+'</td>';
+					  tableContent += '<td align="center">'+startTime+" "+date+'</td>';
                       tableContent += "</tr>";
                       //If we got to the end
                       if(count == appointmentBlocks.length){
