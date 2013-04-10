@@ -78,7 +78,7 @@ public class AppointmentBlockListController {
 				Locale lastLocale = (Locale) request.getSession().getAttribute("lastLocale");
 				Locale currentLocale = Context.getLocale();
 				//check if the last locale equals to the current locale
-				if (lastLocale.toString().compareTo(currentLocale.toString()) != 0) {
+				if (lastLocale != null && lastLocale.toString().compareTo(currentLocale.toString()) != 0) {
 					//if the locals are different 
 					fromDate = Context.getDateTimeFormat().format(OpenmrsUtil.getDateTimeFormat(lastLocale).parse(fromDate));
 					toDate = Context.getDateTimeFormat().format(OpenmrsUtil.getDateTimeFormat(lastLocale).parse(toDate));
