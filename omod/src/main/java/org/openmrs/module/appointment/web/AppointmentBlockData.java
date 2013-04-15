@@ -1,5 +1,6 @@
 package org.openmrs.module.appointment.web;
 
+import java.util.Date;
 import java.util.Set;
 
 public class AppointmentBlockData {
@@ -20,11 +21,13 @@ public class AppointmentBlockData {
 	
 	String timeSlotLength;
 	
+	Date startDate;
+	
 	public AppointmentBlockData() {
 	}
 	
 	public AppointmentBlockData(Integer appointmentBlockId, String location, String provider, Set<String> types,
-	    String date, String startTime, String endTime, String timeSlotLength) {
+	    String date, String startTime, String endTime, String timeSlotLength, Date startDate) {
 		setAppointmentBlockId(appointmentBlockId);
 		setLocation(location);
 		setProvider(provider);
@@ -33,6 +36,7 @@ public class AppointmentBlockData {
 		setStartTime(startTime);
 		setEndTime(endTime);
 		setTimeSlotLength(timeSlotLength);
+		setStartDate(startDate);
 	}
 	
 	public Integer getAppointmentBlockId() {
@@ -97,6 +101,14 @@ public class AppointmentBlockData {
 	
 	public void setTimeSlotLength(String timeSlotLength) {
 		this.timeSlotLength = timeSlotLength;
+	}
+	
+	public Date getStartDate() {
+		return startDate;
+	}
+	
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
 	}
 	
 }

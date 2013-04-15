@@ -88,11 +88,12 @@
                       var date = appointmentBlocks[i].date;
                       var startTime = appointmentBlocks[i].startTime;
                       var endTime = appointmentBlocks[i].endTime;
+                      var startDate = appointmentBlocks[i].startDate;
                       tableContent += '<td align="center">'+date+'</td>';
                       tableContent += '<td align="center">'+startTime+'</td>';
                       tableContent += '<td align="center">'+endTime+'</td>';
                       tableContent += '<td align="center">'+appointmentBlocks[i].timeSlotLength+'</td>';
-					  tableContent += '<td align="center">'+startTime+" "+date+'</td>';
+					  tableContent += '<td align="center">'+startDate+'</td>';
                       tableContent += "</tr>";
                       //If we got to the end
                       if(count == appointmentBlocks.length){

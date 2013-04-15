@@ -90,7 +90,8 @@ public class DWRAppointmentService {
 					
 					appointmentBlockDatalist.add(new AppointmentBlockData(appointmentBlock.getId(), appointmentBlock
 					        .getLocation().getName(), appointmentBlock.getProvider().getName(), typesNames, dateOnly,
-					        startTimeOnly, endTimeOnly, this.getTimeSlotLength(appointmentBlock.getId())));
+					        startTimeOnly, endTimeOnly, this.getTimeSlotLength(appointmentBlock.getId()), appointmentBlock
+					                .getStartDate()));
 				}
 			}
 		}
