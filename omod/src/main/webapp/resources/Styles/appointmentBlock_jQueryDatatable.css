@@ -57,9 +57,9 @@ thead tr th{
 	height:20px !important;
 }
 
-
-
-
-
-
-
+.toolbar{
+	float:left;
+	height:auto;
+	margin-top:5px;
+	margin-left:5px;
+}

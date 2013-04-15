@@ -10,6 +10,13 @@
 <openmrs:htmlInclude file="/moduleResources/appointment/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css"/>
 <openmrs:htmlInclude file="/moduleResources/appointment/Scripts/date.format.js" />
 
+<openmrs:htmlInclude 
+	file="/moduleResources/appointment/TableTools/media/ZeroClipboard/ZeroClipboard.js" /> 
+<openmrs:htmlInclude
+	file="/moduleResources/appointment/TableTools/media/js/TableTools.js" />
+<openmrs:htmlInclude
+	file="/moduleResources/appointment/TableTools/media/css/TableTools.css" />
+
 
  <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <openmrs:require privilege="View Providers" otherwise="/login.htm" redirect="/module/appointment/appointmentBlockList.list" />
@@ -112,6 +119,7 @@
                                 oTable.fnClearTable();
                                 oTable.fnDestroy();
                              }
+							TableToolsInit.sSwfPath = "${pageContext.request.contextPath}/moduleResources/appointment/TableTools/media/swf/ZeroClipboard.swf";
                             $j('#appointmentBlocksTable').dataTable({
 								"aoColumns" : [ {
 									"bVisible"  : true												
@@ -134,11 +142,13 @@
 								}],
                                 "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                                 "iDisplayLength": 25,
+								"sDom" : "<'fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix' <'addons'>fl>t<'fg-toolbar ui-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-helper-clearfix'<'statusDiv'>ip<'toolbar' T>>",
                                 "bLengthChange": true,
                                 "bFilter": false,
                                 "bInfo": true,
                                 "bPaginate": true,
                                 "bJQueryUI": true
+
                             });
                             //Toggle Checked Row
                             $j('.dataTables_wrapper tbody tr').live('click',
@@ -319,32 +329,31 @@
 </fieldset>
  
 <br/>
-<b class="boxHeader"><spring:message code="appointment.AppointmentBlock.list.title"/></b>
-        <table id="appointmentBlocksTable" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th align="center" style="display:none;">select</th>
-                        <th align="center"> <spring:message code="appointment.AppointmentBlock.column.location"/> </th>
-                        <th align="center"> <spring:message code="appointment.AppointmentBlock.column.provider"/> </th>
-                        <th align="center"> <spring:message code="appointment.AppointmentBlock.column.appointmentTypes"/> </th>
-                        <th align="center"> <spring:message code="appointment.AppointmentBlock.column.date"/> </th>
-                        <th align="center"> <spring:message code="appointment.AppointmentBlock.column.startTime"/> </th>
-                        <th align="center"> <spring:message code="appointment.AppointmentBlock.column.endTime"/> </th>
-                        <th align="center"> <spring:message code="appointment.AppointmentBlock.slotLength"/> </th>
-                        <th>Hidden sortable dates</th>
-                    </tr>
-                </thead>
+	<table id="appointmentBlocksTable" cellspacing="0">
+			<thead>
+				<tr>
+					<th align="center" style="display:none;">select</th>
+					<th align="center"> <spring:message code="appointment.AppointmentBlock.column.location"/> </th>
+					<th align="center"> <spring:message code="appointment.AppointmentBlock.column.provider"/> </th>
+					<th align="center"> <spring:message code="appointment.AppointmentBlock.column.appointmentTypes"/> </th>
+					<th align="center"> <spring:message code="appointment.AppointmentBlock.column.date"/> </th>
+					<th align="center"> <spring:message code="appointment.AppointmentBlock.column.startTime"/> </th>
+					<th align="center"> <spring:message code="appointment.AppointmentBlock.column.endTime"/> </th>
+					<th align="center"> <spring:message code="appointment.AppointmentBlock.slotLength"/> </th>
+					<th>Hidden sortable dates</th>
+				</tr>
+			</thead>
 
-        </table>
-		<input type="hidden" name="appointmentBlockId" id="appointmentBlockId" value="${appointmentBlockId}" />
-		<input type="hidden" name="action" id="action" value="${action}" />
-		<table align="center">
-		        <tr>
-		        <td><input type="submit" class="appointmentBlockButton" value="<spring:message code="appointment.AppointmentBlock.add"/>" name="add"> </td>
-		        <td><input type="submit" class="appointmentBlockButton" value="<spring:message code="appointment.AppointmentBlock.edit"/>" name="edit"> </td>
-		         <td><input type="button" id="deleteBtn" class="appointmentBlockButton" value="<spring:message code="appointment.AppointmentBlock.delete"/>" onclick="deleteFuncionality(this, event)"> </td>
-		        </tr>
-		</table>
+	</table>
+	<input type="hidden" name="appointmentBlockId" id="appointmentBlockId" value="${appointmentBlockId}" />
+	<input type="hidden" name="action" id="action" value="${action}" />
+	<table align="center">
+			<tr>
+			<td><input type="submit" class="appointmentBlockButton" value="<spring:message code="appointment.AppointmentBlock.add"/>" name="add"> </td>
+			<td><input type="submit" class="appointmentBlockButton" value="<spring:message code="appointment.AppointmentBlock.edit"/>" name="edit"> </td>
+			 <td><input type="button" id="deleteBtn" class="appointmentBlockButton" value="<spring:message code="appointment.AppointmentBlock.delete"/>" onclick="deleteFuncionality(this, event)"> </td>
+			</tr>
+	</table>
  </form>
  
  <div id="deleteDialog" >
