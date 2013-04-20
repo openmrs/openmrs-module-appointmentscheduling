@@ -141,7 +141,12 @@
 											
 							//Default sort: ascending by date
 							oTable.fnSort([[2,'asc']]);	
-									
+							
+							//Used to delete the "ghost" row that is used in order to prevent the first row
+							//being unselected on post-request bug.
+							if(document.getElementById('BugfixRow'))
+								oTable.fnDeleteRow(document.getElementById('BugfixRow'));
+								
 							//If the user is using "Simple" version
 							if ($j('#locationId').length > 0) {
 								var selectLocation = $j('#locationId');
@@ -385,7 +390,7 @@
 		<tbody>
 			<!-- "Ghost" line to resolve first row auto selection bug, c:if in order to prevent from not showing empty table message -->
 			<c:if test="${fn:length(appointmentList)>0}" >
-				<tr style="display:none;"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+				<tr id='BugfixRow' style="display:none;"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 			</c:if>
 			<c:forEach var="appointment" items="${appointmentList}">
 				<tr ${appointment.appointmentId==param.selectAppointment ? 'class="selectedRow"' : 'class="notSelectedRow"'}>
