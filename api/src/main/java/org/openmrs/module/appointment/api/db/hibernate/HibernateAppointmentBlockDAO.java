@@ -94,14 +94,18 @@ public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implem
 				conjunction.add(Restrictions.gt("startDate", fromDate));
 				conjunction.add(Restrictions.lt("startDate", toDate));
 				//add the conjunction to the disjunction
-				disjunction.add(conjunction); //the final disjunction - (fromDate>=fromDate' AND fromDate<toDate') OR (fromDate<fromDate' AND toDate>fromDate')
+				disjunction.add(conjunction); //the disjunction - (fromDate>=fromDate' AND fromDate<toDate') OR (fromDate<fromDate' AND toDate>fromDate')
 				criteria.add(disjunction);
-				//Add a restriction for the provider
+				
+				//restriction for the provider
 				criteria.add(Restrictions.eq("provider", appointmentBlock.getProvider()));
 				if (appointmentBlock.getAppointmentBlockId() != null) {
 					//restriction for not comparing the same appointment blocks
 					criteria.add(Restrictions.ne("appointmentBlockId", appointmentBlock.getAppointmentBlockId()));
 				}
+				//restriction for ignoring "voided" appointment blocks
+				criteria.add(Restrictions.eq("voided", false));
+				
 				return criteria.list();
 			}
 		}

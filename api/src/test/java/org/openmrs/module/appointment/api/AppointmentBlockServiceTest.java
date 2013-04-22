@@ -160,14 +160,14 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 	@Test
 	@Verifies(value = "should unvoid given appointment block", method = "unvoidAppointmentBlock(AppointmentBlock)")
 	public void unvoidAppointmentBlock_shouldUnvoidGivenAppointmentBlock() throws Exception {
-		AppointmentBlock appointmentBlock = service.getAppointmentBlock(2);
+		AppointmentBlock appointmentBlock = service.getAppointmentBlock(3);
 		assertNotNull(appointmentBlock);
 		Assert.assertTrue(appointmentBlock.isVoided());
 		assertEquals("Some void reason", appointmentBlock.getVoidReason());
 		
 		service.unvoidAppointmentBlock(appointmentBlock);
 		
-		appointmentBlock = service.getAppointmentBlock(2);
+		appointmentBlock = service.getAppointmentBlock(3);
 		assertNotNull(appointmentBlock);
 		Assert.assertFalse(appointmentBlock.isVoided());
 		Assert.assertNull("void reason", appointmentBlock.getVoidReason());
@@ -312,7 +312,7 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		testedAppointmentBlock.setEndDate(new Timestamp(cal.getTime().getTime()));
 		appointmentBlocks = service.getOverlappingAppointmentBlocks(testedAppointmentBlock);
 		assertNotNull(appointmentBlocks);
-		assertEquals(new Integer(3), new Integer(appointmentBlocks.size()));
+		assertEquals(new Integer(2), new Integer(appointmentBlocks.size()));
 		
 		//Different provider
 		testedAppointmentBlock.setProvider(Context.getProviderService().getProvider(2));
