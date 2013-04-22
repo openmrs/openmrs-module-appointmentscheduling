@@ -22,9 +22,9 @@
 	</organization>
 
 	<scm>
-		<connection>scm:svn:http://svn.openmrs.org/openmrs-modules/appointment/trunk/</connection>
-		<developerConnection>scm:svn:http://svn.openmrs.org/openmrs-modules/appointment/trunk/</developerConnection>
-		<url>http://svn.openmrs.org/openmrs-modules/appointment/trunk/</url>
+		<connection>scm:git:git@github.com:openmrs/openmrs-module-appointment.git</connection>
+		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-appointment.git</developerConnection>
+		<url>scm:git:git@github.com:openmrs/openmrs-module-appointment.git</url>
 	</scm>
 
 	<modules>
