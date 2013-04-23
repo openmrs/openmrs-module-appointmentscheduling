@@ -22,9 +22,9 @@
 	</organization>
 
 	<scm>
-		<connection>https://github.com/openmrs/openmrs-module-appointment.git</connection>
-		<developerConnection>https://github.com/openmrs/openmrs-module-appointment.git</developerConnection>
-		<url>https://github.com/openmrs/openmrs-module-appointment.git</url>
+		<connection>scm:git:https://github.com/openmrs/openmrs-module-appointment.git</connection>
+		<developerConnection>scm:git:https://github.com/openmrs/openmrs-module-appointment.git</developerConnection>
+		<url>scm:git:https://github.com/openmrs/openmrs-module-appointment.git</url>
   	</scm>
 
 	<modules>
