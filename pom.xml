@@ -4,7 +4,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>appointment</artifactId>
-	<version>0.2</version>
+	<version>0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Appointment Module</name>
 	<description>Module for scheduling patient appointments</description>
@@ -25,8 +25,7 @@
 		<connection>scm:git:git@github.com:openmrs/openmrs-module-appointment.git</connection>
 		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-appointment.git</developerConnection>
 		<url>scm:git:git@github.com:openmrs/openmrs-module-appointment.git</url>
-	  <tag>0.2</tag>
-  </scm>
+	</scm>
 
 	<modules>
 		<module>api</module>
