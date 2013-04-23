@@ -4,7 +4,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>appointment</artifactId>
-	<version>0.2</version>
+	<version>0.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Appointment Module</name>
 	<description>Module for scheduling patient appointments</description>
