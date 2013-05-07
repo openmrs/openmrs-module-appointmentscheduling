@@ -204,7 +204,8 @@ public class AppointmentBlockFormController {
 						Date startDate = appointmentBlock.getStartDate();
 						Date endDate = null;
 						Calendar cal;
-						for (int i = 0; i < howManyTimeSlotsToCreate; i++) {
+						//Create the time slots except the last one because it might be larger from the rest.
+						for (int i = 0; i < howManyTimeSlotsToCreate - 1; i++) {
 							cal = Context.getDateTimeFormat().getCalendar();
 							cal.setTime(startDate);
 							cal.add(Calendar.MINUTE, slotLength); // add slotLength minutes
@@ -213,11 +214,9 @@ public class AppointmentBlockFormController {
 							startDate = endDate;
 							appointmentService.saveTimeSlot(timeSlot);
 						}
-						//fill the lost time with one time slot if there is any.
-						if (startDate.before(appointmentBlock.getEndDate())) {
-							TimeSlot timeSlot = new TimeSlot(appointmentBlock, startDate, appointmentBlock.getEndDate());
-							appointmentService.saveTimeSlot(timeSlot);
-						}
+						//Create the last time slot that can be larger than the predefined time slot length.
+						TimeSlot timeSlot = new TimeSlot(appointmentBlock, startDate, appointmentBlock.getEndDate());
+						appointmentService.saveTimeSlot(timeSlot);
 					}
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentBlock.saved");
 				}
