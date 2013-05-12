@@ -129,5 +129,40 @@
 		<file>messages_es.properties</file>
 	</messages>
 	<!-- /Internationalization -->
+	
+	<!--  Privileges -->
+	<privilege>
+		<name>Manage Appointment Types</name>
+		<description>Ability to add/edit/purge appointment types</description>
+	</privilege>
+	<privilege>
+		<name>View Appointment Types</name>
+		<description>Ability to view appointment types</description>
+	</privilege>
+	<privilege>
+		<name>Manage Appointment Blocks</name>
+		<description>Ability to add/edit/purge appointment blocks</description>
+	</privilege>
+	<privilege>
+		<name>View Appointment Blocks</name>
+		<description>Ability to view appointment blocks</description>
+	</privilege>
+	<privilege>
+		<name>View Appointments</name>
+		<description>Ability to view appointments</description>
+	</privilege>
+	<privilege>
+		<name>Schedule Appointments</name>
+		<description>Ability to schedule new appointments</description>
+	</privilege>
+	<privilege>
+		<name>Update Appointment Status</name>
+		<description>Ability to modify appointment states</description>
+	</privilege>
+	<privilege>
+		<name>Squeezing Appointments</name>
+		<description>Ability to override the constraints and schedule appointments into full slots</description>
+	</privilege>
+	<!-- /Privileges -->
 
 </module>
