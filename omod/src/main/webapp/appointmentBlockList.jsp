@@ -17,6 +17,7 @@
 <openmrs:htmlInclude
 	file="/moduleResources/appointment/TableTools/media/css/TableTools.css" />
 
+<openmrs:require privilege="View Appointment Blocks" otherwise="/login.htm" redirect="/module/appointment/appointmentBlockList.list" />
 
  <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <openmrs:require privilege="View Providers" otherwise="/login.htm" redirect="/module/appointment/appointmentBlockList.list" />
@@ -347,6 +348,7 @@
 	</table>
 	<input type="hidden" name="appointmentBlockId" id="appointmentBlockId" value="${appointmentBlockId}" />
 	<input type="hidden" name="action" id="action" value="${action}" />
+	<openmrs:hasPrivilege privilege="Manage Appointment Blocks">
 	<table align="center">
 			<tr>
 			<td><input type="submit" class="appointmentBlockButton" value="<spring:message code="appointment.AppointmentBlock.add"/>" name="add"> </td>
@@ -354,6 +356,7 @@
 			 <td><input type="button" id="deleteBtn" class="appointmentBlockButton" value="<spring:message code="appointment.AppointmentBlock.delete"/>" onclick="deleteFuncionality(this, event)"> </td>
 			</tr>
 	</table>
+	</openmrs:hasPrivilege>
  </form>
  
  <div id="deleteDialog" >

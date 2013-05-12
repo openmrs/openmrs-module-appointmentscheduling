@@ -6,6 +6,8 @@
 <openmrs:htmlInclude
 	file="/moduleResources/appointment/Styles/createAppointmentStyle.css" />
 
+<openmrs:require privilege="Manage Appointment Types" otherwise="/login.htm" redirect="/module/appointment/appointmentTypeForm.form" />
+	
 <script type="text/javascript">
 
 	function confirmPurge() {

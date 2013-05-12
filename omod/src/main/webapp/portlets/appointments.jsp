@@ -52,7 +52,7 @@
 					$j(".addons").prepend(
 									"<table style='margin:10px; float:right; display:inline-block;' >"+
 										"<tr><td>"+
-											"<input type='button' value='<spring:message code='appointment.Appointment.add'/>' class='saveButton buttonShadow' onclick='addNewAppointment()'/>"+
+											"<openmrs:hasPrivilege privilege='Schedule Appointments'><input type='button' value='<spring:message code='appointment.Appointment.add'/>' class='saveButton buttonShadow' onclick='addNewAppointment()'/></openmrs:hasPrivilege>"+
 										"</tr></td>"+
 									"</table>");
 				}

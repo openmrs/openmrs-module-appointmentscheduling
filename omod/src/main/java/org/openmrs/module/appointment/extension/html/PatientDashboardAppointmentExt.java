@@ -28,6 +28,9 @@ public class PatientDashboardAppointmentExt extends Extension {
 		Patient patient = Context.getPatientService().getPatient(Integer.parseInt(patientId));
 		Appointment appointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
 		
+		if (!Context.hasPrivilege("Update Appointment Status"))
+			return "";
+		
 		//Check if latest appointment is In Consultation
 		if (appointment != null && appointment.getStatus() == AppointmentStatus.INCONSULTATION) {
 			String value = Context.getMessageSourceService().getMessage(

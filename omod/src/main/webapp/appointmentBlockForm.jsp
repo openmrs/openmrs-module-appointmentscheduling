@@ -5,7 +5,9 @@
 <openmrs:htmlInclude file="/scripts/timepicker/timepicker.js" />
 <openmrs:htmlInclude
 	file="/moduleResources/appointment/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css" />
-	
+
+<openmrs:require privilege="Manage Appointment Blocks" otherwise="/login.htm" redirect="/module/appointment/appointmentBlockForm.form" />
+
 <script type="text/javascript">
 	function confirmPurge() {
 		if (confirm("<spring:message code='appointment.AppointmentBlock.purgeConfirmMessage' />")) {

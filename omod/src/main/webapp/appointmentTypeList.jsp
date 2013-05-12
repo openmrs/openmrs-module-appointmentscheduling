@@ -12,6 +12,8 @@
 <openmrs:htmlInclude
 	file="/moduleResources/appointment/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css" />
 
+<openmrs:require privilege="View Appointment Types" otherwise="/login.htm" redirect="/module/appointment/appointmentTypeList.list" />
+
 <script type="text/javascript">
 	$j(document)
 			.ready(
@@ -41,7 +43,7 @@
 											"fnDrawCallback" : function() {
 												$j(".addons").html("");
 												$j(".addons").prepend(
-																"<input type='button' value='<spring:message code='appointment.AppointmentType.add'/>' class='saveButton' style='margin:10px; float:right; display:block;' onclick='addNewAppointmentType()'/>");
+																"<openmrs:hasPrivilege privilege='Manage Appointment Types'> <input type='button' value='<spring:message code='appointment.AppointmentType.add'/>' class='saveButton' style='margin:10px; float:right; display:block;' onclick='addNewAppointmentType()'/></openmrs:hasPrivilege>");
 											},
 										});
 
@@ -73,8 +75,8 @@
 		<tbody>
 			<c:forEach var="appointmentType" items="${appointmentTypeList}">
 				<tr>
-					<td valign="top"><a
-						href="appointmentTypeForm.form?appointmentTypeId=${appointmentType.appointmentTypeId}">
+					<td valign="top"><openmrs:hasPrivilege privilege='Manage Appointment Types'><a
+						href="appointmentTypeForm.form?appointmentTypeId=${appointmentType.appointmentTypeId}"></openmrs:hasPrivilege>
 							<c:choose>
 								<c:when test="${appointmentType.retired == true}">
 									<del>${appointmentType.name}</del>
@@ -83,7 +85,7 @@
 								${appointmentType.name}
 							</c:otherwise>
 							</c:choose>
-					</a></td>
+					<openmrs:hasPrivilege privilege='Manage Appointment Types'></a></openmrs:hasPrivilege></td>
 					<td valign="top">${appointmentType.description}</td>
 					<td valign="top">${appointmentType.duration}</td>
 				</tr>

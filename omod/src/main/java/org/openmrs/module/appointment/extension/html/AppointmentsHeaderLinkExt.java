@@ -12,8 +12,7 @@ public class AppointmentsHeaderLinkExt extends LinkExt {
 	
 	@Override
 	public String getRequiredPrivilege() {
-		//TODO set privilage later
-		return null;
+		return "View Appointments";
 	}
 	
 	@Override

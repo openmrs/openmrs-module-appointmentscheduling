@@ -23,6 +23,8 @@
 	file="/moduleResources/appointment/TableTools/media/js/TableTools.js" />
 <openmrs:htmlInclude
 	file="/moduleResources/appointment/TableTools/media/css/TableTools.css" />
+	
+<openmrs:require privilege="View Appointments" otherwise="/login.htm" redirect="/module/appointment/appointmentList.list" />
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
@@ -99,19 +101,19 @@
 																			"<spring:message code='appointment.Appointment.list.label.showCancelled' />"+
 																	"</td></tr>"+
 																	"<tr><td>"+
-																		"<input type='button' value='<spring:message code='appointment.Appointment.add'/>' class='saveButton buttonShadow' onclick='addNewAppointment()'/>"+
+																		"<openmrs:hasPrivilege privilege='Schedule Appointments'><input type='button' value='<spring:message code='appointment.Appointment.add'/>' class='saveButton buttonShadow' onclick='addNewAppointment()'/></openmrs:hasPrivilege>"+
 																	"</tr></td>"+
 																"</table>");
 												//Clear and prepend the status buttons
 												$j(".statusDiv").html("");
 												$j('.statusDiv')
 														.prepend(
-																"<input type='submit' name='startConsultation' id='startConsultButton' class='appointmentButton buttonShadow' value='<spring:message code='appointment.Appointment.list.button.startConsultation'/>' disabled />"+
+																"<openmrs:hasPrivilege privilege='Update Appointment Status'><input type='submit' name='startConsultation' id='startConsultButton' class='appointmentButton buttonShadow' value='<spring:message code='appointment.Appointment.list.button.startConsultation'/>' disabled />"+
 																"<input type='submit' name='endConsultation' id='endConsultButton' class='appointmentButton buttonShadow' value='<spring:message code='appointment.Appointment.list.button.endConsultation'/>' disabled />"+
 																"<input type='submit' name='checkIn' id='checkInButton' class='appointmentButton buttonShadow' style='margin-left:16px; margin-right:16px;' value='<spring:message code='appointment.Appointment.list.button.checkIn'/>' disabled />"+
 																"<input type='submit' name='missAppointment' id='missButton' class='appointmentButton buttonShadow' value='<spring:message code='appointment.Appointment.list.button.missAppointment'/>' disabled />"+
 																"<input type='submit' name='cancelAppointment' id='cancelButton' class='appointmentButton buttonShadow' value='<spring:message code='appointment.Appointment.list.button.cancelAppointment'/>' disabled />"+
-																"<br/>"
+																"<br/></openmrs:hasPrivilege>"
 																);
 											},
 										});
@@ -429,7 +431,7 @@
 <div id="patientDialog" >
 	<table id='patientDialogOptions' class="dialogTable">
 		<tr><td><h2><spring:message code='appointment.Appointment.list.label.selectAnAction'/></h2></td></tr>
-		<tr><td><div id="startConsultOption" style="display:none;" ><input type='radio' name='selectDialogAction'value='startConsultation'><spring:message code='appointment.Appointment.list.button.startConsultation' /></div></td></tr>
+		<tr><td><openmrs:hasPrivilege privilege='Update Appointment Status'><div id="startConsultOption" style="display:none;" ><input type='radio' name='selectDialogAction'value='startConsultation'><spring:message code='appointment.Appointment.list.button.startConsultation' /></div></openmrs:hasPrivilege></td></tr>
 		<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/admin/patients/shortPatientForm.form?patientId="><spring:message code='appointment.Appointment.create.link.editPatient' /></input></td></tr>
 		<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/patientDashboard.form?patientId="><spring:message code='appointment.Appointment.create.link.viewPatient' /></input></td></tr>
 		</table>

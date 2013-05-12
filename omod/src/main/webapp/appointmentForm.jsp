@@ -14,6 +14,8 @@
 	file="/moduleResources/appointment/Styles/appointment_jQueryDatatable.css" />
 <openmrs:htmlInclude
 	file="/moduleResources/appointment/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css" />
+	
+<openmrs:require privilege="Schedule Appointments" otherwise="/login.htm" redirect="/module/appointment/appointmentForm.form" />
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 

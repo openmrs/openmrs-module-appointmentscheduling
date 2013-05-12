@@ -12,8 +12,7 @@ public class PatientDashboardAppointmentTabExt extends PatientDashboardTabExt {
 	
 	@Override
 	public String getRequiredPrivilege() {
-		// TODO Auto-generated method stub
-		return null;
+		return "View Patient Appointment History";
 	}
 	
 	@Override
