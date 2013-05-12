@@ -163,6 +163,10 @@
 		<name>Squeezing Appointments</name>
 		<description>Ability to override the constraints and schedule appointments into full slots</description>
 	</privilege>
+	<privilege>
+		<name>View Patient Appointment History</name>
+		<description>Ability to view the appointment history tab on the patient's dashboard</description>
+	</privilege>
 	<!-- /Privileges -->
 
 </module>
