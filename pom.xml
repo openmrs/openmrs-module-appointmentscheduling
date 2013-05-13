@@ -6,8 +6,8 @@
 	<artifactId>appointmentscheduling</artifactId>
 	<version>0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>Appointment Module</name>
-	<description>Module for scheduling patient appointments</description>
+	<name>Appointment Scheduling Module</name>
+	<description>Module for scheduling patient appointments and managing providers schedule</description>
 	<url>https://wiki.openmrs.org/display/docs/Appointment+Module+Module</url>
 	
 	<developers>

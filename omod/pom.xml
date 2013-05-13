@@ -9,8 +9,8 @@
 
 	<artifactId>appointmentscheduling-omod</artifactId>
 	<packaging>jar</packaging>
-	<name>Appointment Module OMOD</name>
-	<description>OMOD project for Appointment</description>
+	<name>Appointment Module Scheduling OMOD</name>
+	<description>OMOD project for Appointment Scheduling</description>
 
 	<dependencies>
 

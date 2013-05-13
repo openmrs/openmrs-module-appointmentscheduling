@@ -9,8 +9,8 @@
 
 	<artifactId>appointmentscheduling-api</artifactId>
 	<packaging>jar</packaging>
-	<name>Appointment Module API</name>
-	<description>API project for Appointment</description>
+	<name>Appointment Scheduling Module API</name>
+	<description>API project for Appointment Scheduling</description>
 
 	<dependencies>
 	
