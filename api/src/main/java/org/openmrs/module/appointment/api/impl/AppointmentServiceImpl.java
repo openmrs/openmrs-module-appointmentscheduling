@@ -445,6 +445,27 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Transactional(readOnly = true)
 	public List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate,
 	        Provider provider, Location location) throws APIException {
+		List<TimeSlot> suitableTimeSlots = getTimeSlotsByConstraintsIncludingFull(appointmentType, fromDate, toDate,
+		    provider, location);
+		
+		List<TimeSlot> availableTimeSlots = new LinkedList<TimeSlot>();
+		
+		Integer duration = appointmentType.getDuration();
+		for (TimeSlot slot : suitableTimeSlots) {
+			
+			//Filter by time left
+			if (getTimeLeftInTimeSlot(slot) >= duration)
+				availableTimeSlots.add(slot);
+		}
+		
+		return availableTimeSlots;
+		
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<TimeSlot> getTimeSlotsByConstraintsIncludingFull(AppointmentType appointmentType, Date fromDate,
+	        Date toDate, Provider provider, Location location) throws APIException {
 		List<TimeSlot> suitableTimeSlots = getTimeSlotDAO().getTimeSlotsByConstraints(appointmentType, fromDate, toDate,
 		    provider);
 		
@@ -457,21 +478,13 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		Set<Location> relevantLocations = getAllLocationDescendants(location, null);
 		relevantLocations.add(location);
 		
-		Integer duration = appointmentType.getDuration();
 		for (TimeSlot slot : suitableTimeSlots) {
-			boolean satisfyingConstraints = true;
 			
 			//Filter by location
 			if (location != null) {
-				if (!relevantLocations.contains(slot.getAppointmentBlock().getLocation()))
-					satisfyingConstraints = false;
-			}
-			
-			//Filter by time left
-			if (satisfyingConstraints && getTimeLeftInTimeSlot(slot) < duration)
-				satisfyingConstraints = false;
-			
-			if (satisfyingConstraints)
+				if (relevantLocations.contains(slot.getAppointmentBlock().getLocation()))
+					availableTimeSlots.add(slot);
+			} else
 				availableTimeSlots.add(slot);
 		}
 		

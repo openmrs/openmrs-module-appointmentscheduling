@@ -66,6 +66,8 @@
 										"bSortable" : true
 									}, {
 										"bVisible" : false
+									}, {
+										"bVisible" : true
 									} ],
 									"oLanguage": {
  										"sZeroRecords": "<spring:message code='appointment.Appointment.create.table.empty' />"
@@ -77,11 +79,32 @@
 									"bFilter" : false,
 									"bInfo" : true,
 									"bPaginate" : true,
-									"bJQueryUI" : true
+									"bJQueryUI" : true,
+									"sDom" : "<'fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix' <'addons'>fl>t<'fg-toolbar ui-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-helper-clearfix'<'statusDiv'>ip>",
+									"fnDrawCallback" : function() {
+												//Clear and prepend the schedule appointment button and cancelled checkbox
+												$j(".addons").html("");
+												$j(".addons")
+														.prepend(
+																"<table style='margin:10px; float:right; display:inline-block;' >"+
+																	"<tr><td><openmrs:hasPrivilege privilege='Squeezing Appointments'>"+
+																		"<input type=\"checkbox\" name=\"includeFull\" value=\"true\" onchange='this.form.submit();' ${(param.includeFull=='true') ? 'checked' : ''}>"+
+																			"<spring:message code='appointment.Appointment.create.label.showFull' />"+
+																			"<br/><c:if test='${param.includeFull==\'true\'}' >"+
+																			"<div id='slotIndex'> <img src='${pageContext.request.contextPath}/moduleResources/appointment/Images/index_fullTimeslot.png' alt='<spring:message code='appointment.Appointment.create.lbl.fullSlot'/>'/>"+
+																			" = <spring:message code='appointment.Appointment.create.lbl.fullSlot'/></div></c:if>"+
+																	"</openmrs:hasPrivilege></td></tr>"+
+																"</table>");
+									}
 								});
 
 						//Default sort: ascending by date
 						oTable.fnSort([[3,'asc']]);	
+								
+						//Used to delete the "ghost" row that is used in order to prevent the first row
+						//being unselected on post-request bug.
+						if(document.getElementById('BugfixRow'))
+							oTable.fnDeleteRow(document.getElementById('BugfixRow'));		
 								
 						//If the user is using "Simple" version
 						if ($j('#locationId').length > 0) {
@@ -96,21 +119,39 @@
 						$j('.dataTables_wrapper tbody tr').live(
 								'click',
 								function() {
+									if($j(this).hasClass('notSelectedFullRow')){
+										if(!confirm("<spring:message code='appointment.Appointment.create.prompt.fullSlot'/> " + $j("td:eq(6)",this)[0].innerHTML))
+											return;
+									}
 									var table = $j('#availableTimesTable')
 											.dataTable();
 									var nNodes = table.fnGetNodes();
 									for ( var i = 0; i < nNodes.length; i++) {
 										$j('input:radio', nNodes[i]).attr(
 												'checked', false);
-										$j(nNodes[i])
-												.removeClass('selectedRow');
-										$j(nNodes[i])
-												.addClass('notSelectedRow');
+										if($j(nNodes[i]).hasClass('selectedFullRow')){
+											$j(nNodes[i])
+													.removeClass('selectedFullRow');
+											$j(nNodes[i])
+													.addClass('notSelectedFullRow');
+										}
+										else{
+											$j(nNodes[i])
+													.removeClass('selectedRow');
+											$j(nNodes[i])
+													.addClass('notSelectedRow');
+										}
 									}
 									$j('input:radio', this).attr('checked',
 											true);
-									$j(this).addClass('selectedRow');
-									$j(this).removeClass('notSelectedRow');
+									if($j(this).hasClass('notSelectedFullRow')){
+										$j(this).addClass('selectedFullRow');
+										$j(this).removeClass('notSelectedFullRow');
+									}
+									else{
+										$j(this).addClass('selectedRow');
+										$j(this).removeClass('notSelectedRow');
+									}
 								});
 					});
 function addQueryParameter(paramName){
@@ -315,11 +356,13 @@ function addQueryParameter(paramName){
 										code="appointment.Appointment.create.header.timeSlot" /></th>
 								<th><spring:message
 										code="appointment.Appointment.create.header.location" /></th>
+								<th>Hidden Sortable Date</th>
+								<th style="display:none;">Hidden Sortable Timeleft</th>
 							</tr>
 						</thead>
 						<tbody>
 							<c:if test="${fn:length(availableTimes)>0}" >
-								<tr style="display:none;"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>						
+								<tr style="display:none;" id="BugfixRow"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>						
 							</c:if>
 							<c:forEach var="slot" items="${availableTimes}">
 								<tr
@@ -343,6 +386,32 @@ function addQueryParameter(paramName){
 								<td>${slot.appointmentBlock.location.name}</td>
 								<td><fmt:formatDate type="date" value="${slot.startDate}"
 										pattern="yyyyMMddHHmm" /></td>
+								<td style="display:none;"></td>
+								</tr>
+							</c:forEach>
+							<c:forEach var="slot" items="${fullSlots}">
+								<tr
+									${slot.timeSlotId==appointment.timeSlot.timeSlotId ? 'class="selectedFullRow"' : 'class="notSelectedFullRow"'} />
+								<td style="display:none;"><spring:bind path="appointment.timeSlot">
+										<input type="radio" name="${status.expression}"
+											value="${slot.timeSlotId}"
+											${slot.timeSlotId==appointment.timeSlot.timeSlotId ? 'checked' : ''} />
+									</spring:bind></td>
+
+								<td>${slot.appointmentBlock.provider.name}</td>
+								<td><c:forEach var="appointmentType"
+										items="${slot.appointmentBlock.types}" varStatus="status">
+                                                                ${appointmentType.name}<c:if
+											test="${status.index != fn:length(slot.appointmentBlock.types)-1}">, </c:if>
+									</c:forEach></td>
+								<td><fmt:formatDate type="date" value="${slot.startDate}" /></td>
+								<td><fmt:formatDate type="time" pattern="HH:mm"
+										value="${slot.startDate}" /> - <fmt:formatDate type="time"
+										pattern="HH:mm" value="${slot.endDate}" /></td>
+								<td>${slot.appointmentBlock.location.name}</td>
+								<td><fmt:formatDate type="date" value="${slot.startDate}"
+										pattern="yyyyMMddHHmm" /></td>
+								<td style="display:none;">${overdueTimes[slot.timeSlotId]}</td>
 								</tr>
 							</c:forEach>
 						</tbody>

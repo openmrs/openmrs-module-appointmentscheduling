@@ -13,10 +13,12 @@
  */
 package org.openmrs.module.appointment.web.controller;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -29,6 +31,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.Appointment.AppointmentStatus;
 import org.openmrs.module.appointment.AppointmentType;
+import org.openmrs.module.appointment.AppointmentUtils;
 import org.openmrs.module.appointment.TimeSlot;
 import org.openmrs.module.appointment.api.AppointmentService;
 import org.openmrs.module.appointment.validator.AppointmentValidator;
@@ -101,22 +104,60 @@ public class AppointmentFormController {
 	}
 	
 	@ModelAttribute("availableTimes")
-	public List<TimeSlot> getAvailableTimes(HttpServletRequest request, Appointment appointment,
+	public List<TimeSlot> getAvailableTimes(ModelMap model, HttpServletRequest request, Appointment appointment,
 	        @RequestParam(value = "fromDate", required = false) Date fromDate,
 	        @RequestParam(value = "toDate", required = false) Date toDate,
 	        @RequestParam(value = "providerSelect", required = false) Provider provider,
-	        @RequestParam(value = "locationId", required = false) Location location) {
+	        @RequestParam(value = "locationId", required = false) Location location,
+	        @RequestParam(value = "includeFull", required = false) String includeFull) {
 		AppointmentType appointmentType = appointment.getAppointmentType();
 		if (appointmentType == null || (fromDate != null && toDate != null && !fromDate.before(toDate)))
 			return null;
 		
 		try {
-			List<TimeSlot> availableTimeSlots = Context.getService(AppointmentService.class).getTimeSlotsByConstraints(
-			    appointmentType, fromDate, toDate, provider, location);
-			TimeSlot currentSelectedSlot = appointment.getTimeSlot();
-			//The appointment time slot should be selected from the latest list
-			if (currentSelectedSlot != null && !availableTimeSlots.contains(currentSelectedSlot))
-				appointment.setTimeSlot(null);
+			List<TimeSlot> availableTimeSlots = null;
+			
+			//No need to include full slots
+			if (includeFull == null || !Context.hasPrivilege(AppointmentUtils.PRIV_SQUEEZE_APPOINTMENTS)) {
+				availableTimeSlots = Context.getService(AppointmentService.class).getTimeSlotsByConstraints(appointmentType,
+				    fromDate, toDate, provider, location);
+				TimeSlot currentSelectedSlot = appointment.getTimeSlot();
+				//The appointment time slot should be selected from the latest list
+				if (currentSelectedSlot != null && !availableTimeSlots.contains(currentSelectedSlot))
+					appointment.setTimeSlot(null);
+			}
+
+			//Include full and indicate which are full using the model attribute fullSlots
+			else {
+				availableTimeSlots = Context.getService(AppointmentService.class).getTimeSlotsByConstraintsIncludingFull(
+				    appointmentType, fromDate, toDate, provider, location);
+				List<TimeSlot> fullTimeSlots = new LinkedList<TimeSlot>();
+				Map<Integer, String> overdueTimes = new HashMap<Integer, String>();
+				
+				Integer typeDuration = appointmentType.getDuration();
+				
+				Iterator<TimeSlot> iterator = availableTimeSlots.iterator();
+				while (iterator.hasNext()) {
+					TimeSlot slot = iterator.next();
+					Integer timeLeft = Context.getService(AppointmentService.class).getTimeLeftInTimeSlot(slot);
+					if (timeLeft < typeDuration) {
+						fullTimeSlots.add(slot);
+						String overdueTime = (timeLeft < 0) ? String.valueOf(-1 * timeLeft)
+						        + " "
+						        + Context.getMessageSourceService().getMessage(
+						            "appointment.Appointment.create.prompt.overdue") : String.valueOf(timeLeft)
+						        + " "
+						        + Context.getMessageSourceService().getMessage(
+						            "appointment.Appointment.create.prompt.timeleft");
+						overdueTimes.put(slot.getId(), overdueTime);
+						iterator.remove();
+					}
+				}
+				
+				model.put("fullSlots", fullTimeSlots);
+				model.put("overdueTimes", overdueTimes);
+			}
+			
 			return availableTimeSlots;
 		}
 		catch (Exception ex) {

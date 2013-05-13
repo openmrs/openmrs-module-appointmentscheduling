@@ -491,6 +491,21 @@ public interface AppointmentService extends OpenmrsService {
 	        Location location) throws APIException;
 	
 	/**
+	 * Return a list of time slots that stands within the given constraints.
+	 * 
+	 * @param appointmentType - Type of the appointment
+	 * @param fromDate - (optional) earliest start date.
+	 * @param toDate - (optional) latest start date.
+	 * @param provider - (optional) the appointment's provider.
+	 * @param location - (optional) the appointment's location. (or predecessor location)
+	 * @return List of TimeSlots that stands within the given constraints, null if illegal values
+	 *         (fromDate>toDate or null appointmentType)
+	 */
+	@Transactional(readOnly = true)
+	List<TimeSlot> getTimeSlotsByConstraintsIncludingFull(AppointmentType appointmentType, Date fromDate, Date toDate,
+	        Provider provider, Location location) throws APIException;
+	
+	/**
 	 * Returns a list of strings, where each string represents an identifier of the given patient
 	 * and its value. The preferred identifier will be the first in the list. The format of each
 	 * string will be: "<identifier name>: <identifier value>" for example:

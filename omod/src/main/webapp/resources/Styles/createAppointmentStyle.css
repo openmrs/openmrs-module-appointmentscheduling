@@ -139,6 +139,30 @@
 	cursor:pointer;
 }
 
+.selectedFullRow{
+	background-color:#CC0000!important;
+}
+
+.selectedFullRow:hover{
+	background-color:#CC0000!important;
+}
+
+
+.notSelectedFullRow:hover{
+	background-color:#FF3333 !important;
+	cursor:pointer;
+}
+
+.notSelectedFullRow{
+	background-color:#FF9999 !important;
+	cursor:pointer;
+}
+
+#slotIndex{
+	font-size:small;
+	font-weight:normal;
+}
+
 
 .buttonShadow{
 	margin:3px;
