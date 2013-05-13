@@ -101,7 +101,7 @@
 																			"<spring:message code='appointment.Appointment.list.label.showCancelled' />"+
 																	"</td></tr>"+
 																	"<tr><td>"+
-																		"<openmrs:hasPrivilege privilege='Schedule Appointments'><input type='button' value='<spring:message code='appointment.Appointment.add'/>' class='saveButton buttonShadow' onclick='addNewAppointment()'/></openmrs:hasPrivilege>"+
+																		"<openmrs:hasPrivilege privilege='Schedule Appointments'><input type='button' value='<spring:message code='appointment.Appointment.add'/>' class='saveButton buttonShadow' onclick='ScheduleAppointmentDialogOpen();'/></openmrs:hasPrivilege>"+
 																	"</tr></td>"+
 																"</table>");
 												//Clear and prepend the status buttons
@@ -238,13 +238,37 @@
 								}
 							});
 							
-
-					});
-	
-	//Navigate to appointmentForm.form
-	function addNewAppointment(){
-		window.location = "appointmentForm.form";
+							$j('#scheduleDialog').dialog({
+								autoOpen: false,
+								height: 250,
+								width: 300,
+								modal: true,
+								resizable: false,
+								buttons: {
+									"<spring:message code='general.cancel' />": function() {
+										$j(this).dialog("close");
+									},
+									"<spring:message code='general.submit' />": function() {
+										var navigationURL = $j('input[name="selectDialogAction"]:radio:checked')[0].value;
+										window.location = navigationURL;
+									}
+								},
+								open: function(){
+									//Select first as default
+									document.getElementById("scheduleNewAppointmentOption").checked = true;
+								}
+							});
+							
+						});
+						
+	//Register live to find out who opened the dialog
+	function ScheduleAppointmentDialogOpen(){
+		$j('#scheduleDialog').dialog('open');
 	}
+							
+
+					
+	
 	//Initialize the toDate to the selected fromDate
 	function updateToDate(object) {
 		if (object.value == '') {
@@ -434,6 +458,15 @@
 		<tr><td><openmrs:hasPrivilege privilege='Update Appointment Status'><div id="startConsultOption" style="display:none;" ><input type='radio' name='selectDialogAction'value='startConsultation'><spring:message code='appointment.Appointment.list.button.startConsultation' /></div></openmrs:hasPrivilege></td></tr>
 		<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/admin/patients/shortPatientForm.form?patientId="><spring:message code='appointment.Appointment.create.link.editPatient' /></input></td></tr>
 		<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/patientDashboard.form?patientId="><spring:message code='appointment.Appointment.create.link.viewPatient' /></input></td></tr>
+		</table>
+</div>
+
+<div id="scheduleDialog" >
+	<table id='scheduleDialogOptions' class="dialogTable">
+		<tr><td><h2><spring:message code='appointment.Appointment.list.label.selectAnAction'/></h2></td></tr>
+				<tr><td><input id="scheduleNewAppointmentOption" type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/module/appointment/appointmentForm.form" checked ><spring:message code='appointment.Appointment.create.link.scheduleAppointment' /></input></td></tr>
+				<tr><td><br/></td></tr>
+				<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/module/appointment/appointmentForm.form?flow=walkin"><spring:message code='appointment.Appointment.create.link.walkinAppointment' /></input></td></tr>
 		</table>
 </div>
 

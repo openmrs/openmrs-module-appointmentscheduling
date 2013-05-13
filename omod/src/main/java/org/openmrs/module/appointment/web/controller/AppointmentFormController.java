@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.appointment.web.controller;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -109,10 +110,21 @@ public class AppointmentFormController {
 	        @RequestParam(value = "toDate", required = false) Date toDate,
 	        @RequestParam(value = "providerSelect", required = false) Provider provider,
 	        @RequestParam(value = "locationId", required = false) Location location,
-	        @RequestParam(value = "includeFull", required = false) String includeFull) {
+	        @RequestParam(value = "includeFull", required = false) String includeFull,
+	        @RequestParam(value = "flow", required = false) String flow) {
 		AppointmentType appointmentType = appointment.getAppointmentType();
 		if (appointmentType == null || (fromDate != null && toDate != null && !fromDate.before(toDate)))
 			return null;
+		//If its a walk-in flow change the start date to current time and end date to the end of today (23:59:59.999)
+		if (flow != null) {
+			fromDate = Calendar.getInstance().getTime();
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.HOUR_OF_DAY, 23);
+			cal.set(Calendar.MINUTE, 59);
+			cal.set(Calendar.SECOND, 59);
+			cal.set(Calendar.MILLISECOND, 999);
+			toDate = cal.getTime();
+		}
 		
 		try {
 			List<TimeSlot> availableTimeSlots = null;
@@ -178,7 +190,8 @@ public class AppointmentFormController {
 	@RequestMapping(method = RequestMethod.POST)
 	public String onSubmit(HttpServletRequest request, Appointment appointment, BindingResult result,
 	        @RequestParam(value = "fromDate", required = false) Date fromDate,
-	        @RequestParam(value = "toDate", required = false) Date toDate) throws Exception {
+	        @RequestParam(value = "toDate", required = false) Date toDate,
+	        @RequestParam(value = "flow", required = false) String flow) throws Exception {
 		HttpSession httpSession = request.getSession();
 		
 		if (Context.isAuthenticated()) {
@@ -191,7 +204,10 @@ public class AppointmentFormController {
 					return null;
 				else {
 					appointment.setDateCreated(new Date());
-					appointment.setStatus(AppointmentStatus.SCHEDULED);
+					if (flow != null)
+						appointment.setStatus(AppointmentStatus.WALKIN);
+					else
+						appointment.setStatus(AppointmentStatus.SCHEDULED);
 					appointmentService.saveAppointment(appointment);
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.Appointment.saved");
 					return "redirect:appointmentList.list";

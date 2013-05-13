@@ -90,7 +90,7 @@
 																	"<tr><td><openmrs:hasPrivilege privilege='Squeezing Appointments'>"+
 																		"<input type=\"checkbox\" name=\"includeFull\" value=\"true\" onchange='this.form.submit();' ${(param.includeFull=='true') ? 'checked' : ''}>"+
 																			"<spring:message code='appointment.Appointment.create.label.showFull' />"+
-																			"<br/><c:if test='${param.includeFull==\'true\'}' >"+
+																			"<br/><c:if test='${param.includeFull==\'true\'}'>'"+
 																			"<div id='slotIndex'> <img src='${pageContext.request.contextPath}/moduleResources/appointment/Images/index_fullTimeslot.png' alt='<spring:message code='appointment.Appointment.create.lbl.fullSlot'/>'/>"+
 																			" = <spring:message code='appointment.Appointment.create.lbl.fullSlot'/></div></c:if>"+
 																	"</openmrs:hasPrivilege></td></tr>"+
@@ -240,7 +240,12 @@ function addQueryParameter(paramName){
 </script>
 
 <h2 id="headline">
-	<spring:message code="appointment.Appointment.create.title" />
+	<c:if test="${param.flow!='walkin'}">
+		<spring:message code="appointment.Appointment.create.titleSchedule" />
+	</c:if>
+	<c:if test="${param.flow=='walkin'}">
+		<spring:message code="appointment.Appointment.create.titleWalkIn" />
+	</c:if>
 </h2>
 <spring:hasBindErrors name="appointment">
 	<spring:message code="fix.error" />
@@ -310,20 +315,22 @@ function addQueryParameter(paramName){
 						</c:forEach>
 				</select></td>
 			</tr>
-			<tr>
-				<td class="formLabel"><spring:message
-						code="appointment.Appointment.create.label.betweenDates" /></td>
-				<td><input type="text" name="fromDate" id="fromDate" size="16"
-					value="${param.fromDate}" onfocus="showDateTimePicker(this)" /> <img
-					src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png"
-					class="calendarIcon" alt=""
-					onClick="document.getElementById('fromDate').focus();" /> and <input
-					type="text" name="toDate" id="toDate" size="16"
-					value="${param.toDate}" onfocus="updateToDate(this)" /> <img
-					src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png"
-					class="calendarIcon" alt=""
-					onClick="document.getElementById('toDate').focus();" /></td>
-			</tr>
+			<c:if test="${param.flow!='walkin'}">
+				<tr>
+					<td class="formLabel"><spring:message
+							code="appointment.Appointment.create.label.betweenDates" /></td>
+					<td><input type="text" name="fromDate" id="fromDate" size="16"
+						value="${param.fromDate}" onfocus="showDateTimePicker(this)" /> <img
+						src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png"
+						class="calendarIcon" alt=""
+						onClick="document.getElementById('fromDate').focus();" /> and <input
+						type="text" name="toDate" id="toDate" size="16"
+						value="${param.toDate}" onfocus="updateToDate(this)" /> <img
+						src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png"
+						class="calendarIcon" alt=""
+						onClick="document.getElementById('toDate').focus();" /></td>
+				</tr>
+			</c:if>
 			<tr class="boxHeader steps">
 				<td colspan="3"><spring:message
 						code="appointment.Appointment.steps.selectTime" /></td>
