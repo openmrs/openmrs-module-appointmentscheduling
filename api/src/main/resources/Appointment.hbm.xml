@@ -3,9 +3,9 @@
     "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
 
-<hibernate-mapping package="org.openmrs.module.appointment">
+<hibernate-mapping package="org.openmrs.module.appointmentscheduling">
 
-	<class name="Appointment" table="${project.parent.artifactId}">
+	<class name="Appointment" table="${project.parent.artifactId}_appointment">
 		<id name="appointmentId" type="int" column="appointment_id" unsaved-value="0">
 			<generator class="native" />
 		</id>
@@ -17,7 +17,7 @@
 		
 		<property name="status" column="status" length="255" not-null="true">
 			<type name="org.openmrs.util.HibernateEnumType">
-				<param name="enumClassName">org.openmrs.module.appointment.Appointment$AppointmentStatus</param>
+				<param name="enumClassName">org.openmrs.module.appointmentscheduling.Appointment$AppointmentStatus</param>
 			</type>
 		</property>
 		

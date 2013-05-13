@@ -51,12 +51,12 @@
 
 	<dwr>
 		<allow>
-			<convert converter="bean" match="org.openmrs.module.appointment.web.PatientData"/>
-			<convert converter="bean" match="org.openmrs.module.appointment.web.AppointmentBlockData"/>
-			<convert converter="bean" match="org.openmrs.module.appointment.TimeSlot"/>
-			<convert converter="bean" match="org.openmrs.module.appointment.AppointmentBlock"/>
-			<convert converter="bean" match="org.openmrs.module.appointment.AppointmentType"/>
-			<convert converter="bean" match="org.openmrs.module.appointment.Appointment"/>
+			<convert converter="bean" match="org.openmrs.module.appointmentscheduling.web.PatientData"/>
+			<convert converter="bean" match="org.openmrs.module.appointmentscheduling.web.AppointmentBlockData"/>
+			<convert converter="bean" match="org.openmrs.module.appointmentscheduling.TimeSlot"/>
+			<convert converter="bean" match="org.openmrs.module.appointmentscheduling.AppointmentBlock"/>
+			<convert converter="bean" match="org.openmrs.module.appointmentscheduling.AppointmentType"/>
+			<convert converter="bean" match="org.openmrs.module.appointmentscheduling.Appointment"/>
 			<convert converter="bean" match="org.openmrs.Provider"/>
 			<convert converter="bean" match="org.openmrs.Person"/>
 			<convert converter="bean" match="org.openmrs.PersonName"/>
@@ -65,7 +65,7 @@
 			<convert converter="bean" match="org.openmrs.Patient"/>
 			<convert converter="bean" match="org.openmrs.Location"/>
 			<create creator="new" javascript="DWRAppointmentService">
-				<param name="class" value="org.openmrs.module.appointment.web.DWRAppointmentService" />
+				<param name="class" value="org.openmrs.module.appointmentscheduling.web.DWRAppointmentService" />
 				<include method="getPatientDescription" />
 				<include method="getAppointmentBlocks"/>
 				<include method="getNumberOfAppointmentsInAppointmentBlock"/>
@@ -75,7 +75,7 @@
 
 		<signatures>
             <![CDATA[
-            import org.openmrs.module.appointment.web.DWRAppointmentService;
+            import org.openmrs.module.appointmentscheduling.web.DWRAppointmentService;
             DWRAppointmentService.getPatientDescription(Integer patientId);
             DWRAppointmentService.getAppointmentBlocks(String fromDate,String toDate,Integer locationId);
             DWRAppointmentService.getNumberOfAppointmentsInAppointmentBlock(Integer appointmentBlockId);
@@ -119,14 +119,6 @@
 	<messages>
 		<lang>en</lang>
 		<file>messages.properties</file>
-	</messages>
-	<messages>
-		<lang>fr</lang>
-		<file>messages_fr.properties</file>
-	</messages>
-	<messages>
-		<lang>es</lang>
-		<file>messages_es.properties</file>
 	</messages>
 	<!-- /Internationalization -->
 	

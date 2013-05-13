@@ -26,7 +26,7 @@
 	<!-- Annotation based controllers -->
 	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
 	
-	<context:component-scan base-package="org.openmrs.module.appointment.web.controller" />
+	<context:component-scan base-package="org.openmrs.module.appointmentscheduling.web.controller" />
  
 	<bean id="appointmentsPortletUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="order">
@@ -38,5 +38,5 @@
  			</props>
 		</property>
 		</bean>
-	<bean id="appointmentsPortletController" class="org.openmrs.module.appointment.web.controller.AppointmentsPortletController"></bean>
+	<bean id="appointmentsPortletController" class="org.openmrs.module.appointmentscheduling.web.controller.AppointmentsPortletController"></bean>
 </beans>

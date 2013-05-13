@@ -3,11 +3,11 @@
 
 	<parent>
 		<groupId>org.openmrs.module</groupId>
-		<artifactId>appointment</artifactId>
+		<artifactId>appointmentscheduling</artifactId>
 		<version>0.2-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>appointment-api</artifactId>
+	<artifactId>appointmentscheduling-api</artifactId>
 	<packaging>jar</packaging>
 	<name>Appointment Module API</name>
 	<description>API project for Appointment</description>
