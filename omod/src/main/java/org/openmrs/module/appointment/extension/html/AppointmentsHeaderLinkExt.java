@@ -1,6 +1,7 @@
 package org.openmrs.module.appointment.extension.html;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appointment.AppointmentUtils;
 import org.openmrs.module.web.extension.LinkExt;
 
 public class AppointmentsHeaderLinkExt extends LinkExt {
@@ -12,7 +13,7 @@ public class AppointmentsHeaderLinkExt extends LinkExt {
 	
 	@Override
 	public String getRequiredPrivilege() {
-		return "View Appointments";
+		return AppointmentUtils.PRIV_VIEW_APPOINTMENTS;
 	}
 	
 	@Override

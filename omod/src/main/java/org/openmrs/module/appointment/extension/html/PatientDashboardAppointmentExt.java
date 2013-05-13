@@ -7,6 +7,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.Extension;
 import org.openmrs.module.appointment.Appointment;
 import org.openmrs.module.appointment.Appointment.AppointmentStatus;
+import org.openmrs.module.appointment.AppointmentUtils;
 import org.openmrs.module.appointment.api.AppointmentService;
 
 public class PatientDashboardAppointmentExt extends Extension {
@@ -28,7 +29,7 @@ public class PatientDashboardAppointmentExt extends Extension {
 		Patient patient = Context.getPatientService().getPatient(Integer.parseInt(patientId));
 		Appointment appointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
 		
-		if (!Context.hasPrivilege("Update Appointment Status"))
+		if (!Context.hasPrivilege(AppointmentUtils.PRIV_UPDATE_APPOINTMENT_STATES))
 			return "";
 		
 		//Check if latest appointment is In Consultation

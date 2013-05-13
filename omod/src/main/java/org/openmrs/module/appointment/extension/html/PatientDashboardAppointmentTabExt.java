@@ -1,6 +1,7 @@
 package org.openmrs.module.appointment.extension.html;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appointment.AppointmentUtils;
 import org.openmrs.module.web.extension.PatientDashboardTabExt;
 
 public class PatientDashboardAppointmentTabExt extends PatientDashboardTabExt {
@@ -12,7 +13,7 @@ public class PatientDashboardAppointmentTabExt extends PatientDashboardTabExt {
 	
 	@Override
 	public String getRequiredPrivilege() {
-		return "View Patient Appointment History";
+		return AppointmentUtils.PRIV_VIEW_APPOINTMENT_HISTORY_TAB;
 	}
 	
 	@Override
