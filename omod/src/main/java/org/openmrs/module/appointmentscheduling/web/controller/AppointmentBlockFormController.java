@@ -26,6 +26,7 @@ import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
+import org.openmrs.module.appointmentscheduling.AppointmentUtils;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.appointmentscheduling.validator.AppointmentBlockValidator;
@@ -59,7 +60,7 @@ public class AppointmentBlockFormController {
 		binder.registerCustomEditor(Provider.class, new ProviderEditor());
 	}
 	
-	@RequestMapping(value = "/module/appointment/appointmentBlockForm", method = RequestMethod.GET)
+	@RequestMapping(value = "/module/appointmentscheduling/appointmentBlockForm", method = RequestMethod.GET)
 	public void showForm(ModelMap model, HttpServletRequest request) {
 		if (Context.isAuthenticated()) {
 			if (request.getParameter("appointmentBlockId") != null) {
@@ -103,7 +104,7 @@ public class AppointmentBlockFormController {
 				//Else display the default slot length, defined by the global property 'defaultTimeSlotDuration'
 				else {
 					String defaultTimeSlotLength = (Context.getAdministrationService()
-					        .getGlobalProperty("appointment.defaultTimeSlotDuration"));
+					        .getGlobalProperty(AppointmentUtils.GP_DEFAULT_TIME_SLOT_DURATION));
 					
 					return defaultTimeSlotLength;
 				}

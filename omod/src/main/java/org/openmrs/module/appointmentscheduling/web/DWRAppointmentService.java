@@ -19,6 +19,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
+import org.openmrs.module.appointmentscheduling.AppointmentUtils;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
@@ -40,7 +41,7 @@ public class DWRAppointmentService {
 		        .setIdentifiers(Context.getService(AppointmentService.class).getPatientIdentifiersRepresentation(patient));
 		//Get Patient's phone
 		Integer phonePropertyId = Integer.parseInt(Context.getAdministrationService().getGlobalProperty(
-		    "appointment.phoneNumberPersonAttributeTypeId"));
+		    AppointmentUtils.GP_PATIENT_PHONE_NUMBER));
 		PersonAttribute phoneAttribute = patient.getAttribute(phonePropertyId);
 		if (phoneAttribute != null)
 			patientData.setPhoneNumber(phoneAttribute.getValue());

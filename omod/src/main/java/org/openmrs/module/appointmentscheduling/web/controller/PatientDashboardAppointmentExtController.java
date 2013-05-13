@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class PatientDashboardAppointmentExtController {
 	
-	@RequestMapping("/module/appointment/patientDashboardAppointmentExt.form")
+	@RequestMapping("/module/appointmentscheduling/patientDashboardAppointmentExt.form")
 	public String showForm(HttpServletRequest request, @RequestParam("patientId") Integer patientId,
 	        @RequestParam("action") String action) {
 		//End the consulation
@@ -35,7 +35,7 @@ public class PatientDashboardAppointmentExtController {
 			appointment.setStatus(AppointmentStatus.COMPLETED);
 			Context.getService(AppointmentService.class).saveAppointment(appointment);
 			
-			return "redirect:/module/appointment/appointmentList.list";
+			return "redirect:/module/appointmentscheduling/appointmentList.list";
 		} else if (action.equals("startConsult")) {
 			Patient patient = Context.getPatientService().getPatient(patientId);
 			Appointment appointment = Context.getService(AppointmentService.class).getLastAppointment(patient);

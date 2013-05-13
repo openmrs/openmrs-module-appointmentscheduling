@@ -26,6 +26,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
+import org.openmrs.module.appointmentscheduling.AppointmentUtils;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.appointmentscheduling.web.AppointmentEditor;
 import org.openmrs.module.appointmentscheduling.web.AppointmentTypeEditor;
@@ -194,9 +195,9 @@ public class AppointmentListController {
 				diffHours -= 24 * diffDays;
 				
 				//String labels of minutes, hours and days
-				String minutes = Context.getMessageSourceService().getMessage("appointment.Appointment.minutes");
-				String hours = Context.getMessageSourceService().getMessage("appointment.Appointment.hours");
-				String days = Context.getMessageSourceService().getMessage("appointment.Appointment.days");
+				String minutes = Context.getMessageSourceService().getMessage("appointmentscheduling.Appointment.minutes");
+				String hours = Context.getMessageSourceService().getMessage("appointmentscheduling.Appointment.hours");
+				String days = Context.getMessageSourceService().getMessage("appointmentscheduling.Appointment.days");
 				
 				String representation = "";
 				
@@ -223,11 +224,11 @@ public class AppointmentListController {
 		model.put("sortableWaitingTimes", sortableTimes);
 	}
 	
-	@RequestMapping(value = "/module/appointment/appointmentList", method = RequestMethod.GET)
+	@RequestMapping(value = "/module/appointmentscheduling/appointmentList", method = RequestMethod.GET)
 	public void showForm(ModelMap model) {
 	}
 	
-	@RequestMapping(value = "/module/appointment/appointmentList", method = RequestMethod.POST)
+	@RequestMapping(value = "/module/appointmentscheduling/appointmentList", method = RequestMethod.POST)
 	public String onSubmit(HttpServletRequest request, @ModelAttribute("appointmentList") List<Appointment> appointmentList,
 	        Errors errors, @RequestParam(value = "selectAppointment", required = false) Appointment selectedAppointment,
 	        ModelMap model, @RequestParam(value = "fromDate", required = false) Date fromDate,
@@ -265,7 +266,7 @@ public class AppointmentListController {
 			        && selectedAppointment.getStatus() != AppointmentStatus.WAITING) {
 				
 				String visitTypeIdString = Context.getAdministrationService().getGlobalProperty(
-				    "appointment.defaultVisitType");
+				    AppointmentUtils.GP_DEFAULT_VISIT_TYPE);
 				Integer visitTypeId = Integer.parseInt(visitTypeIdString);
 				VisitType defaultVisitType = Context.getVisitService().getVisitType(visitTypeId);
 				
@@ -317,7 +318,7 @@ public class AppointmentListController {
 					//Update waiting time according to new status
 					Map<Integer, String> waitingTimes = (Map<Integer, String>) model.get("waitingTimes");
 					waitingTimes.put(selectedAppointment.getId(), "0 "
-					        + Context.getMessageSourceService().getMessage("appointment.Appointment.minutes"));
+					        + Context.getMessageSourceService().getMessage("appointmentscheduling.Appointment.minutes"));
 					model.put("waitingTimes", waitingTimes);
 					
 					Map<Integer, Integer> sortableTimes = (Map<Integer, Integer>) model.get("sortableWaitingTimes");

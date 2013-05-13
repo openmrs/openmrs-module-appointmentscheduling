@@ -35,7 +35,7 @@ public class AppointmentTypeListController {
 	/** Logger for this class and subclasses */
 	protected final Log log = LogFactory.getLog(getClass());
 	
-	@RequestMapping(value = "/module/appointment/appointmentTypeList", method = RequestMethod.GET)
+	@RequestMapping(value = "/module/appointmentscheduling/appointmentTypeList", method = RequestMethod.GET)
 	public void showForm(ModelMap model) {
 		//default empty Object
 		Set<AppointmentType> appointmentTypeList = new HashSet<AppointmentType>();

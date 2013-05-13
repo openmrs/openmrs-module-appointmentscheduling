@@ -66,7 +66,7 @@ public class AppointmentFormController {
 		binder.registerCustomEditor(Provider.class, new ProviderEditor());
 	}
 	
-	@RequestMapping(value = "/module/appointment/appointmentForm", method = RequestMethod.GET)
+	@RequestMapping(value = "/module/appointmentscheduling/appointmentForm", method = RequestMethod.GET)
 	public void showForm(ModelMap model, HttpServletRequest request) {
 		if (Context.isAuthenticated()) {
 			model.put("selectedLocation", Context.getUserContext().getLocation());
@@ -157,10 +157,10 @@ public class AppointmentFormController {
 						String overdueTime = (timeLeft < 0) ? String.valueOf(-1 * timeLeft)
 						        + " "
 						        + Context.getMessageSourceService().getMessage(
-						            "appointment.Appointment.create.prompt.overdue") : String.valueOf(timeLeft)
+						            "appointmentscheduling.Appointment.create.prompt.overdue") : String.valueOf(timeLeft)
 						        + " "
 						        + Context.getMessageSourceService().getMessage(
-						            "appointment.Appointment.create.prompt.timeleft");
+						            "appointmentscheduling.Appointment.create.prompt.timeleft");
 						overdueTimes.put(slot.getId(), overdueTime);
 						iterator.remove();
 					}
@@ -209,13 +209,13 @@ public class AppointmentFormController {
 					else
 						appointment.setStatus(AppointmentStatus.SCHEDULED);
 					appointmentService.saveAppointment(appointment);
-					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.Appointment.saved");
+					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointmentscheduling.Appointment.saved");
 					return "redirect:appointmentList.list";
 				}
 			}
 			if (request.getParameter("findAvailableTime") != null) {
 				if (fromDate != null && toDate != null && !fromDate.before(toDate))
-					result.rejectValue("timeSlot", "appointment.Appointment.error.InvalidDateInterval");
+					result.rejectValue("timeSlot", "appointmentscheduling.Appointment.error.InvalidDateInterval");
 			}
 		}
 		return null;

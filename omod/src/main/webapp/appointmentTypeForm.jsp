@@ -4,14 +4,14 @@
 <%@ include file="localHeader.jsp" %>
 
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/Styles/createAppointmentStyle.css" />
+	file="/moduleResources/appointmentscheduling/Styles/createAppointmentStyle.css" />
 
-<openmrs:require privilege="Manage Appointment Types" otherwise="/login.htm" redirect="/module/appointment/appointmentTypeForm.form" />
+<openmrs:require privilege="Manage Appointment Types" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentTypeForm.form" />
 	
 <script type="text/javascript">
 
 	function confirmPurge() {
-		if (confirm("<spring:message code='appointment.AppointmentType.purgeConfirmMessage' />")) {
+		if (confirm("<spring:message code='appointmentscheduling.AppointmentType.purgeConfirmMessage' />")) {
 			return true;
 		} else {
 			return false;
@@ -27,7 +27,7 @@
       }
    }
 </script>
-<h2><spring:message code="appointment.AppointmentType.title"/></h2>
+<h2><spring:message code="appointmentscheduling.AppointmentType.title"/></h2>
 
 <spring:hasBindErrors name="appointmentType">
 	<spring:message code="fix.error"/>
@@ -38,7 +38,7 @@
 <table>
 	<tr class="boxHeader steps">
 				<td colspan="2"><spring:message
-						code="appointment.AppointmentType.steps.details" /></td>
+						code="appointmentscheduling.AppointmentType.steps.details" /></td>
 			</tr>
 	<tr>
 		<td><spring:message code="general.name"/></td>
@@ -59,7 +59,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td valign="top"><spring:message code="appointment.AppointmentType.enterDuration"/></td>
+		<td valign="top"><spring:message code="appointmentscheduling.AppointmentType.enterDuration"/></td>
 		<td valign="top">
 			<spring:bind path="appointmentType.duration">
 				<input type="text" name="duration" value="${status.value}" size="35" />
@@ -76,7 +76,7 @@
 </table>
 <br />
 
-<input type="submit" class="appointmentButton" value="<spring:message code="appointment.AppointmentType.save"/>" name="save">
+<input type="submit" class="appointmentButton" value="<spring:message code="appointmentscheduling.AppointmentType.save"/>" name="save">
 
 </fieldset>
 </form>
@@ -86,7 +86,7 @@
 <c:if test="${not appointmentType.retired && not empty appointmentType.appointmentTypeId}">
 	<form method="post">
 		<fieldset>
-			<h4><spring:message code="appointment.AppointmentType.retireAppointmentType"/></h4>
+			<h4><spring:message code="appointmentscheduling.AppointmentType.retireAppointmentType"/></h4>
 
 			<b><spring:message code="general.reason"/></b>
 			<input type="text" value="" size="40" name="retireReason" />
@@ -96,7 +96,7 @@
 				</c:forEach>
 			</spring:hasBindErrors>
 			<br/>
-			<input type="submit" class="appointmentButton" value='<spring:message code="appointment.AppointmentType.retireAppointmentType"/>' name="retire"/>
+			<input type="submit" class="appointmentButton" value='<spring:message code="appointmentscheduling.AppointmentType.retireAppointmentType"/>' name="retire"/>
 		</fieldset>
 	</form>
 </c:if>
@@ -104,8 +104,8 @@
 <c:if test="${appointmentType.retired && not empty appointmentType.appointmentTypeId}">
 	<form method="post">
 		<fieldset>
-			<h4><spring:message code="appointment.AppointmentType.unretireAppointmentType"/></h4>
-			<input type="submit" value='<spring:message code="appointment.AppointmentType.unretireAppointmentType"/>' name="unretire"/>
+			<h4><spring:message code="appointmentscheduling.AppointmentType.unretireAppointmentType"/></h4>
+			<input type="submit" value='<spring:message code="appointmentscheduling.AppointmentType.unretireAppointmentType"/>' name="unretire"/>
 		</fieldset>
 	</form>
 </c:if>
@@ -115,8 +115,8 @@
 <c:if test="${not empty appointmentType.appointmentTypeId}">
 	<form id="purge" method="post" onsubmit="return confirmPurge()">
 		<fieldset>
-			<h4><spring:message code="appointment.AppointmentType.purgeAppointmentType"/></h4>
-			<input type="submit" class="appointmentButton" value='<spring:message code="appointment.AppointmentType.purgeAppointmentType"/>' name="purge" />
+			<h4><spring:message code="appointmentscheduling.AppointmentType.purgeAppointmentType"/></h4>
+			<input type="submit" class="appointmentButton" value='<spring:message code="appointmentscheduling.AppointmentType.purgeAppointmentType"/>' name="purge" />
 		</fieldset>
 	</form>
 </c:if>

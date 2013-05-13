@@ -42,7 +42,7 @@ public class AppointmentTypeFormController {
 	/** Logger for this class and subclasses */
 	protected final Log log = LogFactory.getLog(getClass());
 	
-	@RequestMapping(value = "/module/appointment/appointmentTypeForm", method = RequestMethod.GET)
+	@RequestMapping(value = "/module/appointmentscheduling/appointmentTypeForm", method = RequestMethod.GET)
 	public void showForm() {
 		
 	}
@@ -79,7 +79,7 @@ public class AppointmentTypeFormController {
 					return null;
 				} else {
 					appointmentService.saveAppointmentType(appointmentType);
-					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentType.saved");
+					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointmentscheduling.AppointmentType.saved");
 				}
 			}
 
@@ -92,13 +92,15 @@ public class AppointmentTypeFormController {
 				}
 				
 				appointmentService.retireAppointmentType(appointmentType, retireReason);
-				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentType.retiredSuccessfully");
+				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
+				    "appointmentscheduling.AppointmentType.retiredSuccessfully");
 			}
 
 			// if the user is unretiring the AppointmentType
 			else if (request.getParameter("unretire") != null) {
 				appointmentService.unretireAppointmentType(appointmentType);
-				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentType.unretiredSuccessfully");
+				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
+				    "appointmentscheduling.AppointmentType.unretiredSuccessfully");
 			}
 
 			// if the user is purging the appointmentType
@@ -106,8 +108,8 @@ public class AppointmentTypeFormController {
 				
 				try {
 					appointmentService.purgeAppointmentType(appointmentType);
-					httpSession
-					        .setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentType.purgedSuccessfully");
+					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
+					    "appointmentscheduling.AppointmentType.purgedSuccessfully");
 				}
 				catch (DataIntegrityViolationException e) {
 					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "error.object.inuse.cannot.purge");

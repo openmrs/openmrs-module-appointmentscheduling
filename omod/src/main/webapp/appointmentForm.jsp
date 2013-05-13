@@ -3,19 +3,19 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 <openmrs:htmlInclude file="/scripts/timepicker/timepicker.js" />
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/Scripts/jquery.dataTables.js" />
+	file="/moduleResources/appointmentscheduling/Scripts/jquery.dataTables.js" />
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/Scripts/jquery.maxlength.js" />
+	file="/moduleResources/appointmentscheduling/Scripts/jquery.maxlength.js" />
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/Scripts/queryParameters.js" />
+	file="/moduleResources/appointmentscheduling/Scripts/queryParameters.js" />
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/Styles/createAppointmentStyle.css" />
+	file="/moduleResources/appointmentscheduling/Styles/createAppointmentStyle.css" />
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/Styles/appointment_jQueryDatatable.css" />
+	file="/moduleResources/appointmentscheduling/Styles/appointment_jQueryDatatable.css" />
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css" />
+	file="/moduleResources/appointmentscheduling/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css" />
 	
-<openmrs:require privilege="Schedule Appointments" otherwise="/login.htm" redirect="/module/appointment/appointmentForm.form" />
+<openmrs:require privilege="Schedule Appointments" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentForm.form" />
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
@@ -70,7 +70,7 @@
 										"bVisible" : true
 									} ],
 									"oLanguage": {
- 										"sZeroRecords": "<spring:message code='appointment.Appointment.create.table.empty' />"
+ 										"sZeroRecords": "<spring:message code='appointmentscheduling.Appointment.create.table.empty' />"
 									},
 									"aLengthMenu" : [ [10, 25, 50, -1 ],
 											[10, 25, 50, "All" ] ],
@@ -89,10 +89,10 @@
 																"<table style='margin:10px; float:right; display:inline-block;' >"+
 																	"<tr><td><openmrs:hasPrivilege privilege='Squeezing Appointments'>"+
 																		"<input type=\"checkbox\" name=\"includeFull\" value=\"true\" onchange='this.form.submit();' ${(param.includeFull=='true') ? 'checked' : ''}>"+
-																			"<spring:message code='appointment.Appointment.create.label.showFull' />"+
+																			"<spring:message code='appointmentscheduling.Appointment.create.label.showFull' />"+
 																			"<br/><c:if test='${param.includeFull==\'true\'}'>'"+
-																			"<div id='slotIndex'> <img src='${pageContext.request.contextPath}/moduleResources/appointment/Images/index_fullTimeslot.png' alt='<spring:message code='appointment.Appointment.create.lbl.fullSlot'/>'/>"+
-																			" = <spring:message code='appointment.Appointment.create.lbl.fullSlot'/></div></c:if>"+
+																			"<div id='slotIndex'> <img src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/index_fullTimeslot.png' alt='<spring:message code='appointmentscheduling.Appointment.create.lbl.fullSlot'/>'/>"+
+																			" = <spring:message code='appointmentscheduling.Appointment.create.lbl.fullSlot'/></div></c:if>"+
 																	"</openmrs:hasPrivilege></td></tr>"+
 																"</table>");
 									}
@@ -111,7 +111,7 @@
 							var selectLocation = $j('#locationId');
 							//Set the Null option text (Default is empty string)
 							if (selectLocation[0][0].innerHTML == '')
-								selectLocation[0][0].innerHTML = "<spring:message code='appointment.Appointment.create.label.locationNotSpecified'/>";
+								selectLocation[0][0].innerHTML = "<spring:message code='appointmentscheduling.Appointment.create.label.locationNotSpecified'/>";
 
 						}
 
@@ -120,7 +120,7 @@
 								'click',
 								function() {
 									if($j(this).hasClass('notSelectedFullRow')){
-										if(!confirm("<spring:message code='appointment.Appointment.create.prompt.fullSlot'/> " + $j("td:eq(6)",this)[0].innerHTML))
+										if(!confirm("<spring:message code='appointmentscheduling.Appointment.create.prompt.fullSlot'/> " + $j("td:eq(6)",this)[0].innerHTML))
 											return;
 									}
 									var table = $j('#availableTimesTable')
@@ -179,16 +179,16 @@ function addQueryParameter(paramName){
 									document.getElementById('patientDataCell').innerHTML = "";
 									return;
 								}
-								var phone = "<spring:message code='appointment.Appointment.create.patientNoPhoneNumber'/>";
+								var phone = "<spring:message code='appointmentscheduling.Appointment.create.patientNoPhoneNumber'/>";
 								var dateMissedLastAppointment = null;
 								if (details.phoneNumber)
 									phone = details.phoneNumber;
 								if (details.dateMissedLastAppointment)
 									dateMissedLastAppointment = details.dateMissedLastAppointment;
-								var detailsText = "<b><spring:message code='appointment.Appointment.create.patientPhoneNumber'/></b>"
+								var detailsText = "<b><spring:message code='appointmentscheduling.Appointment.create.patientPhoneNumber'/></b>"
 										+ phone;
 								if(dateMissedLastAppointment){
-									detailsText += "<br/><spring:message code='appointment.Appointment.create.patientMissedMeeting'/><div style='color:red; display:inline-block;'><b>"+dateMissedLastAppointment+"</b></div>";
+									detailsText += "<br/><spring:message code='appointmentscheduling.Appointment.create.patientMissedMeeting'/><div style='color:red; display:inline-block;'><b>"+dateMissedLastAppointment+"</b></div>";
 								}
 								detailsText += "<br/><br/>";
 								for ( var i = 0; i < details.identifiers.length; i++) {
@@ -216,11 +216,11 @@ function addQueryParameter(paramName){
 			age += " <spring:message code='Person.age.year' />";
 			var detailsText = "<table><tr><td>";
 			detailsText += genderImg + " (" + age + ")<br/></td><td>";
-			var message = "<img src='${pageContext.request.contextPath}/moduleResources/appointment/Images/view.png' class='formIcon' alt=''/><spring:message code='appointment.Appointment.create.link.viewPatient'/>";
+			var message = "<img src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/view.png' class='formIcon' alt=''/><spring:message code='appointmentscheduling.Appointment.create.link.viewPatient'/>";
 			var link = "<a href='${pageContext.request.contextPath}/patientDashboard.form?patientId="
 					+ patientObj.patientId + "'>";
 			detailsText += link + message + "</a><br/>";
-			message = "<img src='${pageContext.request.contextPath}/moduleResources/appointment/Images/edit.png' class='formIcon' alt=''/><spring:message code='appointment.Appointment.create.link.editPatient'/>";
+			message = "<img src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/edit.png' class='formIcon' alt=''/><spring:message code='appointmentscheduling.Appointment.create.link.editPatient'/>";
 			link = "<a href='${pageContext.request.contextPath}/admin/patients/shortPatientForm.form?patientId="
 					+ patientObj.patientId + "'>";
 			detailsText += link + message + "</a>";
@@ -241,10 +241,10 @@ function addQueryParameter(paramName){
 
 <h2 id="headline">
 	<c:if test="${param.flow!='walkin'}">
-		<spring:message code="appointment.Appointment.create.titleSchedule" />
+		<spring:message code="appointmentscheduling.Appointment.create.titleSchedule" />
 	</c:if>
 	<c:if test="${param.flow=='walkin'}">
-		<spring:message code="appointment.Appointment.create.titleWalkIn" />
+		<spring:message code="appointmentscheduling.Appointment.create.titleWalkIn" />
 	</c:if>
 </h2>
 <spring:hasBindErrors name="appointment">
@@ -256,11 +256,11 @@ function addQueryParameter(paramName){
 		<table id="createAppointmentTable">
 			<tr class="boxHeader steps">
 				<td colspan="3"><spring:message
-						code="appointment.Appointment.steps.selectPatient" /></td>
+						code="appointmentscheduling.Appointment.steps.selectPatient" /></td>
 			</tr>
 			<tr>
 				<td class="formLabel"><spring:message
-						code="appointment.Appointment.create.label.findPatient" /></td>
+						code="appointmentscheduling.Appointment.create.label.findPatient" /></td>
 
 				<td><spring:bind path="appointment.patient">
 						<openmrs_tag:patientField formFieldName="patient"
@@ -278,11 +278,11 @@ function addQueryParameter(paramName){
 			</tr>
 			<tr class="boxHeader steps">
 				<td colspan="3"><spring:message
-						code="appointment.Appointment.steps.defineAppointmentProperties" /></td>
+						code="appointmentscheduling.Appointment.steps.defineAppointmentProperties" /></td>
 			</tr>
 			<tr>
 				<td class="formLabel"><spring:message
-						code="appointment.Appointment.create.label.appointmentType" /></td>
+						code="appointmentscheduling.Appointment.create.label.appointmentType" /></td>
 				<td><spring:bind path="appointment.appointmentType">
 						<select name="${status.expression}" id="appointmentTypeSelect">
 							<c:forEach var="appointmentType" items="${appointmentTypeList}">
@@ -297,17 +297,17 @@ function addQueryParameter(paramName){
 			</tr>
 			<tr>
 				<td class="formLabel"><spring:message
-						code="appointment.Appointment.create.label.location" /></td>
+						code="appointmentscheduling.Appointment.create.label.location" /></td>
 				<td><openmrs_tag:locationField formFieldName="locationId"
 						initialValue="${selectedLocation}" optionHeader="[blank]" /></td>
 			</tr>
 			<tr>
 				<td class="formLabel"><spring:message
-						code="appointment.Appointment.create.label.clinician" /></td>
+						code="appointmentscheduling.Appointment.create.label.clinician" /></td>
 				<td><select name="providerSelect" id="providerSelect">
 						<option value="" ${null==param.providerSelect ? 'selected' : ''}>
 							<spring:message
-								code="appointment.Appointment.create.label.clinicianNotSpecified" />
+								code="appointmentscheduling.Appointment.create.label.clinicianNotSpecified" />
 						</option>
 						<c:forEach var="provider" items="${providerList}">
 							<option value="${provider.providerId}"
@@ -318,28 +318,28 @@ function addQueryParameter(paramName){
 			<c:if test="${param.flow!='walkin'}">
 				<tr>
 					<td class="formLabel"><spring:message
-							code="appointment.Appointment.create.label.betweenDates" /></td>
+							code="appointmentscheduling.Appointment.create.label.betweenDates" /></td>
 					<td><input type="text" name="fromDate" id="fromDate" size="16"
 						value="${param.fromDate}" onfocus="showDateTimePicker(this)" /> <img
-						src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png"
+						src="${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/calendarIcon.png"
 						class="calendarIcon" alt=""
 						onClick="document.getElementById('fromDate').focus();" /> and <input
 						type="text" name="toDate" id="toDate" size="16"
 						value="${param.toDate}" onfocus="updateToDate(this)" /> <img
-						src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png"
+						src="${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/calendarIcon.png"
 						class="calendarIcon" alt=""
 						onClick="document.getElementById('toDate').focus();" /></td>
 				</tr>
 			</c:if>
 			<tr class="boxHeader steps">
 				<td colspan="3"><spring:message
-						code="appointment.Appointment.steps.selectTime" /></td>
+						code="appointmentscheduling.Appointment.steps.selectTime" /></td>
 			</tr>
 			<tr>
 				<td />
 				<td><input type="submit" name="findAvailableTime"
 					class="appointmentButton"
-					value="<spring:message code="appointment.Appointment.create.findTime"/>"></td>
+					value="<spring:message code="appointmentscheduling.Appointment.create.findTime"/>"></td>
 				<td><spring:bind path="appointment.timeSlot">
 						<c:if test="${status.errorMessage != ''}">
 							<span class="error">${status.errorMessage}</span>
@@ -352,17 +352,17 @@ function addQueryParameter(paramName){
 						<thead>
 							<tr>
 								<th style="display:none;"><spring:message
-										code="appointment.Appointment.create.header.selectedOption" /></th>
+										code="appointmentscheduling.Appointment.create.header.selectedOption" /></th>
 								<th><spring:message
-										code="appointment.Appointment.create.header.clinician" /></th>
+										code="appointmentscheduling.Appointment.create.header.clinician" /></th>
 								<th><spring:message
-										code="appointment.Appointment.create.header.appointmentType" /></th>
+										code="appointmentscheduling.Appointment.create.header.appointmentType" /></th>
 								<th><spring:message
-										code="appointment.Appointment.create.header.date" /></th>
+										code="appointmentscheduling.Appointment.create.header.date" /></th>
 								<th><spring:message
-										code="appointment.Appointment.create.header.timeSlot" /></th>
+										code="appointmentscheduling.Appointment.create.header.timeSlot" /></th>
 								<th><spring:message
-										code="appointment.Appointment.create.header.location" /></th>
+										code="appointmentscheduling.Appointment.create.header.location" /></th>
 								<th>Hidden Sortable Date</th>
 								<th style="display:none;">Hidden Sortable Timeleft</th>
 							</tr>
@@ -427,11 +427,11 @@ function addQueryParameter(paramName){
 			</tr>
 			<tr class="boxHeader steps">
 				<td colspan="3"><spring:message
-						code="appointment.Appointment.steps.enterNotes" /></td>
+						code="appointmentscheduling.Appointment.steps.enterNotes" /></td>
 			</tr>
 			<tr>
 				<td class="formLabel"><spring:message
-						code="appointment.Appointment.create.label.reason" /></td>
+						code="appointmentscheduling.Appointment.create.label.reason" /></td>
 				<spring:bind path="appointment.reason">
 					<td><textarea name="reason" rows="3" cols="50"
 							style="resize: none"
@@ -440,12 +440,12 @@ function addQueryParameter(paramName){
 				<input type="hidden" name="maxlength" value="1024" />
 			</tr>
 			<tr><td></td><td style="font-size:12px;">
-				(<spring:message code="appointment.Appointment.create.label.charactersLeft" /><span class="charsLeft">1024</span>)
+				(<spring:message code="appointmentscheduling.Appointment.create.label.charactersLeft" /><span class="charsLeft">1024</span>)
 			</td></tr>
 			<tr>
 				<td></td>
 				<td><input type="submit" class="saveButton"
-					value="<spring:message code="appointment.Appointment.create.save"/>"
+					value="<spring:message code="appointmentscheduling.Appointment.create.save"/>"
 					name="save"></td>
 			</tr>
 		</table>

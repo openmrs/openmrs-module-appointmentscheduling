@@ -1,22 +1,22 @@
 <ul id="menu">
 	<openmrs:hasPrivilege privilege='View Appointment Types'>
-	<li <c:if test='<%= request.getRequestURI().contains("appointment/appointmentTypeList.jsp") %>'>class="active"</c:if>>
-		<a href="${pageContext.request.contextPath}/module/appointment/appointmentTypeList.list">
-			<spring:message code="appointment.AppointmentType.manage"/>
+	<li <c:if test='<%= request.getRequestURI().contains("appointmentscheduling/appointmentTypeList.jsp") %>'>class="active"</c:if>>
+		<a href="${pageContext.request.contextPath}/module/appointmentscheduling/appointmentTypeList.list">
+			<spring:message code="appointmentscheduling.AppointmentType.manage"/>
 		</a>
 	</li>
 	</openmrs:hasPrivilege>
 	<openmrs:hasPrivilege privilege='View Appointment Blocks'>
-	<li <c:if test='<%= request.getRequestURI().contains("appointment/appointmentBlockList.jsp") %>'>class="active"</c:if>>
-		<a href="${pageContext.request.contextPath}/module/appointment/appointmentBlockList.list">
-			<spring:message code="appointment.AppointmentBlock.manage.title"/>
+	<li <c:if test='<%= request.getRequestURI().contains("appointmentscheduling/appointmentBlockList.jsp") %>'>class="active"</c:if>>
+		<a href="${pageContext.request.contextPath}/module/appointmentscheduling/appointmentBlockList.list">
+			<spring:message code="appointmentscheduling.AppointmentBlock.manage.title"/>
 		</a>
 	</li>
 	</openmrs:hasPrivilege>
 	<openmrs:hasPrivilege privilege='View Appointments'>
-	<li <c:if test='<%= request.getRequestURI().contains("appointment/appointmentList.jsp") %>'>class="active"</c:if>>
-		<a href="${pageContext.request.contextPath}/module/appointment/appointmentList.list">
-			<spring:message code="appointment.Appointment.list.manage.title"/>
+	<li <c:if test='<%= request.getRequestURI().contains("appointmentscheduling/appointmentList.jsp") %>'>class="active"</c:if>>
+		<a href="${pageContext.request.contextPath}/module/appointmentscheduling/appointmentList.list">
+			<spring:message code="appointmentscheduling.Appointment.list.manage.title"/>
 		</a>
 	</li>
 	</openmrs:hasPrivilege>

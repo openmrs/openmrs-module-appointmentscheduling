@@ -1,16 +1,16 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 
 <%@ include file="/WEB-INF/template/header.jsp"%>
-<openmrs:htmlInclude file="/moduleResources/appointment/Styles/AppointmentBlockStyle.css"/>
+<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/AppointmentBlockStyle.css"/>
 <openmrs:htmlInclude file="/scripts/timepicker/timepicker.js" />
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css" />
+	file="/moduleResources/appointmentscheduling/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css" />
 
-<openmrs:require privilege="Manage Appointment Blocks" otherwise="/login.htm" redirect="/module/appointment/appointmentBlockForm.form" />
+<openmrs:require privilege="Manage Appointment Blocks" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentBlockForm.form" />
 
 <script type="text/javascript">
 	function confirmPurge() {
-		if (confirm("<spring:message code='appointment.AppointmentBlock.purgeConfirmMessage' />")) {
+		if (confirm("<spring:message code='appointmentscheduling.AppointmentBlock.purgeConfirmMessage' />")) {
 			return true;
 		} else {
 			return false;
@@ -110,7 +110,7 @@
 	}
 </script>
 <h2>
-	<spring:message code="appointment.AppointmentBlock.manage.title" />
+	<spring:message code="appointmentscheduling.AppointmentBlock.manage.title" />
 </h2>
 
 <spring:hasBindErrors name="appointmentBlock">
@@ -121,7 +121,7 @@
 	<fieldset>
 		<table id="appointmentBlockFormTable">
 			<tr>
-			<tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.selectClinician"/></td></tr>
+			<tr class="boxHeader steps"><td colspan="3"><spring:message code="appointmentscheduling.AppointmentBlock.steps.selectClinician"/></td></tr>
 				<td><spring:bind path="appointmentBlock.provider">
 					<select name="${status.expression}" id="providerSelect">
 					<c:forEach items="${providerList}" var="provider">
@@ -135,7 +135,7 @@
 				</spring:bind>
 				
 			</tr>
-			<tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.selectLocation"/></td></tr>
+			<tr class="boxHeader steps"><td colspan="3"><spring:message code="appointmentscheduling.AppointmentBlock.steps.selectLocation"/></td></tr>
 			<tr>
 				<td><spring:bind path="appointmentBlock.location">
               			      <openmrs_tag:locationField formFieldName="location" initialValue="${status.value}"/>
@@ -146,10 +146,10 @@
              			       </spring:bind>
           				     </td>
 			</tr>
-			<tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.selectAppointmentTypes"/></td></tr>
+			<tr class="boxHeader steps"><td colspan="3"><spring:message code="appointmentscheduling.AppointmentBlock.steps.selectAppointmentTypes"/></td></tr>
 			<tr>
 				<td>
-					<fieldset align="center"><legend><spring:message code="appointment.AppointmentBlock.availableTypes"/></legend>
+					<fieldset align="center"><legend><spring:message code="appointmentscheduling.AppointmentBlock.availableTypes"/></legend>
 					<select multiple name="appointmentTypeSelect" ondblclick="updateAppointmentTypes(true)"
 						id="appointmentTypeSelect">
 							<c:forEach var="appointmentType" items="${appointmentTypeList}">
@@ -167,7 +167,7 @@
 				<td>
 
 				<spring:bind path="appointmentBlock.types">
-				<fieldset align="center"><legend><spring:message code="appointment.AppointmentBlock.chosenTypes"/></legend>
+				<fieldset align="center"><legend><spring:message code="appointmentscheduling.AppointmentBlock.chosenTypes"/></legend>
 				<select multiple name="${status.expression}" ondblclick="updateAppointmentTypes(false)" id="currentAppointmentTypes">
 						<c:forEach var="appointmentType" items="${appointmentBlock.types}">
 							<option value="${appointmentType.appointmentTypeId}"
@@ -182,15 +182,15 @@
 			</tr>
 			<tr></tr>
 
-			<tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.selectTimeInterval"/></td></tr>
+			<tr class="boxHeader steps"><td colspan="3"><spring:message code="appointmentscheduling.AppointmentBlock.steps.selectTimeInterval"/></td></tr>
 		
 			<tr>
 				<td>
 					<spring:bind path="appointmentBlock.startDate">
-                    <fieldset align="center"><legend><spring:message code="appointment.AppointmentBlock.startDate"/></legend>
+                    <fieldset align="center"><legend><spring:message code="appointmentscheduling.AppointmentBlock.startDate"/></legend>
 					<input type="text" name="startDate" id="startDate" size="16" value="${status.value}"
 					onfocus="showDateTimePicker(this)" /> <img
-					src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png"
+					src="${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/calendarIcon.png"
 					class="calendarIcon" alt=""
 					onClick="document.getElementById('startDate').focus();" />
 					</fieldset>
@@ -200,10 +200,10 @@
 				<td></td>
 				<td>
 					<spring:bind path="appointmentBlock.endDate">
-                    <fieldset align="center"><legend><spring:message code="appointment.AppointmentBlock.endDate"/></legend>
+                    <fieldset align="center"><legend><spring:message code="appointmentscheduling.AppointmentBlock.endDate"/></legend>
 					<input type="text" name="endDate" id="endDate" size="16" value="${status.value}"
 					onfocus="updateToDate(this)" /> <img
-					src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png"
+					src="${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/calendarIcon.png"
 					class="calendarIcon" alt=""
 					onClick="document.getElementById('endDate').focus();" />
                     </fieldset>
@@ -211,14 +211,14 @@
 					</spring:bind>
 				</td>
 			</tr>
-<tr class="boxHeader steps"><td colspan="3"><spring:message code="appointment.AppointmentBlock.steps.defineTimeSlotLength"/></td></tr>
+<tr class="boxHeader steps"><td colspan="3"><spring:message code="appointmentscheduling.AppointmentBlock.steps.defineTimeSlotLength"/></td></tr>
 			<tr>
 				<td><input type="text" name="timeSlotLength" id="timeSlotLength" value="${timeSlotLength}" size="8" />
-				<spring:message code="appointment.AppointmentBlock.minutes"/></td>
+				<spring:message code="appointmentscheduling.AppointmentBlock.minutes"/></td>
 			</tr>
 		</table>
 		<br /> <input type="submit" class="appointmentBlockButton" onClick="selectAllTypes()"
-			value="<spring:message code="appointment.AppointmentBlock.save"/>"
+			value="<spring:message code="appointmentscheduling.AppointmentBlock.save"/>"
 			name="save">
 		
 	</fieldset>

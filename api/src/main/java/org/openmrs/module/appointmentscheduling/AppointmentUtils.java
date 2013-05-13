@@ -19,4 +19,12 @@ public class AppointmentUtils {
 	public static final String PRIV_SQUEEZE_APPOINTMENTS = "Squeezing Appointments";
 	
 	public static final String PRIV_VIEW_APPOINTMENT_HISTORY_TAB = "View Patient Appointment History";
+	
+	//Global Properties
+	
+	public static final String GP_PATIENT_PHONE_NUMBER = "appointmentscheduling.phoneNumberPersonAttributeTypeId";
+	
+	public static final String GP_DEFAULT_TIME_SLOT_DURATION = "appointmentscheduling.defaultTimeSlotDuration";
+	
+	public static final String GP_DEFAULT_VISIT_TYPE = "appointmentscheduling.defaultVisitType";
 }

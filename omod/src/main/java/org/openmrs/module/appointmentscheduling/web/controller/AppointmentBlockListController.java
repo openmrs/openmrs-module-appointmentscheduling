@@ -53,7 +53,7 @@ public class AppointmentBlockListController {
 	/** Logger for this class and subclasses */
 	protected final Log log = LogFactory.getLog(getClass());
 	
-	@RequestMapping(value = "/module/appointment/appointmentBlockList", method = RequestMethod.GET)
+	@RequestMapping(value = "/module/appointmentscheduling/appointmentBlockList", method = RequestMethod.GET)
 	public void showForm(HttpServletRequest request, ModelMap model) throws ParseException {
 		//Initializing the default properties of the appointment block list page.
 		if (Context.isAuthenticated()) {
@@ -115,7 +115,7 @@ public class AppointmentBlockListController {
 		HttpSession httpSession = request.getSession();
 		if (!fromDate.before(toDate)) {
 			httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,
-			    "appointment.AppointmentBlock.error.InvalidDateInterval");
+			    "appointmentscheduling.AppointmentBlock.error.InvalidDateInterval");
 		}
 		//save details from the appointment block list page using http session
 		httpSession.setAttribute("chosenLocation", location);
@@ -127,7 +127,7 @@ public class AppointmentBlockListController {
 			if (appointmentBlockId == null) {
 				//In case appointment block was not selected
 				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
-				    "appointment.AppointmentBlock.error.selectAppointmentBlock");
+				    "appointmentscheduling.AppointmentBlock.error.selectAppointmentBlock");
 				return null;
 			}
 		}
@@ -145,13 +145,13 @@ public class AppointmentBlockListController {
 				if (appointmentBlockId == null) {
 					//In case appointment block was not selected
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
-					    "appointment.AppointmentBlock.error.selectAppointmentBlock");
+					    "appointmentscheduling.AppointmentBlock.error.selectAppointmentBlock");
 					return null;
 				}
 				String voidReason = "Some Reason";//request.getParameter("voidReason");
 				if (!(StringUtils.hasText(voidReason))) {
 					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,
-					    "appointment.AppointmentBlock.error.voidReasonEmpty");
+					    "appointmentscheduling.AppointmentBlock.error.voidReasonEmpty");
 					return null;
 				}
 				List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
@@ -176,7 +176,8 @@ public class AppointmentBlockListController {
 					appointmentService.voidTimeSlot(timeSlot, voidReason);
 					
 				}
-				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentBlock.voidedSuccessfully");
+				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
+				    "appointmentscheduling.AppointmentBlock.voidedSuccessfully");
 				
 				return "redirect:appointmentBlockList.list";
 			}
@@ -185,7 +186,7 @@ public class AppointmentBlockListController {
 				if (appointmentBlockId == null) {
 					//In case appointment block was not selected
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
-					    "appointment.AppointmentBlock.error.selectAppointmentBlock");
+					    "appointmentscheduling.AppointmentBlock.error.selectAppointmentBlock");
 					return null;
 				}
 				List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
@@ -198,7 +199,7 @@ public class AppointmentBlockListController {
 					}
 					appointmentService.purgeAppointmentBlock(appointmentBlock);
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
-					    "appointment.AppointmentBlock.purgedSuccessfully");
+					    "appointmentscheduling.AppointmentBlock.purgedSuccessfully");
 				}
 				catch (DataIntegrityViolationException e) {
 					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "error.object.inuse.cannot.purge");
@@ -215,7 +216,7 @@ public class AppointmentBlockListController {
 				if (appointmentBlockId == null) {
 					//In case appointment block was not selected
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
-					    "appointment.AppointmentBlock.error.selectAppointmentBlock");
+					    "appointmentscheduling.AppointmentBlock.error.selectAppointmentBlock");
 					return null;
 				}
 				List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
@@ -238,7 +239,8 @@ public class AppointmentBlockListController {
 					appointmentService.unvoidTimeSlot(timeSlot);
 				}
 				
-				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentBlock.unvoidedSuccessfully");
+				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
+				    "appointmentscheduling.AppointmentBlock.unvoidedSuccessfully");
 				
 				return "redirect:appointmentBlockList.list";
 			}
@@ -248,20 +250,20 @@ public class AppointmentBlockListController {
 				if (appointmentBlockId == null) {
 					//In case appointment block was not selected
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
-					    "appointment.AppointmentBlock.error.selectAppointmentBlock");
+					    "appointmentscheduling.AppointmentBlock.error.selectAppointmentBlock");
 					return null;
 				}
 				if (appointmentBlockId != null) {
 					return "redirect:appointmentBlockForm.form?appointmentBlockId=" + appointmentBlockId;
 				} else {
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
-					    "appointment.AppointmentBlock.error.selectAppointmentBlock");
+					    "appointmentscheduling.AppointmentBlock.error.selectAppointmentBlock");
 				}
 			} else if (action != null && action.equals("notifyToSelectAppointmentBlock")) {
 				if (appointmentBlockId == null) {
 					//In case appointment block was not selected
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
-					    "appointment.AppointmentBlock.error.selectAppointmentBlock");
+					    "appointmentscheduling.AppointmentBlock.error.selectAppointmentBlock");
 					return null;
 				}
 			}

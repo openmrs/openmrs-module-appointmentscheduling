@@ -1,10 +1,10 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
 
 <openmrs:htmlInclude file="/scripts/jquery/jsTree/jquery.tree.min.js" />
-<openmrs:htmlInclude file="/moduleResources/appointment/Scripts/jquery.dataTables.js" />
-<openmrs:htmlInclude file="/moduleResources/appointment/Styles/appointmentPortlet_jQueryDatatable.css"/>
-<openmrs:htmlInclude file="/moduleResources/appointment/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css"/>
-<openmrs:htmlInclude file="/moduleResources/appointment/Styles/appointmentPortletStyle.css" />
+<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/jquery.dataTables.js" />
+<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/appointmentPortlet_jQueryDatatable.css"/>
+<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css"/>
+<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/appointmentPortletStyle.css" />
  <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/engine.js'></script>
@@ -15,7 +15,7 @@
 		//Navigate to appointmentForm.form
 		function addNewAppointment(){
 			var patientId = document.getElementById("patientId").value;
-			window.location = "module/appointment/appointmentForm.form?patientId="+patientId;
+			window.location = "module/appointmentscheduling/appointmentForm.form?patientId="+patientId;
 		}		
 		//On the page load updates necessary stuff
          $j(document).ready(function() {      	 
@@ -52,7 +52,7 @@
 					$j(".addons").prepend(
 									"<table style='margin:10px; float:right; display:inline-block;' >"+
 										"<tr><td>"+
-											"<openmrs:hasPrivilege privilege='Schedule Appointments'><input type='button' value='<spring:message code='appointment.Appointment.add'/>' class='saveButton buttonShadow' onclick='addNewAppointment()'/></openmrs:hasPrivilege>"+
+											"<openmrs:hasPrivilege privilege='Schedule Appointments'><input type='button' value='<spring:message code='appointmentscheduling.Appointment.add'/>' class='saveButton buttonShadow' onclick='addNewAppointment()'/></openmrs:hasPrivilege>"+
 										"</tr></td>"+
 									"</table>");
 				}
@@ -71,11 +71,11 @@
 		                <thead>
 		                    <tr>
 		                        <th align="center" style="display:none;">select</th>
-		                        <th align="center"><spring:message code='appointment.Appointment.list.column.date'/></th>
-	                            <th align="center"><spring:message code='appointment.Appointment.list.column.time'/></th>
-	                            <th align="center"><spring:message code='appointment.Appointment.list.column.clinician'/></th>
-                        		<th align="center"><spring:message code='appointment.Appointment.list.column.location'/></th>
-                     			<th align="center"><spring:message code='appointment.Appointment.list.column.type'/></th>
+		                        <th align="center"><spring:message code='appointmentscheduling.Appointment.list.column.date'/></th>
+	                            <th align="center"><spring:message code='appointmentscheduling.Appointment.list.column.time'/></th>
+	                            <th align="center"><spring:message code='appointmentscheduling.Appointment.list.column.clinician'/></th>
+                        		<th align="center"><spring:message code='appointmentscheduling.Appointment.list.column.location'/></th>
+                     			<th align="center"><spring:message code='appointmentscheduling.Appointment.list.column.type'/></th>
        							<th align="center"><spring:message code='appointment.Appointment.list.column.status'/></th>
 		                        <th align="center">Hidden sortable dates</th>
 		                    </tr>

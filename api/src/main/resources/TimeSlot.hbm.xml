@@ -5,7 +5,7 @@
 
 <hibernate-mapping package="org.openmrs.module.appointmentscheduling">
 
-	<class name="TimeSlot" table="${project.parent.artifactId}_appointment_time_slot">
+	<class name="TimeSlot" table="${project.parent.artifactId}_time_slot">
 		<id name="timeSlotId" type="int" column="time_slot_id" unsaved-value="0">
 			<generator class="native" />
 		</id>

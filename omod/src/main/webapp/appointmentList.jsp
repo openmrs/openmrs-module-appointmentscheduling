@@ -4,27 +4,27 @@
 <%@ include file="localHeader.jsp"%>
 
 
-<openmrs:htmlInclude file="/moduleResources/appointment/Scripts/timepicker.js" />
-<openmrs:htmlInclude file="/moduleResources/appointment/Scripts/date.format.js" />
+<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/timepicker.js" />
+<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/date.format.js" />
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/Scripts/jquery.dataTables.js" />
+	file="/moduleResources/appointmentscheduling/Scripts/jquery.dataTables.js" />
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/Scripts/statusButtons.js" />
+	file="/moduleResources/appointmentscheduling/Scripts/statusButtons.js" />
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/Styles/createAppointmentStyle.css" />
+	file="/moduleResources/appointmentscheduling/Styles/createAppointmentStyle.css" />
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/Styles/appointmentList_jQueryDatatable.css" />
+	file="/moduleResources/appointmentscheduling/Styles/appointmentList_jQueryDatatable.css" />
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css" />
+	file="/moduleResources/appointmentscheduling/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css" />
 
 <openmrs:htmlInclude 
-	file="/moduleResources/appointment/TableTools/media/ZeroClipboard/ZeroClipboard.js" /> 
+	file="/moduleResources/appointmentscheduling/TableTools/media/ZeroClipboard/ZeroClipboard.js" /> 
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/TableTools/media/js/TableTools.js" />
+	file="/moduleResources/appointmentscheduling/TableTools/media/js/TableTools.js" />
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/TableTools/media/css/TableTools.css" />
+	file="/moduleResources/appointmentscheduling/TableTools/media/css/TableTools.css" />
 	
-<openmrs:require privilege="View Appointments" otherwise="/login.htm" redirect="/module/appointment/appointmentList.list" />
+<openmrs:require privilege="View Appointments" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentList.list" />
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
@@ -44,7 +44,7 @@
 						$j("#fromDate").keypress(function(event) {event.preventDefault();});
 						$j("#toDate").keypress(function(event) {event.preventDefault();});
 						
-						TableToolsInit.sSwfPath = "${pageContext.request.contextPath}/moduleResources/appointment/TableTools/media/swf/ZeroClipboard.swf";
+						TableToolsInit.sSwfPath = "${pageContext.request.contextPath}/moduleResources/appointmentscheduling/TableTools/media/swf/ZeroClipboard.swf";
 
 						//Datatables.net
 						var oTable = $j('#appointmentsTable')
@@ -76,7 +76,7 @@
 												"bVisible" : false
 											}],
 											"oLanguage": {
-		 										"sZeroRecords": "<spring:message code='appointment.Appointment.list.table.empty' />"
+		 										"sZeroRecords": "<spring:message code='appointmentscheduling.Appointment.list.table.empty' />"
 											},
 											"aLengthMenu" : [
 													[25, 50, -1 ],
@@ -98,21 +98,21 @@
 																"<table style='margin:10px; float:right; display:inline-block;' >"+
 																	"<tr><td>"+
 																		"<input type=\"checkbox\" name=\"includeCancelled\" value=\"true\" onchange='this.form.submit();' ${(param.includeCancelled=='true' || param.appointmentStatusSelect=='Cancelled') ? 'checked' : ''}>"+
-																			"<spring:message code='appointment.Appointment.list.label.showCancelled' />"+
+																			"<spring:message code='appointmentscheduling.Appointment.list.label.showCancelled' />"+
 																	"</td></tr>"+
 																	"<tr><td>"+
-																		"<openmrs:hasPrivilege privilege='Schedule Appointments'><input type='button' value='<spring:message code='appointment.Appointment.add'/>' class='saveButton buttonShadow' onclick='ScheduleAppointmentDialogOpen();'/></openmrs:hasPrivilege>"+
+																		"<openmrs:hasPrivilege privilege='Schedule Appointments'><input type='button' value='<spring:message code='appointmentscheduling.Appointment.add'/>' class='saveButton buttonShadow' onclick='ScheduleAppointmentDialogOpen();'/></openmrs:hasPrivilege>"+
 																	"</tr></td>"+
 																"</table>");
 												//Clear and prepend the status buttons
 												$j(".statusDiv").html("");
 												$j('.statusDiv')
 														.prepend(
-																"<openmrs:hasPrivilege privilege='Update Appointment Status'><input type='submit' name='startConsultation' id='startConsultButton' class='appointmentButton buttonShadow' value='<spring:message code='appointment.Appointment.list.button.startConsultation'/>' disabled />"+
-																"<input type='submit' name='endConsultation' id='endConsultButton' class='appointmentButton buttonShadow' value='<spring:message code='appointment.Appointment.list.button.endConsultation'/>' disabled />"+
-																"<input type='submit' name='checkIn' id='checkInButton' class='appointmentButton buttonShadow' style='margin-left:16px; margin-right:16px;' value='<spring:message code='appointment.Appointment.list.button.checkIn'/>' disabled />"+
-																"<input type='submit' name='missAppointment' id='missButton' class='appointmentButton buttonShadow' value='<spring:message code='appointment.Appointment.list.button.missAppointment'/>' disabled />"+
-																"<input type='submit' name='cancelAppointment' id='cancelButton' class='appointmentButton buttonShadow' value='<spring:message code='appointment.Appointment.list.button.cancelAppointment'/>' disabled />"+
+																"<openmrs:hasPrivilege privilege='Update Appointment Status'><input type='submit' name='startConsultation' id='startConsultButton' class='appointmentButton buttonShadow' value='<spring:message code='appointmentscheduling.Appointment.list.button.startConsultation'/>' disabled />"+
+																"<input type='submit' name='endConsultation' id='endConsultButton' class='appointmentButton buttonShadow' value='<spring:message code='appointmentscheduling.Appointment.list.button.endConsultation'/>' disabled />"+
+																"<input type='submit' name='checkIn' id='checkInButton' class='appointmentButton buttonShadow' style='margin-left:16px; margin-right:16px;' value='<spring:message code='appointmentscheduling.Appointment.list.button.checkIn'/>' disabled />"+
+																"<input type='submit' name='missAppointment' id='missButton' class='appointmentButton buttonShadow' value='<spring:message code='appointmentscheduling.Appointment.list.button.missAppointment'/>' disabled />"+
+																"<input type='submit' name='cancelAppointment' id='cancelButton' class='appointmentButton buttonShadow' value='<spring:message code='appointmentscheduling.Appointment.list.button.cancelAppointment'/>' disabled />"+
 																"<br/></openmrs:hasPrivilege>"
 																);
 											},
@@ -154,7 +154,7 @@
 								var selectLocation = $j('#locationId');
 								//Set the Null option text (Default is empty string)
 								if (selectLocation[0][0].innerHTML == '')
-									selectLocation[0][0].innerHTML = "<spring:message code='appointment.Appointment.create.label.locationNotSpecified'/>";
+									selectLocation[0][0].innerHTML = "<spring:message code='appointmentscheduling.Appointment.create.label.locationNotSpecified'/>";
 
 							}
 							
@@ -162,7 +162,7 @@
 							initStatusButtons();
 							
 							//Init timeout time
-							var propertyValue = "<openmrs:globalProperty key='appointment.manageAppointmentsFormTimout' />";
+							var propertyValue = "<openmrs:globalProperty key='appointmentscheduling.manageAppointmentsFormTimout' />";
 							if(propertyValue!=null){
 								timeout = parseInt(propertyValue) * 1000;
 								//Minimum 60 seconds
@@ -296,7 +296,7 @@
 		var toDate = new Date($j('#toDate')[0].value);
 		if(toDate!=null && fromDate!=null && toDate<fromDate){
 			$j('#errorsDiv').show();
-			$j('#errorsDiv').html("<spring:message code='appointment.Appointment.error.InvalidDateInterval' />");
+			$j('#errorsDiv').html("<spring:message code='appointmentscheduling.Appointment.error.InvalidDateInterval' />");
 			return false;
 		}
 		else
@@ -314,45 +314,45 @@
 </script>
 
 <h2>
-	<spring:message code="appointment.Appointment.list.manage.title" />
+	<spring:message code="appointmentscheduling.Appointment.list.manage.title" />
 </h2>
 <form:form method="post" modelAttribute="selectedAppointment" id="manageAppointmentsForm" onsubmit='return validateDates()'>
 
 <br />
 <br />
 <b class="boxHeader"><spring:message
-		code="appointment.Appointment.list.filterTitle" /></b>
+		code="appointmentscheduling.Appointment.list.filterTitle" /></b>
 <div class="error" id="errorsDiv" ></div>
 <fieldset>
 <table>
 <tr>
 	<tr>
 		<td class="formLabel"><spring:message
-				code="appointment.Appointment.list.label.betweenDates" /></td>
+				code="appointmentscheduling.Appointment.list.label.betweenDates" /></td>
 		<td><input type="text" name="fromDate" id="fromDate" size="18"
 			value="${param.fromDate}" onfocus="showDateTimePicker(this)" /> <img
-			src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png"
+			src="${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/calendarIcon.png"
 			class="calendarIcon" alt=""
 			onClick="document.getElementById('fromDate').focus();" /> and <input
 			type="text" name="toDate" id="toDate" size="18"
 			value="${param.toDate}" onfocus="updateToDate(this)" /> <img
-			src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png"
+			src="${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/calendarIcon.png"
 			class="calendarIcon" alt=""
 			onClick="document.getElementById('toDate').focus();" /></td>
 	</tr>
 	<tr>
 		<td class="formLabel"><spring:message
-				code="appointment.Appointment.list.label.location" /></td>
+				code="appointmentscheduling.Appointment.list.label.location" /></td>
 		<td><openmrs_tag:locationField formFieldName="locationId"
 			initialValue="${selectedLocation}" optionHeader="[blank]" /></td>
 	</tr>
 	<tr>
 			<td class="formLabel"><spring:message
-					code="appointment.Appointment.list.label.clinician" /></td>
+					code="appointmentscheduling.Appointment.list.label.clinician" /></td>
 			<td><select name="providerSelect" id="providerSelect">
 					<option value="" ${null==param.providerSelect ? 'selected' : ''}>
 						<spring:message
-							code="appointment.Appointment.create.label.clinicianNotSpecified" />
+							code="appointmentscheduling.Appointment.create.label.clinicianNotSpecified" />
 					</option>
 					<c:forEach var="provider" items="${providerList}">
 						<option value="${provider.providerId}"
@@ -363,12 +363,12 @@
 	</tr>
 	<tr>
 		<td class="formLabel"><spring:message
-				code="appointment.Appointment.create.label.appointmentType" /></td>
+				code="appointmentscheduling.Appointment.create.label.appointmentType" /></td>
 		<td>
 				<select name="appointmentTypeSelect" id="appointmentTypeSelect">
 					<option value="" ${null==param.appointmentTypeSelect ? 'selected' : ''}>
 						<spring:message
-							code="appointment.Appointment.create.label.clinicianNotSpecified" />
+							code="appointmentscheduling.Appointment.create.label.clinicianNotSpecified" />
 					</option>
 					<c:forEach var="appointmentType" items="${appointmentTypeList}" >
 						<option value="${appointmentType.appointmentTypeId}" ${appointmentType.appointmentTypeId==param.appointmentTypeSelect ? 'selected' : ''}>${appointmentType.name}</option>
@@ -378,37 +378,37 @@
 	</tr>
 	<tr>
 		<td class="formLabel"><spring:message
-				code="appointment.Appointment.list.label.appointmentStatus" /></td>
+				code="appointmentscheduling.Appointment.list.label.appointmentStatus" /></td>
 		<td><select name="appointmentStatusSelect" id="appointmentStatusSelect">
 				<option value="" ${null==param.appointmentStatusSelect ? 'selected' : ''}>
 					<spring:message
-						code="appointment.Appointment.create.label.clinicianNotSpecified" />
+						code="appointmentscheduling.Appointment.create.label.clinicianNotSpecified" />
 				</option>
 				<c:forEach var="status" items="${appointmentStatusList}" >
 					<option value="${status}" ${status==param.appointmentStatusSelect ? 'selected' : ''}>${status.name}</option>
 				</c:forEach>
 		</select></td>
 	</tr>
-	<tr><td colspan="3"><input type="submit" value="<spring:message code='appointment.Appointment.list.button.applyFilters'/>"/></td></tr>
+	<tr><td colspan="3"><input type="submit" value="<spring:message code='appointmentscheduling.Appointment.list.button.applyFilters'/>"/></td></tr>
 </table>
 </fieldset>
 <br/>
 
 <b class="boxHeader"><spring:message
-		code="appointment.Appointment.list.title" /></b>
+		code="appointmentscheduling.Appointment.list.title" /></b>
 
 	<table id="appointmentsTable">
 		<thead>
 			<tr>
 				<th style="display:none;">Select</th>
-				<th><spring:message code='appointment.Appointment.list.column.patient'/></th>
-				<th><spring:message code='appointment.Appointment.list.column.date'/></th>
-				<th><spring:message code='appointment.Appointment.list.column.time'/></th>
-				<th><spring:message code='appointment.Appointment.list.column.clinician'/></th>
-				<th><spring:message code='appointment.Appointment.list.column.location'/></th>
-				<th><spring:message code='appointment.Appointment.list.column.type'/></th>
-				<th><spring:message code='appointment.Appointment.list.column.status'/></th>
-				<th><spring:message code='appointment.Appointment.list.column.waitingTime'/></th>
+				<th><spring:message code='appointmentscheduling.Appointment.list.column.patient'/></th>
+				<th><spring:message code='appointmentscheduling.Appointment.list.column.date'/></th>
+				<th><spring:message code='appointmentscheduling.Appointment.list.column.time'/></th>
+				<th><spring:message code='appointmentscheduling.Appointment.list.column.clinician'/></th>
+				<th><spring:message code='appointmentscheduling.Appointment.list.column.location'/></th>
+				<th><spring:message code='appointmentscheduling.Appointment.list.column.type'/></th>
+				<th><spring:message code='appointmentscheduling.Appointment.list.column.status'/></th>
+				<th><spring:message code='appointmentscheduling.Appointment.list.column.waitingTime'/></th>
 				<th>Hidden sortable dates</th>
 				<th>Hidden sortable waiting time</th>
 			</tr>
@@ -454,19 +454,19 @@
 
 <div id="patientDialog" >
 	<table id='patientDialogOptions' class="dialogTable">
-		<tr><td><h2><spring:message code='appointment.Appointment.list.label.selectAnAction'/></h2></td></tr>
-		<tr><td><openmrs:hasPrivilege privilege='Update Appointment Status'><div id="startConsultOption" style="display:none;" ><input type='radio' name='selectDialogAction'value='startConsultation'><spring:message code='appointment.Appointment.list.button.startConsultation' /></div></openmrs:hasPrivilege></td></tr>
-		<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/admin/patients/shortPatientForm.form?patientId="><spring:message code='appointment.Appointment.create.link.editPatient' /></input></td></tr>
-		<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/patientDashboard.form?patientId="><spring:message code='appointment.Appointment.create.link.viewPatient' /></input></td></tr>
+		<tr><td><h2><spring:message code='appointmentscheduling.Appointment.list.label.selectAnAction'/></h2></td></tr>
+		<tr><td><openmrs:hasPrivilege privilege='Update Appointment Status'><div id="startConsultOption" style="display:none;" ><input type='radio' name='selectDialogAction'value='startConsultation'><spring:message code='appointmentscheduling.Appointment.list.button.startConsultation' /></div></openmrs:hasPrivilege></td></tr>
+		<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/admin/patients/shortPatientForm.form?patientId="><spring:message code='appointmentscheduling.Appointment.create.link.editPatient' /></input></td></tr>
+		<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/patientDashboard.form?patientId="><spring:message code='appointmentscheduling.Appointment.create.link.viewPatient' /></input></td></tr>
 		</table>
 </div>
 
 <div id="scheduleDialog" >
 	<table id='scheduleDialogOptions' class="dialogTable">
-		<tr><td><h2><spring:message code='appointment.Appointment.list.label.selectAnAction'/></h2></td></tr>
-				<tr><td><input id="scheduleNewAppointmentOption" type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/module/appointment/appointmentForm.form" checked ><spring:message code='appointment.Appointment.create.link.scheduleAppointment' /></input></td></tr>
+		<tr><td><h2><spring:message code='appointmentscheduling.Appointment.list.label.selectAnAction'/></h2></td></tr>
+				<tr><td><input id="scheduleNewAppointmentOption" type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/module/appointmentscheduling/appointmentForm.form" checked ><spring:message code='appointmentscheduling.Appointment.create.link.scheduleAppointment' /></input></td></tr>
 				<tr><td><br/></td></tr>
-				<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/module/appointment/appointmentForm.form?flow=walkin"><spring:message code='appointment.Appointment.create.link.walkinAppointment' /></input></td></tr>
+				<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/module/appointmentscheduling/appointmentForm.form?flow=walkin"><spring:message code='appointmentscheduling.Appointment.create.link.walkinAppointment' /></input></td></tr>
 		</table>
 </div>
 

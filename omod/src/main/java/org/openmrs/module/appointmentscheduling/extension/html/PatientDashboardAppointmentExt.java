@@ -38,7 +38,8 @@ public class PatientDashboardAppointmentExt extends Extension {
 			    "appointmentscheduling.Appointment.list.button.endConsultation");
 			String action = "endConsult";
 			
-			return "<input type=\"button\" value=\"" + value
+			return "<input type=\"button\" value=\""
+			        + value
 			        + "\" onclick=\"window.location.href='module/appointmentscheduling/patientDashboardAppointmentExt.form?patientId="
 			        + patientId + "&action=" + action + "'\" />";
 		}
@@ -48,7 +49,8 @@ public class PatientDashboardAppointmentExt extends Extension {
 			    "appointmentscheduling.Appointment.list.button.startConsultation");
 			String action = "startConsult";
 			
-			return "<input type=\"button\" value=\"" + value
+			return "<input type=\"button\" value=\""
+			        + value
 			        + "\" onclick=\"window.location.href='module/appointmentscheduling/patientDashboardAppointmentExt.form?patientId="
 			        + patientId + "&action=" + action + "'\" />";
 		}

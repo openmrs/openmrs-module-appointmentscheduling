@@ -4,15 +4,15 @@
 <%@ include file="localHeader.jsp"%>
 
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/Scripts/jquery.dataTables.js" />
+	file="/moduleResources/appointmentscheduling/Scripts/jquery.dataTables.js" />
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/Styles/createAppointmentStyle.css" />
+	file="/moduleResources/appointmentscheduling/Styles/createAppointmentStyle.css" />
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/Styles/appointmentTypeList_jQueryDatatable.css" />
+	file="/moduleResources/appointmentscheduling/Styles/appointmentTypeList_jQueryDatatable.css" />
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css" />
+	file="/moduleResources/appointmentscheduling/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css" />
 
-<openmrs:require privilege="View Appointment Types" otherwise="/login.htm" redirect="/module/appointment/appointmentTypeList.list" />
+<openmrs:require privilege="View Appointment Types" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentTypeList.list" />
 
 <script type="text/javascript">
 	$j(document)
@@ -43,7 +43,7 @@
 											"fnDrawCallback" : function() {
 												$j(".addons").html("");
 												$j(".addons").prepend(
-																"<openmrs:hasPrivilege privilege='Manage Appointment Types'> <input type='button' value='<spring:message code='appointment.AppointmentType.add'/>' class='saveButton' style='margin:10px; float:right; display:block;' onclick='addNewAppointmentType()'/></openmrs:hasPrivilege>");
+																"<openmrs:hasPrivilege privilege='Manage Appointment Types'> <input type='button' value='<spring:message code='appointmentscheduling.AppointmentType.add'/>' class='saveButton' style='margin:10px; float:right; display:block;' onclick='addNewAppointmentType()'/></openmrs:hasPrivilege>");
 											},
 										});
 
@@ -54,21 +54,21 @@
 </script>
 
 <h2>
-	<spring:message code="appointment.AppointmentType.manage.title" />
+	<spring:message code="appointmentscheduling.AppointmentType.manage.title" />
 </h2>
 
 <br />
 <br />
 
 <b class="boxHeader"><spring:message
-		code="appointment.AppointmentType.list.title" /></b>
+		code="appointmentscheduling.AppointmentType.list.title" /></b>
 <form method="post" class="box">
 	<table id="appointmentTypesTable">
 		<thead>
 			<tr>
 				<th><spring:message code="general.name" /></th>
 				<th><spring:message code="general.description" /></th>
-				<th><spring:message code="appointment.AppointmentType.duration" />
+				<th><spring:message code="appointmentscheduling.AppointmentType.duration" />
 				</th>
 			</tr>
 		</thead>

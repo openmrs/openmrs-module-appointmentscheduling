@@ -4,23 +4,23 @@
 <openmrs:htmlInclude file="/scripts/timepicker/timepicker.js" />
 <openmrs:htmlInclude file="/scripts/jquery/jsTree/jquery.tree.min.js" />
 <openmrs:htmlInclude file="/scripts/jquery/jsTree/themes/classic/style.css" />
-<openmrs:htmlInclude file="/moduleResources/appointment/Scripts/jquery.dataTables.js" />
-<openmrs:htmlInclude file="/moduleResources/appointment/Styles/AppointmentBlockStyle.css" />
-<openmrs:htmlInclude file="/moduleResources/appointment/Styles/appointmentBlock_jQueryDatatable.css"/>
-<openmrs:htmlInclude file="/moduleResources/appointment/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css"/>
-<openmrs:htmlInclude file="/moduleResources/appointment/Scripts/date.format.js" />
+<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/jquery.dataTables.js" />
+<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/AppointmentBlockStyle.css" />
+<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/appointmentBlock_jQueryDatatable.css"/>
+<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css"/>
+<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/date.format.js" />
 
 <openmrs:htmlInclude 
-	file="/moduleResources/appointment/TableTools/media/ZeroClipboard/ZeroClipboard.js" /> 
+	file="/moduleResources/appointmentscheduling/TableTools/media/ZeroClipboard/ZeroClipboard.js" /> 
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/TableTools/media/js/TableTools.js" />
+	file="/moduleResources/appointmentscheduling/TableTools/media/js/TableTools.js" />
 <openmrs:htmlInclude
-	file="/moduleResources/appointment/TableTools/media/css/TableTools.css" />
+	file="/moduleResources/appointmentscheduling/TableTools/media/css/TableTools.css" />
 
-<openmrs:require privilege="View Appointment Blocks" otherwise="/login.htm" redirect="/module/appointment/appointmentBlockList.list" />
+<openmrs:require privilege="View Appointment Blocks" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentBlockList.list" />
 
  <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<openmrs:require privilege="View Providers" otherwise="/login.htm" redirect="/module/appointment/appointmentBlockList.list" />
+<openmrs:require privilege="View Providers" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentBlockList.list" />
 
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/engine.js'></script>
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/util.js'></script>
@@ -120,7 +120,7 @@
                                 oTable.fnClearTable();
                                 oTable.fnDestroy();
                              }
-							TableToolsInit.sSwfPath = "${pageContext.request.contextPath}/moduleResources/appointment/TableTools/media/swf/ZeroClipboard.swf";
+							TableToolsInit.sSwfPath = "${pageContext.request.contextPath}/moduleResources/appointmentscheduling/TableTools/media/swf/ZeroClipboard.swf";
                             $j('#appointmentBlocksTable').dataTable({
 								"aoColumns" : [ {
 									"bVisible"  : true												
@@ -187,14 +187,14 @@
 							if(totalAppointments != 0){
 								if(appointmentsCount[0]>0){	
 									//Notify the user that the block cannot be deleted because it have active appointments
-									document.getElementById("notifyDialogText").innerHTML = '<spring:message code="appointment.AppointmentBlock.cannotBeDeleted.part1"/> '+appointmentsCount[0]+' <spring:message code="appointment.AppointmentBlock.cannotBeDeleted.part2"/>';
+									document.getElementById("notifyDialogText").innerHTML = '<spring:message code="appointmentscheduling.AppointmentBlock.cannotBeDeleted.part1"/> '+appointmentsCount[0]+' <spring:message code="appointmentscheduling.AppointmentBlock.cannotBeDeleted.part2"/>';
 									$j('#notifyDialog').dialog('open');
 									event.stopPropagation();
 								}
 								else{
 									if(appointmentsCount[1]>0){
 										//cancel appointments that have the status : "Scheduled" but don't do anything the the other appointments with the statuses : Missed/Cancelled/Completed (If there are any).
-										document.getElementById("dialogText").innerHTML = '<spring:message code="appointment.AppointmentBlock.deletingConfirmation.part1"/> '+appointmentsCount[1]+' <spring:message code="appointment.AppointmentBlock.deletingConfirmation.part2"/>';
+										document.getElementById("dialogText").innerHTML = '<spring:message code="appointmentscheduling.AppointmentBlock.deletingConfirmation.part1"/> '+appointmentsCount[1]+' <spring:message code="appointmentscheduling.AppointmentBlock.deletingConfirmation.part2"/>';
 										$j('#deleteDialog').dialog('open');
 										event.stopPropagation();
 									}
@@ -306,24 +306,24 @@
         });
  
 </script>
-<h2><spring:message code="appointment.AppointmentBlock.manage.title"/></h2>
+<h2><spring:message code="appointmentscheduling.AppointmentBlock.manage.title"/></h2>
 <br/><br/>
  <form method="post" name="appointmentBlockListForm">
 <fieldset style="clear: both">
-        <legend><spring:message code="appointment.AppointmentBlock.legend.properties"/></legend>
+        <legend><spring:message code="appointmentscheduling.AppointmentBlock.legend.properties"/></legend>
         <div style="margin: 0.5em 0;">
                 <table>
                         <tr>
-                                <td class="formLabel"><spring:message code="appointment.AppointmentBlock.pickDate"/>: </td>
-                                <td><input type="text" name="fromDate" id="fromDate" size="18" value="${fromDate}" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('fromDate').focus();"/></td>
-                                <td><input type="text" name="toDate" id="toDate" size="18" value="${toDate}" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointment/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('toDate').focus();"/></td>
+                                <td class="formLabel"><spring:message code="appointmentscheduling.AppointmentBlock.pickDate"/>: </td>
+                                <td><input type="text" name="fromDate" id="fromDate" size="18" value="${fromDate}" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('fromDate').focus();"/></td>
+                                <td><input type="text" name="toDate" id="toDate" size="18" value="${toDate}" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('toDate').focus();"/></td>
                         </tr>
                         <tr>
-                            <td class="formLabel"><spring:message code="appointment.AppointmentBlock.column.location"/>: </td>
+                            <td class="formLabel"><spring:message code="appointmentscheduling.AppointmentBlock.column.location"/>: </td>
                             <td><openmrs_tag:locationField formFieldName="locationId" initialValue="${chosenLocation}" optionHeader="[blank]"/></td>
                         </tr>
                         <tr>
-                                <td><input type="button" class="appointmentBlockButton" value=<spring:message code="appointment.AppointmentBlock.apply"/> onClick="updateAppointmentBlockTable(false)"></td>
+                                <td><input type="button" class="appointmentBlockButton" value=<spring:message code="appointmentscheduling.AppointmentBlock.apply"/> onClick="updateAppointmentBlockTable(false)"></td>
                         </tr>
                 </table>
         </div>
@@ -334,13 +334,13 @@
 			<thead>
 				<tr>
 					<th align="center" style="display:none;">select</th>
-					<th align="center"> <spring:message code="appointment.AppointmentBlock.column.location"/> </th>
-					<th align="center"> <spring:message code="appointment.AppointmentBlock.column.provider"/> </th>
-					<th align="center"> <spring:message code="appointment.AppointmentBlock.column.appointmentTypes"/> </th>
-					<th align="center"> <spring:message code="appointment.AppointmentBlock.column.date"/> </th>
-					<th align="center"> <spring:message code="appointment.AppointmentBlock.column.startTime"/> </th>
-					<th align="center"> <spring:message code="appointment.AppointmentBlock.column.endTime"/> </th>
-					<th align="center"> <spring:message code="appointment.AppointmentBlock.slotLength"/> </th>
+					<th align="center"> <spring:message code="appointmentscheduling.AppointmentBlock.column.location"/> </th>
+					<th align="center"> <spring:message code="appointmentscheduling.AppointmentBlock.column.provider"/> </th>
+					<th align="center"> <spring:message code="appointmentscheduling.AppointmentBlock.column.appointmentTypes"/> </th>
+					<th align="center"> <spring:message code="appointmentscheduling.AppointmentBlock.column.date"/> </th>
+					<th align="center"> <spring:message code="appointmentscheduling.AppointmentBlock.column.startTime"/> </th>
+					<th align="center"> <spring:message code="appointmentscheduling.AppointmentBlock.column.endTime"/> </th>
+					<th align="center"> <spring:message code="appointmentscheduling.AppointmentBlock.slotLength"/> </th>
 					<th>Hidden sortable dates</th>
 				</tr>
 			</thead>
@@ -351,9 +351,9 @@
 	<openmrs:hasPrivilege privilege="Manage Appointment Blocks">
 	<table align="center">
 			<tr>
-			<td><input type="submit" class="appointmentBlockButton" value="<spring:message code="appointment.AppointmentBlock.add"/>" name="add"> </td>
-			<td><input type="submit" class="appointmentBlockButton" value="<spring:message code="appointment.AppointmentBlock.edit"/>" name="edit"> </td>
-			 <td><input type="button" id="deleteBtn" class="appointmentBlockButton" value="<spring:message code="appointment.AppointmentBlock.delete"/>" onclick="deleteFuncionality(this, event)"> </td>
+			<td><input type="submit" class="appointmentBlockButton" value="<spring:message code="appointmentscheduling.AppointmentBlock.add"/>" name="add"> </td>
+			<td><input type="submit" class="appointmentBlockButton" value="<spring:message code="appointmentscheduling.AppointmentBlock.edit"/>" name="edit"> </td>
+			 <td><input type="button" id="deleteBtn" class="appointmentBlockButton" value="<spring:message code="appointmentscheduling.AppointmentBlock.delete"/>" onclick="deleteFuncionality(this, event)"> </td>
 			</tr>
 	</table>
 	</openmrs:hasPrivilege>
@@ -361,13 +361,13 @@
  
  <div id="deleteDialog" >
 	<table id='deleteDialogOptions' class="dialogTable">
-		<tr><td><h2><spring:message code="appointment.AppointmentBlock.deleteDialog.title"/></h2></td></tr>
+		<tr><td><h2><spring:message code="appointmentscheduling.AppointmentBlock.deleteDialog.title"/></h2></td></tr>
 		<tr><td><div id="dialogText"></div></td></tr>
 	</table>
 </div>
  <div id="notifyDialog" >
 	<table id='notifyDialogOptions' class="dialogTable">
-		<tr><td><h2><spring:message code="appointment.AppointmentBlock.deleteDialog.title"/></h2></td></tr>
+		<tr><td><h2><spring:message code="appointmentscheduling.AppointmentBlock.deleteDialog.title"/></h2></td></tr>
 		<tr><td><div id="notifyDialogText"></div></td></tr>
 	</table>
 </div>
