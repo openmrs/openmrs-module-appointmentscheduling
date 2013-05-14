@@ -17,6 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
@@ -53,9 +54,18 @@ public class AppointmentValidator implements Validator {
 		if (appointment == null) {
 			errors.rejectValue("appointment", "error.general");
 		} else {
-			ValidationUtils.rejectIfEmpty(errors, "timeSlot", "appointment.Appointment.emptyTimeSlot");
-			ValidationUtils.rejectIfEmpty(errors, "patient", "appointment.Appointment.emptyPatient");
-			ValidationUtils.rejectIfEmpty(errors, "appointmentType", "appointment.Appointment.emptyType");
+			ValidationUtils.rejectIfEmpty(errors, "timeSlot", "appointmentscheduling.Appointment.emptyTimeSlot");
+			ValidationUtils.rejectIfEmpty(errors, "patient", "appointmentscheduling.Appointment.emptyPatient");
+			ValidationUtils.rejectIfEmpty(errors, "appointmentType", "appointmentscheduling.Appointment.emptyType");
+			
+			//Check whether the slot supports this appointment type
+			AppointmentType type = appointment.getAppointmentType();
+			if (type == null)
+				errors.rejectValue("appointmentType", "appointmentscheduling.Appointment.emptyType");
+			if (appointment.getTimeSlot() == null)
+				errors.rejectValue("timeSlot", "appointmentscheduling.Appointment.emptyTimeSlot");
+			else if (type != null && !appointment.getTimeSlot().getAppointmentBlock().getTypes().contains(type))
+				errors.rejectValue("appointmentType", "appointmentscheduling.Appointment.notSupportedType");
 		}
 	}
 }

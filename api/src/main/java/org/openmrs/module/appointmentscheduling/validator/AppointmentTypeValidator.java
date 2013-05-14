@@ -54,7 +54,7 @@ public class AppointmentTypeValidator implements Validator {
 			errors.rejectValue("appointmentType", "error.general");
 		} else {
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "error.name");
-			ValidationUtils.rejectIfEmpty(errors, "duration", "appointment.AppointmentType.durationEmpty");
+			ValidationUtils.rejectIfEmpty(errors, "duration", "appointmentscheduling.AppointmentType.durationEmpty");
 		}
 	}
 }

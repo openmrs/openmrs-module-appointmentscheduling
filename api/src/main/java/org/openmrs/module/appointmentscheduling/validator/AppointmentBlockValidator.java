@@ -55,12 +55,12 @@ public class AppointmentBlockValidator implements Validator {
 		if (appointmentBlock == null) {
 			errors.rejectValue("appointmentBlock", "error.general");
 		} else {
-			ValidationUtils.rejectIfEmpty(errors, "startDate", "appointment.AppointmentBlock.emptyStartDate");
-			ValidationUtils.rejectIfEmpty(errors, "endDate", "appointment.AppointmentBlock.emptyEndDate");
-			ValidationUtils.rejectIfEmpty(errors, "provider", "appointment.AppointmentBlock.emptyProvider");
-			ValidationUtils.rejectIfEmpty(errors, "location", "appointment.AppointmentBlock.emptyLocation");
+			ValidationUtils.rejectIfEmpty(errors, "startDate", "appointmentscheduling.AppointmentBlock.emptyStartDate");
+			ValidationUtils.rejectIfEmpty(errors, "endDate", "appointmentscheduling.AppointmentBlock.emptyEndDate");
+			ValidationUtils.rejectIfEmpty(errors, "provider", "appointmentscheduling.AppointmentBlock.emptyProvider");
+			ValidationUtils.rejectIfEmpty(errors, "location", "appointmentscheduling.AppointmentBlock.emptyLocation");
 			if (appointmentBlock.getTypes() == null) {
-				ValidationUtils.rejectIfEmpty(errors, "types", "appointment.AppointmentBlock.emptyTypes");
+				ValidationUtils.rejectIfEmpty(errors, "types", "appointmentscheduling.AppointmentBlock.emptyTypes");
 			}
 		}
 	}
