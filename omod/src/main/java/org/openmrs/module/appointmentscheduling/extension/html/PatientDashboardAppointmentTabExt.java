@@ -8,7 +8,7 @@ public class PatientDashboardAppointmentTabExt extends PatientDashboardTabExt {
 	
 	@Override
 	public String getPortletUrl() {
-		return "appointmentscheduling.portlet";
+		return "appointments.portlet";
 	}
 	
 	@Override
