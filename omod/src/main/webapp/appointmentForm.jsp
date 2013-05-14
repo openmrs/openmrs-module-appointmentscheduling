@@ -153,13 +153,47 @@
 										$j(this).removeClass('notSelectedRow');
 									}
 								});
-					});
-function addQueryParameter(paramName){
-	var value = queryParameters[paramName];
-	var currentURL = window.location.href;
+								
+							//Dialog
+							//Configure dialog
+							$j('#appointmentInformationDialog').dialog({
+								autoOpen: false,
+								height: 415,
+								width: 500,
+								modal: true,
+								resizable: false,
+								buttons: {
+									"<spring:message code='general.cancel' />": function() {
+										$j(this).dialog("close");
+									},
+									"<spring:message code='appointmentscheduling.Appointment.create.save' />": function() {
+											//Simluate Save button and post the form
+											$j('#createAppointmentForm').append("<input type='hidden' name='save' value='' />");
+											$j('#createAppointmentForm').submit();
+									}
+								},
+								open: function(){
+									var selectedRow = ($j('.selectedRow')[0]==null) ? $j('.selectedFullRow')[0] : $j('.selectedRow')[0];
+									
+									if(selectedRow!=null){
+										document.getElementById('timeCell').innerHTML = $j("td:eq(3)",selectedRow)[0].innerHTML+" ("+$j("td:eq(4)",selectedRow)[0].innerHTML+")";
+										document.getElementById('providerCell').innerHTML = $j("td:eq(1)",selectedRow)[0].innerHTML;
+										document.getElementById('locationCell').innerHTML = $j("td:eq(5)",selectedRow)[0].innerHTML;
+									}
+								}
+							});
+					});// End document ready
+					
+	function ConfirmationDialogOpen(){
+		$j('#appointmentInformationDialog').dialog('open');
+	}				
 	
+	function addQueryParameter(paramName){
+		var value = queryParameters[paramName];
+		var currentURL = window.location.href;
 		
-}
+			
+	}
 
 
 	function updatePatient(formFieldId, patientObj, isPageLoad) {
@@ -251,7 +285,7 @@ function addQueryParameter(paramName){
 	<spring:message code="fix.error" />
 	<br />
 </spring:hasBindErrors>
-<form:form modelAttribute="appointment" method="post">
+<form:form modelAttribute="appointment" method="post"  id="createAppointmentForm">
 	<fieldset>
 		<table id="createAppointmentTable">
 			<tr class="boxHeader steps">
@@ -444,11 +478,36 @@ function addQueryParameter(paramName){
 			</td></tr>
 			<tr>
 				<td></td>
-				<td><input type="submit" class="saveButton"
-					value="<spring:message code="appointmentscheduling.Appointment.create.save"/>"
-					name="save"></td>
+				<td><input type="button" class="saveButton"
+					value="<spring:message code='appointmentscheduling.Appointment.create.save'/>"
+					name="save" onclick="ConfirmationDialogOpen();"></td>
 			</tr>
 		</table>
 	</fieldset>
 </form:form>
+
+<div id="appointmentInformationDialog" title="<h1><spring:message code='appointmentscheduling.Appointment.create.confirmation.title'/></h1>">
+	<table id='appointmentInformationFields' class="dialogTable" style="padding:8x;" border="1" cellpadding="5">
+		<tr><td colspan="2"><spring:message code="appointmentscheduling.Appointment.create.confirmation.text"/></td></tr>
+		<tr><td colspan="2"><br/></td></tr>
+		<tr><td><b><spring:message code="appointmentscheduling.Appointment.list.column.patient"/></b></td><td>
+		<c:forEach var="name" items="${appointment.patient.names}" end="0">
+			<c:out value="${name}" />
+		</c:forEach> 
+		<br/>
+		<c:forEach var="identifier" items="${appointment.patient.identifiers}" >
+			<c:if test="${identifier.preferred}">(${identifier})</c:if>
+		</c:forEach>
+		</td></tr>
+		<tr><td><b><spring:message code="appointmentscheduling.Appointment.create.header.appointmentType"/></b></td><td>
+		${appointment.appointmentType.name}
+		</td></tr>
+		<tr><td><b><spring:message code="appointmentscheduling.Appointment.list.column.date"/></b></td><td id="timeCell">
+		</td></tr>
+		<tr><td><b><spring:message code="appointmentscheduling.Appointment.create.header.clinician"/></b></td><td id="providerCell">
+		</td></tr>
+		<tr><td><b><spring:message code="appointmentscheduling.Appointment.create.header.location"/></b></td><td id="locationCell">
+		</td></tr>
+	</table>
+</div>
 <%@ include file="/WEB-INF/template/footer.jsp"%>
