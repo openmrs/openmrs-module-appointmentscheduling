@@ -28,6 +28,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.Provider;
+import org.openmrs.Visit;
+import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
@@ -204,9 +206,19 @@ public class AppointmentFormController {
 					return null;
 				else {
 					appointment.setDateCreated(new Date());
-					if (flow != null)
+					if (flow != null) {
 						appointment.setStatus(AppointmentStatus.WALKIN);
-					else
+						//Start a new visit
+						String visitTypeIdString = Context.getAdministrationService().getGlobalProperty(
+						    AppointmentUtils.GP_DEFAULT_VISIT_TYPE);
+						Integer visitTypeId = Integer.parseInt(visitTypeIdString);
+						VisitType defaultVisitType = Context.getVisitService().getVisitType(visitTypeId);
+						
+						Visit visit = new Visit(appointment.getPatient(), defaultVisitType, new Date());
+						visit.setLocation(appointment.getTimeSlot().getAppointmentBlock().getLocation());
+						visit = Context.getVisitService().saveVisit(visit);
+						appointment.setVisit(visit);
+					} else
 						appointment.setStatus(AppointmentStatus.SCHEDULED);
 					appointmentService.saveAppointment(appointment);
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointmentscheduling.Appointment.saved");

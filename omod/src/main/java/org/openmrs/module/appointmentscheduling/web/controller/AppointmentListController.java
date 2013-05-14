@@ -182,7 +182,7 @@ public class AppointmentListController {
 		
 		//Calculate for each waiting appointment the waiting time
 		for (Appointment appointment : appointments) {
-			if (appointment.getStatus() == AppointmentStatus.WAITING) {
+			if (appointment.getStatus() == AppointmentStatus.WAITING || appointment.getStatus() == AppointmentStatus.WALKIN) {
 				Date lastChanged = Context.getService(AppointmentService.class).getAppointmentCurrentStatusStartDate(
 				    appointment);
 				Date now = new Date();
