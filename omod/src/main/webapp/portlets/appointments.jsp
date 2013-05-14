@@ -82,7 +82,7 @@
 		                </thead>
 								<tbody>
 									<c:forEach var="appointment" items="${model.appointmentList}">
-										<tr ${appointment.appointmentId==param.selectAppointment ? 'class="selectedRow"' : 'class="notSelectedRow"'}>
+										<tr ${appointment.appointmentId==param.selectAppointment ? 'class="selectedRow"' : 'class="notSelectedRow"'} title="${appointment.reason}">
 											<td style="display:none;">
 												<input type="radio" value="${appointment.appointmentId}" ${param.selectAppointment==appointment.appointmentId ? 'checked' : ''} name="selectAppointment" />
 											</td>
