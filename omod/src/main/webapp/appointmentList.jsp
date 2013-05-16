@@ -419,7 +419,7 @@
 				<tr id='BugfixRow' style="display:none;"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 			</c:if>
 			<c:forEach var="appointment" items="${appointmentList}">
-				<tr ${appointment.appointmentId==param.selectAppointment ? 'class="selectedRow"' : 'class="notSelectedRow"'} title="${appointment.reason}">
+				<tr ${appointment.appointmentId==param.selectAppointment ? 'class="selectedRow"' : 'class="notSelectedRow"'} title="<spring:message code='appointmentscheduling.Appointment.list.tooltip' /> ${appointment.reason}">
 					<td style="display:none;">
 						<input type="radio" value="${appointment.appointmentId}" ${param.selectAppointment==appointment.appointmentId ? 'checked' : ''} name="selectAppointment" />
 					</td>
