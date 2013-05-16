@@ -275,7 +275,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		
 		Date toDate = format.parse("2006-01-01 01:00:00.3");
 		appointments = service.getAppointmentsByConstraints(null, toDate, null, null, null, null);
-		assertEquals(3, appointments.size());
+		assertEquals(2, appointments.size());
 		
 		fromDate = format.parse("2007-01-01 00:00:00.0");
 		toDate = format.parse("2007-01-01 01:00:00.1");
