@@ -146,7 +146,7 @@ public class AppointmentFormController {
 				availableTimeSlots = Context.getService(AppointmentService.class).getTimeSlotsByConstraintsIncludingFull(
 				    appointmentType, fromDate, toDate, provider, location);
 				List<TimeSlot> fullTimeSlots = new LinkedList<TimeSlot>();
-				Map<Integer, String> overdueTimes = new HashMap<Integer, String>();
+				Map<Integer, Integer> overdueTimes = new HashMap<Integer, Integer>();
 				
 				Integer typeDuration = appointmentType.getDuration();
 				
@@ -156,14 +156,7 @@ public class AppointmentFormController {
 					Integer timeLeft = Context.getService(AppointmentService.class).getTimeLeftInTimeSlot(slot);
 					if (timeLeft < typeDuration) {
 						fullTimeSlots.add(slot);
-						String overdueTime = (timeLeft < 0) ? String.valueOf(-1 * timeLeft)
-						        + " "
-						        + Context.getMessageSourceService().getMessage(
-						            "appointmentscheduling.Appointment.create.prompt.overdue") : String.valueOf(timeLeft)
-						        + " "
-						        + Context.getMessageSourceService().getMessage(
-						            "appointmentscheduling.Appointment.create.prompt.timeleft");
-						overdueTimes.put(slot.getId(), overdueTime);
+						overdueTimes.put(slot.getId(), timeLeft);
 						iterator.remove();
 					}
 				}
