@@ -27,7 +27,12 @@
 <openmrs:require privilege="View Appointments" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentList.list" />
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-
+<script type="text/javascript"
+	src='${pageContext.request.contextPath}/dwr/engine.js'></script>
+<script type="text/javascript"
+	src='${pageContext.request.contextPath}/dwr/util.js'></script>
+<script type="text/javascript"
+	src='${pageContext.request.contextPath}/dwr/interface/DWRAppointmentService.js'></script>
 <script type="text/javascript">
 	var timeout = null;
 
@@ -108,7 +113,7 @@
 												$j(".statusDiv").html("");
 												$j('.statusDiv')
 														.prepend(
-																"<openmrs:hasPrivilege privilege='Update Appointment Status'><input type='submit' name='startConsultation' id='startConsultButton' class='appointmentButton buttonShadow' value='<spring:message code='appointmentscheduling.Appointment.list.button.startConsultation'/>' disabled />"+
+																"<openmrs:hasPrivilege privilege='Update Appointment Status'><input type='button' onclick='checkForOpenConsultations();' name='startConsultation' id='startConsultButton' class='appointmentButton buttonShadow' value='<spring:message code='appointmentscheduling.Appointment.list.button.startConsultation'/>' disabled />"+
 																"<input type='submit' name='endConsultation' id='endConsultButton' class='appointmentButton buttonShadow' value='<spring:message code='appointmentscheduling.Appointment.list.button.endConsultation'/>' disabled />"+
 																"<input type='submit' name='checkIn' id='checkInButton' class='appointmentButton buttonShadow' style='margin-left:16px; margin-right:16px;' value='<spring:message code='appointmentscheduling.Appointment.list.button.checkIn'/>' disabled />"+
 																"<input type='submit' name='missAppointment' id='missButton' class='appointmentButton buttonShadow' value='<spring:message code='appointmentscheduling.Appointment.list.button.missAppointment'/>' disabled />"+
@@ -195,9 +200,7 @@
 									"<spring:message code='general.submit' />": function() {
 										var navigationURL = $j('input[name="selectDialogAction"]:radio:checked')[0].value;
 										if(navigationURL=="startConsultation"){
-											//Simluate StartConsultButton and post the form
-											$j('#manageAppointmentsForm').append("<input type='hidden' name='startConsultation' value='' />");
-											$j('#manageAppointmentsForm').submit();
+											checkForOpenConsultations();
 										}
 										else{
 											var appointmentId = $j('input[name="selectAppointment"]:radio:checked')[0].value;
@@ -266,7 +269,26 @@
 		$j('#scheduleDialog').dialog('open');
 	}
 							
-
+	function checkForOpenConsultations(){
+		var selectedRow = $j('.selectedRow')[0];
+		var appointmentId = $j('input:radio',selectedRow)[0].value;
+		
+		DWRAppointmentService
+			.checkProviderOpenConsultations(
+					appointmentId,
+					function(details) {
+							//whether to allow starting a new consultation
+							var allow = true;
+							//if has open consultation - prompt
+							if(details){
+								allow = confirm("<spring:message code='appointmentscheduling.Appointment.list.prompt.openConsultation' />");
+							}
+							if(allow){
+								$j('#manageAppointmentsForm').append("<input type='hidden' name='startConsultation' value='' />");
+								$j('#manageAppointmentsForm').submit();
+							}
+					});
+	}
 					
 	
 	//Initialize the toDate to the selected fromDate

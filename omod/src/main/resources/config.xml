@@ -70,6 +70,8 @@
 				<include method="getAppointmentBlocks"/>
 				<include method="getNumberOfAppointmentsInAppointmentBlock"/>
 				<include method="validateDates"/>
+				<include method="checkProviderOpenConsultations"/>
+				<include method="checkProviderOpenConsultationsByPatient"/>
 			</create>
 		</allow>
 
@@ -80,6 +82,8 @@
             DWRAppointmentService.getAppointmentBlocks(String fromDate,String toDate,Integer locationId);
             DWRAppointmentService.getNumberOfAppointmentsInAppointmentBlock(Integer appointmentBlockId);
             DWRAppointmentService.validateDates(String fromDate,String toDate);
+            DWRAppointmentService.checkProviderOpenConsultations(appointmentId);
+            DWRAppointmentService.checkProviderOpenConsultationsByPatient(patientId);
             ]]>
 		</signatures>
 	</dwr>
