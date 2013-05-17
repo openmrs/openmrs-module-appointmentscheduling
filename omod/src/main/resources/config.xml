@@ -33,7 +33,7 @@
 	<globalProperty>
 		<property>${project.parent.artifactId}.defaultVisitType
 		</property>
-		<defaultValue>0</defaultValue>
+		<defaultValue>1</defaultValue>
 		<description>Default Visit Type for the in consultation state change.
 		</description>
 	</globalProperty>
