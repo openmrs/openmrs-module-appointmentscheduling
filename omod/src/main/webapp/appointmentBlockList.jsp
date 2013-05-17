@@ -115,6 +115,7 @@
                 	  block.title = "Provider: "+appointmentBlocks[i].provider+" Location: "+appointmentBlocks[i].location; //for test only
                 	  block.start = appointmentBlocks[i].startDate.toString();
                 	  block.end = appointmentBlocks[i].endDate.toString();
+					  block.allDay = false;
 					  block.provider = appointmentBlocks[i].provider;
 					  block.location = appointmentBlocks[i].location;
 					  block.appointmentTypes = appointmentTypes;

@@ -1,10 +1,10 @@
 <%@ include file="/WEB-INF/template/include.jsp" %>
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <%@ include file="localHeader.jsp" %>
-<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css"/>
-<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/jquery-1.9.1.min.js" />
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/fullcalendar.css"/>
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/fullcalendar.print.css"/>
+<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/jquery-1.9.1.min.js" />
+<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css"/>
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/fullcalendar.min.js" />
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/opentip-jquery-excanvas.js" />
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/opentip.css"/>
@@ -28,8 +28,25 @@
 				header: {
 					left: 'prev,next today',
 					center: 'title',
-					right: 'month,basicWeek,basicDay'
+					right: 'month,agendaWeek,agendaDay'
 				},
+							selectHelper: true,
+			select: function(start, end, allDay) {
+				var title = prompt('Event Title:');
+				if (title) {
+					calendar.fullCalendar('renderEvent',
+						{
+							title: title,
+							start: start,
+							end: end,
+							allDay: allDay
+						},
+						true // make the event "stick"
+					);
+				}
+				calendar.fullCalendar('unselect');
+			},
+
 				theme: true,
 				editable: false,
 				eventClick: function(calEvent, jsEvent, view) {
