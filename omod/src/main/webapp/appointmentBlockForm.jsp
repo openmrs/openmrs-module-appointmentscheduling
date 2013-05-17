@@ -6,7 +6,7 @@
 <openmrs:htmlInclude
 	file="/moduleResources/appointmentscheduling/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css" />
 
-<openmrs:require privilege="Manage Appointment Blocks" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentBlockForm.form" />
+<openmrs:require privilege="Manage Provider Schedules" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentBlockForm.form" />
 
 <script type="text/javascript">
 	function confirmPurge() {

@@ -136,12 +136,12 @@
 		<description>Ability to view appointment types</description>
 	</privilege>
 	<privilege>
-		<name>Manage Appointment Blocks</name>
+		<name>Manage Provider Schedules</name>
 		<description>Ability to add/edit/purge appointment blocks</description>
 	</privilege>
 	<privilege>
-		<name>View Appointment Blocks</name>
-		<description>Ability to view appointment blocks</description>
+		<name>View Provider Schedules</name>
+		<description>Ability to View Provider Schedules</description>
 	</privilege>
 	<privilege>
 		<name>View Appointments</name>
