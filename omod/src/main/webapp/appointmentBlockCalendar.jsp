@@ -43,8 +43,8 @@
 					var tooltipContent = '';
 					tooltipContent += '<span style=\'color:red;\'>Provider:</span>'+' '+calEvent.provider;
 					tooltipContent += '</br><span style=\'color:red;\'>Location:</span>'+' '+calEvent.location;
-					tooltipContent += '</br><span style=\'color:red;\'>Start Time:</span>'+' '+calEvent.startTime;
-					tooltipContent += '</br><span style=\'color:red;\'>End Time:</span>'+' '+calEvent.endTime;
+					tooltipContent += '</br><span style=\'color:red;\'>Type(s):</span>'+' '+calEvent.appointmentTypes;
+					tooltipContent += '</br><span style=\'color:red;\'>Time:</span>'+' '+calEvent.startTime+"-"+calEvent.endTime;
 					tooltipContent += '</br><span style=\'color:red;\'>Time Slot Length:</span>'+' '+calEvent.timeSlotLength+' min';
 					var appointmentBlockTooltip = new Opentip(this);
 					appointmentBlockTooltip.setContent(tooltipContent);
