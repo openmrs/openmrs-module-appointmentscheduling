@@ -294,12 +294,17 @@
 	//Initialize the toDate to the selected fromDate
 	function updateToDate(object) {
 		if (object.value == '') {
-			var fromDate = document.getElementById('fromDate').value.split(" ")[0]+" 23:59";
+			var locale = '${locale}';
+			if(locale=='en_US')
+				var fromDate = document.getElementById('fromDate').value.split(" ")[0]+" 11:59 PM";
+			else
+				var fromDate = document.getElementById('fromDate').value.split(" ")[0]+" 23:59";
 			if (fromDate != '')
 				object.value = fromDate;
 		}
 		showEndDateTimePicker(object);
 	}
+
 	//Init default dates to current day
 	function InitDateFilter(){
 	 	if(document.getElementById('fromDate').value == "" && document.getElementById('toDate').value == ""){
@@ -307,8 +312,16 @@
             todayStart.setHours(0,0,0,0);
             var todayEnd = new Date();
             todayEnd.setHours(23,59,59,999);
-            document.getElementById('fromDate').value = todayStart.format(jsDateFormat+' HH:MM');
-            document.getElementById('toDate').value = todayEnd.format(jsDateFormat+' HH:MM');
+			
+			var locale = '${locale}';
+			if(locale=='en_US'){
+				document.getElementById('fromDate').value = todayStart.format(jsDateFormat+' '+jsTimeFormat);
+				document.getElementById('toDate').value = todayEnd.format(jsDateFormat+' '+jsTimeFormat);
+			}
+			else{
+				document.getElementById('fromDate').value = todayStart.format(jsDateFormat+' HH:MM');
+				document.getElementById('toDate').value = todayEnd.format(jsDateFormat+' HH:MM');
+			}
 		}
 	}
 
