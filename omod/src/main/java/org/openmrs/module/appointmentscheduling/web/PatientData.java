@@ -1,12 +1,6 @@
 package org.openmrs.module.appointmentscheduling.web;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-
-import org.openmrs.Patient;
-import org.openmrs.PatientIdentifier;
-import org.openmrs.api.context.Context;
 
 public class PatientData {
 	
@@ -16,13 +10,16 @@ public class PatientData {
 	
 	String dateMissedLastAppointment;
 	
+	String fullName;
+	
 	public PatientData() {
 	}
 	
-	public PatientData(String phoneNumber, String dateMissed, List<String> identifiers) {
+	public PatientData(String phoneNumber, String dateMissed, List<String> identifiers, String fullName) {
 		setPhoneNumber(phoneNumber);
 		setDateMissedLastAppointment(dateMissed);
 		setIdentifiers(identifiers);
+		setFullName(fullName);
 	}
 	
 	public String getPhoneNumber() {
@@ -47,5 +44,13 @@ public class PatientData {
 	
 	public void setIdentifiers(List<String> identifiers) {
 		this.identifiers = identifiers;
+	}
+	
+	public String getFullName() {
+		return fullName;
+	}
+	
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 }
