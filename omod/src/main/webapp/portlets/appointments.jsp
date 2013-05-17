@@ -102,7 +102,7 @@
 	                            <th align="center"><spring:message code='appointmentscheduling.Appointment.list.column.clinician'/></th>
                         		<th align="center"><spring:message code='appointmentscheduling.Appointment.list.column.location'/></th>
                      			<th align="center"><spring:message code='appointmentscheduling.Appointment.list.column.type'/></th>
-       							<th align="center"><spring:message code='appointment.Appointment.list.column.status'/></th>
+       							<th align="center"><spring:message code='appointmentscheduling.Appointment.list.column.status'/></th>
 		                        <th align="center">Hidden sortable dates</th>
 		                    </tr>
 		                </thead>
