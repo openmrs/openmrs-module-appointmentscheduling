@@ -68,7 +68,7 @@
 				<param name="class" value="org.openmrs.module.appointmentscheduling.web.DWRAppointmentService" />
 				<include method="getPatientDescription" />
 				<include method="getAppointmentBlocks"/>
-				<include method="getNumberOfAppointmentsInAppointmentBlock"/>
+				<include method="getPatientsInAppointmentBlock"/>
 				<include method="validateDates"/>
 			</create>
 		</allow>
@@ -78,7 +78,7 @@
             import org.openmrs.module.appointmentscheduling.web.DWRAppointmentService;
             DWRAppointmentService.getPatientDescription(Integer patientId);
             DWRAppointmentService.getAppointmentBlocks(String fromDate,String toDate,Integer locationId);
-            DWRAppointmentService.getNumberOfAppointmentsInAppointmentBlock(Integer appointmentBlockId);
+            DWRAppointmentService.getPatientsInAppointmentBlock(Integer appointmentBlockId);
             DWRAppointmentService.validateDates(String fromDate,String toDate);
             ]]>
 		</signatures>

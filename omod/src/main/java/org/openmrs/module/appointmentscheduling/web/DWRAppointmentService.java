@@ -17,11 +17,11 @@ import org.openmrs.PersonAttribute;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.AppointmentUtils;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
-import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 
 /**
@@ -50,6 +50,8 @@ public class DWRAppointmentService {
 		if (lastAppointment != null && lastAppointment.getStatus() == AppointmentStatus.MISSED)
 			patientData.setDateMissedLastAppointment(Context.getDateFormat().format(
 			    lastAppointment.getTimeSlot().getStartDate()));
+		//Get Patient's full name
+		patientData.setFullName(patient.getPersonName().getFullName());
 		
 		return patientData;
 	}
@@ -92,22 +94,22 @@ public class DWRAppointmentService {
 					appointmentBlockDatalist.add(new AppointmentBlockData(appointmentBlock.getId(), appointmentBlock
 					        .getLocation().getName(), appointmentBlock.getProvider().getName(), typesNames, dateOnly,
 					        startTimeOnly, endTimeOnly, this.getTimeSlotLength(appointmentBlock.getId()), appointmentBlock
-					                .getStartDate()));
+					                .getStartDate(), appointmentBlock.getEndDate()));
 				}
 			}
 		}
 		return appointmentBlockDatalist;
 	}
 	
-	public Integer[] getNumberOfAppointmentsInAppointmentBlock(Integer appointmentBlockId) {
-		Integer[] appointmentsCount = null;
+	public List<List<PatientData>> getPatientsInAppointmentBlock(Integer appointmentBlockId) {
+		List<List<PatientData>> patients = null;
 		if (Context.isAuthenticated()) {
 			AppointmentService as = Context.getService(AppointmentService.class);
 			if (appointmentBlockId != null) {
-				appointmentsCount = new Integer[3];
-				appointmentsCount[0] = 0;
-				appointmentsCount[1] = 0;
-				appointmentsCount[2] = 0;
+				patients = new ArrayList<List<PatientData>>();
+				patients.add(new ArrayList<PatientData>()); //Patients in active appointment
+				patients.add(new ArrayList<PatientData>()); //Patients in scheduled appointments
+				patients.add(new ArrayList<PatientData>()); //Patients in Missed/Cancelled/Complete
 				//Assumption - Exists such an appointment block in the data base with the given Id
 				AppointmentBlock appointmentBlock = as.getAppointmentBlock(appointmentBlockId);
 				//Getting the timeslots of the given appointment block
@@ -115,21 +117,23 @@ public class DWRAppointmentService {
 				for (TimeSlot timeSlot : timeSlots) {
 					List<Appointment> appointmentsInTimeSlot = as.getAppointmentsInTimeSlot(timeSlot);
 					for (Appointment appointment : appointmentsInTimeSlot) {
+						PatientData patientDescription = this.getPatientDescription(appointment.getPatient().getPatientId());
 						if (appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.INCONSULTATION.toString())
-						        || appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.WAITING.toString())) {
-							//Active appointments
-							appointmentsCount[0]++;
+						        || appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.WAITING.toString())
+						        || appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.WALKIN.toString())) {
+							//Active appointments (In-Consultation\Waiting\Walk-In)
+							patients.get(0).add(patientDescription);
 						} else if (appointment.getStatus().toString().equalsIgnoreCase(
 						    AppointmentStatus.SCHEDULED.toString())) {
-							appointmentsCount[1]++; //Scheduled appointments
+							patients.get(1).add(patientDescription); //Scheduled appointments
 						} else {
-							appointmentsCount[2]++; //Missed/Cancelled/Completed appointments
+							patients.get(2).add(patientDescription); //Missed\Cancelled\Completed appointments
 						}
 					}
 				}
 			}
 		}
-		return appointmentsCount;
+		return patients;
 	}
 	
 	public boolean validateDates(String fromDate, String toDate) throws ParseException {

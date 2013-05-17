@@ -4,7 +4,29 @@
 	padding-left: 15px;
 	padding: 7px;
 }
-
+.appointmentBlockCalendarIcon{
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #E0E0E0), color-stop(1, #CCCCCC) );
+	background: -moz-linear-gradient(center top, #E0E0E0 0%, #CCCCCC 100%   );
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E0E0E0',
+		endColorstr='#CCCCCC' );
+	background-color: #a2dec8;
+	border: 1px solid #CCCCCC;
+	display: inline-block;
+	color: #000000;
+	padding: 3px 6px 14px 6px;
+	text-decoration: none;
+	border-radius:6px;
+	opacity:0.7;
+}
+.appointmentBlockCalendarIcon:hover{
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #CCCCCC
+		), color-stop(1, #E0E0E0) );
+	background: -moz-linear-gradient(center top, #CCCCCC 0%, #E0E0E0 100%   );
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#CCCCCC',
+		endColorstr='#E0E0E0' );
+	background-color: #a2dec8;
+	opacity:1;
+}
 .appointmentBlockButton {
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #E0E0E0), color-stop(1, #CCCCCC) );
 	background: -moz-linear-gradient(center top, #E0E0E0 0%, #CCCCCC 100%   );

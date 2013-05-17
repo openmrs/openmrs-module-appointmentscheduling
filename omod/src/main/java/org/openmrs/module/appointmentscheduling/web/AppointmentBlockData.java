@@ -23,11 +23,13 @@ public class AppointmentBlockData {
 	
 	Date startDate;
 	
+	Date endDate;
+	
 	public AppointmentBlockData() {
 	}
 	
 	public AppointmentBlockData(Integer appointmentBlockId, String location, String provider, Set<String> types,
-	    String date, String startTime, String endTime, String timeSlotLength, Date startDate) {
+	    String date, String startTime, String endTime, String timeSlotLength, Date startDate, Date endDate) {
 		setAppointmentBlockId(appointmentBlockId);
 		setLocation(location);
 		setProvider(provider);
@@ -37,6 +39,7 @@ public class AppointmentBlockData {
 		setEndTime(endTime);
 		setTimeSlotLength(timeSlotLength);
 		setStartDate(startDate);
+		setEndDate(endDate);
 	}
 	
 	public Integer getAppointmentBlockId() {
@@ -109,6 +112,14 @@ public class AppointmentBlockData {
 	
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
+	}
+	
+	public Date getEndDate() {
+		return endDate;
+	}
+	
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 	
 }

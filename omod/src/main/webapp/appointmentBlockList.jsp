@@ -8,19 +8,16 @@
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/AppointmentBlockStyle.css" />
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/appointmentBlock_jQueryDatatable.css"/>
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/jQuerySmoothness/jquery-ui-1.9.2.custom.css"/>
-<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/date.format.js" />
-
 <openmrs:htmlInclude 
 	file="/moduleResources/appointmentscheduling/TableTools/media/ZeroClipboard/ZeroClipboard.js" /> 
 <openmrs:htmlInclude
 	file="/moduleResources/appointmentscheduling/TableTools/media/js/TableTools.js" />
 <openmrs:htmlInclude
 	file="/moduleResources/appointmentscheduling/TableTools/media/css/TableTools.css" />
+<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/json2.js" />
 
 <openmrs:require privilege="View Appointment Blocks" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentBlockList.list" />
-
  <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<openmrs:require privilege="View Providers" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentBlockList.list" />
 
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/engine.js'></script>
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/util.js'></script>
@@ -30,6 +27,7 @@
 		//updates the table if changes occurred
        function updateAppointmentBlockTable(firstTime)
        {
+   			   var blocksAsJson;
                var fromDate = document.getElementById('fromDate').value;
                var toDate = document.getElementById('toDate').value;
 			   //date valdition
@@ -71,6 +69,7 @@
                 DWRAppointmentService.getAppointmentBlocks(fromDate,toDate,locationId,function(appointmentBlocks){
                   var tableContent = '';
                   var count = 0;
+                  blocksAsJSON = [];
                   for(var i=0;i<appointmentBlocks.length;i++)
                   {
                       //clean the table content
@@ -110,7 +109,19 @@
                         oTable.fnDestroy();
                         document.getElementById('appointmentBlocksTable').innerHTML += tableContent;
                       }
-
+					  //Json object update
+                	  var block = {};
+					  block.id = appointmentBlocks[i].appointmentBlockId;
+                	  block.title = "Provider: "+appointmentBlocks[i].provider+" Location: "+appointmentBlocks[i].location; //for test only
+                	  block.start = appointmentBlocks[i].startDate.toString();
+                	  block.end = appointmentBlocks[i].endDate.toString();
+					  block.provider = appointmentBlocks[i].provider;
+					  block.location = appointmentBlocks[i].location;
+					  block.appointmentTypes = appointmentTypes;
+					  block.startTime=startTime;
+					  block.endTime=endTime;
+					  block.timeSlotLength=appointmentBlocks[i].timeSlotLength;
+                	  blocksAsJSON.push(block);
 
                     }
                      if(count == appointmentBlocks.length){
@@ -143,13 +154,21 @@
 								}],
                                 "aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                                 "iDisplayLength": 25,
-								"sDom" : "<'fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix' <'addons'>fl>t<'fg-toolbar ui-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-helper-clearfix'<'statusDiv'>ip<'toolbar' T>>",
+								"sDom" : "<'fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix' fl>t<'fg-toolbar ui-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-helper-clearfix'ip<'toolbar' T><'calendarDiv'>>",
                                 "bLengthChange": true,
                                 "bFilter": false,
                                 "bInfo": true,
                                 "bPaginate": true,
-                                "bJQueryUI": true
-
+                                "bJQueryUI": true,
+								"fnDrawCallback" : function() {
+									//Clear and prepend the status buttons
+									$j(".calendarDiv").html("");
+									$j('.calendarDiv')
+											.prepend(
+													"<img id='calendarViewButton' src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/calendarViewIcon.png' Title='Calendar view' class='appointmentBlockCalendarIcon' onclick='changeToCalendarView(this, event)'>"+
+													"<br/>"
+													);
+								},
                             });
                             //Toggle Checked Row
                             $j('.dataTables_wrapper tbody tr').live('click',
@@ -170,31 +189,58 @@
                             var theTable = $j('#appointmentBlocksTable').dataTable();
                             theTable.fnSort([[4,'asc']]);
                             theTable.fnAdjustColumnSizing();
-                  }
+							
+                            //update blocks as json content
+                            document.getElementById('appointmentBlocksJSON').value = JSON.stringify(blocksAsJSON);
+                  }	
+				  
 
                 });
         }
+		
+		function changeToCalendarView(e, event){
+			//change action to calendar view 
+			document.getElementById('action').value = "changeToCalendarView";
+			//POST back in order to redirect to the calendar view via the controller.
+			document.forms['appointmentBlockListForm'].submit();
+		}
 		
 	   	function deleteFuncionality(e,event) {
 	   			//Initialize the action to do nothing.
 				document.getElementById('action').value = "";
 	   			var selectedAppointmentBlockId = document.getElementById("appointmentBlockId").value;
 	   			if(selectedAppointmentBlockId != null){
-		   			//calling the DWR method in order to check how many appointments are exits in the selected appointment block.
-		   			DWRAppointmentService.getNumberOfAppointmentsInAppointmentBlock(selectedAppointmentBlockId,function(appointmentsCount){
-		   				if(appointmentsCount != null){
-							var totalAppointments = appointmentsCount[0]+appointmentsCount[1]+appointmentsCount[2];
+		   			//calling the DWR method in order to get the patients that exits in the selected appointment block.
+		   			DWRAppointmentService.getPatientsInAppointmentBlock(selectedAppointmentBlockId,function(patients){
+		   				if(patients != null){
+							var totalAppointments = patients[0].length+patients[1].length+patients[2].length;
 							if(totalAppointments != 0){
-								if(appointmentsCount[0]>0){	
-									//Notify the user that the block cannot be deleted because it have active appointments
-									document.getElementById("notifyDialogText").innerHTML = '<spring:message code="appointmentscheduling.AppointmentBlock.cannotBeDeleted.part1"/> '+appointmentsCount[0]+' <spring:message code="appointmentscheduling.AppointmentBlock.cannotBeDeleted.part2"/>';
+								if(patients[0].length>0){	
+									//Notify the user that the block cannot be deleted because it has active appointments
+									document.getElementById("notifyDialogText").innerHTML = '<spring:message code="appointmentscheduling.AppointmentBlock.cannotBeDeleted.part1"/> '+patients[0].length+' <spring:message code="appointmentscheduling.AppointmentBlock.cannotBeDeleted.part2"/>';
 									$j('#notifyDialog').dialog('open');
 									event.stopPropagation();
 								}
 								else{
-									if(appointmentsCount[1]>0){
-										//cancel appointments that have the status : "Scheduled" but don't do anything the the other appointments with the statuses : Missed/Cancelled/Completed (If there are any).
-										document.getElementById("dialogText").innerHTML = '<spring:message code="appointmentscheduling.AppointmentBlock.deletingConfirmation.part1"/> '+appointmentsCount[1]+' <spring:message code="appointmentscheduling.AppointmentBlock.deletingConfirmation.part2"/>';
+									if(patients[1].length>0){
+										//cancel appointments that have the status : "Scheduled" but don't do anything to the other appointments with the statuses : Missed/Cancelled/Completed (If there are any).
+										 var dialogHeader ='';
+										 var dialogTableContent ='';
+										 dialogHeader += '<h3><spring:message code="appointmentscheduling.AppointmentBlock.deletingConfirmation.part1"/> '+patients[1].length+' <spring:message code="appointmentscheduling.AppointmentBlock.deletingConfirmation.part2"/></h3>';
+										 dialogHeader += '<u><spring:message code="appointmentscheduling.AppointmentBlock.dialogHeader"/>:</u></br>';
+										 dialogTableContent += '<thead><tr><th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTableHeaderName"/></b></th><th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTableHeaderPhone"/></b></th></thead>';
+										 dialogTableContent += '<tbody>';
+										 for(var i=0;i<patients[1].length;i++){
+											 var fullName = patients[1][i].fullName;
+											 var phoneNumber = patients[1][i].phoneNumber;
+											 if(phoneNumber == null){//In case phone number is missing
+												phoneNumber = '<spring:message code="appointmentscheduling.AppointmentBlock.dialogTableMissing"/>';
+											 }
+											 dialogTableContent += '<tr><td>'+fullName+'</td><td> '+phoneNumber+'</td></tr>';
+										 }
+										 dialogTableContent += '</tbody>';
+										 document.getElementById("deleteDialogHeader").innerHTML = dialogHeader;
+										 document.getElementById("deleteDialogTable").innerHTML = dialogTableContent;
 										$j('#deleteDialog').dialog('open');
 										event.stopPropagation();
 									}
@@ -232,8 +278,8 @@
 					//Dialog with buttons
 					$j('#deleteDialog').dialog({
 						autoOpen: false,
-						height: 250,
-						width: 300,
+						height: 415,
+						width: 500,
 						modal: true,
 						resizable: false,
 						buttons: {
@@ -264,7 +310,7 @@
 				
 		}
 		//On the page load updates necessary stuff
-         $j(document).ready(function() {      	 
+         $j(document).ready(function() {  
 	   			//Initialize the action to do nothing (for page refresh bugs)
 				document.getElementById('action').value = "";
 	   			//Initialize the dialogs
@@ -309,7 +355,7 @@
 <h2><spring:message code="appointmentscheduling.AppointmentBlock.manage.title"/></h2>
 <br/><br/>
  <form method="post" name="appointmentBlockListForm">
-<fieldset style="clear: both">
+<fieldset id="propertiesFieldset" style="clear: both">
         <legend><spring:message code="appointmentscheduling.AppointmentBlock.legend.properties"/></legend>
         <div style="margin: 0.5em 0;">
                 <table>
@@ -348,28 +394,26 @@
 	</table>
 	<input type="hidden" name="appointmentBlockId" id="appointmentBlockId" value="${appointmentBlockId}" />
 	<input type="hidden" name="action" id="action" value="${action}" />
+	<input type="hidden" name="appointmentBlocksJSON" id="appointmentBlocksJSON" value="${appointmentBlocksJSON}" />
 	<openmrs:hasPrivilege privilege="Manage Appointment Blocks">
-	<table align="center">
-			<tr>
-			<td><input type="submit" class="appointmentBlockButton" value="<spring:message code="appointmentscheduling.AppointmentBlock.add"/>" name="add"> </td>
-			<td><input type="submit" class="appointmentBlockButton" value="<spring:message code="appointmentscheduling.AppointmentBlock.edit"/>" name="edit"> </td>
-			 <td><input type="button" id="deleteBtn" class="appointmentBlockButton" value="<spring:message code="appointmentscheduling.AppointmentBlock.delete"/>" onclick="deleteFuncionality(this, event)"> </td>
-			</tr>
-	</table>
+		<table id="managementButtonsTable" align="center">
+				<tr>
+				<td><input type="submit" class="appointmentBlockButton" value="<spring:message code="appointmentscheduling.AppointmentBlock.add"/>" name="add"> </td>
+				<td><input type="submit" class="appointmentBlockButton" value="<spring:message code="appointmentscheduling.AppointmentBlock.edit"/>" name="edit"> </td>
+				 <td><input type="button" id="deleteBtn" class="appointmentBlockButton" value="<spring:message code="appointmentscheduling.AppointmentBlock.delete"/>" onclick="deleteFuncionality(this, event)"> </td>
+				</tr>
+		</table>
 	</openmrs:hasPrivilege>
  </form>
  
- <div id="deleteDialog" >
-	<table id='deleteDialogOptions' class="dialogTable">
-		<tr><td><h2><spring:message code="appointmentscheduling.AppointmentBlock.deleteDialog.title"/></h2></td></tr>
-		<tr><td><div id="dialogText"></div></td></tr>
+ <div id="deleteDialog" title='<spring:message code="appointmentscheduling.AppointmentBlock.deleteDialog.title"/>'>
+	<div id="deleteDialogHeader"></div>
+	<table id='deleteDialogTable' class="dialogTable" style="padding:8x;" border="1" cellpadding="5">
 	</table>
 </div>
- <div id="notifyDialog" >
-	<table id='notifyDialogOptions' class="dialogTable">
-		<tr><td><h2><spring:message code="appointmentscheduling.AppointmentBlock.deleteDialog.title"/></h2></td></tr>
+ <div id="notifyDialog" title='<spring:message code="appointmentscheduling.AppointmentBlock.deleteDialog.title"/>'>
+	<table id='notifyDialogTable' class="dialogTable">
 		<tr><td><div id="notifyDialogText"></div></td></tr>
 	</table>
 </div>
- 
 <%@ include file="/WEB-INF/template/footer.jsp" %>

@@ -29,9 +29,9 @@ import org.openmrs.Location;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
-import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.web.WebConstants;
@@ -111,7 +111,8 @@ public class AppointmentBlockListController {
 	        @RequestParam(value = "toDate", required = false) Date toDate,
 	        @RequestParam(value = "locationId", required = false) Location location,
 	        @RequestParam(value = "appointmentBlockId", required = false) Integer appointmentBlockId,
-	        @RequestParam(value = "action", required = false) String action) throws Exception {
+	        @RequestParam(value = "action", required = false) String action,
+	        @RequestParam(value = "appointmentBlocksJSON", required = false) String appointmentBlocksJSON) throws Exception {
 		HttpSession httpSession = request.getSession();
 		if (!fromDate.before(toDate)) {
 			httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,
@@ -167,7 +168,6 @@ public class AppointmentBlockListController {
 					if (appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.SCHEDULED.toString())) {
 						appointmentService.changeAppointmentStatus(appointment, AppointmentStatus.CANCELLED);
 					}
-					//appointmentService.voidAppointment(appointment, voidReason);
 				}
 				//voiding appointment block
 				appointmentService.voidAppointmentBlock(appointmentBlock, voidReason);
@@ -247,19 +247,27 @@ public class AppointmentBlockListController {
 
 			// if the user is editing an existing AppointmentBlock
 			else if (request.getParameter("edit") != null) {
-				if (appointmentBlockId == null) {
+				if (appointmentBlockId != null) {
+					return "redirect:appointmentBlockForm.form?appointmentBlockId=" + appointmentBlockId;
+				} else {
 					//In case appointment block was not selected
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
 					    "appointmentscheduling.AppointmentBlock.error.selectAppointmentBlock");
 					return null;
 				}
-				if (appointmentBlockId != null) {
-					return "redirect:appointmentBlockForm.form?appointmentBlockId=" + appointmentBlockId;
-				} else {
-					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
-					    "appointmentscheduling.AppointmentBlock.error.selectAppointmentBlock");
-				}
-			} else if (action != null && action.equals("notifyToSelectAppointmentBlock")) {
+			}
+
+			else if (action != null && action.equals("changeToCalendarView")) {
+				if (appointmentBlocksJSON != null) {
+					request.setAttribute("calendarContent", appointmentBlocksJSON);
+					//forward request to appointment block calendar controller
+					return "forward:appointmentBlockCalendar.list";
+				} else
+					return null;
+			}
+
+			//notify the user to select an appointment block
+			else if (action != null && action.equals("notifyToSelectAppointmentBlock")) {
 				if (appointmentBlockId == null) {
 					//In case appointment block was not selected
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
