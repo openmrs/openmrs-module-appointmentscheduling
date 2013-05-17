@@ -120,7 +120,10 @@
 								'click',
 								function() {
 									if($j(this).hasClass('notSelectedFullRow')){
-										if(!confirm("<spring:message code='appointmentscheduling.Appointment.create.prompt.fullSlot'/> " + $j("td:eq(6)",this)[0].innerHTML))
+										var currentTimeLeft = parseInt($j("td:eq(6)",this)[0].innerHTML);
+										var typeDuration = parseInt("${appointment.appointmentType.duration}");
+										var overdueTimeIfSelecting = (currentTimeLeft==0) ? typeDuration: typeDuration-currentTimeLeft;
+										if(!confirm("<spring:message code='appointmentscheduling.Appointment.create.prompt.fullSlot' arguments='"+overdueTimeIfSelecting+"'/> "))
 											return;
 									}
 									var table = $j('#availableTimesTable')
