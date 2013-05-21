@@ -33,7 +33,7 @@
 	<globalProperty>
 		<property>${project.parent.artifactId}.defaultVisitType
 		</property>
-		<defaultValue>0</defaultValue>
+		<defaultValue>1</defaultValue>
 		<description>Default Visit Type for the in consultation state change.
 		</description>
 	</globalProperty>
@@ -72,6 +72,8 @@
 				<include method="getAppointmentBlocksForCalendar"/>
 				<include method="getPatientsInAppointmentBlock"/>
 				<include method="validateDates"/>
+				<include method="checkProviderOpenConsultations"/>
+				<include method="checkProviderOpenConsultationsByPatient"/>
 			</create>
 		</allow>
 
@@ -83,6 +85,8 @@
             DWRAppointmentService.getAppointmentBlocksForCalendar(Long fromDate,Long toDate,Integer locationId);
             DWRAppointmentService.getPatientsInAppointmentBlock(Integer appointmentBlockId);
             DWRAppointmentService.validateDates(String fromDate,String toDate);
+            DWRAppointmentService.checkProviderOpenConsultations(appointmentId);
+            DWRAppointmentService.checkProviderOpenConsultationsByPatient(patientId);
             ]]>
 		</signatures>
 	</dwr>
@@ -135,12 +139,12 @@
 		<description>Ability to view appointment types</description>
 	</privilege>
 	<privilege>
-		<name>Manage Appointment Blocks</name>
+		<name>Manage Provider Schedules</name>
 		<description>Ability to add/edit/purge appointment blocks</description>
 	</privilege>
 	<privilege>
-		<name>View Appointment Blocks</name>
-		<description>Ability to view appointment blocks</description>
+		<name>View Provider Schedules</name>
+		<description>Ability to View Provider Schedules</description>
 	</privilege>
 	<privilege>
 		<name>View Appointments</name>

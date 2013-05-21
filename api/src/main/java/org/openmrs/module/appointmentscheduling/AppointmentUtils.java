@@ -6,9 +6,9 @@ public class AppointmentUtils {
 	
 	public static final String PRIV_MANAGE_APPOINTMENT_TYPES = "Manage Appointment Types";
 	
-	public static final String PRIV_VIEW_APPOINTMENT_BLOCKS = "View Appointment Blocks";
+	public static final String PRIV_VIEW_APPOINTMENT_BLOCKS = "View Provider Schedules";
 	
-	public static final String PRIV_MANAGE_APPOINTMENT_BLOCKS = "Manage Appointment Blocks";
+	public static final String PRIV_MANAGE_APPOINTMENT_BLOCKS = "Manage Provider Schedules";
 	
 	public static final String PRIV_VIEW_APPOINTMENTS = "View Appointments";
 	

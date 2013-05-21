@@ -90,7 +90,7 @@
 																	"<tr><td><openmrs:hasPrivilege privilege='Squeezing Appointments'>"+
 																		"<input type=\"checkbox\" name=\"includeFull\" value=\"true\" onchange='this.form.submit();' ${(param.includeFull=='true') ? 'checked' : ''}>"+
 																			"<spring:message code='appointmentscheduling.Appointment.create.label.showFull' />"+
-																			"<br/><c:if test='${param.includeFull==\'true\'}'>'"+
+																			"<br/><c:if test='${param.includeFull==\'true\'}'>"+
 																			"<div id='slotIndex'> <img src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/index_fullTimeslot.png' alt='<spring:message code='appointmentscheduling.Appointment.create.lbl.fullSlot'/>'/>"+
 																			" = <spring:message code='appointmentscheduling.Appointment.create.lbl.fullSlot'/></div></c:if>"+
 																	"</openmrs:hasPrivilege></td></tr>"+

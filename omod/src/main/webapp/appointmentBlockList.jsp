@@ -16,7 +16,7 @@
 	file="/moduleResources/appointmentscheduling/TableTools/media/css/TableTools.css" />
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/json2.js" />
 
-<openmrs:require privilege="View Appointment Blocks" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentBlockList.list" />
+<openmrs:require privilege="View Provider Schedules" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentBlockList.list" />
  <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/engine.js'></script>
@@ -435,7 +435,7 @@
 	<input type="hidden" name="appointmentBlockId" id="appointmentBlockId" value="${appointmentBlockId}" />
 	<input type="hidden" name="action" id="action" value="${action}" />
 	<input type="hidden" name="appointmentBlocksJSON" id="appointmentBlocksJSON" value="${appointmentBlocksJSON}" />
-	<openmrs:hasPrivilege privilege="Manage Appointment Blocks">
+	<openmrs:hasPrivilege privilege="Manage Provider Schedules">
 		<table id="managementButtonsTable" align="center">
 				<tr>
 				<td><input type="submit" class="appointmentBlockButton" value="<spring:message code="appointmentscheduling.AppointmentBlock.add"/>" name="add"> </td>

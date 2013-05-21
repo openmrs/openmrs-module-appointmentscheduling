@@ -15,6 +15,7 @@ import org.directwebremoting.WebContextFactory;
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.PersonAttribute;
+import org.openmrs.Provider;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.Appointment;
@@ -201,6 +202,49 @@ public class DWRAppointmentService {
 			}
 		}
 		return "";
+	}
+	
+	/**
+	 * 
+	 * Checks whether a provider has an ongoing open consultation
+	 * 
+	 * @param appointmentId - The appointment id from which we will load the provider
+	 * @return True if has any open consultation, False otherwise
+	 */
+	public Boolean checkProviderOpenConsultations(Integer appointmentId) {
+		if (appointmentId == null)
+			return false;
+		else {
+			Appointment appointment = Context.getService(AppointmentService.class).getAppointment(appointmentId);
+			Provider provider = appointment.getTimeSlot().getAppointmentBlock().getProvider();
+			
+			List<Appointment> inconsultationAppointments = Context.getService(AppointmentService.class)
+			        .getAppointmentsByConstraints(null, null, null, provider, null, AppointmentStatus.INCONSULTATION);
+			
+			return (inconsultationAppointments.size() != 0);
+		}
+	}
+	
+	/**
+	 * 
+	 * Checks whether a provider has an ongoing open consultation
+	 * 
+	 * @param appointmentId - The patient id from which we will its most recent appointment's provider
+	 * @return True if has any open consultation, False otherwise
+	 */
+	public Boolean checkProviderOpenConsultationsByPatient(Integer patientId) {
+		if (patientId == null)
+			return false;
+		else {
+			Appointment appointment = Context.getService(AppointmentService.class).getLastAppointment(
+			    Context.getPatientService().getPatient(patientId));
+			Provider provider = appointment.getTimeSlot().getAppointmentBlock().getProvider();
+			
+			List<Appointment> inconsultationAppointments = Context.getService(AppointmentService.class)
+			        .getAppointmentsByConstraints(null, null, null, provider, null, AppointmentStatus.INCONSULTATION);
+			
+			return (inconsultationAppointments.size() != 0);
+		}
 	}
 	
 }

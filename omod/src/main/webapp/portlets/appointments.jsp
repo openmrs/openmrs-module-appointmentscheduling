@@ -52,14 +52,40 @@
 					$j(".addons").prepend(
 									"<table style='margin:10px; float:right; display:inline-block;' >"+
 										"<tr><td>"+
-											"<openmrs:hasPrivilege privilege='Schedule Appointments'><input type='button' value='<spring:message code='appointmentscheduling.Appointment.add'/>' class='saveButton buttonShadow' onclick='addNewAppointment()'/></openmrs:hasPrivilege>"+
+											"<openmrs:hasPrivilege privilege='Schedule Appointments'><input type='button' value='<spring:message code='appointmentscheduling.Appointment.add'/>' class='saveButton buttonShadow' onclick='ScheduleAppointmentDialogOpen();'/></openmrs:hasPrivilege>"+
 										"</tr></td>"+
 									"</table>");
 				}
                 });
 				//Default sort: ascending by date
 				oTable.fnSort([[1,'asc']]);	
+                
+                //Scheduling Dialog
+				$j('#scheduleDialog').dialog({
+					autoOpen: false,
+					height: 250,
+					width: 300,
+					modal: true,
+					resizable: false,
+					buttons: {
+						"<spring:message code='general.cancel' />": function() {
+							$j(this).dialog("close");
+						},
+						"<spring:message code='general.submit' />": function() {
+							var navigationURL = $j('input[name="selectDialogAction"]:radio:checked')[0].value;
+							window.location = navigationURL;
+						}
+					},
+					open: function(){
+						//Select first as default
+						document.getElementById("scheduleNewAppointmentOption").checked = true;
+					}
+				});
         });
+		
+ 		function ScheduleAppointmentDialogOpen(){
+			$j('#scheduleDialog').dialog('open');
+		}
 
 </script>
 <input id="patientId" type="hidden" value="${model.patientId}" />
@@ -76,7 +102,7 @@
 	                            <th align="center"><spring:message code='appointmentscheduling.Appointment.list.column.clinician'/></th>
                         		<th align="center"><spring:message code='appointmentscheduling.Appointment.list.column.location'/></th>
                      			<th align="center"><spring:message code='appointmentscheduling.Appointment.list.column.type'/></th>
-       							<th align="center"><spring:message code='appointment.Appointment.list.column.status'/></th>
+       							<th align="center"><spring:message code='appointmentscheduling.Appointment.list.column.status'/></th>
 		                        <th align="center">Hidden sortable dates</th>
 		                    </tr>
 		                </thead>
@@ -102,4 +128,12 @@
 		        </table>
 			</div>
 	</div>
+</div>
+<div id="scheduleDialog" >
+	<table id='scheduleDialogOptions' class="dialogTable">
+		<tr><td><h2><spring:message code='appointmentscheduling.Appointment.list.label.selectAnAction'/></h2></td></tr>
+				<tr><td><input id="scheduleNewAppointmentOption" type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/module/appointmentscheduling/appointmentForm.form?patientId=${param.patientId}" checked ><spring:message code='appointmentscheduling.Appointment.create.link.scheduleAppointment' /></input></td></tr>
+				<tr><td><br/></td></tr>
+				<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/module/appointmentscheduling/appointmentForm.form?flow=walkin&patientId=${param.patientId}"><spring:message code='appointmentscheduling.Appointment.create.link.walkinAppointment' /></input></td></tr>
+		</table>
 </div>
