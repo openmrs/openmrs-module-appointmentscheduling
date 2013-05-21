@@ -52,6 +52,7 @@
 	<dwr>
 		<allow>
 			<convert converter="bean" match="org.openmrs.module.appointmentscheduling.web.PatientData"/>
+			<convert converter="bean" match="org.openmrs.module.appointmentscheduling.web.AppointmentData"/>
 			<convert converter="bean" match="org.openmrs.module.appointmentscheduling.web.AppointmentBlockData"/>
 			<convert converter="bean" match="org.openmrs.module.appointmentscheduling.TimeSlot"/>
 			<convert converter="bean" match="org.openmrs.module.appointmentscheduling.AppointmentBlock"/>
@@ -68,6 +69,7 @@
 				<param name="class" value="org.openmrs.module.appointmentscheduling.web.DWRAppointmentService" />
 				<include method="getPatientDescription" />
 				<include method="getAppointmentBlocks"/>
+				<include method="getAppointmentBlocksForCalendar"/>
 				<include method="getPatientsInAppointmentBlock"/>
 				<include method="validateDates"/>
 			</create>
@@ -78,6 +80,7 @@
             import org.openmrs.module.appointmentscheduling.web.DWRAppointmentService;
             DWRAppointmentService.getPatientDescription(Integer patientId);
             DWRAppointmentService.getAppointmentBlocks(String fromDate,String toDate,Integer locationId);
+            DWRAppointmentService.getAppointmentBlocksForCalendar(Long fromDate,Long toDate,Integer locationId);
             DWRAppointmentService.getPatientsInAppointmentBlock(Integer appointmentBlockId);
             DWRAppointmentService.validateDates(String fromDate,String toDate);
             ]]>

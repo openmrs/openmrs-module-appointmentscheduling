@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.appointmentscheduling.web.controller;
 
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -61,7 +62,7 @@ public class AppointmentBlockFormController {
 	}
 	
 	@RequestMapping(value = "/module/appointmentscheduling/appointmentBlockForm", method = RequestMethod.GET)
-	public void showForm(ModelMap model, HttpServletRequest request) {
+	public void showForm(ModelMap model, HttpServletRequest request) throws ParseException {
 		if (Context.isAuthenticated()) {
 			if (request.getParameter("appointmentBlockId") != null) {
 				AppointmentBlock appointmentBlock = getAppointmentBlock(Integer.parseInt(request
@@ -69,6 +70,15 @@ public class AppointmentBlockFormController {
 				model.put("appointmentBlock", appointmentBlock);
 				model.put("timeSlotLength", getTimeSlotLength(appointmentBlock, null));
 			}
+			if (request.getParameter("startDate") != null) {
+				//Update model attribute appointment block
+				AppointmentBlock appointmentBlock = new AppointmentBlock();
+				Date startDate = Context.getDateTimeFormat().parse((String) request.getParameter("startDate"));
+				appointmentBlock.setStartDate(startDate);
+				model.put("appointmentBlock", appointmentBlock);
+				model.put("redirectedFrom", "appointmentBlockCalendar.list");
+			} else
+				model.put("redirectedFrom", "appointmentBlockList.list");
 		}
 	}
 	
@@ -127,9 +137,10 @@ public class AppointmentBlockFormController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public String onSubmit(HttpServletRequest request, AppointmentBlock appointmentBlock, BindingResult result,
-	        @RequestParam(value = "timeSlotLength", required = false) String timeSlotLength,
-	        @RequestParam(value = "emptyTypes", required = false) String emptyTypes) throws Exception {
+	public String onSubmit(HttpServletRequest request, ModelMap model, AppointmentBlock appointmentBlock,
+	        BindingResult result, @RequestParam(value = "timeSlotLength", required = false) String timeSlotLength,
+	        @RequestParam(value = "emptyTypes", required = false) String emptyTypes,
+	        @RequestParam(value = "redirectedFrom", required = false) String redirectedFrom) throws Exception {
 		
 		HttpSession httpSession = request.getSession();
 		
@@ -230,7 +241,6 @@ public class AppointmentBlockFormController {
 			}
 			
 		}
-		
-		return "redirect:appointmentBlockList.list";
+		return "redirect:" + redirectedFrom;
 	}
 }

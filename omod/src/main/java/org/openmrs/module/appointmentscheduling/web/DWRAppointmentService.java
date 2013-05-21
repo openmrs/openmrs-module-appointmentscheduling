@@ -2,6 +2,7 @@ package org.openmrs.module.appointmentscheduling.web;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.AppointmentUtils;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
+import org.openmrs.util.OpenmrsUtil;
 
 /**
  * DWR patient methods. The methods in here are used in the webapp to get data from the database via
@@ -54,6 +56,22 @@ public class DWRAppointmentService {
 		patientData.setFullName(patient.getPersonName().getFullName());
 		
 		return patientData;
+	}
+	
+	public List<AppointmentBlockData> getAppointmentBlocksForCalendar(Long fromDate, Long toDate, Integer locationId)
+	        throws ParseException {
+		List<AppointmentBlockData> appointmentBlockDatalist = new ArrayList<AppointmentBlockData>();
+		if (Context.isAuthenticated()) {
+			Calendar cal = OpenmrsUtil.getDateTimeFormat(Context.getLocale()).getCalendar();
+			cal.setTimeInMillis(fromDate);
+			Date fromDateAsDate = cal.getTime();
+			cal.setTimeInMillis(toDate);
+			Date toDateAsDate = cal.getTime();
+			
+			appointmentBlockDatalist = this.getAppointmentBlocks(Context.getDateTimeFormat().format(fromDateAsDate), Context
+			        .getDateTimeFormat().format(toDateAsDate), locationId);
+		}
+		return appointmentBlockDatalist;
 	}
 	
 	public List<AppointmentBlockData> getAppointmentBlocks(String fromDate, String toDate, Integer locationId)
@@ -101,15 +119,15 @@ public class DWRAppointmentService {
 		return appointmentBlockDatalist;
 	}
 	
-	public List<List<PatientData>> getPatientsInAppointmentBlock(Integer appointmentBlockId) {
-		List<List<PatientData>> patients = null;
+	public List<List<AppointmentData>> getPatientsInAppointmentBlock(Integer appointmentBlockId) {
+		List<List<AppointmentData>> patients = null;
 		if (Context.isAuthenticated()) {
 			AppointmentService as = Context.getService(AppointmentService.class);
 			if (appointmentBlockId != null) {
-				patients = new ArrayList<List<PatientData>>();
-				patients.add(new ArrayList<PatientData>()); //Patients in active appointment
-				patients.add(new ArrayList<PatientData>()); //Patients in scheduled appointments
-				patients.add(new ArrayList<PatientData>()); //Patients in Missed/Cancelled/Complete
+				patients = new ArrayList<List<AppointmentData>>();
+				patients.add(new ArrayList<AppointmentData>()); //active appointments
+				patients.add(new ArrayList<AppointmentData>()); //scheduled appointments
+				patients.add(new ArrayList<AppointmentData>()); //Missed/Cancelled/Complete appointments
 				//Assumption - Exists such an appointment block in the data base with the given Id
 				AppointmentBlock appointmentBlock = as.getAppointmentBlock(appointmentBlockId);
 				//Getting the timeslots of the given appointment block
@@ -117,17 +135,25 @@ public class DWRAppointmentService {
 				for (TimeSlot timeSlot : timeSlots) {
 					List<Appointment> appointmentsInTimeSlot = as.getAppointmentsInTimeSlot(timeSlot);
 					for (Appointment appointment : appointmentsInTimeSlot) {
+						//Create an AppointmentData object
 						PatientData patientDescription = this.getPatientDescription(appointment.getPatient().getPatientId());
+						TimeSlot appointmentTimeSlot = appointment.getTimeSlot();
+						String dateOnly = Context.getDateFormat().format(appointment.getTimeSlot().getStartDate());
+						String startTimeOnly = Context.getTimeFormat().format(appointment.getTimeSlot().getStartDate());
+						String endTimeOnly = Context.getTimeFormat().format(appointment.getTimeSlot().getEndDate());
+						AppointmentData appointmentdata = new AppointmentData(patientDescription, appointment
+						        .getAppointmentType().getName(), dateOnly, startTimeOnly, endTimeOnly, appointment
+						        .getReason());
 						if (appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.INCONSULTATION.toString())
 						        || appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.WAITING.toString())
 						        || appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.WALKIN.toString())) {
 							//Active appointments (In-Consultation\Waiting\Walk-In)
-							patients.get(0).add(patientDescription);
+							patients.get(0).add(appointmentdata);
 						} else if (appointment.getStatus().toString().equalsIgnoreCase(
 						    AppointmentStatus.SCHEDULED.toString())) {
-							patients.get(1).add(patientDescription); //Scheduled appointments
+							patients.get(1).add(appointmentdata); //Scheduled appointments
 						} else {
-							patients.get(2).add(patientDescription); //Missed\Cancelled\Completed appointments
+							patients.get(2).add(appointmentdata); //Missed\Cancelled\Completed appointments
 						}
 					}
 				}
