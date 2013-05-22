@@ -137,7 +137,7 @@ public class AppointmentBlockListController {
 			AppointmentService appointmentService = Context.getService(AppointmentService.class);
 			// if the user is adding a new AppointmentBlock
 			if (request.getParameter("add") != null) {
-				return "redirect:appointmentBlockForm.form";
+				return "redirect:appointmentBlockForm.form" + "?redirectedFrom=appointmentBlockList.list";
 			} else if (appointmentBlockId != null) {
 				appointmentBlock = appointmentService.getAppointmentBlock(appointmentBlockId);
 			}
@@ -248,7 +248,8 @@ public class AppointmentBlockListController {
 			// if the user is editing an existing AppointmentBlock
 			else if (request.getParameter("edit") != null) {
 				if (appointmentBlockId != null) {
-					return "redirect:appointmentBlockForm.form?appointmentBlockId=" + appointmentBlockId;
+					return "redirect:appointmentBlockForm.form?appointmentBlockId=" + appointmentBlockId
+					        + "&redirectedFrom=appointmentBlockList.list";
 				} else {
 					//In case appointment block was not selected
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,

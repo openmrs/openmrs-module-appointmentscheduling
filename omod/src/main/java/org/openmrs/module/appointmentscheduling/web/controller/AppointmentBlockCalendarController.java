@@ -48,20 +48,28 @@ public class AppointmentBlockCalendarController {
 	@RequestMapping(method = RequestMethod.POST)
 	public String loadForm(HttpServletRequest request, ModelMap model,
 	        @RequestParam(value = "action", required = false) String action,
-	        @RequestParam(value = "date", required = false) Long fromDate) {
+	        @RequestParam(value = "fromDate", required = false) Long fromDate,
+	        @RequestParam(value = "appointmentBlockId", required = false) Integer appointmentBlockId) {
 		if (Context.isAuthenticated()) {
 			if (request.getAttribute("calendarContent") != null) { //request forwarded from appointmentBlockList with the appointment blocks data
 				//update the calendar content from the request
 				String calendarContentAsString = "'" + (String) request.getAttribute("calendarContent") + "'";
 				model.addAttribute("calendarContent", calendarContentAsString);
 			} else {
+				//If the user wants to add new appointment block (clicked on a day)
 				if (action != null && action.equals("addNewAppointmentBlock")) {
 					//Fill the request from the user with selected date and forward it to appointmentBlockForm
 					Calendar cal = OpenmrsUtil.getDateTimeFormat(Context.getLocale()).getCalendar();
 					cal.setTimeInMillis(fromDate);
 					Date fromDateAsDate = cal.getTime();
 					return "redirect:appointmentBlockForm.form?startDate="
-					        + Context.getDateTimeFormat().format(fromDateAsDate);
+					        + Context.getDateTimeFormat().format(fromDateAsDate)
+					        + "&redirectedFrom=appointmentBlockCalendar.list";
+				}
+				//If the user wants to edit an existing appointment block (clicked on an event)
+				else if (action != null && action.equals("editAppointmentBlock")) {
+					return "redirect:appointmentBlockForm.form?appointmentBlockId=" + appointmentBlockId
+					        + "&redirectedFrom=appointmentBlockCalendar.list";
 				}
 			}
 		}

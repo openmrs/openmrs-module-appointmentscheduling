@@ -224,7 +224,6 @@
 	</fieldset>
 		<input type="hidden" name="emptyTypes" id="emptyTypes" value="no" />
 		<input type="hidden" name="appointmentBlockObject" id="appointmentBlockObject" value="${appointmentBlock}" />
-		<input type="hidden" name="redirectedFrom" id="redirectedFrom" value="${redirectedFrom}" />
 </form>
 
 <br />

@@ -7,8 +7,8 @@
 	</li>
 	</openmrs:hasPrivilege>
 	<openmrs:hasPrivilege privilege='View Provider Schedules'>
-	<li <c:if test='<%= request.getRequestURI().contains("appointmentscheduling/appointmentBlockList.jsp") %>'>class="active"</c:if>>
-		<a href="${pageContext.request.contextPath}/module/appointmentscheduling/appointmentBlockList.list">
+	<li <c:if test='<%= request.getRequestURI().contains("appointmentscheduling/appointmentBlockCalendar.jsp") %>'>class="active"</c:if>>
+		<a href="${pageContext.request.contextPath}/module/appointmentscheduling/appointmentBlockCalendar.list">
 			<spring:message code="appointmentscheduling.AppointmentBlock.manage.title"/>
 		</a>
 	</li>

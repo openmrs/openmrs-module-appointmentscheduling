@@ -115,8 +115,9 @@
 			editable: false,
 			eventClick: function(calEvent, jsEvent, view) {
 				var selectedAppointmentBlockId = calEvent.id;
-				var appointmentBlockEditURL = getModuleURL()+'appointmentBlockForm.form?appointmentBlockId='+selectedAppointmentBlockId;
-				window.open(appointmentBlockEditURL);
+				document.getElementById('action').value = "editAppointmentBlock";
+				document.getElementById('appointmentBlockId').value = selectedAppointmentBlockId;
+				document.forms['appointmentBlockCalendarForm'].submit();
 				
 			},
 			eventMouseover: function(calEvent, jsEvent, view) {
@@ -140,7 +141,7 @@
 				}
 				document.getElementById('action').value = "addNewAppointmentBlock";
 				var d = new Date(date);
-				document.getElementById('date').value = d.getTime();
+				document.getElementById('fromDate').value = d.getTime();
 				document.forms['appointmentBlockCalendarForm'].submit();
 
 			},
@@ -164,7 +165,8 @@
 	}); 
 </script>
  <form method="post" name="appointmentBlockCalendarForm">
-	<input type="hidden" name="date" id="date" value="${date}" />
+	<input type="hidden" name="fromDate" id="fromDate" value="${fromDate}" />
+	<input type="hidden" name="appointmentBlockId" id="appointmentBlockId" value="${appointmentBlockId}" />
 	<input type="hidden" name="action" id="action" value="${action}" />
  </form>
 <div id='calendarBlocks'></div>

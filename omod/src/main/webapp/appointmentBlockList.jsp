@@ -198,7 +198,7 @@
 								var dialogHeader ='';
 								var dialogTableContent ='';
 								dialogHeader += '<h3><spring:message code="appointmentscheduling.AppointmentBlock.deletingConfirmation.part1"/> '+appointments[1].length+' <spring:message code="appointmentscheduling.AppointmentBlock.deletingConfirmation.part2"/></h3></br>';
-								dialogHeader += '<u><spring:message code="appointmentscheduling.AppointmentBlock.dialogHeader"/>:</u></br>';
+								dialogHeader += '<u><spring:message code="appointmentscheduling.AppointmentBlock.dialogHeader"/>:</u></br></br>';
 								//Table's header
 								dialogTableContent += '<thead><tr>';
 								dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.openMrsId"/></b></th>';
@@ -325,18 +325,13 @@
 				"bSortable" : true
 			}],
 			"aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
-			"iDisplayLength": 25,
+			"iDisplayLength": -1,
 			"sDom" : "<'fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix' fl <'resourceDiv'>>t<'fg-toolbar ui-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-helper-clearfix'ip<'toolbar' T>>",
 			"bLengthChange": true,
 			"bFilter": false,
 			"bInfo": true,
 			"bPaginate": true,
-			"bJQueryUI": true,
-			"fnDrawCallback" : function() {
-			//Clear and prepend the status buttons
-			$j(".resourceDiv").html("");
-
-			}
+			"bJQueryUI": true
 			});
 			var theTable = $j('#deleteDialogTable').dataTable();
 			theTable.fnSort([[2,'asc']]);

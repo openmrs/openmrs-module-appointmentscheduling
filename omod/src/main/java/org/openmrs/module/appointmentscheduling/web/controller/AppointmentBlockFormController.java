@@ -70,15 +70,19 @@ public class AppointmentBlockFormController {
 				model.put("appointmentBlock", appointmentBlock);
 				model.put("timeSlotLength", getTimeSlotLength(appointmentBlock, null));
 			}
-			if (request.getParameter("startDate") != null) {
-				//Update model attribute appointment block
-				AppointmentBlock appointmentBlock = new AppointmentBlock();
-				Date startDate = Context.getDateTimeFormat().parse((String) request.getParameter("startDate"));
-				appointmentBlock.setStartDate(startDate);
-				model.put("appointmentBlock", appointmentBlock);
-				model.put("redirectedFrom", "appointmentBlockCalendar.list");
-			} else
-				model.put("redirectedFrom", "appointmentBlockList.list");
+			if (request.getParameter("redirectedFrom") != null) {
+				String redirectedFrom = (String) request.getParameter("redirectedFrom");
+				if (redirectedFrom.equals("appointmentBlockCalendar.list")) {
+					if (request.getParameter("startDate") != null) {
+						//Update model attribute appointment block
+						AppointmentBlock appointmentBlock = new AppointmentBlock();
+						Date startDate = Context.getDateTimeFormat().parse((String) request.getParameter("startDate"));
+						appointmentBlock.setStartDate(startDate);
+						model.put("appointmentBlock", appointmentBlock);
+					}
+				}
+				model.put("redirectedFrom", redirectedFrom);
+			}
 		}
 	}
 	
