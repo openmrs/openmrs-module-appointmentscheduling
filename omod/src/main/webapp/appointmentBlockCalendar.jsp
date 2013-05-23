@@ -95,24 +95,19 @@
 				center: 'title',
 				right: 'month,agendaWeek,agendaDay'
 			},
-
+			selectable: true,
+			selectHelper: true,
 			select: function(start, end, allDay) {
-			var title = prompt('Event Title:');
-			if (title) {
-				calendar.fullCalendar('renderEvent',
-					{
-						title: title,
-						start: start,
-						end: end,
-						allDay: allDay
-					},
-					true // make the event "stick"
-				);
-			}
-			calendar.fullCalendar('unselect');
+				document.getElementById('action').value = "addNewAppointmentBlock";
+				var startDate = new Date(start);
+				var endDate = new Date(end);
+				document.getElementById('fromDate').value = startDate.getTime();
+				document.getElementById('toDate').value = endDate.getTime();
+				document.forms['appointmentBlockCalendarForm'].submit();
+				calendar.fullCalendar('unselect');
 			},
-			theme: true,
 			editable: false,
+			theme: true,
 			eventClick: function(calEvent, jsEvent, view) {
 				var selectedAppointmentBlockId = calEvent.id;
 				document.getElementById('action').value = "editAppointmentBlock";
@@ -166,6 +161,7 @@
 </script>
  <form method="post" name="appointmentBlockCalendarForm">
 	<input type="hidden" name="fromDate" id="fromDate" value="${fromDate}" />
+	<input type="hidden" name="toDate" id="toDate" value="${toDate}" />
 	<input type="hidden" name="appointmentBlockId" id="appointmentBlockId" value="${appointmentBlockId}" />
 	<input type="hidden" name="action" id="action" value="${action}" />
  </form>

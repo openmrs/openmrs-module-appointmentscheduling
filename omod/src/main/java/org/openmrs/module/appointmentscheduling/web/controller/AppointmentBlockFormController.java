@@ -78,6 +78,10 @@ public class AppointmentBlockFormController {
 						AppointmentBlock appointmentBlock = new AppointmentBlock();
 						Date startDate = Context.getDateTimeFormat().parse((String) request.getParameter("startDate"));
 						appointmentBlock.setStartDate(startDate);
+						if (request.getParameter("endDate") != null) {
+							Date endDate = Context.getDateTimeFormat().parse((String) request.getParameter("endDate"));
+							appointmentBlock.setEndDate(endDate);
+						}
 						model.put("appointmentBlock", appointmentBlock);
 					}
 				}
