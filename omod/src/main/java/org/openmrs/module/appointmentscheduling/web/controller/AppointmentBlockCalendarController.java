@@ -65,7 +65,7 @@ public class AppointmentBlockCalendarController {
 					cal.setTimeInMillis(fromDate);
 					Date fromDateAsDate = cal.getTime();
 					getRequest += "startDate=" + Context.getDateTimeFormat().format(fromDateAsDate);
-					if (toDate != null) {
+					if (toDate != null && !toDate.equals(fromDate)) { //If the fromDate is not the same as toDate (not a day click on month view)
 						cal.setTimeInMillis(toDate);
 						Date toDateAsDate = cal.getTime();
 						getRequest += "&endDate=" + Context.getDateTimeFormat().format(toDateAsDate);

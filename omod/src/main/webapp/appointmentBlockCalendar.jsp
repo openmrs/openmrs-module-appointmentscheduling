@@ -129,17 +129,7 @@
 			eventMouseout: function(calEvent, jsEvent, view) {
 				$(this).css('border-color', '');
 			},
-			dayClick:function( date, allDay, jsEvent, view ) {
-				if(allDay==true){ //If the user has clicked on a slot in the agendaWeek or agendaDay views.
-				}
-				else{ //otherwise (Month view)
-				}
-				document.getElementById('action').value = "addNewAppointmentBlock";
-				var d = new Date(date);
-				document.getElementById('fromDate').value = d.getTime();
-				document.forms['appointmentBlockCalendarForm'].submit();
 
-			},
 			viewDisplay: function(view) {
 				updateAppointmentBlockCalendar(view.visStart,view.visEnd);
 			}			
