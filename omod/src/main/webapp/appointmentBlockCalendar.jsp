@@ -105,12 +105,15 @@
 				document.getElementById('toDate').value = endDate.getTime();
 				document.forms['appointmentBlockCalendarForm'].submit();
 				calendar.fullCalendar('unselect');
+
 			},
 			editable: false,
 			theme: true,
 			eventClick: function(calEvent, jsEvent, view) {
 				var selectedAppointmentBlockId = calEvent.id;
 				document.getElementById('action').value = "editAppointmentBlock";
+				document.getElementById('fromDate').value = 0;
+				document.getElementById('toDate').value = 0;
 				document.getElementById('appointmentBlockId').value = selectedAppointmentBlockId;
 				document.forms['appointmentBlockCalendarForm'].submit();
 				

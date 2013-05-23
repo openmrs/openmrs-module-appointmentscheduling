@@ -183,7 +183,7 @@
 					if(totalAppointments != 0){
 						if(appointments[0].length>0){	
 							//Notify the user that the block cannot be deleted because it has active appointments
-							document.getElementById("notifyDialogText").innerHTML = '<spring:message code="appointmentscheduling.AppointmentBlock.cannotBeDeleted.part1"/> '+patients[0].length+' <spring:message code="appointmentscheduling.AppointmentBlock.cannotBeDeleted.part2"/>';
+							document.getElementById("notifyDialogText").innerHTML = '<spring:message code="appointmentscheduling.AppointmentBlock.cannotBeDeleted.part1"/> '+appointments[0].length+' <spring:message code="appointmentscheduling.AppointmentBlock.cannotBeDeleted.part2"/>';
 							$j('#notifyDialog').dialog('open');
 							event.stopPropagation();
 						}

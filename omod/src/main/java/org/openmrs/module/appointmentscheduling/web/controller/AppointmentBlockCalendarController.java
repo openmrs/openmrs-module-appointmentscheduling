@@ -52,32 +52,26 @@ public class AppointmentBlockCalendarController {
 	        @RequestParam(value = "toDate", required = false) Long toDate,
 	        @RequestParam(value = "appointmentBlockId", required = false) Integer appointmentBlockId) {
 		if (Context.isAuthenticated()) {
-			if (request.getAttribute("calendarContent") != null) { //request forwarded from appointmentBlockList with the appointment blocks data
-				//update the calendar content from the request
-				String calendarContentAsString = "'" + (String) request.getAttribute("calendarContent") + "'";
-				model.addAttribute("calendarContent", calendarContentAsString);
-			} else {
-				//If the user wants to add new appointment block (clicked on a day)
-				if (action != null && action.equals("addNewAppointmentBlock")) {
-					String getRequest = "";
-					//Fill the request from the user with selected date and forward it to appointmentBlockForm
-					Calendar cal = OpenmrsUtil.getDateTimeFormat(Context.getLocale()).getCalendar();
-					cal.setTimeInMillis(fromDate);
-					Date fromDateAsDate = cal.getTime();
-					getRequest += "startDate=" + Context.getDateTimeFormat().format(fromDateAsDate);
-					if (toDate != null && !toDate.equals(fromDate)) { //If the fromDate is not the same as toDate (not a day click on month view)
-						cal.setTimeInMillis(toDate);
-						Date toDateAsDate = cal.getTime();
-						getRequest += "&endDate=" + Context.getDateTimeFormat().format(toDateAsDate);
-					}
-					getRequest += "&redirectedFrom=appointmentBlockCalendar.list";
-					return "redirect:appointmentBlockForm.form?" + getRequest;
+			//If the user wants to add new appointment block (clicked on a day)
+			if (action != null && action.equals("addNewAppointmentBlock")) {
+				String getRequest = "";
+				//Fill the request from the user with selected date and forward it to appointmentBlockForm
+				Calendar cal = OpenmrsUtil.getDateTimeFormat(Context.getLocale()).getCalendar();
+				cal.setTimeInMillis(fromDate);
+				Date fromDateAsDate = cal.getTime();
+				getRequest += "startDate=" + Context.getDateTimeFormat().format(fromDateAsDate);
+				if (toDate != null && !toDate.equals(fromDate)) { //If the fromDate is not the same as toDate (not a day click on month view)
+					cal.setTimeInMillis(toDate);
+					Date toDateAsDate = cal.getTime();
+					getRequest += "&endDate=" + Context.getDateTimeFormat().format(toDateAsDate);
 				}
-				//If the user wants to edit an existing appointment block (clicked on an event)
-				else if (action != null && action.equals("editAppointmentBlock")) {
-					return "redirect:appointmentBlockForm.form?appointmentBlockId=" + appointmentBlockId
-					        + "&redirectedFrom=appointmentBlockCalendar.list";
-				}
+				getRequest += "&redirectedFrom=appointmentBlockCalendar.list";
+				return "redirect:appointmentBlockForm.form?" + getRequest;
+			}
+			//If the user wants to edit an existing appointment block (clicked on an event)
+			else if (action != null && action.equals("editAppointmentBlock")) {
+				return "redirect:appointmentBlockForm.form?appointmentBlockId=" + appointmentBlockId
+				        + "&redirectedFrom=appointmentBlockCalendar.list";
 			}
 		}
 		
