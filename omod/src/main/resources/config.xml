@@ -81,8 +81,8 @@
             <![CDATA[
             import org.openmrs.module.appointmentscheduling.web.DWRAppointmentService;
             DWRAppointmentService.getPatientDescription(Integer patientId);
-            DWRAppointmentService.getAppointmentBlocks(String fromDate,String toDate,Integer locationId);
-            DWRAppointmentService.getAppointmentBlocksForCalendar(Long fromDate,Long toDate,Integer locationId);
+            DWRAppointmentService.getAppointmentBlocks(String fromDate,String toDate,Integer locationId, Integer providerId, Integer appointmentTypeId);
+            DWRAppointmentService.getAppointmentBlocksForCalendar(Long fromDate,Long toDate,Integer locationId, Integer providerId, Integer appointmentTypeId);
             DWRAppointmentService.getPatientsInAppointmentBlock(Integer appointmentBlockId);
             DWRAppointmentService.validateDates(String fromDate,String toDate);
             DWRAppointmentService.checkProviderOpenConsultations(appointmentId);

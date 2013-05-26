@@ -59,8 +59,8 @@ public class DWRAppointmentService {
 		return patientData;
 	}
 	
-	public List<AppointmentBlockData> getAppointmentBlocksForCalendar(Long fromDate, Long toDate, Integer locationId)
-	        throws ParseException {
+	public List<AppointmentBlockData> getAppointmentBlocksForCalendar(Long fromDate, Long toDate, Integer locationId,
+	        Integer providerId, Integer appointmentTypeId) throws ParseException {
 		List<AppointmentBlockData> appointmentBlockDatalist = new ArrayList<AppointmentBlockData>();
 		if (Context.isAuthenticated()) {
 			Calendar cal = OpenmrsUtil.getDateTimeFormat(Context.getLocale()).getCalendar();
@@ -70,21 +70,24 @@ public class DWRAppointmentService {
 			Date toDateAsDate = cal.getTime();
 			
 			appointmentBlockDatalist = this.getAppointmentBlocks(Context.getDateTimeFormat().format(fromDateAsDate), Context
-			        .getDateTimeFormat().format(toDateAsDate), locationId);
+			        .getDateTimeFormat().format(toDateAsDate), locationId, providerId, appointmentTypeId);
 		}
 		return appointmentBlockDatalist;
 	}
 	
-	public List<AppointmentBlockData> getAppointmentBlocks(String fromDate, String toDate, Integer locationId)
-	        throws ParseException {
+	public List<AppointmentBlockData> getAppointmentBlocks(String fromDate, String toDate, Integer locationId,
+	        Integer providerId, Integer appointmentTypeId) throws ParseException {
 		List<AppointmentBlock> appointmentBlockList = new ArrayList<AppointmentBlock>();
 		List<AppointmentBlockData> appointmentBlockDatalist = new ArrayList<AppointmentBlockData>();
 		Date fromAsDate = null;
 		Date toAsDate = null;
+		Provider provider = null;
+		AppointmentType appointmentType = null;
 		//location needs authentication
 		if (Context.isAuthenticated()) {
 			AppointmentService appointmentService = Context.getService(AppointmentService.class);
 			Location location = null;
+			//In case the user selected a locaiton
 			if (locationId != null) {
 				location = Context.getLocationService().getLocation(locationId);
 			}
@@ -95,16 +98,24 @@ public class DWRAppointmentService {
 			if (!toDate.isEmpty()) {
 				toAsDate = Context.getDateTimeFormat().parse(toDate);
 			}
-			appointmentBlockList = appointmentService
-			        .getAppointmentBlocks(fromAsDate, toAsDate, buildLocationList(location));
+			//In case the user selected a provider.
+			if (providerId != null) {
+				provider = Context.getProviderService().getProvider(providerId);
+			}
+			//In case the user selected an appointment type.
+			if (appointmentTypeId != null) {
+				appointmentType = appointmentService.getAppointmentType(appointmentTypeId);
+			}
+			appointmentBlockList = appointmentService.getAppointmentBlocks(fromAsDate, toAsDate,
+			    buildLocationList(location), provider, appointmentType);
 			
 			for (AppointmentBlock appointmentBlock : appointmentBlockList) {
 				//don't include voided appointment blocks
 				if (!appointmentBlock.isVoided()) {
 					Set<String> typesNames = new HashSet<String>();
 					Set<AppointmentType> appointmentTypes = appointmentBlock.getTypes();
-					for (AppointmentType appointmentType : appointmentTypes) {
-						typesNames.add(appointmentType.getName());
+					for (AppointmentType type : appointmentTypes) {
+						typesNames.add(type.getName());
 					}
 					String dateOnly = Context.getDateFormat().format(appointmentBlock.getStartDate());
 					String startTimeOnly = Context.getTimeFormat().format(appointmentBlock.getStartDate());

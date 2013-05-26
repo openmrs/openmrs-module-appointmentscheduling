@@ -48,6 +48,11 @@
 				}
 			}
 		});
+		var providerId = null;
+		var selectedProvider = document.getElementById("providerSelect");
+		if(selectedProvider != null){
+			providerId = selectedProvider.options[selectedProvider.selectedIndex].value;
+		}
 		var selectedLocation = document.getElementById("locationId");
 		var modelAttributeSelectedLocation = "${chosenLocation}";
 		var locationId = null;
@@ -66,7 +71,7 @@
 			else locationId = null;				
 		}
 		//DWR call for getting the appointment blocks that have the selected properties
-		DWRAppointmentService.getAppointmentBlocks(fromDate,toDate,locationId,function(appointmentBlocks){
+		DWRAppointmentService.getAppointmentBlocks(fromDate,toDate,locationId, providerId, null,function(appointmentBlocks){
 			var tableContent = '';
 			var count = 0;
 			blocksAsJSON = [];
@@ -395,21 +400,35 @@
         <div style="margin: 0.5em 0;">
                 <table>
                         <tr>
-                                <td class="formLabel"><spring:message code="appointmentscheduling.AppointmentBlock.pickDate"/>: </td>
-                                <td><input type="text" name="fromDate" id="fromDate" size="18" value="${fromDate}" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('fromDate').focus();"/></td>
-                                <td><input type="text" name="toDate" id="toDate" size="18" value="${toDate}" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('toDate').focus();"/></td>
+                            <td class="formLabel"><spring:message code="appointmentscheduling.AppointmentBlock.pickDate"/>: </td>
+                            <td><input type="text" name="fromDate" id="fromDate" size="18" value="${fromDate}" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('fromDate').focus();"/></td>
+                            <td><input type="text" name="toDate" id="toDate" size="18" value="${toDate}" onfocus="showDateTimePicker(this)"/><img src="${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/calendarIcon.png" class="calendarIcon" alt="" onClick="document.getElementById('toDate').focus();"/></td>
                         </tr>
                         <tr>
                             <td class="formLabel"><spring:message code="appointmentscheduling.AppointmentBlock.column.location"/>: </td>
                             <td><openmrs_tag:locationField formFieldName="locationId" initialValue="${chosenLocation}" optionHeader="[blank]"/></td>
                         </tr>
                         <tr>
-                                <td><input type="button" class="appointmentBlockButton" value=<spring:message code="appointmentscheduling.AppointmentBlock.apply"/> onClick="updateAppointmentBlockTable(false)"></td>
+                            <td class="formLabel"><spring:message code="appointmentscheduling.AppointmentBlock.column.provider"/>: </td>
+   							<td>
+	   							<select name="providerSelect" id="providerSelect">
+									<option value="" ${null==param.providerSelect ? 'selected' : ''}>
+										<spring:message
+											code="appointmentscheduling.Appointment.create.label.clinicianNotSpecified" />
+									</option>
+									<c:forEach var="provider" items="${providerList}">
+										<option value="${provider.providerId}"
+											${provider.providerId==param.providerSelect ? 'selected' : ''}>${provider.name}</option>
+									</c:forEach>
+								</select>
+							</td>
+                        </tr>
+                        <tr>
+                            <td><input type="button" class="appointmentBlockButton" value=<spring:message code="appointmentscheduling.AppointmentBlock.apply"/> onClick="updateAppointmentBlockTable(false)"></td>
                         </tr>
                 </table>
         </div>
 </fieldset>
- 
 <br/>
 	<table id="appointmentBlocksTable" cellspacing="0">
 			<thead>

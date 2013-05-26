@@ -32,11 +32,11 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
-import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentBlockDAO;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentDAO;
@@ -234,12 +234,13 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	/**
-	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#getAppointmentBlocks(java.util.Date,java.util.Date,java.util.String)
+	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#getAppointmentBlocks(java.util.Date,java.util.Date,java.util.String,org.openmrs.Provider,org.openmrs.AppointmentType)
 	 *      )
 	 */
 	@Transactional(readOnly = true)
-	public List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, String locations) {
-		return getAppointmentBlockDAO().getAppointmentBlocks(fromDate, toDate, locations);
+	public List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, String locations, Provider provider,
+	        AppointmentType appointmentType) {
+		return getAppointmentBlockDAO().getAppointmentBlocks(fromDate, toDate, locations, provider, appointmentType);
 	}
 	
 	/**

@@ -26,6 +26,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
+import org.openmrs.Provider;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.Appointment;
@@ -95,6 +96,11 @@ public class AppointmentBlockListController {
 			model.addAttribute("toDate", toDate);
 		}
 		
+	}
+	
+	@ModelAttribute("providerList")
+	public List<Provider> getProviderList() {
+		return Context.getService(AppointmentService.class).getAllProvidersSorted(false);
 	}
 	
 	@ModelAttribute("chosenLocation")

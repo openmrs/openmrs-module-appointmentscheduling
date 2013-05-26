@@ -18,12 +18,15 @@ import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
+import org.openmrs.Provider;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
+import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentBlockDAO;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,12 +41,15 @@ public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implem
 	 * 
 	 * @param fromDate the lower bound of the date interval.
 	 * @param toDate the upper bound of the date interval.
-	 * @param location the location to filter by.
+	 * @param locations the of locations to filter by.
+	 * @param provider the provider to filter by.
+	 * @param appointment type the type of appointment to filter by.
 	 * @return the appointment blocks that is on the given date interval and locations.
 	 */
 	@Override
 	@Transactional(readOnly = true)
-	public List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, String locations) {
+	public List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, String locations, Provider provider,
+	        AppointmentType appointmentType) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(AppointmentBlock.class);
 		if (!locations.isEmpty()) {
 			String[] locationsAsArray = locations.split(",");
@@ -61,6 +67,21 @@ public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implem
 		if (toDate != null) {
 			criteria.add(Restrictions.le("endDate", toDate));
 		}
+		if (provider != null) {
+			criteria.add(Restrictions.eq("provider.id", provider.getProviderId()));
+		}
+		if (appointmentType != null) {
+			//			String stringQuery = "SELECT * FROM AppointmentBlock WHERE :appointmentType IN elements(types)";
+			//			Query query = super.sessionFactory.getCurrentSession().createQuery(stringQuery)
+			//			        .setParameter("appointmentType", appointmentType);
+			//			List<AppointmentBlock> appointmentBlocks = query.list();
+			//			Disjunction dis = Restrictions.disjunction();
+			//			for (AppointmentBlock appointmentBlock : appointmentBlocks) {
+			//				dis.add(Restrictions.eq("types", appointmentBlock.getTypes()));  
+			//            }
+			//			criteria.add(dis);
+		}
+		
 		return criteria.list();
 	}
 	

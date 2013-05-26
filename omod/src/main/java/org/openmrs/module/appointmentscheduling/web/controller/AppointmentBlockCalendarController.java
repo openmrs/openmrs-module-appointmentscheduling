@@ -15,15 +15,19 @@ package org.openmrs.module.appointmentscheduling.web.controller;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -43,6 +47,11 @@ public class AppointmentBlockCalendarController {
 			model.addAttribute("localizedDatePattern", OpenmrsUtil.getDateTimeFormat(Context.getLocale())
 			        .toLocalizedPattern());
 		}
+	}
+	
+	@ModelAttribute("providerList")
+	public List<Provider> getProviderList() {
+		return Context.getService(AppointmentService.class).getAllProvidersSorted(false);
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)

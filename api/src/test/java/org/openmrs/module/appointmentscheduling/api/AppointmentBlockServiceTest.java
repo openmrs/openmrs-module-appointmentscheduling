@@ -32,13 +32,12 @@ import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
-import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 import org.openmrs.util.OpenmrsUtil;
 
 /**
- * Tests Appointment Block methods in the {@link $ AppointmentService}}.
+ * Tests Appointment Block methods in the {@link $ AppointmentService} .
  */
 public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest {
 	
@@ -194,38 +193,48 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 	
 	@SuppressWarnings("deprecation")
 	@Test
-	@Verifies(value = "should get all the appointment blocks that correspounds to a given location and a given date", method = "getAppointmentBlocks(Date,Location)")
+	@Verifies(value = "should get all the appointment blocks that correspounds to a given date interval, set of locations, a provider and an appointment type", method = "getAppointmentBlocks(Date,Date,String,Provider,AppointmentType)")
 	public void getAppointmentBlocksByDateAndLocation_shouldGetAllCorrectAppointmentBlock() throws Exception {
 		AppointmentBlock appointmentBlock = service.getAppointmentBlock(1);
 		Location location = appointmentBlock.getLocation();
 		Date fromDate = appointmentBlock.getStartDate();
 		Date toDate = appointmentBlock.getEndDate();
+		Provider provider = appointmentBlock.getProvider();
+		AppointmentType appointmentType = service.getAppointmentType(2);
 		String locaitons = location.getId() + ",3";
-		List<AppointmentBlock> appointmentBlocks = service.getAppointmentBlocks(fromDate, toDate, locaitons);
+		List<AppointmentBlock> appointmentBlocks = service.getAppointmentBlocks(fromDate, toDate, locaitons, provider, null);
 		assertNotNull(appointmentBlocks);
 		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
 		
 		appointmentBlock = service.getAppointmentBlock(2);
 		fromDate = appointmentBlock.getStartDate();
 		toDate = appointmentBlock.getEndDate();
-		appointmentBlocks = service.getAppointmentBlocks(fromDate, toDate, "");
+		appointmentBlocks = service.getAppointmentBlocks(fromDate, toDate, "", provider, null);
 		assertNotNull(appointmentBlocks);
 		assertEquals(new Integer(2), appointmentBlocks.get(0).getAppointmentBlockId());
 		
-		appointmentBlocks = service.getAppointmentBlocks(toDate, null, "");
+		appointmentBlocks = service.getAppointmentBlocks(toDate, null, "", provider, null);
 		assertNotNull(appointmentBlocks);
 		assertEquals(new Integer(3), appointmentBlocks.get(0).getAppointmentBlockId());
 		
-		appointmentBlocks = service.getAppointmentBlocks(null, toDate, "");
+		appointmentBlocks = service.getAppointmentBlocks(null, toDate, "", provider, null);
 		assertNotNull(appointmentBlocks);
 		assertEquals(2, appointmentBlocks.size());
 		
-		appointmentBlocks = service.getAppointmentBlocks(null, null, locaitons);
+		appointmentBlocks = service.getAppointmentBlocks(null, null, locaitons, provider, null);
 		assertNotNull(appointmentBlocks);
 		assertEquals(1, appointmentBlocks.size());
 		
-		appointmentBlocks = service.getAppointmentBlocks(null, null, "");
+		appointmentBlocks = service.getAppointmentBlocks(null, null, "", provider, null);
 		assertEquals(3, appointmentBlocks.size());
+		
+		provider = Context.getProviderService().getProvider(2);
+		appointmentBlocks = service.getAppointmentBlocks(null, null, "", provider, null);
+		assertEquals(0, appointmentBlocks.size());
+		
+		//		appointmentBlocks = service.getAppointmentBlocks(null, null, "", null, appointmentType);
+		//		Integer sizeTest = appointmentBlocks.size();
+		//		assertEquals(2, appointmentBlocks.size());
 	}
 	
 	@SuppressWarnings("deprecation")

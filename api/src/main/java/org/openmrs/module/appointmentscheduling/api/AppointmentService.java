@@ -217,10 +217,11 @@ public interface AppointmentService extends OpenmrsService {
 	 * 
 	 * @return a list of appointment block objects.
 	 * @should get all appointment blocks which have contains in a given date interval and
-	 *         corresponds to a given locations.
+	 *         corresponds to a given locations, provider and appointment type.
 	 */
 	@Transactional(readOnly = true)
-	List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, String locations);
+	List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, String locations, Provider provider,
+	        AppointmentType appointmentType);
 	
 	/**
 	 * Gets appointment blocks which overlap to the given appointment block

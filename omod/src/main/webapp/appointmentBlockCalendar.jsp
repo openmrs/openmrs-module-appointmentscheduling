@@ -41,12 +41,21 @@
 		}
 		return locationId;
 	}
+	function getSelectedProvider(){
+		var providerId = null;
+		var selectedProvider = document.getElementById("providerSelect");
+		if(selectedProvider != null){
+			providerId = selectedProvider.options[selectedProvider.selectedIndex].value;
+		}
+		return providerId;
+	}
 	function updateAppointmentBlockCalendar(fromDate,toDate) //updates the calendar if changes occur
 	{
 		var calendarContent;	
-		var locationId = null; //getSelectedLocationId(); //will be implemented later.
+		var locationId = getSelectedLocationId(); 
+		var providerId = getSelectedProvider();
 		//DWR call for getting the appointment blocks that have the selected properties
-		DWRAppointmentService.getAppointmentBlocksForCalendar(fromDate.getTime(),toDate.getTime(),locationId,function(appointmentBlocks){
+		DWRAppointmentService.getAppointmentBlocksForCalendar(fromDate.getTime(),toDate.getTime(),locationId, providerId, null,function(appointmentBlocks){
 			var tableContent = '';
 			var count = 0;
 			calendarContent = [];
@@ -152,6 +161,36 @@
 		updateAppointmentBlockCalendar(calendarView.visStart,calendarView.visEnd);
 	}); 
 </script>
+<fieldset id="propertiesFieldset" style="clear: both">
+        <legend><spring:message code="appointmentscheduling.AppointmentBlock.legend.properties"/></legend>
+        <div style="margin: 0.5em 0;">
+                <table>
+                        <tr>
+                            <td class="formLabel"><spring:message code="appointmentscheduling.AppointmentBlock.column.location"/>: </td>
+                            <td><openmrs_tag:locationField formFieldName="locationId" initialValue="${chosenLocation}" optionHeader="[blank]"/></td>
+                        </tr>
+                        <tr>
+                            <td class="formLabel"><spring:message code="appointmentscheduling.AppointmentBlock.column.provider"/>: </td>
+   							<td>
+	   							<select name="providerSelect" id="providerSelect">
+									<option value="" ${null==param.providerSelect ? 'selected' : ''}>
+										<spring:message
+											code="appointmentscheduling.Appointment.create.label.clinicianNotSpecified" />
+									</option>
+									<c:forEach var="provider" items="${providerList}">
+										<option value="${provider.providerId}"
+											${provider.providerId==param.providerSelect ? 'selected' : ''}>${provider.name}</option>
+									</c:forEach>
+								</select>
+							</td>
+                        </tr>
+                        <tr>
+                            <td><input type="button" class="appointmentBlockButton" value=<spring:message code="appointmentscheduling.AppointmentBlock.apply"/> onClick="updateAppointmentBlockTable(false)"></td>
+                        </tr>
+                </table>
+        </div>
+</fieldset>
+<br/>
  <form method="post" name="appointmentBlockCalendarForm">
 	<input type="hidden" name="fromDate" id="fromDate" value="${fromDate}" />
 	<input type="hidden" name="toDate" id="toDate" value="${toDate}" />
