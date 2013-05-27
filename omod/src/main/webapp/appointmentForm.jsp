@@ -25,6 +25,26 @@
 			object.value = object.value.substring(0, maxLength);
 		}
 	}
+	
+	// Printing Functionality
+	function PrintElem(elem)
+    {
+        Popup($j(elem).html());
+    }
+
+    function Popup(data) 
+    {
+        var mywindow = window.open('', '<spring:message code="appointmentscheduling.Appointment.create.confirmation.title"/>', 'height=400,width=600');
+        mywindow.document.write('<html><head><title><spring:message code="appointmentscheduling.Appointment.create.confirmation.title"/></title>');
+		mywindow.document.write('<link rel="stylesheet" href="/module/appointmentscheduling/Styles/createAppointmentStyle.css" type="text/css" />');
+        mywindow.document.write('</head><body >');
+        mywindow.document.write(data);
+        mywindow.document.write('</body></html>');
+
+        mywindow.print();
+
+        return true;
+    }
 </script>
 <script type="text/javascript"
 	src='${pageContext.request.contextPath}/dwr/engine.js'></script>
@@ -490,27 +510,30 @@
 </form:form>
 
 <div id="appointmentInformationDialog" title="<h1><spring:message code='appointmentscheduling.Appointment.create.confirmation.title'/></h1>">
-	<table id='appointmentInformationFields' class="dialogTable" style="padding:8x;" border="1" cellpadding="5">
-		<tr><td colspan="2"><spring:message code="appointmentscheduling.Appointment.create.confirmation.text"/></td></tr>
-		<tr><td colspan="2"><br/></td></tr>
-		<tr><td><b><spring:message code="appointmentscheduling.Appointment.list.column.patient"/></b></td><td>
-		<c:forEach var="name" items="${appointment.patient.names}" end="0">
-			<c:out value="${name}" />
-		</c:forEach> 
-		<br/>
-		<c:forEach var="identifier" items="${appointment.patient.identifiers}" >
-			<c:if test="${identifier.preferred}">(${identifier})</c:if>
-		</c:forEach>
-		</td></tr>
-		<tr><td><b><spring:message code="appointmentscheduling.Appointment.create.header.appointmentType"/></b></td><td>
-		${appointment.appointmentType.name}
-		</td></tr>
-		<tr><td><b><spring:message code="appointmentscheduling.Appointment.list.column.date"/></b></td><td id="timeCell">
-		</td></tr>
-		<tr><td><b><spring:message code="appointmentscheduling.Appointment.create.header.clinician"/></b></td><td id="providerCell">
-		</td></tr>
-		<tr><td><b><spring:message code="appointmentscheduling.Appointment.create.header.location"/></b></td><td id="locationCell">
-		</td></tr>
-	</table>
+	<spring:message code="appointmentscheduling.Appointment.create.confirmation.text"/>
+	<div id="printableAppointmentInformation">
+		<table id='appointmentInformationFields' class="dialogTable" style="padding:8x;" border="1" cellpadding="5">
+			<tr><td><b><spring:message code="appointmentscheduling.Appointment.list.column.patient"/></b></td><td>
+			<c:forEach var="name" items="${appointment.patient.names}" end="0">
+				<c:out value="${name}" />
+			</c:forEach> 
+			<br/>
+			<c:forEach var="identifier" items="${appointment.patient.identifiers}" >
+				<c:if test="${identifier.preferred}">(${identifier})</c:if>
+			</c:forEach>
+			</td></tr>
+			<tr><td><b><spring:message code="appointmentscheduling.Appointment.create.header.appointmentType"/></b></td><td>
+			${appointment.appointmentType.name}
+			</td></tr>
+			<tr><td><b><spring:message code="appointmentscheduling.Appointment.list.column.date"/></b></td><td id="timeCell">
+			</td></tr>
+			<tr><td><b><spring:message code="appointmentscheduling.Appointment.create.header.clinician"/></b></td><td id="providerCell">
+			</td></tr>
+			<tr><td><b><spring:message code="appointmentscheduling.Appointment.create.header.location"/></b></td><td id="locationCell">
+			</td></tr>
+
+		</table>
+	</div>
+				<img id='printButton' src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/print_idle.png' alt='' onmouseover='this.src="${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/print_active.png"' onmouseout='this.src="${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/print_idle.png"' onclick=";PrintElem('#printableAppointmentInformation');"/>
 </div>
 <%@ include file="/WEB-INF/template/footer.jsp"%>
