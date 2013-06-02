@@ -188,3 +188,9 @@
 	font-size:18px;
 }
 
+#printButton
+{
+	cursor:pointer;
+	float:right;
+	margin:5px;
+}
