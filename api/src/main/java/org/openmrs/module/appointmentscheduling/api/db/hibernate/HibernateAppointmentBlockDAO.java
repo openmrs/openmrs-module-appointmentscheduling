@@ -50,6 +50,7 @@ public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implem
 	@Transactional(readOnly = true)
 	public List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, String locations, Provider provider,
 	        AppointmentType appointmentType) {
+		List<AppointmentBlock> filteredAppointmentBlocks = null;
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(AppointmentBlock.class);
 		if (!locations.isEmpty()) {
 			String[] locationsAsArray = locations.split(",");
@@ -70,19 +71,25 @@ public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implem
 		if (provider != null) {
 			criteria.add(Restrictions.eq("provider.id", provider.getProviderId()));
 		}
+		List<AppointmentBlock> appointmentBlocks = criteria.list();
 		if (appointmentType != null) {
-			//			String stringQuery = "SELECT * FROM AppointmentBlock WHERE :appointmentType IN elements(types)";
-			//			Query query = super.sessionFactory.getCurrentSession().createQuery(stringQuery)
-			//			        .setParameter("appointmentType", appointmentType);
-			//			List<AppointmentBlock> appointmentBlocks = query.list();
-			//			Disjunction dis = Restrictions.disjunction();
-			//			for (AppointmentBlock appointmentBlock : appointmentBlocks) {
-			//				dis.add(Restrictions.eq("types", appointmentBlock.getTypes()));  
-			//            }
-			//			criteria.add(dis);
-		}
+			filteredAppointmentBlocks = new ArrayList<AppointmentBlock>();
+			String stringQuery = "SELECT appointmentBlock FROM AppointmentBlock AS appointmentBlock WHERE :appointmentType IN elements(appointmentBlock.types)";
+			Query query = super.sessionFactory.getCurrentSession().createQuery(stringQuery).setParameter("appointmentType",
+			    appointmentType);
+			List<AppointmentBlock> appointmentBlocksFilteredByType = query.list();
+			for (AppointmentBlock appointmentBlockContainsType : appointmentBlocksFilteredByType) {
+				for (AppointmentBlock appointmentBlock : appointmentBlocks) {
+					if (appointmentBlock.getId().equals(appointmentBlockContainsType.getId())) {
+						//Intersection 
+						filteredAppointmentBlocks.add(appointmentBlock);
+					}
+				}
+			}
+		} else
+			filteredAppointmentBlocks = appointmentBlocks;
 		
-		return criteria.list();
+		return filteredAppointmentBlocks;
 	}
 	
 	/**

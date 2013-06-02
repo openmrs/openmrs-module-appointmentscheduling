@@ -1,6 +1,7 @@
 <%@ include file="/WEB-INF/template/include.jsp" %>
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <%@ include file="localHeader.jsp" %>
+<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/AppointmentBlockStyle.css" />
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/fullcalendar.css"/>
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/fullcalendar.print.css"/>
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/jquery-1.9.1.min.js" />
@@ -16,6 +17,7 @@
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/interface/DWRAppointmentService.js'></script>
 
 <script type="text/javascript">
+	var calendar;
 	function getModuleURL(){
 		var pathArray = window.location.pathname.split( '/' );
 		var url = window.location.protocol+"//"+window.location.host+"/"+pathArray[1]+"/"+pathArray[2]+"/"+pathArray[3]+"/";
@@ -47,15 +49,34 @@
 		if(selectedProvider != null){
 			providerId = selectedProvider.options[selectedProvider.selectedIndex].value;
 		}
+		document.getElementById("chosenProvider").value = providerId;
 		return providerId;
+	}
+	function getSelectedAppointmentType(){
+		var appointmentTypeId = null;
+		var selectedAppointmentType = document.getElementById("appointmentTypeSelect");
+		if(selectedAppointmentType != null){
+			appointmentTypeId = selectedAppointmentType.options[selectedAppointmentType.selectedIndex].value;
+		}
+		document.getElementById("chosenType").value = appointmentTypeId;
+		return appointmentTypeId;
+	}
+	function viewChange(){
+		//Check if change to table view is needed
+		var selectedView = document.getElementById("viewSelect");
+		return (selectedView.options[selectedView.selectedIndex].value == "tableView");
 	}
 	function updateAppointmentBlockCalendar(fromDate,toDate) //updates the calendar if changes occur
 	{
 		var calendarContent;	
 		var locationId = getSelectedLocationId(); 
 		var providerId = getSelectedProvider();
+		var appointmentTypeId = getSelectedAppointmentType();
+		if(viewChange()){
+			changeToTableView(this,event);
+		}
 		//DWR call for getting the appointment blocks that have the selected properties
-		DWRAppointmentService.getAppointmentBlocksForCalendar(fromDate.getTime(),toDate.getTime(),locationId, providerId, null,function(appointmentBlocks){
+		DWRAppointmentService.getAppointmentBlocksForCalendar(fromDate.getTime(),toDate.getTime(),locationId, providerId, appointmentTypeId,function(appointmentBlocks){
 			var tableContent = '';
 			var count = 0;
 			calendarContent = [];
@@ -92,9 +113,12 @@
 			if(count == appointmentBlocks.length){
 				if(appointmentBlocks.length == 0){ //if there was no appointment blocks, clear table and destroy
 				 }				
-				//update calendar content using the received data	
-				updateCalendar(calendarContent);
-			}	
+					//update calendar content using the received data	
+					//Clear previous content
+					$('#calendarBlocks').fullCalendar( 'removeEvents' );
+					//Add the new events(appointmentBlocks)
+					$('#calendarBlocks').fullCalendar( 'addEventSource', calendarContent);
+				}	
 		});
 	}	
 	function InitializeCalendar(){
@@ -148,19 +172,28 @@
 		});	
 	}
 	
-	function updateCalendar(calendarContent){
-		//Clear previous content
-		$('#calendarBlocks').fullCalendar( 'removeEvents' );
-		//Add the new events(appointmentBlocks)
-		$('#calendarBlocks').fullCalendar( 'addEventSource', calendarContent);
+	function changeToTableView(e, event){ //A function that updates the action to change the view to table view and submits the form
+		//change action to table view 
+		document.getElementById('action').value = "changeToTableView";
+		//POST back in order to redirect to the table view via the controller.
+		document.forms['appointmentBlockCalendarForm'].submit();
+	}
+	
+	function refreshCalendar(){
+		var calendarView = calendar.fullCalendar('getView');
+		updateAppointmentBlockCalendar(calendarView.visStart,calendarView.visEnd);
 	}
 
 	 $j(document).ready(function() { 
-		var calendar = InitializeCalendar();
-		var calendarView = calendar.fullCalendar('getView');
-		updateAppointmentBlockCalendar(calendarView.visStart,calendarView.visEnd);
+		//Initialize selected view as table view
+		document.getElementById("viewSelect").selectedIndex = 1;
+		calendar = InitializeCalendar();
+		refreshCalendar();
 	}); 
 </script>
+<h2><spring:message code="appointmentscheduling.AppointmentBlock.manage.title"/></h2>
+<br/><br/>
+<form method="post" name="appointmentBlockCalendarForm">
 <fieldset id="propertiesFieldset" style="clear: both">
         <legend><spring:message code="appointmentscheduling.AppointmentBlock.legend.properties"/></legend>
         <div style="margin: 0.5em 0;">
@@ -170,32 +203,57 @@
                             <td><openmrs_tag:locationField formFieldName="locationId" initialValue="${chosenLocation}" optionHeader="[blank]"/></td>
                         </tr>
                         <tr>
-                            <td class="formLabel"><spring:message code="appointmentscheduling.AppointmentBlock.column.provider"/>: </td>
+                            <td class="formLabel"><spring:message code="appointmentscheduling.AppointmentBlock.filters.provider"/>: </td>
    							<td>
 	   							<select name="providerSelect" id="providerSelect">
-									<option value="" ${null==param.providerSelect ? 'selected' : ''}>
-										<spring:message
-											code="appointmentscheduling.Appointment.create.label.clinicianNotSpecified" />
+									<option value="" ${null==chosenProvider ? 'selected' : ''}>
+										(<spring:message
+											code="appointmentscheduling.AppointmentBlock.filters.providerNotSpecified" />)
 									</option>
 									<c:forEach var="provider" items="${providerList}">
 										<option value="${provider.providerId}"
-											${provider.providerId==param.providerSelect ? 'selected' : ''}>${provider.name}</option>
+											${provider.providerId==chosenProvider ? 'selected' : ''}>${provider.name}</option>
 									</c:forEach>
 								</select>
 							</td>
                         </tr>
                         <tr>
-                            <td><input type="button" class="appointmentBlockButton" value=<spring:message code="appointmentscheduling.AppointmentBlock.apply"/> onClick="updateAppointmentBlockTable(false)"></td>
+                            <td class="formLabel"><spring:message code="appointmentscheduling.AppointmentBlock.filters.type"/>: </td>
+   							<td>
+	   							<select name="appointmentTypeSelect" id="appointmentTypeSelect">
+									<option value="" ${null==chosenType ? 'selected' : ''}>
+										(<spring:message
+											code="appointmentscheduling.AppointmentBlock.filters.typeNotSpecified" />)
+									</option>
+									<c:forEach var="type" items="${appointmentTypeList}">
+										<option value="${type.appointmentTypeId}"
+											${type.appointmentTypeId==chosenType ? 'selected' : ''}>${type.name}</option>
+									</c:forEach>
+								</select>
+							</td>
+                        </tr>
+						<tr>
+                            <td class="formLabel"><spring:message code="appointmentscheduling.AppointmentBlock.filters.view"/>: </td>
+   							<td>
+	   							<select name="viewSelect" id="viewSelect">
+									<option value="tableView"><spring:message code="appointmentscheduling.AppointmentBlock.tableView"/></option>
+									<option value="calendarView"><spring:message code="appointmentscheduling.AppointmentBlock.calendarView"/></option>
+								</select>
+							</td>
+                        </tr>
+                        <tr>
+                            <td><input type="button" class="appointmentBlockButton" value=<spring:message code="appointmentscheduling.AppointmentBlock.apply"/> onClick="refreshCalendar()"></td>
                         </tr>
                 </table>
         </div>
 </fieldset>
 <br/>
- <form method="post" name="appointmentBlockCalendarForm">
 	<input type="hidden" name="fromDate" id="fromDate" value="${fromDate}" />
 	<input type="hidden" name="toDate" id="toDate" value="${toDate}" />
 	<input type="hidden" name="appointmentBlockId" id="appointmentBlockId" value="${appointmentBlockId}" />
 	<input type="hidden" name="action" id="action" value="${action}" />
+	<input type="hidden" name="chosenProvider" id="chosenProvider" value="${chosenProvider}" />
+	<input type="hidden" name="chosenType" id="chosenType" value="${chosenType}" />
  </form>
 <div id='calendarBlocks'></div>
 <%@ include file="/WEB-INF/template/footer.jsp" %>

@@ -32,6 +32,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
+import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.util.OpenmrsUtil;
@@ -58,10 +59,24 @@ public class AppointmentBlockListController {
 	public void showForm(HttpServletRequest request, ModelMap model) throws ParseException {
 		//Initializing the default properties of the appointment block list page.
 		if (Context.isAuthenticated()) {
+			//Set the location from the session
 			if (request.getSession().getAttribute("chosenLocation") != null) {
 				Location location = (Location) request.getSession().getAttribute("chosenLocation");
 				model.addAttribute("chosenLocation", location);
 			}
+			//Set the provider from the session
+			if (request.getSession().getAttribute("chosenProvider") != null) {
+				Provider provider = Context.getProviderService().getProvider(
+				    (Integer) request.getSession().getAttribute("chosenProvider"));
+				model.addAttribute("chosenProvider", provider.getProviderId());
+			}
+			//Set the appointmentType from the session
+			if (request.getSession().getAttribute("chosenType") != null) {
+				AppointmentType appointmentType = Context.getService(AppointmentService.class).getAppointmentType(
+				    (Integer) request.getSession().getAttribute("chosenType"));
+				model.addAttribute("chosenType", appointmentType.getAppointmentTypeId());
+			}
+			//Set the date interval from the session
 			String fromDate;
 			String toDate;
 			
@@ -103,6 +118,11 @@ public class AppointmentBlockListController {
 		return Context.getService(AppointmentService.class).getAllProvidersSorted(false);
 	}
 	
+	@ModelAttribute("appointmentTypeList")
+	public List<AppointmentType> getAppointmentTypeList() {
+		return Context.getService(AppointmentService.class).getAllAppointmentTypesSorted(false);
+	}
+	
 	@ModelAttribute("chosenLocation")
 	public Location getLocation(@RequestParam(value = "locationId", required = false) Location location) {
 		if (location != null)
@@ -116,45 +136,56 @@ public class AppointmentBlockListController {
 	        @RequestParam(value = "fromDate", required = false) Date fromDate,
 	        @RequestParam(value = "toDate", required = false) Date toDate,
 	        @RequestParam(value = "locationId", required = false) Location location,
+	        @RequestParam(value = "chosenType", required = false) Integer appointmentTypeId,
+	        @RequestParam(value = "chosenProvider", required = false) Integer providerId,
 	        @RequestParam(value = "appointmentBlockId", required = false) Integer appointmentBlockId,
-	        @RequestParam(value = "action", required = false) String action,
-	        @RequestParam(value = "appointmentBlocksJSON", required = false) String appointmentBlocksJSON) throws Exception {
-		HttpSession httpSession = request.getSession();
-		if (!fromDate.before(toDate)) {
-			httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,
-			    "appointmentscheduling.AppointmentBlock.error.InvalidDateInterval");
-		}
-		//save details from the appointment block list page using http session
-		httpSession.setAttribute("chosenLocation", location);
-		httpSession.setAttribute("fromDate", Context.getDateTimeFormat().format(fromDate).toString());
-		httpSession.setAttribute("toDate", Context.getDateTimeFormat().format(toDate).toString());
-		httpSession.setAttribute("lastLocale", Context.getLocale());
-		//if the user is notified to selected appointment block
-		if (action != null && action.equals("notifyToSelectAppointmentBlock")) {
-			if (appointmentBlockId == null) {
-				//In case appointment block was not selected
-				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
-				    "appointmentscheduling.AppointmentBlock.error.selectAppointmentBlock");
-				return null;
-			}
-		}
+	        @RequestParam(value = "action", required = false) String action) throws Exception {
 		AppointmentBlock appointmentBlock = null;
 		if (Context.isAuthenticated()) {
+			HttpSession httpSession = request.getSession();
+			if (!fromDate.before(toDate)) {
+				httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,
+				    "appointmentscheduling.AppointmentBlock.error.InvalidDateInterval");
+			}
+			// save details from the appointment block list page using http session
+			httpSession.setAttribute("chosenLocation", location);
+			httpSession.setAttribute("fromDate", Context.getDateTimeFormat().format(fromDate).toString());
+			httpSession.setAttribute("toDate", Context.getDateTimeFormat().format(toDate).toString());
+			httpSession.setAttribute("lastLocale", Context.getLocale());
+			httpSession.setAttribute("chosenProvider", providerId);
+			httpSession.setAttribute("chosenType", appointmentTypeId);
 			AppointmentService appointmentService = Context.getService(AppointmentService.class);
-			// if the user is adding a new AppointmentBlock
+			//if the user is adding a new AppointmentBlock
 			if (request.getParameter("add") != null) {
 				return "redirect:appointmentBlockForm.form" + "?redirectedFrom=appointmentBlockList.list";
-			} else if (appointmentBlockId != null) {
-				appointmentBlock = appointmentService.getAppointmentBlock(appointmentBlockId);
 			}
-			//if the user is voiding the selected appointment block
-			if (action != null && action.equals("void")) {
-				if (appointmentBlockId == null) {
+			//if the user is editing an existing AppointmentBlock
+			else if (request.getParameter("edit") != null) {
+				if (appointmentBlockId != null) {
+					return "redirect:appointmentBlockForm.form?appointmentBlockId=" + appointmentBlockId
+					        + "&redirectedFrom=appointmentBlockList.list";
+				} else {
 					//In case appointment block was not selected
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
 					    "appointmentscheduling.AppointmentBlock.error.selectAppointmentBlock");
 					return null;
 				}
+			}
+			//if the user is changing to calendar view
+			else if (action != null && action.equals("changeToCalendarView")) {
+				return "redirect:appointmentBlockCalendar.list";
+			}
+			//in case appointment block was not selected
+			else if (appointmentBlockId == null) {
+				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
+				    "appointmentscheduling.AppointmentBlock.error.selectAppointmentBlock");
+				return null;
+			} else { //retrieve the selected appointment block from the data base
+				appointmentBlock = appointmentService.getAppointmentBlock(appointmentBlockId);
+				
+			}
+			//if the user is voiding the selected appointment block
+			if (action != null && action.equals("void")) {
 				String voidReason = "Some Reason";//request.getParameter("voidReason");
 				if (!(StringUtils.hasText(voidReason))) {
 					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,
@@ -189,12 +220,6 @@ public class AppointmentBlockListController {
 			}
 			//If the user is purging the AppointmentBlock
 			else if (action != null && action.equals("purge")) {
-				if (appointmentBlockId == null) {
-					//In case appointment block was not selected
-					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
-					    "appointmentscheduling.AppointmentBlock.error.selectAppointmentBlock");
-					return null;
-				}
 				List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
 				//In case there are appointments within the appointment block we don't mind to purge it
 				//purging the appointment block
@@ -219,12 +244,6 @@ public class AppointmentBlockListController {
 
 			// if the user is unvoiding the AppointmentBlock
 			else if (request.getParameter("unvoid") != null) {
-				if (appointmentBlockId == null) {
-					//In case appointment block was not selected
-					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
-					    "appointmentscheduling.AppointmentBlock.error.selectAppointmentBlock");
-					return null;
-				}
 				List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
 				List<Appointment> appointmentsThatShouldBeUnvoided = new ArrayList<Appointment>();
 				for (TimeSlot timeSlot : currentTimeSlots) {
@@ -250,39 +269,6 @@ public class AppointmentBlockListController {
 				
 				return "redirect:appointmentBlockList.list";
 			}
-
-			// if the user is editing an existing AppointmentBlock
-			else if (request.getParameter("edit") != null) {
-				if (appointmentBlockId != null) {
-					return "redirect:appointmentBlockForm.form?appointmentBlockId=" + appointmentBlockId
-					        + "&redirectedFrom=appointmentBlockList.list";
-				} else {
-					//In case appointment block was not selected
-					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
-					    "appointmentscheduling.AppointmentBlock.error.selectAppointmentBlock");
-					return null;
-				}
-			}
-
-			else if (action != null && action.equals("changeToCalendarView")) {
-				if (appointmentBlocksJSON != null) {
-					request.setAttribute("calendarContent", appointmentBlocksJSON);
-					//forward request to appointment block calendar controller
-					return "forward:appointmentBlockCalendar.list";
-				} else
-					return null;
-			}
-
-			//notify the user to select an appointment block
-			else if (action != null && action.equals("notifyToSelectAppointmentBlock")) {
-				if (appointmentBlockId == null) {
-					//In case appointment block was not selected
-					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
-					    "appointmentscheduling.AppointmentBlock.error.selectAppointmentBlock");
-					return null;
-				}
-			}
-			
 		} // Context authentication.
 		return null;
 	}

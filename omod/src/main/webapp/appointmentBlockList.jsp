@@ -14,7 +14,6 @@
 	file="/moduleResources/appointmentscheduling/TableTools/media/js/TableTools.js" />
 <openmrs:htmlInclude
 	file="/moduleResources/appointmentscheduling/TableTools/media/css/TableTools.css" />
-<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/json2.js" />
 
 <openmrs:require privilege="View Provider Schedules" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentBlockList.list" />
  <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -48,11 +47,21 @@
 				}
 			}
 		});
+		//AppointmentType filter
+		var appointmentTypeId = null;
+		var selectedAppointmentType = document.getElementById("appointmentTypeSelect");
+		if(selectedAppointmentType != null){
+			appointmentTypeId = selectedAppointmentType.options[selectedAppointmentType.selectedIndex].value;
+		}
+		document.getElementById("chosenType").value = appointmentTypeId;
+		//Provider filter
 		var providerId = null;
 		var selectedProvider = document.getElementById("providerSelect");
 		if(selectedProvider != null){
 			providerId = selectedProvider.options[selectedProvider.selectedIndex].value;
 		}
+		document.getElementById("chosenProvider").value = providerId;
+		//Location filter
 		var selectedLocation = document.getElementById("locationId");
 		var modelAttributeSelectedLocation = "${chosenLocation}";
 		var locationId = null;
@@ -70,8 +79,13 @@
 			}
 			else locationId = null;				
 		}
+		//Check if  change to calendar view is needed
+		var selectedView = document.getElementById("viewSelect");
+		if(selectedView.options[selectedView.selectedIndex].value == "calendarView"){
+			changeToCalendarView(this,event);
+		}
 		//DWR call for getting the appointment blocks that have the selected properties
-		DWRAppointmentService.getAppointmentBlocks(fromDate,toDate,locationId, providerId, null,function(appointmentBlocks){
+		DWRAppointmentService.getAppointmentBlocks(fromDate,toDate,locationId, providerId, appointmentTypeId,function(appointmentBlocks){
 			var tableContent = '';
 			var count = 0;
 			blocksAsJSON = [];
@@ -161,8 +175,6 @@
 				var theTable = $j('#appointmentBlocksTable').dataTable();
 				theTable.fnSort([[4,'asc']]);
 				theTable.fnAdjustColumnSizing();				
-				//update blocks as json content
-				document.getElementById('appointmentBlocksJSON').value = JSON.stringify(blocksAsJSON);
 			}	
 		  
 
@@ -262,7 +274,6 @@
 				}
 				else{
 					//notify the user to select an appointment block.
-					document.getElementById('action').value = "notifyToSelectAppointmentBlock";
 					document.forms['appointmentBlockListForm'].submit();
 				}
 			});
@@ -376,6 +387,9 @@
 		});				
 	}	
 	$j(document).ready(function() {  //On the page load
+				//Initialize selected view as table view
+				document.getElementById("viewSelect").selectedIndex = 0;
+				//zeroClipboard (data tables printing options)
 				TableToolsInit.sSwfPath = "${pageContext.request.contextPath}/moduleResources/appointmentscheduling/TableTools/media/swf/ZeroClipboard.swf";
 	   			//Initialize the action to do nothing (for page refresh bugs)
 				document.getElementById('action').value = "";
@@ -409,17 +423,41 @@
                             <td><openmrs_tag:locationField formFieldName="locationId" initialValue="${chosenLocation}" optionHeader="[blank]"/></td>
                         </tr>
                         <tr>
-                            <td class="formLabel"><spring:message code="appointmentscheduling.AppointmentBlock.column.provider"/>: </td>
+                            <td class="formLabel"><spring:message code="appointmentscheduling.AppointmentBlock.filters.provider"/>: </td>
    							<td>
 	   							<select name="providerSelect" id="providerSelect">
-									<option value="" ${null==param.providerSelect ? 'selected' : ''}>
-										<spring:message
-											code="appointmentscheduling.Appointment.create.label.clinicianNotSpecified" />
+									<option value="" ${null==chosenProvider ? 'selected' : ''}>
+										(<spring:message
+											code="appointmentscheduling.AppointmentBlock.filters.providerNotSpecified" />)
 									</option>
 									<c:forEach var="provider" items="${providerList}">
 										<option value="${provider.providerId}"
-											${provider.providerId==param.providerSelect ? 'selected' : ''}>${provider.name}</option>
+											${provider.providerId==chosenProvider ? 'selected' : ''}>${provider.name}</option>
 									</c:forEach>
+								</select>
+							</td>
+                        </tr>
+                        <tr>
+                            <td class="formLabel"><spring:message code="appointmentscheduling.AppointmentBlock.filters.type"/>: </td>
+   							<td>
+	   							<select name="appointmentTypeSelect" id="appointmentTypeSelect">
+									<option value="" ${null==chosenType ? 'selected' : ''}>
+										(<spring:message
+											code="appointmentscheduling.AppointmentBlock.filters.typeNotSpecified" />)
+									</option>
+									<c:forEach var="type" items="${appointmentTypeList}">
+										<option value="${type.appointmentTypeId}"
+											${type.appointmentTypeId==chosenType ? 'selected' : ''}>${type.name}</option>
+									</c:forEach>
+								</select>
+							</td>
+                        </tr>
+						<tr>
+                            <td class="formLabel"><spring:message code="appointmentscheduling.AppointmentBlock.filters.view"/>: </td>
+   							<td>
+	   							<select name="viewSelect" id="viewSelect">
+									<option value="tableView"><spring:message code="appointmentscheduling.AppointmentBlock.tableView"/></option>
+									<option value="calendarView"><spring:message code="appointmentscheduling.AppointmentBlock.calendarView"/></option>
 								</select>
 							</td>
                         </tr>
@@ -448,7 +486,8 @@
 	</table>
 	<input type="hidden" name="appointmentBlockId" id="appointmentBlockId" value="${appointmentBlockId}" />
 	<input type="hidden" name="action" id="action" value="${action}" />
-	<input type="hidden" name="appointmentBlocksJSON" id="appointmentBlocksJSON" value="${appointmentBlocksJSON}" />
+	<input type="hidden" name="chosenProvider" id="chosenProvider" value="${chosenProvider}" />
+	<input type="hidden" name="chosenType" id="chosenType" value="${chosenType}" />
 	<openmrs:hasPrivilege privilege="Manage Provider Schedules">
 		<table id="managementButtonsTable" align="center">
 				<tr>

@@ -14,6 +14,7 @@
 package org.openmrs.module.appointmentscheduling.web.controller;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +25,10 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Provider;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.AppointmentUtils;
@@ -35,8 +39,10 @@ import org.openmrs.module.appointmentscheduling.web.AppointmentBlockEditor;
 import org.openmrs.module.appointmentscheduling.web.AppointmentTypeEditor;
 import org.openmrs.module.appointmentscheduling.web.ProviderEditor;
 import org.openmrs.web.WebConstants;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -148,7 +154,8 @@ public class AppointmentBlockFormController {
 	public String onSubmit(HttpServletRequest request, ModelMap model, AppointmentBlock appointmentBlock,
 	        BindingResult result, @RequestParam(value = "timeSlotLength", required = false) String timeSlotLength,
 	        @RequestParam(value = "emptyTypes", required = false) String emptyTypes,
-	        @RequestParam(value = "redirectedFrom", required = false) String redirectedFrom) throws Exception {
+	        @RequestParam(value = "redirectedFrom", required = false) String redirectedFrom,
+	        @RequestParam(value = "action", required = false) String action) throws Exception {
 		
 		HttpSession httpSession = request.getSession();
 		
@@ -158,7 +165,60 @@ public class AppointmentBlockFormController {
 				appointmentBlock.setTypes(null);
 			}
 			AppointmentService appointmentService = Context.getService(AppointmentService.class);
-			if (request.getParameter("save") != null) {
+			//if the user is voiding the selected appointment block
+			if (action != null && action.equals("void")) {
+				String voidReason = "Some Reason";//request.getParameter("voidReason");
+				if (!(StringUtils.hasText(voidReason))) {
+					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,
+					    "appointmentscheduling.AppointmentBlock.error.voidReasonEmpty");
+					return null;
+				}
+				List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
+				List<Appointment> appointments = new ArrayList<Appointment>();
+				for (TimeSlot timeSlot : currentTimeSlots) {
+					List<Appointment> appointmentsInSlot = appointmentService.getAppointmentsInTimeSlot(timeSlot);
+					for (Appointment appointment : appointmentsInSlot) {
+						appointments.add(appointment);
+					}
+				}
+				//set appointments statuses from "Scheduled" to "Cancelled".
+				for (Appointment appointment : appointments) {
+					if (appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.SCHEDULED.toString())) {
+						appointmentService.changeAppointmentStatus(appointment, AppointmentStatus.CANCELLED);
+					}
+				}
+				//voiding appointment block
+				appointmentService.voidAppointmentBlock(appointmentBlock, voidReason);
+				//voiding time slots
+				for (TimeSlot timeSlot : currentTimeSlots) {
+					appointmentService.voidTimeSlot(timeSlot, voidReason);
+					
+				}
+				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
+				    "appointmentscheduling.AppointmentBlock.voidedSuccessfully");
+			}
+			//If the user is purging the AppointmentBlock
+			else if (action != null && action.equals("purge")) {
+				List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
+				//In case there are appointments within the appointment block we don't mind to purge it
+				//purging the appointment block
+				try {
+					//purging the time slots
+					for (TimeSlot timeSlot : currentTimeSlots) {
+						appointmentService.purgeTimeSlot(timeSlot);
+					}
+					appointmentService.purgeAppointmentBlock(appointmentBlock);
+					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
+					    "appointmentscheduling.AppointmentBlock.purgedSuccessfully");
+				}
+				catch (DataIntegrityViolationException e) {
+					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "error.object.inuse.cannot.purge");
+				}
+				catch (APIException e) {
+					httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "error.general: " + e.getLocalizedMessage());
+				}
+				
+			} else if (request.getParameter("save") != null) {
 				new AppointmentBlockValidator().validate(appointmentBlock, result);
 				if (result.hasErrors()) {
 					return null;

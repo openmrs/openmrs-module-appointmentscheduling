@@ -228,13 +228,18 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		appointmentBlocks = service.getAppointmentBlocks(null, null, "", provider, null);
 		assertEquals(3, appointmentBlocks.size());
 		
+		//test filtering by appointment type only
+		appointmentBlocks = service.getAppointmentBlocks(null, null, "", null, appointmentType);
+		assertEquals(2, appointmentBlocks.size());
+		
+		//test filtering by appointment type and provider
+		appointmentBlocks = service.getAppointmentBlocks(null, null, "", provider, appointmentType);
+		assertEquals(2, appointmentBlocks.size());
+		
 		provider = Context.getProviderService().getProvider(2);
 		appointmentBlocks = service.getAppointmentBlocks(null, null, "", provider, null);
 		assertEquals(0, appointmentBlocks.size());
 		
-		//		appointmentBlocks = service.getAppointmentBlocks(null, null, "", null, appointmentType);
-		//		Integer sizeTest = appointmentBlocks.size();
-		//		assertEquals(2, appointmentBlocks.size());
 	}
 	
 	@SuppressWarnings("deprecation")
