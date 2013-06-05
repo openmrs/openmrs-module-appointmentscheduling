@@ -156,9 +156,9 @@ public class AppointmentBlockCalendarController {
 			if (action != null && action.equals("addNewAppointmentBlock")) {
 				String getRequest = "";
 				//Fill the request from the user with selected date and forward it to appointmentBlockForm
-				getRequest += "startDate=" + Context.getDateTimeFormat().format(fromDateAsDate);
+				getRequest += "fromDate=" + Context.getDateTimeFormat().format(fromDateAsDate);
 				if (toDate != null && !toDate.equals(fromDate)) { //If the fromDate is not the same as toDate (not a day click on month view)
-					getRequest += "&endDate=" + Context.getDateTimeFormat().format(toDateAsDate);
+					getRequest += "&toDate=" + Context.getDateTimeFormat().format(toDateAsDate);
 				}
 				getRequest += "&redirectedFrom=appointmentBlockCalendar.list";
 				return "redirect:appointmentBlockForm.form?" + getRequest;

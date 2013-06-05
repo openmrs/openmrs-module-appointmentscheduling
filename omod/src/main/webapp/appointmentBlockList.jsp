@@ -386,6 +386,16 @@
 			resizable: false
 		});				
 	}	
+	function locationInitialize(){
+		//If the user is using "Simple" version
+		if ($j('#locationId').length > 0) {
+			var selectLocation = $j('#locationId');
+			//Set the 'All locations' option text (Default is empty string)
+			if (selectLocation[0][0].innerHTML == '')
+				selectLocation[0][0].innerHTML = "(<spring:message code='appointmentscheduling.AppointmentBlock.filters.locationNotSpecified'/>)";
+
+		}
+	}
 	$j(document).ready(function() {  //On the page load
 				//Initialize selected view as table view
 				document.getElementById("viewSelect").selectedIndex = 0;
@@ -403,6 +413,8 @@
                 theTable.fnAdjustColumnSizing();
                 //Fill the content of the appointmnet blocks table
  	        	updateAppointmentBlockTable(true);
+                //Initialize location
+ 	        	locationInitialize();
         });
  
 </script>

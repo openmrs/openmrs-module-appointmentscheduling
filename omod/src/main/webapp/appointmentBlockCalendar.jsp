@@ -134,11 +134,23 @@
 				document.getElementById('action').value = "addNewAppointmentBlock";
 				var startDate = new Date(start);
 				var endDate = new Date(end);
-				document.getElementById('fromDate').value = startDate.getTime();
-				document.getElementById('toDate').value = endDate.getTime();
-				document.forms['appointmentBlockCalendarForm'].submit();
-				calendar.fullCalendar('unselect');
-
+				var currentDateTime = new Date();
+				if(startDate.getTime()==endDate.getTime()){ //Month view
+					currentDateTime.setHours(0,0,0,0);
+				}
+				
+				if(startDate.getTime()<currentDateTime.getTime()){ //Can't save blocks in the past
+					var dialogContent = "<spring:message code='appointmentscheduling.AppointmentBlock.calendar.scheduleError'/>";
+					document.getElementById("notifyDialogText").innerHTML = dialogContent;
+					$j('#notifyDialog').dialog('open');
+					event.stopPropagation();
+				}
+				else{
+					document.getElementById('fromDate').value = startDate.getTime();
+					document.getElementById('toDate').value = endDate.getTime();
+					document.forms['appointmentBlockCalendarForm'].submit();
+					calendar.fullCalendar('unselect');
+				}
 			},
 			editable: false,
 			theme: true,
@@ -172,6 +184,17 @@
 		});	
 	}
 	
+	function initializeDialog(){
+		//Dialog without buttons 
+		$j('#notifyDialog').dialog({
+			autoOpen: false,
+			height: 150,
+			width: 350,
+			modal: true,
+			resizable: false
+		});	
+	}
+	
 	function changeToTableView(e, event){ //A function that updates the action to change the view to table view and submits the form
 		//change action to table view 
 		document.getElementById('action').value = "changeToTableView";
@@ -183,12 +206,25 @@
 		var calendarView = calendar.fullCalendar('getView');
 		updateAppointmentBlockCalendar(calendarView.visStart,calendarView.visEnd);
 	}
+	function locationInitialize(){
+		//If the user is using "Simple" version
+		if ($j('#locationId').length > 0) {
+			var selectLocation = $j('#locationId');
+			//Set the 'All locations' option text (Default is empty string)
+			if (selectLocation[0][0].innerHTML == '')
+				selectLocation[0][0].innerHTML = "(<spring:message code='appointmentscheduling.AppointmentBlock.filters.locationNotSpecified'/>)";
 
-	 $j(document).ready(function() { 
+		}
+	}
+	$j(document).ready(function() { 
+		//Initialize dialog
+		initializeDialog();
 		//Initialize selected view as table view
 		document.getElementById("viewSelect").selectedIndex = 1;
 		calendar = InitializeCalendar();
 		refreshCalendar();
+		//Initialize location
+		locationInitialize();
 	}); 
 </script>
 <h2><spring:message code="appointmentscheduling.AppointmentBlock.manage.title"/></h2>
@@ -256,4 +292,9 @@
 	<input type="hidden" name="chosenType" id="chosenType" value="${chosenType}" />
  </form>
 <div id='calendarBlocks'></div>
+ <div id="notifyDialog" title='<spring:message code="appointmentscheduling.AppointmentBlock.deleteDialog.title"/>'>
+	<table id='notifyDialogTable' class="dialogTable">
+		<tr><td><div id="notifyDialogText"></div></td></tr>
+	</table>
+</div>
 <%@ include file="/WEB-INF/template/footer.jsp" %>

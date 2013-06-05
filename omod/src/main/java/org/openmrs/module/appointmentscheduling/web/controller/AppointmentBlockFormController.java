@@ -79,13 +79,13 @@ public class AppointmentBlockFormController {
 			if (request.getParameter("redirectedFrom") != null) {
 				String redirectedFrom = (String) request.getParameter("redirectedFrom");
 				if (redirectedFrom.equals("appointmentBlockCalendar.list")) {
-					if (request.getParameter("startDate") != null) {
+					if (request.getParameter("fromDate") != null) {
 						//Update model attribute appointment block
 						AppointmentBlock appointmentBlock = new AppointmentBlock();
-						Date startDate = Context.getDateTimeFormat().parse((String) request.getParameter("startDate"));
+						Date startDate = Context.getDateTimeFormat().parse((String) request.getParameter("fromDate"));
 						appointmentBlock.setStartDate(startDate);
-						if (request.getParameter("endDate") != null) {
-							Date endDate = Context.getDateTimeFormat().parse((String) request.getParameter("endDate"));
+						if (request.getParameter("toDate") != null) {
+							Date endDate = Context.getDateTimeFormat().parse((String) request.getParameter("toDate"));
 							appointmentBlock.setEndDate(endDate);
 						}
 						model.put("appointmentBlock", appointmentBlock);

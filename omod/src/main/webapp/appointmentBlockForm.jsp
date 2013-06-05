@@ -22,7 +22,7 @@
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/util.js'></script>
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/interface/DWRAppointmentService.js'></script>
 
-<script type="text/javascript">
+<script type="text/javascript">	
 	function deleteFuncionality(e,event) { //A function that defines what to do when the delete button is pressed
 		//Initialize the action to do nothing.
 		document.getElementById('action').value = "";
@@ -39,65 +39,56 @@
 							$j('#notifyDialog').dialog('open');
 							event.stopPropagation();
 						}
-						else{
-							if(appointments[1].length>0){
-								//cancel appointments that have the status : "Scheduled" but don't do anything to the other appointments with the statuses : Missed/Cancelled/Completed (If there are any).
-								//clear previous table
-								var oTable = $j('#deleteDialogTable').dataTable();
-								oTable.fnClearTable();
-								oTable.fnDestroy();
-								//Dialog Content
-								var dialogHeader ='';
-								var dialogTableContent ='';
-								dialogHeader += '<h3><spring:message code="appointmentscheduling.AppointmentBlock.deletingConfirmation.part1"/> '+appointments[1].length+' <spring:message code="appointmentscheduling.AppointmentBlock.deletingConfirmation.part2"/></h3></br>';
-								dialogHeader += '<u><spring:message code="appointmentscheduling.AppointmentBlock.dialogHeader"/>:</u></br></br>';
-								//Table's header
-								dialogTableContent += '<thead><tr>';
-								dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.openMrsId"/></b></th>';
-								dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.name"/></b></th>';
-								dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.time"/></b></th>';
-								dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.type"/></b></th>';
-								dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.phoneNumber"/></b></th>';
-								dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.reason"/></b></th>';
-								dialogTableContent += '</tr></thead>';
-								//Table's body
-								dialogTableContent += '<tbody>';
-								for(var i=0;i<appointments[1].length;i++){
-									var id = appointments[1][i].patient.identifiers[0].split(":")[1];
-									var fullName = appointments[1][i].patient.fullName;
-									var phoneNumber = appointments[1][i].patient.phoneNumber;
-									var date = appointments[1][i].date;
-									var time = appointments[1][i].startTime+"-"+ appointments[1][i].endTime;
-									var type = appointments[1][i].appointmentType;
-									var reason = appointments[1][i].reason;
-									if(phoneNumber == null){//In case phone number is missing
-										phoneNumber = '<spring:message code="appointmentscheduling.AppointmentBlock.dialogTableMissing"/>';
-									}
-									if(reason == null){//In case appointment reason is missing
-										reason = '<spring:message code="appointmentscheduling.AppointmentBlock.dialogTableMissing"/>';
-									}
-									dialogTableContent += '<tr><td>'+id+'</td>';
-									dialogTableContent += '<td> '+fullName+'</td>';
-									dialogTableContent += '<td> '+time+'</td>';
-									dialogTableContent += '<td> '+type+'</td>';
-									dialogTableContent += '<td> '+phoneNumber+'</td>';
-									dialogTableContent += '<td> '+reason+'</td>';
+						else{ //appointments[0].length = 0 (no active appointments within the appointment block)
+							//cancel appointments that have the status : "Scheduled" but don't do anything to the other appointments with the statuses : Missed/Cancelled/Completed (If there are any).
+							//clear previous table
+							var oTable = $j('#deleteDialogTable').dataTable();
+							oTable.fnClearTable();
+							oTable.fnDestroy();
+							//Dialog Content
+							var dialogHeader ='';
+							var dialogTableContent ='';
+							dialogHeader += '<h3><spring:message code="appointmentscheduling.AppointmentBlock.deletingConfirmation.part1"/> '+appointments[1].length+' <spring:message code="appointmentscheduling.AppointmentBlock.deletingConfirmation.part2"/></h3></br>';
+							dialogHeader += '<u><spring:message code="appointmentscheduling.AppointmentBlock.dialogHeader"/>:</u></br></br>';
+							//Table's header
+							dialogTableContent += '<thead><tr>';
+							dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.openMrsId"/></b></th>';
+							dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.name"/></b></th>';
+							dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.time"/></b></th>';
+							dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.type"/></b></th>';
+							dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.phoneNumber"/></b></th>';
+							dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.reason"/></b></th>';
+							dialogTableContent += '</tr></thead>';
+							//Table's body
+							dialogTableContent += '<tbody>';
+							for(var i=0;i<appointments[1].length;i++){
+								var id = appointments[1][i].patient.identifiers[0].split(":")[1];
+								var fullName = appointments[1][i].patient.fullName;
+								var phoneNumber = appointments[1][i].patient.phoneNumber;
+								var date = appointments[1][i].date;
+								var time = appointments[1][i].startTime+"-"+ appointments[1][i].endTime;
+								var type = appointments[1][i].appointmentType;
+								var reason = appointments[1][i].reason;
+								if(phoneNumber == null){//In case phone number is missing
+									phoneNumber = '<spring:message code="appointmentscheduling.AppointmentBlock.dialogTableMissing"/>';
 								}
-								dialogTableContent += '</tbody>';
-								document.getElementById("deleteDialogHeader").innerHTML = dialogHeader;
-								document.getElementById("deleteDialogTable").innerHTML = dialogTableContent;										 
-								createDialogDataTable(); //Apply dataTable to the dialog table
-								$j(".resourceDiv").html('<spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.location"/>: ${appointmentBlock.location.name} | <spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.provider"/>: ${appointmentBlock.provider.name} | <spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.date"/>: <fmt:formatDate type="date" value="${appointmentBlock.startDate}" pattern="dd/MM/yyyy"/>');
-								$j('#deleteDialog').dialog('open');
-								event.stopPropagation();
+								if(reason == null){//In case appointment reason is missing
+									reason = '<spring:message code="appointmentscheduling.AppointmentBlock.dialogTableMissing"/>';
+								}
+								dialogTableContent += '<tr><td>'+id+'</td>';
+								dialogTableContent += '<td> '+fullName+'</td>';
+								dialogTableContent += '<td> '+time+'</td>';
+								dialogTableContent += '<td> '+type+'</td>';
+								dialogTableContent += '<td> '+phoneNumber+'</td>';
+								dialogTableContent += '<td> '+reason+'</td>';
 							}
-							else{
-								//only appointments which have the statuses : Missed/Cancelled/Completed.	
-								//update the aciton to "void".
-								document.getElementById('action').value = "void";
-								//POST back to the controller in order to void the selected appointment block.
-								document.forms['appointmentBlockForm'].submit();
-							}
+							dialogTableContent += '</tbody>';
+							document.getElementById("deleteDialogHeader").innerHTML = dialogHeader;
+							document.getElementById("deleteDialogTable").innerHTML = dialogTableContent;										 
+							createDialogDataTable(); //Apply dataTable to the dialog table
+							$j(".resourceDiv").html('<spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.location"/>: ${appointmentBlock.location.name} | <spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.provider"/>: ${appointmentBlock.provider.name} | <spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.date"/>: <fmt:formatDate type="date" value="${appointmentBlock.startDate}" pattern="dd/MM/yyyy"/>');
+							$j('#deleteDialog').dialog('open');
+							event.stopPropagation();
 						}
 					}
 					else{ 
@@ -107,17 +98,7 @@
 						document.forms['appointmentBlockForm'].submit();
 					}
 				}
-				else{
-					//notify the user to select an appointment block.
-					document.forms['appointmentBlockForm'].submit();
-				}
 			});
-		}
-		else{
-			//update the action to notify the user to select an appointment block
-			document.getElementById('action').value = "notifyToSelectAppointmentBlock";
-			//POST in order to notify the user to select an appointmnet block 
-			document.forms['appointmentBlockForm'].submit();
 		}
 	}
 	function createDialogDataTable(){
@@ -276,7 +257,7 @@
 		document.getElementById('action').value = "";
 		//Initialize the dialogs
 		initializeDialog();
-		//data table initialization
+		//Data table initialization
 		createDialogDataTable();
     });
 </script>
@@ -368,7 +349,7 @@
 					<spring:bind path="appointmentBlock.startDate">
                     <fieldset align="center"><legend><spring:message code="appointmentscheduling.AppointmentBlock.startDate"/></legend>
 					<input type="text" name="startDate" id="startDate" size="16" value="${status.value}"
-					onfocus="showDateTimePicker(this)" /> <img
+					onfocus="showDateTimePicker(this)"/> <img
 					src="${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/calendarIcon.png"
 					class="calendarIcon" alt=""
 					onClick="document.getElementById('startDate').focus();" />
