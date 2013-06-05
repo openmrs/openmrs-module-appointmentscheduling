@@ -23,6 +23,7 @@
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/interface/DWRAppointmentService.js'></script>
 
 <script type="text/javascript">	
+	var dialogDataTableCreated;
 	function deleteFuncionality(e,event) { //A function that defines what to do when the delete button is pressed
 		//Initialize the action to do nothing.
 		document.getElementById('action').value = "";
@@ -32,77 +33,80 @@
 			DWRAppointmentService.getPatientsInAppointmentBlock(selectedAppointmentBlockId,function(appointments){
 				if(appointments != null){
 					var totalAppointments = appointments[0].length+appointments[1].length+appointments[2].length;
-					if(totalAppointments != 0){
-						if(appointments[0].length>0){	
-							//Notify the user that the block cannot be deleted because it has active appointments
-							document.getElementById("notifyDialogText").innerHTML = '<spring:message code="appointmentscheduling.AppointmentBlock.cannotBeDeleted.part1"/> '+appointments[0].length+' <spring:message code="appointmentscheduling.AppointmentBlock.cannotBeDeleted.part2"/>';
-							$j('#notifyDialog').dialog('open');
-							event.stopPropagation();
-						}
-						else{ //appointments[0].length = 0 (no active appointments within the appointment block)
-							//cancel appointments that have the status : "Scheduled" but don't do anything to the other appointments with the statuses : Missed/Cancelled/Completed (If there are any).
-							//clear previous table
+					if(appointments[0].length>0){	
+						//Notify the user that the block cannot be deleted because it has active appointments
+						document.getElementById("notifyDialogText").innerHTML = '<spring:message code="appointmentscheduling.AppointmentBlock.cannotBeDeleted.part1"/> '+appointments[0].length+' <spring:message code="appointmentscheduling.AppointmentBlock.cannotBeDeleted.part2"/>';
+						$j('#notifyDialog').dialog('open');
+						event.stopPropagation();
+					}
+					else{ //appointments[0].length = 0 (no active appointments within the appointment block)
+						//cancel appointments that have the status : "Scheduled" but don't do anything to the other appointments with the statuses : Missed/Cancelled/Completed (If there are any).
+						//clear previous table if exists
+						if (dialogDataTableCreated) {
 							var oTable = $j('#deleteDialogTable').dataTable();
 							oTable.fnClearTable();
 							oTable.fnDestroy();
-							//Dialog Content
-							var dialogHeader ='';
-							var dialogTableContent ='';
-							dialogHeader += '<h3><spring:message code="appointmentscheduling.AppointmentBlock.deletingConfirmation.part1"/> '+appointments[1].length+' <spring:message code="appointmentscheduling.AppointmentBlock.deletingConfirmation.part2"/></h3></br>';
-							dialogHeader += '<u><spring:message code="appointmentscheduling.AppointmentBlock.dialogHeader"/>:</u></br></br>';
-							//Table's header
-							dialogTableContent += '<thead><tr>';
-							dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.openMrsId"/></b></th>';
-							dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.name"/></b></th>';
-							dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.time"/></b></th>';
-							dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.type"/></b></th>';
-							dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.phoneNumber"/></b></th>';
-							dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.reason"/></b></th>';
-							dialogTableContent += '</tr></thead>';
-							//Table's body
-							dialogTableContent += '<tbody>';
-							for(var i=0;i<appointments[1].length;i++){
-								var id = appointments[1][i].patient.identifiers[0].split(":")[1];
-								var fullName = appointments[1][i].patient.fullName;
-								var phoneNumber = appointments[1][i].patient.phoneNumber;
-								var date = appointments[1][i].date;
-								var time = appointments[1][i].startTime+"-"+ appointments[1][i].endTime;
-								var type = appointments[1][i].appointmentType;
-								var reason = appointments[1][i].reason;
-								if(phoneNumber == null){//In case phone number is missing
-									phoneNumber = '<spring:message code="appointmentscheduling.AppointmentBlock.dialogTableMissing"/>';
-								}
-								if(reason == null){//In case appointment reason is missing
-									reason = '<spring:message code="appointmentscheduling.AppointmentBlock.dialogTableMissing"/>';
-								}
-								dialogTableContent += '<tr><td>'+id+'</td>';
-								dialogTableContent += '<td> '+fullName+'</td>';
-								dialogTableContent += '<td> '+time+'</td>';
-								dialogTableContent += '<td> '+type+'</td>';
-								dialogTableContent += '<td> '+phoneNumber+'</td>';
-								dialogTableContent += '<td> '+reason+'</td>';
-							}
-							dialogTableContent += '</tbody>';
-							document.getElementById("deleteDialogHeader").innerHTML = dialogHeader;
-							document.getElementById("deleteDialogTable").innerHTML = dialogTableContent;										 
-							createDialogDataTable(); //Apply dataTable to the dialog table
-							$j(".resourceDiv").html('<spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.location"/>: ${appointmentBlock.location.name} | <spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.provider"/>: ${appointmentBlock.provider.name} | <spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.date"/>: <fmt:formatDate type="date" value="${appointmentBlock.startDate}" pattern="dd/MM/yyyy"/>');
-							$j('#deleteDialog').dialog('open');
-							event.stopPropagation();
+							dialogDataTableCreated = false;
 						}
-					}
-					else{ 
-						//update the aciton to "purge" because there are no appointments assiciated with the selected appointment block.
-						document.getElementById('action').value = "purge";
-						//POST back to the controller in order to purge the selected appointment block.
-						document.forms['appointmentBlockForm'].submit();
+						//Dialog Content
+						var dialogHeader ='';
+						var dialogTableContent ='';
+						dialogHeader += '<h3><spring:message code="appointmentscheduling.AppointmentBlock.deletingConfirmation.part1"/> '+appointments[1].length+' <spring:message code="appointmentscheduling.AppointmentBlock.deletingConfirmation.part2"/></h3></br>';
+						dialogHeader += '<u><spring:message code="appointmentscheduling.AppointmentBlock.dialogHeader"/>:</u></br></br>';
+						//Table's header
+						dialogTableContent += '<thead><tr>';
+						dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.openMrsId"/></b></th>';
+						dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.name"/></b></th>';
+						dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.time"/></b></th>';
+						dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.type"/></b></th>';
+						dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.phoneNumber"/></b></th>';
+						dialogTableContent +='<th align="center"><b><spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.reason"/></b></th>';
+						dialogTableContent += '</tr></thead>';
+						//Table's body
+						dialogTableContent += '<tbody>';
+						for(var i=0;i<appointments[1].length;i++){
+							var id = appointments[1][i].patient.identifiers[0].split(":")[1];
+							var fullName = appointments[1][i].patient.fullName;
+							var phoneNumber = appointments[1][i].patient.phoneNumber;
+							var date = appointments[1][i].date;
+							var time = appointments[1][i].startTime+"-"+ appointments[1][i].endTime;
+							var type = appointments[1][i].appointmentType;
+							var reason = appointments[1][i].reason;
+							if(phoneNumber == null){//In case phone number is missing
+								phoneNumber = '<spring:message code="appointmentscheduling.AppointmentBlock.dialogTableMissing"/>';
+							}
+							if(reason == null){//In case appointment reason is missing
+								reason = '<spring:message code="appointmentscheduling.AppointmentBlock.dialogTableMissing"/>';
+							}
+							dialogTableContent += '<tr><td>'+id+'</td>';
+							dialogTableContent += '<td> '+fullName+'</td>';
+							dialogTableContent += '<td> '+time+'</td>';
+							dialogTableContent += '<td> '+type+'</td>';
+							dialogTableContent += '<td> '+phoneNumber+'</td>';
+							dialogTableContent += '<td> '+reason+'</td>';
+						}
+						dialogTableContent += '</tbody>';
+						document.getElementById("deleteDialogHeader").innerHTML = dialogHeader;
+						document.getElementById("deleteDialogTable").innerHTML = dialogTableContent;										 
+						createDialogDataTable(); //Apply dataTable to the dialog table
+						$j(".resourceDiv").html('<spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.location"/>: ${appointmentBlock.location.name} | <spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.provider"/>: ${appointmentBlock.provider.name} | <spring:message code="appointmentscheduling.AppointmentBlock.dialogTable.date"/>: <fmt:formatDate type="date" value="${appointmentBlock.startDate}" pattern="dd/MM/yyyy"/>');
+						if(totalAppointments != 0){
+							//update the aciton to "void" because there are appointments assiciated with the selected appointment block.
+							document.getElementById('action').value = "void";
+						}
+						else{
+							//update the aciton to "purge" because there are no appointments assiciated with the selected appointment block.
+							document.getElementById('action').value = "purge";
+						}
+						$j('#deleteDialog').dialog('open');
+						event.stopPropagation();
 					}
 				}
 			});
 		}
 	}
 	function createDialogDataTable(){
-		$j('#deleteDialogTable').dataTable({
+		var theTable = $j('#deleteDialogTable').dataTable({
 		"aoColumns" : [ {
 			"bSortable"  : true												
 		}, { 
@@ -116,7 +120,7 @@
 		}, { 			
 			"bSortable" : true
 		}],
-		"aLengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+		"aLengthMenu": [[-1], ["All"]],
 		"iDisplayLength": -1,
 		"sDom" : "<'fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix' fl <'resourceDiv'>>t<'fg-toolbar ui-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-helper-clearfix'ip<'toolbar' T>>",
 		"bLengthChange": true,
@@ -125,17 +129,27 @@
 		"bPaginate": true,
 		"bJQueryUI": true
 		});
-		var theTable = $j('#deleteDialogTable').dataTable();
 		theTable.fnSort([[2,'asc']]);
 		theTable.fnAdjustColumnSizing();
+		dialogDataTableCreated = true;
+		//Toggle Checked Row
+		$j('.dataTables_wrapper tbody tr').live('click',function(){
+			//Dialog Table
+			var dialogTable = $j('#deleteDialogTable').dataTable();
+			var dialogNodes = dialogTable.fnGetNodes();
+			for(var i=0; i<dialogNodes.length; i++){
+				$j(dialogNodes[i]).addClass('notSelectedRow');
+				$j(dialogNodes[i]).removeClass('selectedRow');
+			 }		
+		});
 	}
 	function initializeDialog(){
 		//Dialog with buttons
 		$j('#deleteDialog').dialog({
 			autoOpen: false,
-			height: 600,
-			width: 1000,
-			modal: true,
+			height: 'auto',
+			width: 'auto',
+			modal: false,
 			resizable: false,
 			buttons: {
 				"<spring:message code='general.cancel' />": function() {
@@ -145,9 +159,7 @@
 					$j(this).dialog("close");
 				},
 				"<spring:message code='general.submit' />": function() {
-						//update the aciton to "void" because there are appointments assiciated with the selected appointment block and the user clicked "Submit".
-						document.getElementById('action').value = "void";
-						//POST back to the controller in order to void the selected appointment block.
+						//POST back to the controller in order to void/purge the selected appointment block.
 						document.forms['appointmentBlockForm'].submit();
 				}
 			}
@@ -251,14 +263,13 @@
 		showDateTimePicker(object);
 	}
     $j(document).ready(function() { 
+		dialogDataTableCreated = false;
     	updateAvailableAppointmentTypes();
 		TableToolsInit.sSwfPath = "${pageContext.request.contextPath}/moduleResources/appointmentscheduling/TableTools/media/swf/ZeroClipboard.swf";
 		//Initialize the action to do nothing (for page refresh bugs)
 		document.getElementById('action').value = "";
 		//Initialize the dialogs
 		initializeDialog();
-		//Data table initialization
-		createDialogDataTable();
     });
 </script>
 
