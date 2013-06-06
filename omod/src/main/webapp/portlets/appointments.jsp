@@ -132,8 +132,8 @@
 <div id="scheduleDialog" >
 	<table id='scheduleDialogOptions' class="dialogTable">
 		<tr><td><h2><spring:message code='appointmentscheduling.Appointment.list.label.selectAnAction'/></h2></td></tr>
-				<tr><td><input id="scheduleNewAppointmentOption" type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/module/appointmentscheduling/appointmentForm.form?patientId=${param.patientId}" checked ><spring:message code='appointmentscheduling.Appointment.create.link.scheduleAppointment' /></input></td></tr>
+				<tr><td><input id="scheduleNewAppointmentOption" type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/module/appointmentscheduling/appointmentForm.form?patientId=${param.patientId}&origin=dashboard" checked ><spring:message code='appointmentscheduling.Appointment.create.link.scheduleAppointment' /></input></td></tr>
 				<tr><td><br/></td></tr>
-				<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/module/appointmentscheduling/appointmentForm.form?flow=walkin&patientId=${param.patientId}"><spring:message code='appointmentscheduling.Appointment.create.link.walkinAppointment' /></input></td></tr>
+				<tr><td><input type="radio" name="selectDialogAction" value="${pageContext.request.contextPath}/module/appointmentscheduling/appointmentForm.form?flow=walkin&patientId=${param.patientId}&origin=dashboard"><spring:message code='appointmentscheduling.Appointment.create.link.walkinAppointment' /></input></td></tr>
 		</table>
 </div>

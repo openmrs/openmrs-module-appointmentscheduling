@@ -186,7 +186,8 @@ public class AppointmentFormController {
 	public String onSubmit(HttpServletRequest request, Appointment appointment, BindingResult result,
 	        @RequestParam(value = "fromDate", required = false) Date fromDate,
 	        @RequestParam(value = "toDate", required = false) Date toDate,
-	        @RequestParam(value = "flow", required = false) String flow) throws Exception {
+	        @RequestParam(value = "flow", required = false) String flow,
+	        @RequestParam(value = "origin", required = false) String origin) throws Exception {
 		HttpSession httpSession = request.getSession();
 		
 		if (Context.isAuthenticated()) {
@@ -215,7 +216,11 @@ public class AppointmentFormController {
 						appointment.setStatus(AppointmentStatus.SCHEDULED);
 					appointmentService.saveAppointment(appointment);
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointmentscheduling.Appointment.saved");
-					return "redirect:appointmentList.list";
+					//Check whether to redirect to appointments manage form (origin=null) or to patientDashboard (origin=dashboard)
+					if (origin == null)
+						return "redirect:appointmentList.list";
+					else if (origin.equals("dashboard"))
+						return "redirect:/patientDashboard.form?patientId=" + appointment.getPatient().getId().toString();
 				}
 			}
 			if (request.getParameter("findAvailableTime") != null) {
