@@ -30,6 +30,8 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.util.OpenmrsUtil;
+import org.openmrs.util.PrivilegeConstants;
+import org.openmrs.validator.PrivilegeValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;

@@ -83,7 +83,7 @@
 		//Check if  change to calendar view is needed
 		var selectedView = document.getElementById("viewSelect");
 		if(selectedView.options[selectedView.selectedIndex].value == "calendarView"){
-			changeToCalendarView(this,event);
+			changeToCalendarView();
 		}
 		//DWR call for getting the appointment blocks that have the selected properties
 		DWRAppointmentService.getAppointmentBlocks(fromDate,toDate,locationId, providerId, appointmentTypeId,function(appointmentBlocks){
@@ -191,7 +191,7 @@
 			 }
 		 }
 	}
-	function changeToCalendarView(e, event){ //A function that updates the action to change the view to clanedar view and submits the form
+	function changeToCalendarView(){ //A function that updates the action to change the view to clanedar view and submits the form
 		//change action to calendar view 
 		document.getElementById('action').value = "changeToCalendarView";
 		//POST back in order to redirect to the calendar view via the controller.
@@ -324,7 +324,7 @@
 					$j(".calendarDiv").html("");
 					$j('.calendarDiv')
 							.prepend(
-									"<img id='calendarViewButton' src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/calendarViewIcon.png' Title='Calendar view' class='appointmentBlockCalendarIcon' onclick='changeToCalendarView(this, event)'>"+
+									"<img id='calendarViewButton' src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/calendarViewIcon.png' Title='Calendar view' class='appointmentBlockCalendarIcon' onclick='changeToCalendarView()'>"+
 									"<br/>"
 									);
 				}

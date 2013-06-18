@@ -9,7 +9,7 @@
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/fullcalendar.min.js" />
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/opentip-jquery-excanvas.js" />
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/opentip.css"/>
-<openmrs:require privilege="View Provider Schedules" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentBlockCalendar.list" />
+<openmrs:require privilege="View Appointment Blocks" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentBlockList.list" />
  <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/engine.js'></script>
@@ -73,7 +73,7 @@
 		var providerId = getSelectedProvider();
 		var appointmentTypeId = getSelectedAppointmentType();
 		if(viewChange()){
-			changeToTableView(this,event);
+			changeToTableView();
 		}
 		//DWR call for getting the appointment blocks that have the selected properties
 		DWRAppointmentService.getAppointmentBlocksForCalendar(fromDate.getTime(),toDate.getTime(),locationId, providerId, appointmentTypeId,function(appointmentBlocks){
@@ -195,7 +195,7 @@
 		});	
 	}
 	
-	function changeToTableView(e, event){ //A function that updates the action to change the view to table view and submits the form
+	function changeToTableView(){ //A function that updates the action to change the view to table view and submits the form
 		//change action to table view 
 		document.getElementById('action').value = "changeToTableView";
 		//POST back in order to redirect to the table view via the controller.
