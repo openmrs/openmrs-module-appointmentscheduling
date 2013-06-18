@@ -225,23 +225,25 @@ public class AppointmentBlockFormController {
 				} else {
 					//Error checking
 					if (appointmentBlock.getStartDate().before(Calendar.getInstance().getTime())) {
-						result.rejectValue("startDate", "appointment.AppointmentBlock.error.dateCannotBeInThePast");
+						result
+						        .rejectValue("startDate",
+						            "appointmentscheduling.AppointmentBlock.error.dateCannotBeInThePast");
 						return null;
 					}
 					if (!appointmentBlock.getStartDate().before(appointmentBlock.getEndDate())) {
-						result.rejectValue("endDate", "appointment.AppointmentBlock.error.InvalidDateInterval");
+						result.rejectValue("endDate", "appointmentscheduling.AppointmentBlock.error.InvalidDateInterval");
 						return null;
 					}
 					if (timeSlotLength.isEmpty() || Integer.parseInt(timeSlotLength) <= 0) {
 						httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,
-						    "appointment.AppointmentBlock.error.selectTimeSlot");
+						    "appointmentscheduling.AppointmentBlock.error.selectTimeSlot");
 						return null;
 					}
 					long appointmentBlocklengthInMinutes = (appointmentBlock.getEndDate().getTime() - appointmentBlock
 					        .getStartDate().getTime()) / 60000;
 					if (!timeSlotLength.isEmpty() && (Integer.parseInt(timeSlotLength) > appointmentBlocklengthInMinutes)) {
 						httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,
-						    "appointment.AppointmentBlock.error.maximalTimeSlot");
+						    "appointmentscheduling.AppointmentBlock.error.maximalTimeSlot");
 						return null;
 					}
 					List<TimeSlot> currentTimeSlots = null;
@@ -257,14 +259,14 @@ public class AppointmentBlockFormController {
 						}
 						if (!canBeUpdated) {
 							httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,
-							    "appointment.AppointmentBlock.error.appointmentsExist");
+							    "appointmentscheduling.AppointmentBlock.error.appointmentsExist");
 							return null;
 						}
 					}
 					//Check if overlapping appointment blocks exist in the system(We will consider Time And Provider only)
 					if (appointmentService.getOverlappingAppointmentBlocks(appointmentBlock).size() > 0) { //Overlapping exists
 						httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR,
-						    "appointment.AppointmentBlock.error.appointmentBlockOverlap");
+						    "appointmentscheduling.AppointmentBlock.error.appointmentBlockOverlap");
 						return null;
 					}
 					//First we need to save the appointment block (before creating the time slot)
@@ -298,14 +300,15 @@ public class AppointmentBlockFormController {
 						TimeSlot timeSlot = new TimeSlot(appointmentBlock, startDate, appointmentBlock.getEndDate());
 						appointmentService.saveTimeSlot(timeSlot);
 					}
-					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentBlock.saved");
+					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointmentscheduling.AppointmentBlock.saved");
 				}
 			}
 
 			// if the user is unvoiding the AppointmentBlock
 			else if (request.getParameter("unvoid") != null) {
 				appointmentService.unvoidAppointmentBlock(appointmentBlock);
-				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointment.AppointmentBlock.unvoidedSuccessfully");
+				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
+				    "appointmentscheduling.AppointmentBlock.unvoidedSuccessfully");
 			}
 			
 		}

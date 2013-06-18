@@ -13,6 +13,20 @@
  */
 package org.openmrs.module.appointmentscheduling.api.db;
 
-public interface AppointmentTypeDAO extends SingleClassDAO {
+import java.util.Date;
 
+import org.openmrs.module.appointmentscheduling.AppointmentType;
+
+public interface AppointmentTypeDAO extends SingleClassDAO {
+	
+	/**
+	 * 
+	 * Retrieves the amount of appointments in the given interval with the given type.
+	 * 
+	 * @param fromDate The lower bound of the interval.
+	 * @param toDate The upper bound of the interval.
+	 * @param type The Appointment Type
+	 * @return Integer count of appointments in the given interval with the given type.
+	 */
+	public Integer getAppointmentTypeCount(Date fromDate, Date toDate, AppointmentType type);
 }

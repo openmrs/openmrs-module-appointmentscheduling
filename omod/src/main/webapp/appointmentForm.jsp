@@ -131,7 +131,7 @@
 							var selectLocation = $j('#locationId');
 							//Set the Null option text (Default is empty string)
 							if (selectLocation[0][0].innerHTML == '')
-								selectLocation[0][0].innerHTML = "<spring:message code='appointmentscheduling.Appointment.create.label.locationNotSpecified'/>";
+								selectLocation[0][0].innerHTML = "(<spring:message code='appointmentscheduling.AppointmentBlock.filters.locationNotSpecified'/>)";
 
 						}
 
@@ -363,8 +363,8 @@
 						code="appointmentscheduling.Appointment.create.label.clinician" /></td>
 				<td><select name="providerSelect" id="providerSelect">
 						<option value="" ${null==param.providerSelect ? 'selected' : ''}>
-							<spring:message
-								code="appointmentscheduling.Appointment.create.label.clinicianNotSpecified" />
+								(<spring:message
+							code="appointmentscheduling.AppointmentBlock.filters.providerNotSpecified" />)
 						</option>
 						<c:forEach var="provider" items="${providerList}">
 							<option value="${provider.providerId}"

@@ -15,6 +15,7 @@ package org.openmrs.module.appointmentscheduling.api;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.openmrs.Location;
@@ -572,6 +573,56 @@ public interface AppointmentService extends OpenmrsService {
 	void changeAppointmentStatus(Appointment appointment, AppointmentStatus newStatus);
 	
 	/**
+	 * 
+	 * Computes the average duration (in Minutes) of a status history by appointment type
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param endDate The upper bound of the date interval.
+	 * @param status The AppointmentStatus status to filter histories by.
+	 * @return A map of AppointmentType,Average duration pairs.
+	 */
+	@Transactional(readOnly = true)
+	Map<AppointmentType, Double> getAverageHistoryDurationByConditions(Date fromDate, Date endDate, AppointmentStatus status);
+	
+	/**
+	 * 
+	 * Computes the average duration (in Minutes) of a status history by provider
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param endDate The upper bound of the date interval.
+	 * @param status The AppointmentStatus status to filter histories by.
+	 * @return A map of Provider,Average duration pairs.
+	 */
+	@Transactional(readOnly = true)
+	public Map<Provider, Double> getAverageHistoryDurationByConditionsPerProvider(Date fromDate, Date endDate,
+	        AppointmentStatus status);
+	
+	/**
+	 * 
+	 * Retrieves the amount of status history objects in the given criteria
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param endDate The upper bound of the date interval.
+	 * @param status The AppointmentStatus status to filter histories by.
+	 * @return The amount of status history objects in the given criteria
+	 */
+	@Transactional(readOnly = true)
+	Integer getHistoryCountByConditions(Date fromDate, Date endDate, AppointmentStatus status);
+	
+	/**
+	 * 
+	 * Retrieves the distribution of appointment types in the given appointments dates range.
+	 * 
+	 * @param fromDate The lower bound of the date range.
+	 * @param toDate The upper bound of the date range.
+	 * @return Map of <AppointmentType,Integer> that reflects the appointment types distribution in the given range.
+	 */
+	@Transactional(readOnly = true)
+	public Map<AppointmentType, Integer> getAppointmentTypeDistribution(Date fromDate, Date toDate);
+	
+	// Utility Methods
+	
+	/**
 	 * [Utility Method] Retrieves all providers sorted ascending alphabetically
 	 * 
 	 * @param includeRetired whether to include retired providers
@@ -588,4 +639,26 @@ public interface AppointmentService extends OpenmrsService {
 	 */
 	@Transactional(readOnly = true)
 	List<AppointmentType> getAllAppointmentTypesSorted(boolean includeRetired);
+	
+	/**
+	 * 
+	 * Retrieves list of unvoided appointments that their current status is one of the given states.
+	 * 
+	 * @param states List of states to retrieve by.
+	 * @return list of unvoided appointments that their current status is one of the given states.
+	 */
+	@Transactional(readOnly = true)
+	List<Appointment> getAppointmentsByStatus(List<AppointmentStatus> states);
+	
+	/**
+	 * 
+	 * Update the status of PAST appointments according to the following conditions:
+	 * "SCHEDULED" will be updated to "MISSED"
+	 * "WAITING" or "WALKIN" will be updated to "MISSED"
+	 * "INCONSULTATION" will be updated to "COMPLETED"
+	 * 
+	 * @return List of the updated appointments
+	 */
+	@Transactional(readOnly = false)
+	List<Appointment> cleanOpenAppointments();
 }

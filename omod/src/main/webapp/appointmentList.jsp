@@ -159,7 +159,7 @@
 								var selectLocation = $j('#locationId');
 								//Set the Null option text (Default is empty string)
 								if (selectLocation[0][0].innerHTML == '')
-									selectLocation[0][0].innerHTML = "<spring:message code='appointmentscheduling.Appointment.create.label.locationNotSpecified'/>";
+									selectLocation[0][0].innerHTML = "(<spring:message code='appointmentscheduling.AppointmentBlock.filters.locationNotSpecified'/>)";
 
 							}
 							
@@ -313,15 +313,22 @@
             var todayEnd = new Date();
             todayEnd.setHours(23,59,59,999);
 			
-			var locale = '${locale}';
-			if(locale=='en_US'){
-				document.getElementById('fromDate').value = todayStart.format(jsDateFormat+' '+jsTimeFormat);
-				document.getElementById('toDate').value = todayEnd.format(jsDateFormat+' '+jsTimeFormat);
+            var locale = '${locale}';
+
+    		if(locale=='en_US'){
+    			var timeFormat = jsTimeFormat.replace('mm','MM');
+    			document.getElementById('fromDate').value = todayStart.format(jsDateFormat+' '+timeFormat);
+    			document.getElementById('toDate').value = todayEnd.format(jsDateFormat+' '+timeFormat);
+    		}
+			else if(locale=='it'){
+				document.getElementById('fromDate').value = todayStart.format(jsDateFormat+' HH.MM');
+    			document.getElementById('toDate').value = todayEnd.format(jsDateFormat+' HH.MM');
 			}
-			else{
-				document.getElementById('fromDate').value = todayStart.format(jsDateFormat+' HH:MM');
-				document.getElementById('toDate').value = todayEnd.format(jsDateFormat+' HH:MM');
-			}
+    		else{
+    			document.getElementById('fromDate').value = todayStart.format(jsDateFormat+' HH:MM');
+    			document.getElementById('toDate').value = todayEnd.format(jsDateFormat+' HH:MM');
+    			
+    		}
 		}
 	}
 
@@ -386,8 +393,8 @@
 					code="appointmentscheduling.Appointment.list.label.clinician" /></td>
 			<td><select name="providerSelect" id="providerSelect">
 					<option value="" ${null==param.providerSelect ? 'selected' : ''}>
-						<spring:message
-							code="appointmentscheduling.Appointment.create.label.clinicianNotSpecified" />
+						(<spring:message
+							code="appointmentscheduling.AppointmentBlock.filters.providerNotSpecified" />)
 					</option>
 					<c:forEach var="provider" items="${providerList}">
 						<option value="${provider.providerId}"
@@ -402,8 +409,8 @@
 		<td>
 				<select name="appointmentTypeSelect" id="appointmentTypeSelect">
 					<option value="" ${null==param.appointmentTypeSelect ? 'selected' : ''}>
-						<spring:message
-							code="appointmentscheduling.Appointment.create.label.clinicianNotSpecified" />
+						(<spring:message
+							code="appointmentscheduling.AppointmentBlock.filters.typeNotSpecified" />)
 					</option>
 					<c:forEach var="appointmentType" items="${appointmentTypeList}" >
 						<option value="${appointmentType.appointmentTypeId}" ${appointmentType.appointmentTypeId==param.appointmentTypeSelect ? 'selected' : ''}>${appointmentType.name}</option>
@@ -416,8 +423,8 @@
 				code="appointmentscheduling.Appointment.list.label.appointmentStatus" /></td>
 		<td><select name="appointmentStatusSelect" id="appointmentStatusSelect">
 				<option value="" ${null==param.appointmentStatusSelect ? 'selected' : ''}>
-					<spring:message
-						code="appointmentscheduling.Appointment.create.label.clinicianNotSpecified" />
+					(<spring:message
+						code="appointmentscheduling.AppointmentBlock.filters.statusNotSpecified" />)
 				</option>
 				<c:forEach var="status" items="${appointmentStatusList}" >
 					<option value="${status}" ${status==param.appointmentStatusSelect ? 'selected' : ''}>${status.name}</option>

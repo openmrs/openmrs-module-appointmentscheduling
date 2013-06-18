@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpSession;
@@ -216,7 +217,6 @@ public class DWRAppointmentService {
 	}
 	
 	/**
-	 * 
 	 * Checks whether a provider has an ongoing open consultation
 	 * 
 	 * @param appointmentId - The appointment id from which we will load the provider
@@ -237,10 +237,10 @@ public class DWRAppointmentService {
 	}
 	
 	/**
-	 * 
 	 * Checks whether a provider has an ongoing open consultation
 	 * 
-	 * @param appointmentId - The patient id from which we will its most recent appointment's provider
+	 * @param appointmentId - The patient id from which we will its most recent appointment's
+	 *            provider
 	 * @return True if has any open consultation, False otherwise
 	 */
 	public Boolean checkProviderOpenConsultationsByPatient(Integer patientId) {
@@ -256,6 +256,216 @@ public class DWRAppointmentService {
 			
 			return (inconsultationAppointments.size() != 0);
 		}
+	}
+	
+	public Integer cleanOpenAppointments() {
+		List<Appointment> appointments = Context.getService(AppointmentService.class).cleanOpenAppointments();
+		
+		return appointments.size();
+	}
+	
+	/**
+	 * Computes the average duration (in Minutes) of a status history by appointment type
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param endDate The upper bound of the date interval.
+	 * @param status The AppointmentStatus status to filter histories by.
+	 * @return An array of <String, Double> appointment_type_name, average_history_status_time
+	 * @throws ParseException
+	 */
+	private Object[][] getAverageHistoryDurationByCriteria(String fromDate, String toDate, AppointmentStatus status)
+	        throws ParseException {
+		
+		Date fromDateAsDate = Context.getDateTimeFormat().parse(fromDate);
+		Date toDateAsDate = Context.getDateTimeFormat().parse(toDate);
+		
+		Object[][] plotData = null;
+		
+		Map<AppointmentType, Double> averages = Context.getService(AppointmentService.class)
+		        .getAverageHistoryDurationByConditions(fromDateAsDate, toDateAsDate, status);
+		plotData = new Object[averages.size()][2];
+		
+		int i = 0;
+		for (Map.Entry<AppointmentType, Double> entry : averages.entrySet()) {
+			plotData[i][0] = entry.getKey().getName();
+			plotData[i][1] = entry.getValue().toString();
+			i++;
+		}
+		
+		return plotData;
+		
+	}
+	
+	/**
+	 * Computes the average duration (in Minutes) of a "waiting" history by appointment type
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param endDate The upper bound of the date interval.
+	 * @return An array of <String, Double> appointment_type_name, average_history_waiting_time
+	 * @throws ParseException
+	 */
+	public Object[][] getAverageWaitingTimeByType(String fromDate, String toDate) throws ParseException {
+		return getAverageHistoryDurationByCriteria(fromDate, toDate, AppointmentStatus.WAITING);
+	}
+	
+	/**
+	 * Computes the average duration (in Minutes) of a "in-consultation" history by appointment type
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param endDate The upper bound of the date interval.
+	 * @return An array of <String, Double> appointment_type_name,
+	 *         average_history_inconsultation_time
+	 * @throws ParseException
+	 */
+	public Object[][] getAverageConsultationTimeByType(String fromDate, String toDate) throws ParseException {
+		return getAverageHistoryDurationByCriteria(fromDate, toDate, AppointmentStatus.INCONSULTATION);
+	}
+	
+	/**
+	 * Retrieves the amount of status history objects in the given criteria
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param endDate The upper bound of the date interval.
+	 * @param status The AppointmentStatus status to filter histories by.
+	 * @return The amount of status history objects in the given criteria
+	 * @throws ParseException
+	 */
+	private Integer getCountOfHistoriesInStatus(String fromDate, String toDate, AppointmentStatus status)
+	        throws ParseException {
+		Date fromDateAsDate = Context.getDateTimeFormat().parse(fromDate);
+		Date toDateAsDate = Context.getDateTimeFormat().parse(toDate);
+		
+		return Context.getService(AppointmentService.class)
+		        .getHistoryCountByConditions(fromDateAsDate, toDateAsDate, status);
+	}
+	
+	/**
+	 * Retrieves the amount of "waiting" status history objects in the given criteria
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param endDate The upper bound of the date interval.
+	 * @return The amount of status history objects in the given criteria
+	 * @throws ParseException
+	 */
+	public Integer getCountOfWaitingHistories(String fromDate, String toDate) throws ParseException {
+		return getCountOfHistoriesInStatus(fromDate, toDate, AppointmentStatus.WAITING);
+	}
+	
+	/**
+	 * Retrieves the amount of "in-consultation" status history objects in the given criteria
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param endDate The upper bound of the date interval.
+	 * @return The amount of status history objects in the given criteria
+	 * @throws ParseException
+	 */
+	public Integer getCountOfConsultationHistories(String fromDate, String toDate) throws ParseException {
+		return getCountOfHistoriesInStatus(fromDate, toDate, AppointmentStatus.INCONSULTATION);
+	}
+	
+	/**
+	 * 
+	 * Retrieves the appointment type distribution in the given date interval.
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param toDate The upper bound of the date interval.
+	 * @return Two-Dimensional array of the structure [[AppointmentType,Integer]]
+	 * @throws ParseException Date parse exception
+	 */
+	public Object[][] getAppointmentTypeDistribution(String fromDate, String toDate) throws ParseException {
+		Date fromDateAsDate = Context.getDateTimeFormat().parse(fromDate);
+		Date toDateAsDate = Context.getDateTimeFormat().parse(toDate);
+		Map<AppointmentType, Integer> distribution = Context.getService(AppointmentService.class)
+		        .getAppointmentTypeDistribution(fromDateAsDate, toDateAsDate);
+		
+		Object[][] values = new Object[distribution.size()][2];
+		int i = 0;
+		for (Map.Entry<AppointmentType, Integer> entry : distribution.entrySet()) {
+			values[i][0] = entry.getKey().getName();
+			values[i][1] = entry.getValue();
+			i++;
+		}
+		
+		return values;
+	}
+	
+	/**
+	 * 
+	 * Get the count of appointments in the given date interval
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param toDate The upper bound of the date interval.
+	 * @return The amount of appointments in the given date interval.
+	 * @throws ParseException Date parse exception
+	 */
+	public Integer getAppointmentsCount(String fromDate, String toDate) throws ParseException {
+		Date fromDateAsDate = Context.getDateTimeFormat().parse(fromDate);
+		Date toDateAsDate = Context.getDateTimeFormat().parse(toDate);
+		Map<AppointmentType, Integer> distribution = Context.getService(AppointmentService.class)
+		        .getAppointmentTypeDistribution(fromDateAsDate, toDateAsDate);
+		
+		Integer count = 0;
+		for (Map.Entry<AppointmentType, Integer> entry : distribution.entrySet())
+			count += entry.getValue();
+		
+		return count;
+	}
+	
+	/**
+	 * Computes the average duration (in Minutes) of a status history by provider
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param endDate The upper bound of the date interval.
+	 * @param status The AppointmentStatus status to filter histories by.
+	 * @return An array of <String, Double> provider_name, average_history_status_time
+	 * @throws ParseException
+	 */
+	private Object[][] getAverageHistoryDurationByCriteriaByProvider(String fromDate, String toDate, AppointmentStatus status)
+	        throws ParseException {
+		
+		Date fromDateAsDate = Context.getDateTimeFormat().parse(fromDate);
+		Date toDateAsDate = Context.getDateTimeFormat().parse(toDate);
+		
+		Object[][] plotData = null;
+		
+		Map<Provider, Double> averages = Context.getService(AppointmentService.class)
+		        .getAverageHistoryDurationByConditionsPerProvider(fromDateAsDate, toDateAsDate, status);
+		plotData = new Object[averages.size()][2];
+		
+		int i = 0;
+		for (Map.Entry<Provider, Double> entry : averages.entrySet()) {
+			plotData[i][0] = entry.getKey().getName();
+			plotData[i][1] = entry.getValue().toString();
+			i++;
+		}
+		
+		return plotData;
+		
+	}
+	
+	/**
+	 * Computes the average duration (in Minutes) of a "waiting" history by provider
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param endDate The upper bound of the date interval.
+	 * @return An array of <String, Double> provider_name, average_history_waiting_time
+	 * @throws ParseException
+	 */
+	public Object[][] getAverageWaitingTimeByProvider(String fromDate, String toDate) throws ParseException {
+		return getAverageHistoryDurationByCriteriaByProvider(fromDate, toDate, AppointmentStatus.WAITING);
+	}
+	
+	/**
+	 * Computes the average duration (in Minutes) of a "in-consultation" history by provider
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param endDate The upper bound of the date interval.
+	 * @return An array of <String, Double> provider_name,
+	 *         average_history_inconsultation_time
+	 * @throws ParseException
+	 */
+	public Object[][] getAverageConsultationTimeByProvider(String fromDate, String toDate) throws ParseException {
+		return getAverageHistoryDurationByCriteriaByProvider(fromDate, toDate, AppointmentStatus.INCONSULTATION);
 	}
 	
 }

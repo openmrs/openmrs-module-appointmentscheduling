@@ -13,14 +13,20 @@
  */
 package org.openmrs.module.appointmentscheduling.api.impl;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.openmrs.module.appointmentscheduling.StudentT;
+import org.apache.commons.chain.web.MapEntry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
@@ -611,6 +617,15 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 			
 			appointment.setStatus(newStatus);
 			saveAppointment(appointment);
+			
+			if (newStatus == AppointmentStatus.COMPLETED || newStatus == AppointmentStatus.CANCELLED
+			        || newStatus == AppointmentStatus.MISSED) {
+				Visit visit = appointment.getVisit();
+				if (visit != null && visit.getStopDatetime() != null) {
+					visit.setStopDatetime(new Date());
+					Context.getVisitService().saveVisit(visit);
+				}
+			}
 		}
 		
 	}
@@ -642,4 +657,236 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		return appointmentTypes;
 	}
 	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Appointment> getAppointmentsByStatus(List<AppointmentStatus> states) {
+		return appointmentDAO.getAppointmentsByStates(states);
+	}
+	
+	@Override
+	@Transactional(readOnly = false)
+	public List<Appointment> cleanOpenAppointments() {
+		List<AppointmentStatus> states = new LinkedList<AppointmentStatus>();
+		states.add(AppointmentStatus.SCHEDULED);
+		states.add(AppointmentStatus.WAITING);
+		states.add(AppointmentStatus.WALKIN);
+		states.add(AppointmentStatus.INCONSULTATION);
+		
+		List<Appointment> appointmentsInStates = appointmentDAO.getPastAppointmentsByStates(states);
+		if (appointmentsInStates == null)
+			return new LinkedList<Appointment>();
+		Iterator<Appointment> iter = appointmentsInStates.iterator();
+		Date now = Calendar.getInstance().getTime();
+		while (iter.hasNext()) {
+			Appointment appointment = iter.next();
+			//Check if past appointment
+			if (now.after(appointment.getTimeSlot().getEndDate())) {
+				AppointmentStatus status = appointment.getStatus();
+				switch (status) {
+					case SCHEDULED:
+					case WAITING:
+					case WALKIN:
+						changeAppointmentStatus(appointment, AppointmentStatus.MISSED);
+						break;
+					case INCONSULTATION:
+						changeAppointmentStatus(appointment, AppointmentStatus.COMPLETED);
+						break;
+					default:
+						//No need to change
+						appointmentsInStates.remove(appointment);
+						break;
+				}
+				
+			} else {
+				appointmentsInStates.remove(appointment);
+			}
+		}
+		
+		return appointmentsInStates;
+	}
+	
+	public Map<AppointmentType, Double> getAverageHistoryDurationByConditions(Date fromDate, Date endDate,
+	        AppointmentStatus status) {
+		Map<AppointmentType, Double> averages = new HashMap<AppointmentType, Double>();
+		Map<AppointmentType, Integer> counters = new HashMap<AppointmentType, Integer>();
+		
+		List<AppointmentStatusHistory> histories = appointmentStatusHistoryDAO.getHistoriesByInterval(fromDate, endDate,
+		    status);
+		
+		//Clean Not-Reasonable Durations
+		Map<AppointmentStatusHistory, Double> durations = new HashMap<AppointmentStatusHistory, Double>();
+		// 60 seconds * 1000 milliseconds in 1 minute
+		int minutesConversion = 60000;
+		int minutesInADay = 1440;
+		for (AppointmentStatusHistory history : histories) {
+			Date startDate = history.getStartDate();
+			Date toDate = history.getEndDate();
+			Double duration = (double) ((toDate.getTime() / minutesConversion) - (startDate.getTime() / minutesConversion));
+			
+			//Not reasonable to be more than a day
+			if (duration < minutesInADay)
+				durations.put(history, duration);
+		}
+		
+		Double[] data = new Double[durations.size()];
+		
+		int i = 0;
+		for (Map.Entry<AppointmentStatusHistory, Double> entry : durations.entrySet()) {
+			//Added Math.sqrt in order to lower the mean and variance
+			data[i] = Math.sqrt(entry.getValue());
+			i++;
+		}
+		
+		// Compute Intervals
+		double[] boundaries = confidenceInterval(data);
+		//
+		
+		//sum up the durations by type
+		for (Map.Entry<AppointmentStatusHistory, Double> entry : durations.entrySet()) {
+			AppointmentType type = entry.getKey().getAppointment().getAppointmentType();
+			Double duration = entry.getValue();
+			
+			//Added Math.sqrt in order to lower the mean and variance
+			if ((Math.sqrt(duration) <= boundaries[1])) {
+				if (averages.containsKey(type)) {
+					averages.put(type, averages.get(type) + duration);
+					counters.put(type, counters.get(type) + 1);
+				} else {
+					averages.put(type, duration);
+					counters.put(type, 1);
+				}
+			}
+		}
+		
+		// Compute average
+		for (Map.Entry<AppointmentType, Integer> counter : counters.entrySet())
+			averages.put(counter.getKey(), averages.get(counter.getKey()) / counter.getValue());
+		
+		return averages;
+	}
+	
+	@Transactional(readOnly = true)
+	public Map<Provider, Double> getAverageHistoryDurationByConditionsPerProvider(Date fromDate, Date endDate,
+	        AppointmentStatus status) {
+		Map<Provider, Double> averages = new HashMap<Provider, Double>();
+		Map<Provider, Integer> counters = new HashMap<Provider, Integer>();
+		
+		List<AppointmentStatusHistory> histories = appointmentStatusHistoryDAO.getHistoriesByInterval(fromDate, endDate,
+		    status);
+		
+		//Clean Not-Reasonable Durations
+		Map<AppointmentStatusHistory, Double> durations = new HashMap<AppointmentStatusHistory, Double>();
+		// 60 seconds * 1000 milliseconds in 1 minute
+		int minutesConversion = 60000;
+		int minutesInADay = 1440;
+		for (AppointmentStatusHistory history : histories) {
+			Date startDate = history.getStartDate();
+			Date toDate = history.getEndDate();
+			Double duration = (double) ((toDate.getTime() / minutesConversion) - (startDate.getTime() / minutesConversion));
+			//Not reasonable to be more than a day
+			if (duration > 0 && duration < minutesInADay)
+				durations.put(history, duration);
+		}
+		
+		Double[] data = new Double[durations.size()];
+		
+		int i = 0;
+		for (Map.Entry<AppointmentStatusHistory, Double> entry : durations.entrySet()) {
+			//Added Math.sqrt in order to lower the mean and variance
+			data[i] = Math.sqrt(entry.getValue());
+			i++;
+		}
+		
+		// Compute Intervals
+		double[] boundaries = confidenceInterval(data);
+		//
+		
+		//sum up the durations by type
+		for (Map.Entry<AppointmentStatusHistory, Double> entry : durations.entrySet()) {
+			Provider provider = entry.getKey().getAppointment().getTimeSlot().getAppointmentBlock().getProvider();
+			Double duration = entry.getValue();
+			
+			//Added Math.sqrt in order to lower the mean and variance
+			if ((Math.sqrt(duration) <= boundaries[1])) {
+				if (averages.containsKey(provider)) {
+					averages.put(provider, averages.get(provider) + duration);
+					counters.put(provider, counters.get(provider) + 1);
+				} else {
+					averages.put(provider, duration);
+					counters.put(provider, 1);
+				}
+			}
+		}
+		
+		// Compute average
+		for (Map.Entry<Provider, Integer> counter : counters.entrySet())
+			averages.put(counter.getKey(), averages.get(counter.getKey()) / counter.getValue());
+		
+		return averages;
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public Integer getHistoryCountByConditions(Date fromDate, Date endDate, AppointmentStatus status) {
+		List<AppointmentStatusHistory> histories = appointmentStatusHistoryDAO.getHistoriesByInterval(fromDate, endDate,
+		    status);
+		
+		return histories.size();
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public Map<AppointmentType, Integer> getAppointmentTypeDistribution(Date fromDate, Date toDate) {
+		List<AppointmentType> unretiredTypes = Context.getService(AppointmentService.class).getAllAppointmentTypes(false);
+		Map<AppointmentType, Integer> distribution = new HashMap<AppointmentType, Integer>();
+		
+		for (AppointmentType type : unretiredTypes) {
+			Integer countOfType = appointmentTypeDAO.getAppointmentTypeCount(fromDate, toDate, type);
+			if (countOfType > 0)
+				distribution.put(type, countOfType);
+			
+		}
+		
+		return distribution;
+		
+	}
+	
+	private double[] confidenceInterval(Double[] data) {
+		//Empty Dataset
+		if (data.length == 0)
+			return new double[] { 0.0, 0.0 };
+		
+		//Initialization
+		double mean = 0;
+		int count = data.length;
+		int df = count - 1;
+		//If Dataset consists of only one item
+		if (df == 0)
+			return new double[] { Double.MIN_VALUE, Double.MAX_VALUE };
+		
+		double alpha = 0.05;
+		double tStat = StudentT.tTable(df, alpha);
+		
+		//Compute Mean
+		for (double val : data)
+			mean += val;
+		mean = mean / count;
+		
+		//Compute Variance
+		double variance = 0;
+		for (double val : data)
+			variance += Math.pow((val - mean), 2);
+		variance = variance / df;
+		//If deviation is small - Suspected as "Clean of Noise"
+		if (Math.sqrt(variance) <= 1)
+			return new double[] { Double.MIN_VALUE, Double.MAX_VALUE };
+		
+		//Compute Confidence Interval Bounds.
+		double[] boundaries = new double[2];
+		double factor = tStat * (Math.sqrt(variance) / Math.sqrt(count));
+		boundaries[0] = mean - factor;
+		boundaries[1] = mean + factor;
+		
+		return boundaries;
+	}
 }

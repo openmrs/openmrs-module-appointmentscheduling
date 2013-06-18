@@ -44,6 +44,13 @@
 		<description>Default Time Slot Duration. (In Minutes)
 		</description>
 	</globalProperty>
+	<globalProperty>
+		<property>${project.parent.artifactId}.hideEndVisitButtons
+		</property>
+		<defaultValue>true</defaultValue>
+		<description>Hide "End Visit" buttons on the patient dashboard.
+		</description>
+	</globalProperty>
 
 	<!-- Module Activator -->
 	<activator>${project.parent.groupId}.${project.parent.artifactId}.AppointmentActivator
@@ -74,6 +81,17 @@
 				<include method="validateDates"/>
 				<include method="checkProviderOpenConsultations"/>
 				<include method="checkProviderOpenConsultationsByPatient"/>
+				<include method="cleanOpenAppointments"/>
+				<include method="getAverageWaitingTimeByType"/>
+				<include method="getAverageConsultationTimeByType"/>
+				<include method="getCountOfWaitingHistories"/>
+				<include method="getCountOfConsultationHistories"/>
+				<include method="getAppointmentTypeDistribution"/>
+				<include method="getAppointmentsCount"/>
+				<include method="getAverageHistoryDurationByCriteriaByProvider"/>
+				<include method="getAverageWaitingTimeByProvider"/>
+				<include method="getAverageConsultationTimeByProvider"/>
+				<include method="cleanOpenAppointments"/>
 			</create>
 		</allow>
 
@@ -87,6 +105,17 @@
             DWRAppointmentService.validateDates(String fromDate,String toDate);
             DWRAppointmentService.checkProviderOpenConsultations(appointmentId);
             DWRAppointmentService.checkProviderOpenConsultationsByPatient(patientId);
+            DWRAppointmentService.cleanOpenAppointments();
+            DWRAppointmentService.getAverageWaitingTimeByType(String fromDate, String toDate);
+            DWRAppointmentService.getAverageConsultationTimeByType(String fromDate, String toDate);
+            DWRAppointmentService.getCountOfWaitingHistories(String fromDate, String toDate);
+            DWRAppointmentService.getCountOfConsultationHistories(String fromDate, String toDate);
+            DWRAppointmentService.getAppointmentTypeDistribution(String fromDate, String toDate);
+            DWRAppointmentService.getAppointmentsCount(String fromDate, String toDate);
+            DWRAppointmentService.getAverageHistoryDurationByCriteriaByProvider(String fromDate, String toDate, AppointmentStatus status);
+            DWRAppointmentService.getAverageWaitingTimeByProvider(String fromDate, String toDate);
+            DWRAppointmentService.getAverageConsultationTimeByProvider(String fromDate, String toDate);
+            DWRAppointmentService.cleanOpenAppointments();
             ]]>
 		</signatures>
 	</dwr>
@@ -165,6 +194,14 @@
 	<privilege>
 		<name>View Patient Appointment History</name>
 		<description>Ability to view the appointment history tab on the patient's dashboard</description>
+	</privilege>
+	<privilege>
+		<name>Manage Appointments Settings</name>
+		<description>Ability to manage the appointment scheduling module settings</description>
+	</privilege>
+	<privilege>
+		<name>View Appointments Statistics</name>
+		<description>Ability to view the appointments statistics page</description>
 	</privilege>
 	<!-- /Privileges -->
 
