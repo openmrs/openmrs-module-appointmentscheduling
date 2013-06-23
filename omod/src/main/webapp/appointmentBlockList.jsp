@@ -198,7 +198,7 @@
 		document.forms['appointmentBlockListForm'].submit();
 	}
 		
-	function deleteFuncionality(e,event) { //A function that defines what to do when the delete button is pressed
+	function deleteFuncionality(e, event) { //A function that defines what to do when the delete button is pressed
 		//Initialize the action to do nothing.
 		document.getElementById('action').value = "";
 		var selectedAppointmentBlockId = document.getElementById("appointmentBlockId").value;

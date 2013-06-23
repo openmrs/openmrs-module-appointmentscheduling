@@ -9,7 +9,7 @@
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/fullcalendar.min.js" />
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/opentip-jquery-excanvas.js" />
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/opentip.css"/>
-<openmrs:require privilege="View Appointment Blocks" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentBlockList.list" />
+<openmrs:require privilege="View Provider Schedules" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentBlockCalendar.list" />
  <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <script type="text/javascript" src='${pageContext.request.contextPath}/dwr/engine.js'></script>
