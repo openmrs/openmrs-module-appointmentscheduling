@@ -450,6 +450,11 @@ function consultationProviderDuration(){
 							});
 					});
 }
+
+function plotImage(plotID){
+	var imgData = $j('#'+plotID).jqplotToImageStr({});
+	window.location.href = imgData;
+}
 </script>
 </script>
 </script>
@@ -490,14 +495,18 @@ function consultationProviderDuration(){
 		<!-- Waiting Time by Appointment Type -->
 		<h3><spring:message code='appointmentscheduling.Appointment.statistics.title.waitingTime'/></h3>
 		<div id="waitingContainer">
+		<p class='noiseInfo'><spring:message code='appointmentscheduling.Appointment.statistics.label.noiseDisclaimer'/></p>
 		<div id='waitingDatasize'></div>
+		<a href='#' onclick="plotImage('waitingPlot');"><spring:message code='appointmentscheduling.Appointment.statistics.label.showImage'/></a>
 		<center><div id="waitingPlot" style="height:460px;"></div></center>
 		</div>
 
 		<!-- Consultation Duration by Appointment Type -->
 		<h3><spring:message code='appointmentscheduling.Appointment.statistics.title.consultationDuration'/></h3>
 		<div id="consultationContainer">
+		<p class='noiseInfo'><spring:message code='appointmentscheduling.Appointment.statistics.label.noiseDisclaimer'/></p>
 		<div id='consultationDatasize'></div>
+		<a href='#' onclick="plotImage('consultationPlot');"><spring:message code='appointmentscheduling.Appointment.statistics.label.showImage'/></a>
 		<center><div id="consultationPlot" style="height:460px;"></div></center>
 		</div>
 
@@ -505,20 +514,25 @@ function consultationProviderDuration(){
 		<h3><spring:message code='appointmentscheduling.Appointment.statistics.title.typePie'/></h3>
 		<div id="typeContainer">
 		<div id='typeDatasize'></div>
+		<a href='#' onclick="plotImage('typePlot');"><spring:message code='appointmentscheduling.Appointment.statistics.label.showImage'/></a>
 		<center><div id="typePlot" style="height:460px;"></div></center>
 		</div>
 
 		<!-- Waiting Time by Provider -->
 		<h3><spring:message code='appointmentscheduling.Appointment.statistics.title.waitingProviderTime'/></h3>
 		<div id="waitingProviderContainer">
+		<p class='noiseInfo'><spring:message code='appointmentscheduling.Appointment.statistics.label.noiseDisclaimer'/></p>
 		<div id='waitingProviderDatasize'></div>
+		<a href='#' onclick="plotImage('waitingProviderPlot');"><spring:message code='appointmentscheduling.Appointment.statistics.label.showImage'/></a>
 		<center><div id="waitingProviderPlot" style="height:460px;"></div></center>
 		</div>
 
 		<!-- Consultation Duration by Provider -->
 		<h3><spring:message code='appointmentscheduling.Appointment.statistics.title.consultationProviderDuration'/></h3>
 		<div id="consultationProviderContainer">
+		<p class='noiseInfo'><spring:message code='appointmentscheduling.Appointment.statistics.label.noiseDisclaimer'/></p>
 		<div id='consultationProviderDatasize'></div>
+		<a href='#' onclick="plotImage('consultationProviderPlot');"><spring:message code='appointmentscheduling.Appointment.statistics.label.showImage'/></a>
 		<center><div id="consultationProviderPlot" style="height:460px;"></div></center>
 		</div>
 	</div>

@@ -7,3 +7,25 @@
 	position:relative;
     margin:0;
 }
+
+ .jqplot-data-label{
+	color:white;
+	font-weight:bold;
+ }
+ 
+ .noiseInfo{
+	background-color: rgb(255, 255, 224);
+	background-origin: padding-box;
+	background-size: auto;
+	border-color: rgb(211, 211, 211);
+	border-style: dashed;
+	border-width: 1px;
+	position: relative;
+	font-family: Verdana, 'Lucida Grande', 'Trebuchet MS', Arial, sans-serif;
+	font-size: 14px;
+	height: 17px;
+	margin:12px;
+	margin-left:0px;
+	padding:3px;
+	width: auto;
+ }
