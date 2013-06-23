@@ -88,7 +88,6 @@
 				<include method="getCountOfConsultationHistories"/>
 				<include method="getAppointmentTypeDistribution"/>
 				<include method="getAppointmentsCount"/>
-				<include method="getAverageHistoryDurationByCriteriaByProvider"/>
 				<include method="getAverageWaitingTimeByProvider"/>
 				<include method="getAverageConsultationTimeByProvider"/>
 				<include method="cleanOpenAppointments"/>
@@ -105,17 +104,14 @@
             DWRAppointmentService.validateDates(String fromDate,String toDate);
             DWRAppointmentService.checkProviderOpenConsultations(appointmentId);
             DWRAppointmentService.checkProviderOpenConsultationsByPatient(patientId);
-            DWRAppointmentService.cleanOpenAppointments();
             DWRAppointmentService.getAverageWaitingTimeByType(String fromDate, String toDate);
             DWRAppointmentService.getAverageConsultationTimeByType(String fromDate, String toDate);
             DWRAppointmentService.getCountOfWaitingHistories(String fromDate, String toDate);
             DWRAppointmentService.getCountOfConsultationHistories(String fromDate, String toDate);
             DWRAppointmentService.getAppointmentTypeDistribution(String fromDate, String toDate);
             DWRAppointmentService.getAppointmentsCount(String fromDate, String toDate);
-            DWRAppointmentService.getAverageHistoryDurationByCriteriaByProvider(String fromDate, String toDate, AppointmentStatus status);
             DWRAppointmentService.getAverageWaitingTimeByProvider(String fromDate, String toDate);
             DWRAppointmentService.getAverageConsultationTimeByProvider(String fromDate, String toDate);
-            DWRAppointmentService.cleanOpenAppointments();
             ]]>
 		</signatures>
 	</dwr>
