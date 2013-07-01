@@ -178,6 +178,10 @@
 		<name>View Patient Appointment History</name>
 		<description>Ability to view the appointment history tab on the patient's dashboard</description>
 	</privilege>
+	<privilege>
+		<name>View Appointments Statistics</name>
+		<description>Ability to view the appointments statistics page</description>
+	</privilege>
 	<!-- /Privileges -->
 
 </module>

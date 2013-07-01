@@ -15,6 +15,8 @@
 
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/jquery.jqplot.min.css" />
 
+<openmrs:require privilege="View Appointments Statistics" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentStatisticsForm.form" />
+
 <script type="text/javascript"
 	src='${pageContext.request.contextPath}/dwr/engine.js'></script>
 <script type="text/javascript"

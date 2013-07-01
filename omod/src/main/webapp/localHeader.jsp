@@ -20,4 +20,11 @@
 		</a>
 	</li>
 	</openmrs:hasPrivilege>
+	<openmrs:hasPrivilege privilege='View Appointments Statistics'>
+	<li <c:if test='<%= request.getRequestURI().contains("appointmentscheduling/appointmentStatisticsForm.jsp") %>'>class="active"</c:if>>
+		<a href="${pageContext.request.contextPath}/module/appointmentscheduling/appointmentStatisticsForm.form">
+			<spring:message code="appointmentscheduling.Appointment.statistics.title"/>
+		</a>
+	</li>
+	</openmrs:hasPrivilege>
 </ul>
