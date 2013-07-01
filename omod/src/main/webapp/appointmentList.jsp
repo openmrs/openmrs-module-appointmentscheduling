@@ -313,15 +313,18 @@
             var todayEnd = new Date();
             todayEnd.setHours(23,59,59,999);
 			
-			var locale = '${locale}';
-			if(locale=='en_US'){
-				document.getElementById('fromDate').value = todayStart.format(jsDateFormat+' '+jsTimeFormat);
-				document.getElementById('toDate').value = todayEnd.format(jsDateFormat+' '+jsTimeFormat);
-			}
-			else{
-				document.getElementById('fromDate').value = todayStart.format(jsDateFormat+' HH:MM');
-				document.getElementById('toDate').value = todayEnd.format(jsDateFormat+' HH:MM');
-			}
+            var locale = '${locale}';
+
+    		if(locale=='en_US'){
+    			var timeFormat = jsTimeFormat.replace('mm','MM');
+    			document.getElementById('fromDate').value = todayStart.format(jsDateFormat+' '+timeFormat);
+    			document.getElementById('toDate').value = todayEnd.format(jsDateFormat+' '+timeFormat);
+    		}
+    		else{
+    			document.getElementById('fromDate').value = todayStart.format(jsDateFormat+' HH:MM');
+    			document.getElementById('toDate').value = todayEnd.format(jsDateFormat+' HH:MM');
+    			
+    		}
 		}
 	}
 
