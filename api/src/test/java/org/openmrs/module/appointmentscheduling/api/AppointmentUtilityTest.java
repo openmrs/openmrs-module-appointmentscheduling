@@ -59,18 +59,18 @@ public class AppointmentUtilityTest extends BaseModuleContextSensitiveTest {
 	public void getAllAppointmentTypesSorted_shouldGetCorrectSort() {
 		List<AppointmentType> appointmentTypes = service.getAllAppointmentTypesSorted(false);
 		
-		AppointmentType shouldBeFirst = service.getAppointmentType(1);
+		AppointmentType shouldBeFirst = service.getAppointmentType(3);
 		AppointmentType shouldBeLast = service.getAppointmentType(2);
 		assertNotNull(shouldBeFirst);
 		assertNotNull(shouldBeLast);
 		
 		assertEquals(shouldBeFirst, appointmentTypes.get(0));
 		assertEquals(shouldBeLast, appointmentTypes.get(appointmentTypes.size() - 1));
-		assertEquals(2, appointmentTypes.size());
+		assertEquals(3, appointmentTypes.size());
 		
 		appointmentTypes = service.getAllAppointmentTypesSorted(true);
 		
-		shouldBeFirst = service.getAppointmentType(3);
+		shouldBeFirst = service.getAppointmentType(4);
 		shouldBeLast = service.getAppointmentType(2);
 		assertNotNull(shouldBeFirst);
 		assertNotNull(shouldBeLast);

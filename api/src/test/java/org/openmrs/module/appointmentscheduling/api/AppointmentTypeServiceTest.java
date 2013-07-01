@@ -17,7 +17,11 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Assert;
@@ -26,7 +30,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
-import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
@@ -63,7 +66,7 @@ public class AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest {
 		
 		appointmentType = service.getAppointmentType(3);
 		assertNotNull(appointmentType);
-		assertEquals("Hospitalization", appointmentType.getName());
+		assertEquals("Hospitalization2", appointmentType.getName());
 		
 		appointmentType = service.getAppointmentType(5);
 		Assert.assertNull(appointmentType);
@@ -82,7 +85,7 @@ public class AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest {
 		
 		appointmentType = service.getAppointmentTypeByUuid("759799ab-c9a5-435e-b671-77773ada74e6");
 		assertNotNull(appointmentType);
-		assertEquals("Hospitalization", appointmentType.getName());
+		assertEquals("Hospitalization2", appointmentType.getName());
 		
 		appointmentType = service.getAppointmentTypeByUuid("759799ab-c9a5-435e-b671-77773ada74e1");
 		Assert.assertNull(appointmentType);
@@ -165,14 +168,14 @@ public class AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	@Verifies(value = "should unretire given appointment type", method = "unretireAppointmentType(AppointmentType)")
 	public void unretireAppointmentType_shouldUnretireGivenAppointmentType() throws Exception {
-		AppointmentType appointmentType = service.getAppointmentType(3);
+		AppointmentType appointmentType = service.getAppointmentType(4);
 		assertNotNull(appointmentType);
 		assertTrue(appointmentType.isRetired());
 		assertEquals("Some Retire Reason", appointmentType.getRetireReason());
 		
 		service.unretireAppointmentType(appointmentType);
 		
-		appointmentType = service.getAppointmentType(3);
+		appointmentType = service.getAppointmentType(4);
 		assertNotNull(appointmentType);
 		Assert.assertFalse(appointmentType.isRetired());
 		Assert.assertNull(appointmentType.getRetireReason());
@@ -194,5 +197,30 @@ public class AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest {
 		
 		//Should reduce the existing number of appointment types.
 		assertEquals(3, service.getAllAppointmentTypes().size());
+	}
+	
+	@Test
+	@Verifies(value = "should get correct appointment type distribution", method = "getAppointmentTypeDistribution(Date, Date")
+	public void getAppointmentTypeDistribution_shouldGetCorrectDistribution() throws ParseException {
+		//Total of 3 appointments - one of type 3 , two of type 1 
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		Date fromDate = format.parse("2005-01-01 00:00:00.0");
+		Date toDate = format.parse("2008-01-01 01:00:00.1");
+		
+		AppointmentType type1 = Context.getService(AppointmentService.class).getAppointmentType(1);
+		AppointmentType type2 = Context.getService(AppointmentService.class).getAppointmentType(2);
+		AppointmentType type3 = Context.getService(AppointmentService.class).getAppointmentType(3);
+		assertNotNull(type1);
+		assertNotNull(type2);
+		assertNotNull(type3);
+		
+		Map<AppointmentType, Integer> distribution = Context.getService(AppointmentService.class)
+		        .getAppointmentTypeDistribution(fromDate, toDate);
+		
+		assertEquals((Integer) 1, (Integer) distribution.get(type3));
+		assertEquals((Integer) 0, (Integer) distribution.get(type2));
+		assertEquals((Integer) 2, (Integer) distribution.get(type1));
+		assertEquals(3, distribution.size());
+		
 	}
 }

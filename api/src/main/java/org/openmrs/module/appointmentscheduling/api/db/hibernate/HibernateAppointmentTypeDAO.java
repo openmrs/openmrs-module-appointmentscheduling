@@ -13,6 +13,11 @@
  */
 package org.openmrs.module.appointmentscheduling.api.db.hibernate;
 
+import java.util.Date;
+import java.util.List;
+
+import org.hibernate.Query;
+import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentTypeDAO;
 
@@ -20,5 +25,16 @@ public class HibernateAppointmentTypeDAO extends HibernateSingleClassDAO impleme
 	
 	public HibernateAppointmentTypeDAO() {
 		super(AppointmentType.class);
+	}
+	
+	public Integer getAppointmentTypeCount(Date fromDate, Date endDate, AppointmentType type) {
+		String stringQuery = "SELECT count(*) As counter FROM Appointment AS appointment" + " WHERE appointment.voided = 0 "
+		        + "AND appointment.timeSlot.startDate >= :fromDate " + "AND appointment.timeSlot.endDate <= :endDate "
+		        + "AND appointment.appointmentType=:appointmentType";
+		
+		Query query = super.sessionFactory.getCurrentSession().createQuery(stringQuery).setParameter("fromDate", fromDate)
+		        .setParameter("endDate", endDate).setParameter("appointmentType", type);
+		
+		return ((Long) query.uniqueResult()).intValue();
 	}
 }

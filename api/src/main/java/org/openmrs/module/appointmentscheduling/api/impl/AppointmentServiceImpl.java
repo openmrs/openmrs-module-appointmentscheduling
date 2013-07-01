@@ -16,11 +16,14 @@ package org.openmrs.module.appointmentscheduling.api.impl;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.chain.web.MapEntry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
@@ -640,6 +643,62 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 			}
 		});
 		return appointmentTypes;
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public Map<AppointmentType, Double> getAverageHistoryDurationByConditions(Date fromDate, Date endDate,
+	        AppointmentStatus status) {
+		Map<AppointmentType, Double> averages = new HashMap<AppointmentType, Double>();
+		Map<AppointmentType, Integer> counters = new HashMap<AppointmentType, Integer>();
+		
+		List<AppointmentStatusHistory> histories = appointmentStatusHistoryDAO.getHistoriesByInterval(fromDate, endDate,
+		    status);
+		
+		// 60 seconds * 1000 milliseconds in 1 minute
+		int minutesConversion = 60000;
+		//sum up the durations by type
+		for (AppointmentStatusHistory history : histories) {
+			Date startDate = history.getStartDate();
+			Date toDate = history.getEndDate();
+			AppointmentType type = history.getAppointment().getAppointmentType();
+			Double duration = (double) ((toDate.getTime() / minutesConversion) - (startDate.getTime() / minutesConversion));
+			
+			if (averages.containsKey(type)) {
+				averages.put(type, averages.get(type) + duration);
+				counters.put(type, counters.get(type) + 1);
+			} else {
+				averages.put(type, duration);
+				counters.put(type, 1);
+			}
+		}
+		
+		// Compute average
+		for (Map.Entry<AppointmentType, Integer> counter : counters.entrySet())
+			averages.put(counter.getKey(), averages.get(counter.getKey()) / counter.getValue());
+		
+		return averages;
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public Integer getHistoryCountByConditions(Date fromDate, Date endDate, AppointmentStatus status) {
+		List<AppointmentStatusHistory> histories = appointmentStatusHistoryDAO.getHistoriesByInterval(fromDate, endDate,
+		    status);
+		
+		return histories.size();
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public Map<AppointmentType, Integer> getAppointmentTypeDistribution(Date fromDate, Date toDate) {
+		List<AppointmentType> unretiredTypes = Context.getService(AppointmentService.class).getAllAppointmentTypes(false);
+		Map<AppointmentType, Integer> distribution = new HashMap<AppointmentType, Integer>();
+		
+		for (AppointmentType type : unretiredTypes)
+			distribution.put(type, appointmentTypeDAO.getAppointmentTypeCount(fromDate, toDate, type));
+		
+		return distribution;
 	}
 	
 }
