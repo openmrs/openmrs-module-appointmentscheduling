@@ -74,6 +74,12 @@
 				<include method="validateDates"/>
 				<include method="checkProviderOpenConsultations"/>
 				<include method="checkProviderOpenConsultationsByPatient"/>
+				<include method="getAverageWaitingTimeByType"/>
+				<include method="getAverageConsultationTimeByType"/>
+				<include method="getCountOfWaitingHistories"/>
+				<include method="getCountOfConsultationHistories"/>
+				<include method="getAppointmentTypeDistribution"/>
+				<include method="getAppointmentsCount"/>
 			</create>
 		</allow>
 
@@ -87,6 +93,12 @@
             DWRAppointmentService.validateDates(String fromDate,String toDate);
             DWRAppointmentService.checkProviderOpenConsultations(appointmentId);
             DWRAppointmentService.checkProviderOpenConsultationsByPatient(patientId);
+            DWRAppointmentService.getAverageWaitingTimeByType(String fromDate, String toDate);
+            DWRAppointmentService.getAverageConsultationTimeByType(String fromDate, String toDate);
+            DWRAppointmentService.getCountOfWaitingHistories(String fromDate, String toDate);
+            DWRAppointmentService.getCountOfConsultationHistories(String fromDate, String toDate);
+            DWRAppointmentService.getAppointmentTypeDistribution(String fromDate, String toDate);
+            DWRAppointmentService.getAppointmentsCount(String fromDate, String toDate);
             ]]>
 		</signatures>
 	</dwr>
