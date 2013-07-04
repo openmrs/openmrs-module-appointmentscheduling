@@ -680,6 +680,40 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		return averages;
 	}
 	
+	@Transactional(readOnly = true)
+	public Map<Provider, Double> getAverageHistoryDurationByConditionsPerProvider(Date fromDate, Date endDate,
+	        AppointmentStatus status) {
+		Map<Provider, Double> averages = new HashMap<Provider, Double>();
+		Map<Provider, Integer> counters = new HashMap<Provider, Integer>();
+		
+		List<AppointmentStatusHistory> histories = appointmentStatusHistoryDAO.getHistoriesByInterval(fromDate, endDate,
+		    status);
+		
+		// 60 seconds * 1000 milliseconds in 1 minute
+		int minutesConversion = 60000;
+		//sum up the durations by type
+		for (AppointmentStatusHistory history : histories) {
+			Date startDate = history.getStartDate();
+			Date toDate = history.getEndDate();
+			Provider provider = history.getAppointment().getTimeSlot().getAppointmentBlock().getProvider();
+			Double duration = (double) ((toDate.getTime() / minutesConversion) - (startDate.getTime() / minutesConversion));
+			
+			if (averages.containsKey(provider)) {
+				averages.put(provider, averages.get(provider) + duration);
+				counters.put(provider, counters.get(provider) + 1);
+			} else {
+				averages.put(provider, duration);
+				counters.put(provider, 1);
+			}
+		}
+		
+		// Compute average
+		for (Map.Entry<Provider, Integer> counter : counters.entrySet())
+			averages.put(counter.getKey(), averages.get(counter.getKey()) / counter.getValue());
+		
+		return averages;
+	}
+	
 	@Override
 	@Transactional(readOnly = true)
 	public Integer getHistoryCountByConditions(Date fromDate, Date endDate, AppointmentStatus status) {

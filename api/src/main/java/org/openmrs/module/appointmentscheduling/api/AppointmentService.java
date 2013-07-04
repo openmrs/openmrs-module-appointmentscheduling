@@ -586,6 +586,19 @@ public interface AppointmentService extends OpenmrsService {
 	
 	/**
 	 * 
+	 * Computes the average duration (in Minutes) of a status history by provider
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param endDate The upper bound of the date interval.
+	 * @param status The AppointmentStatus status to filter histories by.
+	 * @return A map of Provider,Average duration pairs.
+	 */
+	@Transactional(readOnly = true)
+	public Map<Provider, Double> getAverageHistoryDurationByConditionsPerProvider(Date fromDate, Date endDate,
+	        AppointmentStatus status);
+	
+	/**
+	 * 
 	 * Retrieves the amount of status history objects in the given criteria
 	 * 
 	 * @param fromDate The lower bound of the date interval.

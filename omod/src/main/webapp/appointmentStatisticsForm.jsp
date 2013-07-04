@@ -14,8 +14,10 @@
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/jqPlot-plugins/jqplot.pieRenderer.min.js" />
 
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/jquery.jqplot.min.css" />
+<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/appointmentStatisticsStyle.css" />
 
 <openmrs:require privilege="View Appointments Statistics" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentStatisticsForm.form" />
+
 
 <script type="text/javascript"
 	src='${pageContext.request.contextPath}/dwr/engine.js'></script>
@@ -25,6 +27,8 @@
 	src='${pageContext.request.contextPath}/dwr/interface/DWRAppointmentService.js'></script>
 	
 <script type="text/javascript">
+
+var openTab = "";
 
 $j(document)
 	.ready(
@@ -36,13 +40,15 @@ $j(document)
 				$j("#fromDate").keypress(function(event) {event.preventDefault();});
 				$j("#toDate").keypress(function(event) {event.preventDefault();});
 				
+				//Init Accordion
 				$j("#plots").accordion({
 					collapsible: true,
 					active: false
 				});
 				 
 				$j('#plots').bind('accordionchange', function(event, ui) {
-					UpdateData();
+					openTab = $j(ui.newContent).attr('id');
+					UpdateData(openTab);
 				});
 			}); //END Of .ready
 
@@ -78,13 +84,28 @@ function InitDateFilter(){
 }
 
 //Update the graphs according to the new data date range.
-function UpdateData(){
-	UpdateDataSize();
-	UpdateGraphs();
-
+function UpdateData(container){
+	if(!container)
+		return;
+	else if(container=="waitingContainer")
+		waitingTime();
+	else if(container=="consultationContainer")
+		consultationDuration();
+	else if(container=="typeContainer")
+		typeDistribution();
+	else if(container=="waitingProviderContainer")
+		waitingProviderTime();
+	else if(container=="consultationProviderContainer")
+		consultationProviderDuration();
 }
 
-function UpdateDataSize(){
+
+// Update Waiting Time by Appointment Type plot - ID: waitingContainer
+function waitingTime(){
+	//reset plot
+	document.getElementById('waitingPlot').innerHTML = "";
+	
+	//update counter
 	var fromDate = document.getElementById('fromDate').value;
 	var toDate = document.getElementById('toDate').value;
 
@@ -97,38 +118,9 @@ function UpdateDataSize(){
 						else
 							document.getElementById('waitingDatasize').innerHTML = "<spring:message code='appointmentscheduling.Appointment.statistics.label.dataEmpty' />";
 					});
-					
-	DWRAppointmentService
-			.getCountOfConsultationHistories(
-					fromDate, toDate,
-					function(result) {
-						if(result>0)
-							document.getElementById('consultationDatasize').innerHTML = "<spring:message code='appointmentscheduling.Appointment.statistics.label.dataSize' arguments='"+result+"' />";
-						else
-							document.getElementById('consultationDatasize').innerHTML = "<spring:message code='appointmentscheduling.Appointment.statistics.label.dataEmpty' />";
-					});
-					
-	DWRAppointmentService
-			.getAppointmentsCount(
-					fromDate, toDate,
-					function(result) {
-						if(result>0)
-							document.getElementById('typeDatasize').innerHTML = "<spring:message code='appointmentscheduling.Appointment.statistics.label.dataSize' arguments='"+result+"' />";
-						else
-							document.getElementById('typeDatasize').innerHTML = "<spring:message code='appointmentscheduling.Appointment.statistics.label.dataEmpty' />";
-					});
 	
-}
-
-function UpdateGraphs(){
-	var fromDate = document.getElementById('fromDate').value;
-	var toDate = document.getElementById('toDate').value;
-	
-	//reset plots
-	document.getElementById('waitingPlot').innerHTML = "";
-	document.getElementById('consultationPlot').innerHTML = "";
-
-	DWRAppointmentService
+	//update plot
+		DWRAppointmentService
 			.getAverageWaitingTimeByType(
 					fromDate, toDate,
 					function(result) {
@@ -171,51 +163,93 @@ function UpdateGraphs(){
 								}
 							});
 					});
-					
-	DWRAppointmentService
-			.getAverageConsultationTimeByType(
-					fromDate, toDate,
-					function(result) {
-						if(result.length==0){
-							document.getElementById('consultationContainer').display = 'none';
-							return;
-						}
-						var series = new Array();
-						var seriesLabels = new Array();
-						var ticks = ['<spring:message code="appointmentscheduling.Appointment.statistics.axis.appointmentType" />'];
-						
-						for(i=0;i<result.length;i++){
-							seriesLabels[i] = {label:result[i][0]};
-							series[i] = [Number(result[i][1])];
-						}
+}
 
-						var consultationPlot = $j.jqplot('consultationPlot', series, {
-								title: "<spring:message code='appointmentscheduling.Appointment.statistics.title.consultationDuration'/>",
-								seriesDefaults:{
-									renderer:$j.jqplot.BarRenderer,
-									rendererOptions: {fillToZero: true, barPadding:12, barWidth:80},
-									pointLabels: { show: true, location: 'n', edgeTolerance: -15, formatString: '%#.2f <spring:message code="appointmentscheduling.Appointment.statistics.label.minute" />' },
-								},
-								series:seriesLabels,
-								legend: {
-									show: true,
-									placement: 'outsideGrid'
-								},
-								axes: {
-									xaxis: {
-										renderer:$j.jqplot.CategoryAxisRenderer,
-										ticks: ticks
-									},
-									yaxis: {
-										pad:1.05,
-										min:0,
-										label:'<spring:message code="appointmentscheduling.Appointment.statistics.label.minute" />'
-									}
-								}
-							});
-					});
+// Update Consultation Duration by Appointment Type plot - ID: consultationContainer
+function consultationDuration(){
+	//reset plot
+	document.getElementById('consultationPlot').innerHTML = "";
+	
+	//update count
+	var fromDate = document.getElementById('fromDate').value;
+	var toDate = document.getElementById('toDate').value;
+	
+	DWRAppointmentService
+		.getCountOfConsultationHistories(
+				fromDate, toDate,
+				function(result) {
+					if(result>0)
+						document.getElementById('consultationDatasize').innerHTML = "<spring:message code='appointmentscheduling.Appointment.statistics.label.dataSize' arguments='"+result+"' />";
+					else
+						document.getElementById('consultationDatasize').innerHTML = "<spring:message code='appointmentscheduling.Appointment.statistics.label.dataEmpty' />";
+				});
+	
+	//update plot
+	DWRAppointmentService
+		.getAverageConsultationTimeByType(
+				fromDate, toDate,
+				function(result) {
+					if(result.length==0){
+						document.getElementById('consultationContainer').display = 'none';
+						return;
+					}
+					var series = new Array();
+					var seriesLabels = new Array();
+					var ticks = ['<spring:message code="appointmentscheduling.Appointment.statistics.axis.appointmentType" />'];
 					
-		DWRAppointmentService
+					for(i=0;i<result.length;i++){
+						seriesLabels[i] = {label:result[i][0]};
+						series[i] = [Number(result[i][1])];
+					}
+
+					var consultationPlot = $j.jqplot('consultationPlot', series, {
+							title: "<spring:message code='appointmentscheduling.Appointment.statistics.title.consultationDuration'/>",
+							seriesDefaults:{
+								renderer:$j.jqplot.BarRenderer,
+								rendererOptions: {fillToZero: true, barPadding:12, barWidth:80},
+								pointLabels: { show: true, location: 'n', edgeTolerance: -15, formatString: '%#.2f <spring:message code="appointmentscheduling.Appointment.statistics.label.minute" />' },
+							},
+							series:seriesLabels,
+							legend: {
+								show: true,
+								placement: 'outsideGrid'
+							},
+							axes: {
+								xaxis: {
+									renderer:$j.jqplot.CategoryAxisRenderer,
+									ticks: ticks
+								},
+								yaxis: {
+									pad:1.05,
+									min:0,
+									label:'<spring:message code="appointmentscheduling.Appointment.statistics.label.minute" />'
+								}
+							}
+						});
+				});
+}
+
+// Update Appointment Type Distribution plot - ID: typeContainer
+function typeDistribution(){
+	//reset plot
+	document.getElementById('typePlot').innerHTML = "";
+	
+	//update count
+	var fromDate = document.getElementById('fromDate').value;
+	var toDate = document.getElementById('toDate').value;
+	
+	DWRAppointmentService
+		.getAppointmentsCount(
+				fromDate, toDate,
+				function(result) {
+					if(result>0)
+						document.getElementById('typeDatasize').innerHTML = "<spring:message code='appointmentscheduling.Appointment.statistics.label.dataSize' arguments='"+result+"' />";
+					else
+						document.getElementById('typeDatasize').innerHTML = "<spring:message code='appointmentscheduling.Appointment.statistics.label.dataEmpty' />";
+				});
+				
+	//update plot
+	DWRAppointmentService
 			.getAppointmentTypeDistribution(
 					fromDate, toDate,
 					function(result) {
@@ -242,6 +276,137 @@ function UpdateGraphs(){
 							});
 					});
 }
+
+// Update Waiting Time by Provider plot - ID: waitingProviderContainer
+function waitingProviderTime(){
+	//reset plot
+	document.getElementById('waitingProviderPlot').innerHTML = "";
+					
+	//update count
+	var fromDate = document.getElementById('fromDate').value;
+	var toDate = document.getElementById('toDate').value;
+		
+	DWRAppointmentService
+			.getCountOfWaitingHistories(
+					fromDate, toDate,
+					function(result) {
+						if(result>0)
+							document.getElementById('waitingProviderDatasize').innerHTML = "<spring:message code='appointmentscheduling.Appointment.statistics.label.dataSize' arguments='"+result+"' />";
+						else
+							document.getElementById('waitingProviderDatasize').innerHTML = "<spring:message code='appointmentscheduling.Appointment.statistics.label.dataEmpty' />";
+					});
+	
+	//update plot
+	DWRAppointmentService
+			.getAverageWaitingTimeByProvider(
+					fromDate, toDate,
+					function(result) {
+						if(result.length==0){
+							document.getElementById('waitingProviderPlot').display = 'none';
+							return;
+						}
+						document.getElementById('waitingProviderPlot').display = 'table';
+						document.getElementById('waitingProviderPlot').width = '100%';
+						var series = new Array();
+						var seriesLabels = new Array();
+						var ticks = ['<spring:message code="appointmentscheduling.Appointment.statistics.axis.provider" />'];
+						for(i=0;i<result.length;i++){
+							seriesLabels[i] = {label:result[i][0]};
+							series[i] = [Number(result[i][1])];
+						}
+
+						var waitingProviderPlot = $j.jqplot('waitingProviderPlot', series, {
+								title: "<spring:message code='appointmentscheduling.Appointment.statistics.title.waitingProviderTime'/>",
+								seriesDefaults:{
+									renderer:$j.jqplot.BarRenderer,
+									rendererOptions: {fillToZero: true, barPadding:12, barWidth:80},
+									pointLabels: { show: true, location: 'n', edgeTolerance: -15, formatString: '%#.2f <spring:message code="appointmentscheduling.Appointment.statistics.label.minute" />' },
+								},
+								series:seriesLabels,
+								legend: {
+									show: true,
+									placement: 'outsideGrid'
+								},
+								axes: {
+									xaxis: {
+										renderer:$j.jqplot.CategoryAxisRenderer,
+										ticks: ticks
+									},
+									yaxis: {
+										pad:1.05,
+										min:0,
+										label:'<spring:message code="appointmentscheduling.Appointment.statistics.label.minute" />'
+									}
+								}
+							});
+					});
+}
+
+// Update Consultation Duration by Provider plot - ID: waitingProviderContainer
+function consultationProviderDuration(){
+	//reset plot
+	document.getElementById('consultationProviderPlot').innerHTML = "";
+
+	//update count
+	var fromDate = document.getElementById('fromDate').value;
+	var toDate = document.getElementById('toDate').value;
+	
+	DWRAppointmentService
+		.getCountOfConsultationHistories(
+				fromDate, toDate,
+				function(result) {
+					if(result>0)
+						document.getElementById('consultationProviderDatasize').innerHTML = "<spring:message code='appointmentscheduling.Appointment.statistics.label.dataSize' arguments='"+result+"' />";
+					else
+						document.getElementById('consultationProviderDatasize').innerHTML = "<spring:message code='appointmentscheduling.Appointment.statistics.label.dataEmpty' />";
+				});
+
+	//update plot
+	DWRAppointmentService
+			.getAverageConsultationTimeByProvider(
+					fromDate, toDate,
+					function(result) {
+						if(result.length==0){
+							document.getElementById('consultationProviderContainer').display = 'none';
+							return;
+						}
+						var series = new Array();
+						var seriesLabels = new Array();
+						var ticks = ['<spring:message code="appointmentscheduling.Appointment.statistics.axis.provider" />'];
+						
+						for(i=0;i<result.length;i++){
+							seriesLabels[i] = {label:result[i][0]};
+							series[i] = [Number(result[i][1])];
+						}
+
+						var consultationProviderPlot = $j.jqplot('consultationProviderPlot', series, {
+								title: "<spring:message code='appointmentscheduling.Appointment.statistics.title.consultationProviderDuration'/>",
+								seriesDefaults:{
+									renderer:$j.jqplot.BarRenderer,
+									rendererOptions: {fillToZero: true, barPadding:12, barWidth:80},
+									pointLabels: { show: true, location: 'n', edgeTolerance: -15, formatString: '%#.2f <spring:message code="appointmentscheduling.Appointment.statistics.label.minute" />' },
+								},
+								series:seriesLabels,
+								legend: {
+									show: true,
+									placement: 'outsideGrid'
+								},
+								axes: {
+									xaxis: {
+										renderer:$j.jqplot.CategoryAxisRenderer,
+										ticks: ticks
+									},
+									yaxis: {
+										pad:1.05,
+										min:0,
+										label:'<spring:message code="appointmentscheduling.Appointment.statistics.label.minute" />'
+									}
+								}
+							});
+					});
+}
+</script>
+</script>
 </script>
 
 
@@ -271,30 +436,46 @@ function UpdateGraphs(){
 			onClick="document.getElementById('toDate').focus();"></td>
 	</tr>
 	<tr><td></td><td style="float:right;margin:15px;">
-		<input type="button" value="<spring:message code='general.submit' />" onclick="UpdateData();"/>
+		<input type="button" value="<spring:message code='general.submit' />" onclick="UpdateData(openTab);"/>
 	</td></tr>
 </table>
 </fieldset>
-<div id="plots">
-<!-- Waiting Time by Appointment Type -->
-<h3><spring:message code='appointmentscheduling.Appointment.statistics.title.waitingTime'/></h3>
-<div id="waitingContainer"  style="width:100%;display:table;">
-<div id='waitingDatasize'></div>
-<center><div id="waitingPlot" style="height:480px !important;width:100% !important; "></div></center>
-</div>
+<div id="accordionContainer">
+	<div id="plots">
+		<!-- Waiting Time by Appointment Type -->
+		<h3><spring:message code='appointmentscheduling.Appointment.statistics.title.waitingTime'/></h3>
+		<div id="waitingContainer" class="plotContainer">
+		<div id='waitingDatasize'></div>
+		<center><div id="waitingPlot" style="height:460px !important;width:100% !important; "></div></center>
+		</div>
 
-<!-- Consultation Duration by Appointment Type -->
-<h3><spring:message code='appointmentscheduling.Appointment.statistics.title.consultationDuration'/></h3>
-<div id="consultationContainer" style="width:100%;display:table;">
-<div id='consultationDatasize'></div>
-<center><div id="consultationPlot" style="height:480px !important;width:100% !important; "></div></center>
-</div>
+		<!-- Consultation Duration by Appointment Type -->
+		<h3><spring:message code='appointmentscheduling.Appointment.statistics.title.consultationDuration'/></h3>
+		<div id="consultationContainer" class="plotContainer">
+		<div id='consultationDatasize'></div>
+		<center><div id="consultationPlot" style="height:460px !important;width:100% !important; "></div></center>
+		</div>
 
-<!-- Appointment Type Pie Chart -->
-<h3><spring:message code='appointmentscheduling.Appointment.statistics.title.typePie'/></h3>
-<div id="typeContainer" style="width:100%;display:table;">
-<div id='typeDatasize'></div>
-<center><div id="typePlot" style="height:480px !important;width:100% !important; "></div></center>
-</div>
+		<!-- Appointment Type Pie Chart -->
+		<h3><spring:message code='appointmentscheduling.Appointment.statistics.title.typePie'/></h3>
+		<div id="typeContainer" class="plotContainer">
+		<div id='typeDatasize'></div>
+		<center><div id="typePlot" style="height:460px !important;width:100% !important; "></div></center>
+		</div>
+
+		<!-- Waiting Time by Provider -->
+		<h3><spring:message code='appointmentscheduling.Appointment.statistics.title.waitingTime'/></h3>
+		<div id="waitingProviderContainer" class="plotContainer">
+		<div id='waitingProviderDatasize'></div>
+		<center><div id="waitingProviderPlot" style="height:460px !important;width:100% !important; "></div></center>
+		</div>
+
+		<!-- Consultation Duration by Provider -->
+		<h3><spring:message code='appointmentscheduling.Appointment.statistics.title.consultationDuration'/></h3>
+		<div id="consultationProviderContainer" class="plotContainer">
+		<div id='consultationProviderDatasize'></div>
+		<center><div id="consultationProviderPlot" style="height:460px !important;width:100% !important; "></div></center>
+		</div>
+	</div>
 </div>
 <%@ include file="/WEB-INF/template/footer.jsp"%>

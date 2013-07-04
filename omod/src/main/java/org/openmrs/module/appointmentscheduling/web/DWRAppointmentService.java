@@ -405,4 +405,61 @@ public class DWRAppointmentService {
 		return count;
 	}
 	
+	/**
+	 * Computes the average duration (in Minutes) of a status history by provider
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param endDate The upper bound of the date interval.
+	 * @param status The AppointmentStatus status to filter histories by.
+	 * @return An array of <String, Double> provider_name, average_history_status_time
+	 * @throws ParseException
+	 */
+	private Object[][] getAverageHistoryDurationByCriteriaByProvider(String fromDate, String toDate, AppointmentStatus status)
+	        throws ParseException {
+		
+		Date fromDateAsDate = Context.getDateTimeFormat().parse(fromDate);
+		Date toDateAsDate = Context.getDateTimeFormat().parse(toDate);
+		
+		Object[][] plotData = null;
+		
+		Map<Provider, Double> averages = Context.getService(AppointmentService.class)
+		        .getAverageHistoryDurationByConditionsPerProvider(fromDateAsDate, toDateAsDate, status);
+		plotData = new Object[averages.size()][2];
+		
+		int i = 0;
+		for (Map.Entry<Provider, Double> entry : averages.entrySet()) {
+			plotData[i][0] = entry.getKey().getName();
+			plotData[i][1] = entry.getValue().toString();
+			i++;
+		}
+		
+		return plotData;
+		
+	}
+	
+	/**
+	 * Computes the average duration (in Minutes) of a "waiting" history by provider
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param endDate The upper bound of the date interval.
+	 * @return An array of <String, Double> provider_name, average_history_waiting_time
+	 * @throws ParseException
+	 */
+	public Object[][] getAverageWaitingTimeByProvider(String fromDate, String toDate) throws ParseException {
+		return getAverageHistoryDurationByCriteriaByProvider(fromDate, toDate, AppointmentStatus.WAITING);
+	}
+	
+	/**
+	 * Computes the average duration (in Minutes) of a "in-consultation" history by provider
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param endDate The upper bound of the date interval.
+	 * @return An array of <String, Double> provider_name,
+	 *         average_history_inconsultation_time
+	 * @throws ParseException
+	 */
+	public Object[][] getAverageConsultationTimeByProvider(String fromDate, String toDate) throws ParseException {
+		return getAverageHistoryDurationByCriteriaByProvider(fromDate, toDate, AppointmentStatus.INCONSULTATION);
+	}
+	
 }

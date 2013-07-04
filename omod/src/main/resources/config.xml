@@ -80,6 +80,9 @@
 				<include method="getCountOfConsultationHistories"/>
 				<include method="getAppointmentTypeDistribution"/>
 				<include method="getAppointmentsCount"/>
+				<include method="getAverageHistoryDurationByCriteriaByProvider"/>
+				<include method="getAverageWaitingTimeByProvider"/>
+				<include method="getAverageConsultationTimeByProvider"/>
 			</create>
 		</allow>
 
@@ -99,6 +102,9 @@
             DWRAppointmentService.getCountOfConsultationHistories(String fromDate, String toDate);
             DWRAppointmentService.getAppointmentTypeDistribution(String fromDate, String toDate);
             DWRAppointmentService.getAppointmentsCount(String fromDate, String toDate);
+            DWRAppointmentService.getAverageHistoryDurationByCriteriaByProvider(String fromDate, String toDate, AppointmentStatus status);
+            DWRAppointmentService.getAverageWaitingTimeByProvider(String fromDate, String toDate);
+            DWRAppointmentService.getAverageConsultationTimeByProvider(String fromDate, String toDate);
             ]]>
 		</signatures>
 	</dwr>

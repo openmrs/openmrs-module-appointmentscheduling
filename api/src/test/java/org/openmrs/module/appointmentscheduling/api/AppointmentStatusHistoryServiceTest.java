@@ -26,6 +26,7 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
@@ -187,6 +188,44 @@ public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensit
 		status = AppointmentStatus.SCHEDULED;
 		averages = Context.getService(AppointmentService.class).getAverageHistoryDurationByConditions(startDate, endDate,
 		    status);
+		assertEquals(averages.size(), 0);
+		
+	}
+	
+	@Test
+	@Verifies(value = "Should compute correct averages", method = "getAverageHistoryDurationByConditionsPerProvider(Date, Date, AppointmentStatus)")
+	public void getAverageHistoryDurationByConditionsPerProvider_shouldRetrieveCorrectly() throws ParseException {
+		Map<Provider, Double> averages = null;
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		Date startDate = format.parse("2005-01-01 00:00:00.0");
+		Date endDate = format.parse("2005-01-01 01:00:00.0");
+		
+		Provider shouldExistProvider = Context.getProviderService().getProvider(1);
+		assertNotNull(shouldExistProvider);
+		Provider shouldNotExistProvider = Context.getProviderService().getProvider(2);
+		assertNotNull(shouldNotExistProvider);
+		
+		// Waiting status - 1 history, 60 minutes average
+		AppointmentStatus status = AppointmentStatus.WAITING;
+		averages = Context.getService(AppointmentService.class).getAverageHistoryDurationByConditionsPerProvider(startDate,
+		    endDate, status);
+		Assert.assertTrue(averages.containsKey(shouldExistProvider));
+		Assert.assertFalse(averages.containsKey(shouldNotExistProvider));
+		assertEquals(60.0, averages.get(shouldExistProvider));
+		
+		// InConsultation status - 1 history, 90 minutes average
+		status = AppointmentStatus.INCONSULTATION;
+		endDate = format.parse("2005-01-01 02:00:00.0");
+		averages = Context.getService(AppointmentService.class).getAverageHistoryDurationByConditionsPerProvider(startDate,
+		    endDate, status);
+		Assert.assertTrue(averages.containsKey(shouldExistProvider));
+		Assert.assertFalse(averages.containsKey(shouldNotExistProvider));
+		assertEquals(90.0, averages.get(shouldExistProvider));
+		
+		// Scheduled - 0 histories
+		status = AppointmentStatus.SCHEDULED;
+		averages = Context.getService(AppointmentService.class).getAverageHistoryDurationByConditionsPerProvider(startDate,
+		    endDate, status);
 		assertEquals(averages.size(), 0);
 		
 	}
