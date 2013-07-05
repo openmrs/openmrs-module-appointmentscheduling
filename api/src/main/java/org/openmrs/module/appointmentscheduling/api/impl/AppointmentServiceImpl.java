@@ -729,8 +729,12 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		List<AppointmentType> unretiredTypes = Context.getService(AppointmentService.class).getAllAppointmentTypes(false);
 		Map<AppointmentType, Integer> distribution = new HashMap<AppointmentType, Integer>();
 		
-		for (AppointmentType type : unretiredTypes)
-			distribution.put(type, appointmentTypeDAO.getAppointmentTypeCount(fromDate, toDate, type));
+		for (AppointmentType type : unretiredTypes) {
+			Integer countOfType = appointmentTypeDAO.getAppointmentTypeCount(fromDate, toDate, type);
+			if (countOfType > 0)
+				distribution.put(type, countOfType);
+			
+		}
 		
 		return distribution;
 	}

@@ -218,9 +218,9 @@ public class AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest {
 		        .getAppointmentTypeDistribution(fromDate, toDate);
 		
 		assertEquals((Integer) 1, (Integer) distribution.get(type3));
-		assertEquals((Integer) 0, (Integer) distribution.get(type2));
+		Assert.assertFalse(distribution.containsKey(type2));
 		assertEquals((Integer) 2, (Integer) distribution.get(type1));
-		assertEquals(3, distribution.size());
+		assertEquals(2, distribution.size());
 		
 	}
 }
