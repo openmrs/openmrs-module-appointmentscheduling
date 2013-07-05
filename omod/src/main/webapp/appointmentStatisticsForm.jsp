@@ -12,12 +12,13 @@
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/jqPlot-plugins/jqplot.categoryAxisRenderer.min.js" />
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/jqPlot-plugins/jqplot.donutRenderer.min.js" />
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/jqPlot-plugins/jqplot.pieRenderer.min.js" />
+<openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Scripts/jqPlot-plugins/jqplot.highlighter.js" />
 
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/jquery.jqplot.min.css" />
 <openmrs:htmlInclude file="/moduleResources/appointmentscheduling/Styles/appointmentStatisticsStyle.css" />
 
-<openmrs:require privilege="View Appointments Statistics" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentStatisticsForm.form" />
 
+<openmrs:require privilege="View Appointments Statistics" otherwise="/login.htm" redirect="/module/appointmentscheduling/appointmentStatisticsForm.form" />
 
 <script type="text/javascript"
 	src='${pageContext.request.contextPath}/dwr/engine.js'></script>
@@ -27,8 +28,7 @@
 	src='${pageContext.request.contextPath}/dwr/interface/DWRAppointmentService.js'></script>
 	
 <script type="text/javascript">
-
-var openTab = "";
+var activeContainer = "";
 
 $j(document)
 	.ready(
@@ -40,15 +40,13 @@ $j(document)
 				$j("#fromDate").keypress(function(event) {event.preventDefault();});
 				$j("#toDate").keypress(function(event) {event.preventDefault();});
 				
-				//Init Accordion
 				$j("#plots").accordion({
 					collapsible: true,
 					active: false
 				});
 				 
 				$j('#plots').bind('accordionchange', function(event, ui) {
-					openTab = $j(ui.newContent).attr('id');
-					UpdateData(openTab);
+					UpdateData($j(ui.newContent).attr('id'));
 				});
 			}); //END Of .ready
 
@@ -97,6 +95,7 @@ function UpdateData(container){
 		waitingProviderTime();
 	else if(container=="consultationProviderContainer")
 		consultationProviderDuration();
+	activeContainer = container;
 }
 
 
@@ -142,8 +141,7 @@ function waitingTime(){
 								title: "<spring:message code='appointmentscheduling.Appointment.statistics.title.waitingTime'/>",
 								seriesDefaults:{
 									renderer:$j.jqplot.BarRenderer,
-									rendererOptions: {fillToZero: true, barPadding:12, barWidth:80},
-									pointLabels: { show: true, location: 'n', edgeTolerance: -15, formatString: '%#.2f <spring:message code="appointmentscheduling.Appointment.statistics.label.minute" />' },
+									rendererOptions: {fillToZero: true, barPadding:6}
 								},
 								series:seriesLabels,
 								legend: {
@@ -160,6 +158,11 @@ function waitingTime(){
 										min:0,
 										label:'<spring:message code="appointmentscheduling.Appointment.statistics.label.minute" />'
 									}
+								},
+								highlighter:{
+									show:true,
+									tooltipContentEditor:tooltipContentEditor,
+									tooltipLocation: 'se'
 								}
 							});
 					});
@@ -206,8 +209,7 @@ function consultationDuration(){
 							title: "<spring:message code='appointmentscheduling.Appointment.statistics.title.consultationDuration'/>",
 							seriesDefaults:{
 								renderer:$j.jqplot.BarRenderer,
-								rendererOptions: {fillToZero: true, barPadding:12, barWidth:80},
-								pointLabels: { show: true, location: 'n', edgeTolerance: -15, formatString: '%#.2f <spring:message code="appointmentscheduling.Appointment.statistics.label.minute" />' },
+								rendererOptions: {fillToZero: true, barPadding:6}
 							},
 							series:seriesLabels,
 							legend: {
@@ -224,9 +226,35 @@ function consultationDuration(){
 									min:0,
 									label:'<spring:message code="appointmentscheduling.Appointment.statistics.label.minute" />'
 								}
+							},
+							highlighter:{
+								show:true,
+								tooltipContentEditor:tooltipContentEditor,
+								tooltipLocation: 'se'
 							}
-						});
-				});
+						
+					});
+			});
+}
+
+//Tooltip for the bar charts
+function tooltipContentEditor(str, seriesIndex, pointIndex, plot) {
+    // display series_label, x-axis_tick, y-axis value
+	var value = Number(plot.data[seriesIndex][pointIndex]).toFixed(2);
+	var formatted = value + ' <spring:message code="appointmentscheduling.Appointment.statistics.label.minute" />';
+    return plot.series[seriesIndex]["label"] + ", " + formatted;
+}
+
+function tooltipContentEditorPie(str, seriesIndex, pointIndex, plot) {
+    // display series_label, x-axis_tick, y-axis value
+	var total = 0;
+	var data = plot.series[0];
+	for(var i=0; i< data._plotData.length; i++)
+		total += data._plotData[i][1];
+
+	var name = data._plotData[pointIndex][0];
+	var value = data._plotData[pointIndex][1];
+    return name + ", " + ((value/total)*100).toFixed(2) + '&#37;';
 }
 
 // Update Appointment Type Distribution plot - ID: typeContainer
@@ -272,7 +300,16 @@ function typeDistribution(){
 									  showDataLabels: true
 									}
 								 }, 
-								 legend: { show:true, location: 'e' }
+								 legend: { show:true, location: 'e' },
+								 highlighter: {
+									show:true,
+									tooltipLocation: 'n',
+									tooltipAxes: 'pieref', // exclusive to this version
+									tooltipAxisX: 20, // exclusive to this version
+									tooltipAxisY: 20, // exclusive to this version
+									useAxesFormatters: false,
+									tooltipContentEditor:tooltipContentEditorPie
+								}
 							});
 					});
 }
@@ -319,8 +356,7 @@ function waitingProviderTime(){
 								title: "<spring:message code='appointmentscheduling.Appointment.statistics.title.waitingProviderTime'/>",
 								seriesDefaults:{
 									renderer:$j.jqplot.BarRenderer,
-									rendererOptions: {fillToZero: true, barPadding:12, barWidth:80},
-									pointLabels: { show: true, location: 'n', edgeTolerance: -15, formatString: '%#.2f <spring:message code="appointmentscheduling.Appointment.statistics.label.minute" />' },
+									rendererOptions: {fillToZero: true, barPadding:6}
 								},
 								series:seriesLabels,
 								legend: {
@@ -337,6 +373,11 @@ function waitingProviderTime(){
 										min:0,
 										label:'<spring:message code="appointmentscheduling.Appointment.statistics.label.minute" />'
 									}
+								},
+								highlighter:{
+									show:true,
+									tooltipContentEditor:tooltipContentEditor,
+									tooltipLocation: 'se'
 								}
 							});
 					});
@@ -346,7 +387,7 @@ function waitingProviderTime(){
 function consultationProviderDuration(){
 	//reset plot
 	document.getElementById('consultationProviderPlot').innerHTML = "";
-
+	
 	//update count
 	var fromDate = document.getElementById('fromDate').value;
 	var toDate = document.getElementById('toDate').value;
@@ -360,7 +401,7 @@ function consultationProviderDuration(){
 					else
 						document.getElementById('consultationProviderDatasize').innerHTML = "<spring:message code='appointmentscheduling.Appointment.statistics.label.dataEmpty' />";
 				});
-
+	
 	//update plot
 	DWRAppointmentService
 			.getAverageConsultationTimeByProvider(
@@ -383,8 +424,7 @@ function consultationProviderDuration(){
 								title: "<spring:message code='appointmentscheduling.Appointment.statistics.title.consultationProviderDuration'/>",
 								seriesDefaults:{
 									renderer:$j.jqplot.BarRenderer,
-									rendererOptions: {fillToZero: true, barPadding:12, barWidth:80},
-									pointLabels: { show: true, location: 'n', edgeTolerance: -15, formatString: '%#.2f <spring:message code="appointmentscheduling.Appointment.statistics.label.minute" />' },
+									rendererOptions: {fillToZero: true, barPadding:6}
 								},
 								series:seriesLabels,
 								legend: {
@@ -401,6 +441,11 @@ function consultationProviderDuration(){
 										min:0,
 										label:'<spring:message code="appointmentscheduling.Appointment.statistics.label.minute" />'
 									}
+								},
+								highlighter:{
+									show:true,
+									tooltipContentEditor:tooltipContentEditor,
+									tooltipLocation: 'se'
 								}
 							});
 					});
@@ -436,7 +481,7 @@ function consultationProviderDuration(){
 			onClick="document.getElementById('toDate').focus();"></td>
 	</tr>
 	<tr><td></td><td style="float:right;margin:15px;">
-		<input type="button" value="<spring:message code='general.submit' />" onclick="UpdateData(openTab);"/>
+		<input type="button" value="<spring:message code='general.submit' />" onclick="UpdateData(activeContainer);"/>
 	</td></tr>
 </table>
 </fieldset>
@@ -444,37 +489,37 @@ function consultationProviderDuration(){
 	<div id="plots">
 		<!-- Waiting Time by Appointment Type -->
 		<h3><spring:message code='appointmentscheduling.Appointment.statistics.title.waitingTime'/></h3>
-		<div id="waitingContainer" class="plotContainer">
+		<div id="waitingContainer">
 		<div id='waitingDatasize'></div>
-		<center><div id="waitingPlot" style="height:460px !important;width:100% !important; "></div></center>
+		<center><div id="waitingPlot" style="height:460px;"></div></center>
 		</div>
 
 		<!-- Consultation Duration by Appointment Type -->
 		<h3><spring:message code='appointmentscheduling.Appointment.statistics.title.consultationDuration'/></h3>
-		<div id="consultationContainer" class="plotContainer">
+		<div id="consultationContainer">
 		<div id='consultationDatasize'></div>
-		<center><div id="consultationPlot" style="height:460px !important;width:100% !important; "></div></center>
+		<center><div id="consultationPlot" style="height:460px;"></div></center>
 		</div>
 
 		<!-- Appointment Type Pie Chart -->
 		<h3><spring:message code='appointmentscheduling.Appointment.statistics.title.typePie'/></h3>
-		<div id="typeContainer" class="plotContainer">
+		<div id="typeContainer">
 		<div id='typeDatasize'></div>
-		<center><div id="typePlot" style="height:460px !important;width:100% !important; "></div></center>
+		<center><div id="typePlot" style="height:460px;"></div></center>
 		</div>
 
 		<!-- Waiting Time by Provider -->
-		<h3><spring:message code='appointmentscheduling.Appointment.statistics.title.waitingTime'/></h3>
-		<div id="waitingProviderContainer" class="plotContainer">
+		<h3><spring:message code='appointmentscheduling.Appointment.statistics.title.waitingProviderTime'/></h3>
+		<div id="waitingProviderContainer">
 		<div id='waitingProviderDatasize'></div>
-		<center><div id="waitingProviderPlot" style="height:460px !important;width:100% !important; "></div></center>
+		<center><div id="waitingProviderPlot" style="height:460px;"></div></center>
 		</div>
 
 		<!-- Consultation Duration by Provider -->
-		<h3><spring:message code='appointmentscheduling.Appointment.statistics.title.consultationDuration'/></h3>
-		<div id="consultationProviderContainer" class="plotContainer">
+		<h3><spring:message code='appointmentscheduling.Appointment.statistics.title.consultationProviderDuration'/></h3>
+		<div id="consultationProviderContainer">
 		<div id='consultationProviderDatasize'></div>
-		<center><div id="consultationProviderPlot" style="height:460px !important;width:100% !important; "></div></center>
+		<center><div id="consultationProviderPlot" style="height:460px;"></div></center>
 		</div>
 	</div>
 </div>
