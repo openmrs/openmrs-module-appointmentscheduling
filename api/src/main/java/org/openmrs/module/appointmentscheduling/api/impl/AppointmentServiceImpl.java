@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.openmrs.module.appointmentscheduling.StudentT;
 import org.apache.commons.chain.web.MapEntry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -242,7 +243,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	 */
 	@Transactional(readOnly = true)
 	public List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, String locations, Provider provider,
-	        AppointmentType appointmentType) {
+	                                                   AppointmentType appointmentType) {
 		return getAppointmentBlockDAO().getAppointmentBlocks(fromDate, toDate, locations, provider, appointmentType);
 	}
 	
@@ -434,7 +435,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#saveAppointmentStatusHistory(org.openmrs.AppointmentStatusHistory)
 	 */
 	public AppointmentStatusHistory saveAppointmentStatusHistory(AppointmentStatusHistory appointmentStatusHistory)
-	        throws APIException {
+	    throws APIException {
 		ValidateUtil.validate(appointmentStatusHistory);
 		return (AppointmentStatusHistory) getAppointmentStatusHistoryDAO().saveOrUpdate(appointmentStatusHistory);
 	}
@@ -448,7 +449,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Override
 	@Transactional(readOnly = true)
 	public List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate,
-	        Provider provider, Location location) throws APIException {
+	                                                Provider provider, Location location) throws APIException {
 		List<TimeSlot> suitableTimeSlots = getTimeSlotsByConstraintsIncludingFull(appointmentType, fromDate, toDate,
 		    provider, location);
 		
@@ -469,7 +470,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Override
 	@Transactional(readOnly = true)
 	public List<TimeSlot> getTimeSlotsByConstraintsIncludingFull(AppointmentType appointmentType, Date fromDate,
-	        Date toDate, Provider provider, Location location) throws APIException {
+	                                                             Date toDate, Provider provider, Location location)
+	    throws APIException {
 		List<TimeSlot> suitableTimeSlots = getTimeSlotDAO().getTimeSlotsByConstraints(appointmentType, fromDate, toDate,
 		    provider);
 		
@@ -565,7 +567,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Override
 	@Transactional(readOnly = true)
 	public List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Location location, Provider provider,
-	        AppointmentType type, AppointmentStatus status) throws APIException {
+	                                                      AppointmentType type, AppointmentStatus status)
+	    throws APIException {
 		
 		List<Appointment> appointments = appointmentDAO.getAppointmentsByConstraints(fromDate, toDate, provider, type,
 		    status);
@@ -648,28 +651,52 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Override
 	@Transactional(readOnly = true)
 	public Map<AppointmentType, Double> getAverageHistoryDurationByConditions(Date fromDate, Date endDate,
-	        AppointmentStatus status) {
+	                                                                          AppointmentStatus status) {
 		Map<AppointmentType, Double> averages = new HashMap<AppointmentType, Double>();
 		Map<AppointmentType, Integer> counters = new HashMap<AppointmentType, Integer>();
 		
 		List<AppointmentStatusHistory> histories = appointmentStatusHistoryDAO.getHistoriesByInterval(fromDate, endDate,
 		    status);
 		
+		//Clean Not-Reasonable Durations
+		Map<AppointmentStatusHistory, Double> durations = new HashMap<AppointmentStatusHistory, Double>();
 		// 60 seconds * 1000 milliseconds in 1 minute
 		int minutesConversion = 60000;
-		//sum up the durations by type
 		for (AppointmentStatusHistory history : histories) {
 			Date startDate = history.getStartDate();
 			Date toDate = history.getEndDate();
-			AppointmentType type = history.getAppointment().getAppointmentType();
 			Double duration = (double) ((toDate.getTime() / minutesConversion) - (startDate.getTime() / minutesConversion));
 			
-			if (averages.containsKey(type)) {
-				averages.put(type, averages.get(type) + duration);
-				counters.put(type, counters.get(type) + 1);
-			} else {
-				averages.put(type, duration);
-				counters.put(type, 1);
+			durations.put(history, duration);
+		}
+		
+		Double[] data = new Double[durations.size()];
+		
+		int i = 0;
+		for (Map.Entry<AppointmentStatusHistory, Double> entry : durations.entrySet()) {
+			//Added Math.sqrt in order to lower the mean and variance
+			data[i] = Math.sqrt(entry.getValue());
+			i++;
+		}
+		
+		// Compute Intervals
+		double[] boundaries = confidenceInterval(data);
+		//
+		
+		//sum up the durations by type
+		for (Map.Entry<AppointmentStatusHistory, Double> entry : durations.entrySet()) {
+			AppointmentType type = entry.getKey().getAppointment().getAppointmentType();
+			Double duration = entry.getValue();
+			
+			//Added Math.sqrt in order to lower the mean and variance
+			if ((Math.sqrt(duration) <= boundaries[1])) {
+				if (averages.containsKey(type)) {
+					averages.put(type, averages.get(type) + duration);
+					counters.put(type, counters.get(type) + 1);
+				} else {
+					averages.put(type, duration);
+					counters.put(type, 1);
+				}
 			}
 		}
 		
@@ -682,28 +709,53 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	
 	@Transactional(readOnly = true)
 	public Map<Provider, Double> getAverageHistoryDurationByConditionsPerProvider(Date fromDate, Date endDate,
-	        AppointmentStatus status) {
+	                                                                              AppointmentStatus status) {
 		Map<Provider, Double> averages = new HashMap<Provider, Double>();
 		Map<Provider, Integer> counters = new HashMap<Provider, Integer>();
 		
 		List<AppointmentStatusHistory> histories = appointmentStatusHistoryDAO.getHistoriesByInterval(fromDate, endDate,
 		    status);
 		
+		//Clean Not-Reasonable Durations
+		Map<AppointmentStatusHistory, Double> durations = new HashMap<AppointmentStatusHistory, Double>();
 		// 60 seconds * 1000 milliseconds in 1 minute
 		int minutesConversion = 60000;
-		//sum up the durations by type
 		for (AppointmentStatusHistory history : histories) {
 			Date startDate = history.getStartDate();
 			Date toDate = history.getEndDate();
-			Provider provider = history.getAppointment().getTimeSlot().getAppointmentBlock().getProvider();
 			Double duration = (double) ((toDate.getTime() / minutesConversion) - (startDate.getTime() / minutesConversion));
 			
-			if (averages.containsKey(provider)) {
-				averages.put(provider, averages.get(provider) + duration);
-				counters.put(provider, counters.get(provider) + 1);
-			} else {
-				averages.put(provider, duration);
-				counters.put(provider, 1);
+			if (duration > 0)
+				durations.put(history, duration);
+		}
+		
+		Double[] data = new Double[durations.size()];
+		
+		int i = 0;
+		for (Map.Entry<AppointmentStatusHistory, Double> entry : durations.entrySet()) {
+			//Added Math.sqrt in order to lower the mean and variance
+			data[i] = Math.sqrt(entry.getValue());
+			i++;
+		}
+		
+		// Compute Intervals
+		double[] boundaries = confidenceInterval(data);
+		//
+		
+		//sum up the durations by type
+		for (Map.Entry<AppointmentStatusHistory, Double> entry : durations.entrySet()) {
+			Provider provider = entry.getKey().getAppointment().getTimeSlot().getAppointmentBlock().getProvider();
+			Double duration = entry.getValue();
+			
+			//Added Math.sqrt in order to lower the mean and variance
+			if ((Math.sqrt(duration) <= boundaries[1])) {
+				if (averages.containsKey(provider)) {
+					averages.put(provider, averages.get(provider) + duration);
+					counters.put(provider, counters.get(provider) + 1);
+				} else {
+					averages.put(provider, duration);
+					counters.put(provider, 1);
+				}
 			}
 		}
 		
@@ -737,6 +789,45 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		}
 		
 		return distribution;
+		
 	}
 	
+	private double[] confidenceInterval(Double[] data) {
+		//Empty Dataset
+		if (data.length == 0)
+			return new double[] { 0.0, 0.0 };
+		
+		//Initialization
+		double mean = 0;
+		int count = data.length;
+		int df = count - 1;
+		//If Dataset consists of only one item
+		if (df == 0)
+			return new double[] { Double.MIN_VALUE, Double.MAX_VALUE };
+		
+		double alpha = 0.05;
+		double tStat = StudentT.tTable(df, alpha);
+		
+		//Compute Mean
+		for (double val : data)
+			mean += val;
+		mean = mean / count;
+		
+		//Compute Variance
+		double variance = 0;
+		for (double val : data)
+			variance += Math.pow((val - mean), 2);
+		variance = variance / df;
+		//If deviation is small - Suspected as "Clean of Noise"
+		if (Math.sqrt(variance) <= 1)
+			return new double[] { Double.MIN_VALUE, Double.MAX_VALUE };
+		
+		//Compute Confidence Interval Bounds.
+		double[] boundaries = new double[2];
+		double factor = tStat * (Math.sqrt(variance) / Math.sqrt(count));
+		boundaries[0] = mean - factor;
+		boundaries[1] = mean + factor;
+		
+		return boundaries;
+	}
 }
