@@ -140,6 +140,7 @@ public class AppointmentBlockCalendarController {
 	        @RequestParam(value = "toDate", required = false) Long toDate,
 	        @RequestParam(value = "appointmentBlockId", required = false) Integer appointmentBlockId) {
 		if (Context.isAuthenticated()) {
+			//Updating session variables
 			Calendar cal = OpenmrsUtil.getDateTimeFormat(Context.getLocale()).getCalendar();
 			cal.setTimeInMillis(fromDate);
 			Date fromDateAsDate = cal.getTime();
@@ -147,8 +148,6 @@ public class AppointmentBlockCalendarController {
 			Date toDateAsDate = cal.getTime();
 			HttpSession httpSession = request.getSession();
 			httpSession.setAttribute("chosenLocation", location);
-			//			httpSession.setAttribute("fromDate", Context.getDateTimeFormat().format(fromDateAsDate).toString());
-			//			httpSession.setAttribute("toDate", Context.getDateTimeFormat().format(toDateAsDate).toString());
 			httpSession.setAttribute("lastLocale", Context.getLocale());
 			httpSession.setAttribute("chosenProvider", providerId);
 			httpSession.setAttribute("chosenType", appointmentTypeId);
