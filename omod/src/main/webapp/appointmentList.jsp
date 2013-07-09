@@ -320,6 +320,10 @@
     			document.getElementById('fromDate').value = todayStart.format(jsDateFormat+' '+timeFormat);
     			document.getElementById('toDate').value = todayEnd.format(jsDateFormat+' '+timeFormat);
     		}
+			else if(locale=='it'){
+				document.getElementById('fromDate').value = todayStart.format(jsDateFormat+' HH.MM');
+    			document.getElementById('toDate').value = todayEnd.format(jsDateFormat+' HH.MM');
+			}
     		else{
     			document.getElementById('fromDate').value = todayStart.format(jsDateFormat+' HH:MM');
     			document.getElementById('toDate').value = todayEnd.format(jsDateFormat+' HH:MM');
