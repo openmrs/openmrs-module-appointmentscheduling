@@ -27,4 +27,6 @@ public class AppointmentUtils {
 	public static final String GP_DEFAULT_TIME_SLOT_DURATION = "appointmentscheduling.defaultTimeSlotDuration";
 	
 	public static final String GP_DEFAULT_VISIT_TYPE = "appointmentscheduling.defaultVisitType";
+	
+	public static final String GP_DEFAULT_APPOINTMENTS_MANAGE_REFRESH = "appointmentscheduling.manageAppointmentsFormTimout";
 }

@@ -1,0 +1,29 @@
+.questionMark {
+position:relative;
+height:18px; /*dimensions of our image*/
+width:18px;
+display:inline-block;
+padding:8px;
+}
+
+.questionMark:hover {
+position:relative;
+height:18px; /*dimensions of our image*/
+width:18px;
+cursor:pointer;
+}
+
+.toolTip {
+position:absolute;
+left:26px; /*Moves it to the right beside the question mark*/
+top:0;
+display:none;
+/*The attributes below make it look pretty*/
+width:300px;
+padding:5px;
+border:1px solid #ffffff;
+background-color:black;
+color:white;
+font:14px/18px Arial, Helvetica, sans-serif;
+z-index:1;
+}

@@ -74,6 +74,7 @@
 				<include method="validateDates"/>
 				<include method="checkProviderOpenConsultations"/>
 				<include method="checkProviderOpenConsultationsByPatient"/>
+				<include method="cleanOpenAppointments"/>
 			</create>
 		</allow>
 
@@ -87,6 +88,7 @@
             DWRAppointmentService.validateDates(String fromDate,String toDate);
             DWRAppointmentService.checkProviderOpenConsultations(appointmentId);
             DWRAppointmentService.checkProviderOpenConsultationsByPatient(patientId);
+            DWRAppointmentService.cleanOpenAppointments();
             ]]>
 		</signatures>
 	</dwr>
@@ -165,6 +167,10 @@
 	<privilege>
 		<name>View Patient Appointment History</name>
 		<description>Ability to view the appointment history tab on the patient's dashboard</description>
+	</privilege>
+	<privilege>
+		<name>Manage Appointments Settings</name>
+		<description>Ability to manage the appointment scheduling module settings</description>
 	</privilege>
 	<!-- /Privileges -->
 
