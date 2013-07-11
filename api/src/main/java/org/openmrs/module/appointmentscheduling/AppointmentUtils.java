@@ -20,6 +20,8 @@ public class AppointmentUtils {
 	
 	public static final String PRIV_VIEW_APPOINTMENT_HISTORY_TAB = "View Patient Appointment History";
 	
+	public static final String PRIV_MANAGE_APPOINTMENTS_SETTINGS = "Manage Appointments Settings";
+	
 	//Global Properties
 	
 	public static final String GP_PATIENT_PHONE_NUMBER = "appointmentscheduling.phoneNumberPersonAttributeTypeId";
