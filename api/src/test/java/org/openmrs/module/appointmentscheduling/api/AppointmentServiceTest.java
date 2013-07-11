@@ -332,7 +332,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	
 	@Test
 	@Verifies(value = "Should get all unvoided appointments by status", method = "getAppointmentsByConstraints(Date, Date, Location, Provider, AppointmentType, AppointmentStatus)")
-	public void should_getAppointmentsByConstraints() {
+	public void shouldgetAllUnvoidedAppointmentsByStatus_getAppointmentsByConstraints() {
 		
 		List<Appointment> appointments = service.getAppointmentsByConstraints(null, null, null, null, null,
 		    AppointmentStatus.SCHEDULED);
@@ -342,6 +342,57 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		Appointment specificAppointment = service.getAppointment(2);
 		assertEquals(specificAppointment, appointments.iterator().next());
 		assertEquals(1, appointments.size());
+	}
+	
+	@Test
+	@Verifies(value = "Should get correct appointments", method = "getAppointmentsByStatus(List<AppointmentStatus>)")
+	public void shouldGetCorrectAppointments_getAppointmentsByStatus() {
+		List<AppointmentStatus> states = new LinkedList<AppointmentStatus>();
+		Appointment appointment = null;
+		List<Appointment> result = null;
+		
+		// "SCHEDULED": 1 & 4
+		states.add(AppointmentStatus.SCHEDULED);
+		result = service.getAppointmentsByStatus(states);
+		assertEquals((Integer) 2, (Integer) result.size());
+		appointment = service.getAppointment(1);
+		assertNotNull(appointment);
+		assertTrue(result.contains(appointment));
+		appointment = service.getAppointment(4);
+		assertNotNull(appointment);
+		assertTrue(result.contains(appointment));
+		
+		// +"MISSED": 2
+		states.add(AppointmentStatus.MISSED);
+		result = service.getAppointmentsByStatus(states);
+		assertEquals((Integer) 3, (Integer) result.size());
+		appointment = service.getAppointment(1);
+		assertNotNull(appointment);
+		assertTrue(result.contains(appointment));
+		appointment = service.getAppointment(4);
+		assertNotNull(appointment);
+		assertTrue(result.contains(appointment));
+		appointment = service.getAppointment(2);
+		assertNotNull(appointment);
+		assertTrue(result.contains(appointment));
+		
+	}
+	
+	@Test
+	@Verifies(value = "Should change correct appointments", method = "cleanOpenAppointments()")
+	public void shouldChangeCorrectAppointments_cleanOpenAppointments() {
+		List<Appointment> result = service.cleanOpenAppointments();
+		assertNotNull(result);
+		assertTrue(result.size() == 2);
+		
+		Appointment appointment = service.getAppointment(1);
+		assertNotNull(appointment);
+		assertTrue(appointment.getStatus().equals(AppointmentStatus.MISSED));
+		
+		appointment = service.getAppointment(4);
+		assertNotNull(appointment);
+		assertTrue(appointment.getStatus().equals(AppointmentStatus.MISSED));
+		
 	}
 	
 }

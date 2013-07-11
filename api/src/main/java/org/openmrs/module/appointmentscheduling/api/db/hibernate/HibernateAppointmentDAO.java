@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.appointmentscheduling.api.db.hibernate;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -104,5 +105,28 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 			
 			return query.list();
 		}
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Appointment> getAppointmentsByStates(List<AppointmentStatus> states) {
+		String sQuery = "from Appointment as appointment where appointment.voided = 0 and appointment.status in (:states)";
+		
+		Query query = super.sessionFactory.getCurrentSession().createQuery(sQuery);
+		query.setParameterList("states", states);
+		
+		return query.list();
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Appointment> getPastAppointmentsByStates(List<AppointmentStatus> states) {
+		String sQuery = "from Appointment as appointment where appointment.timeSlot.endDate <= :endDate and appointment.voided = 0 and appointment.status in (:states)";
+		
+		Query query = super.sessionFactory.getCurrentSession().createQuery(sQuery);
+		query.setParameterList("states", states);
+		query.setParameter("endDate", Calendar.getInstance().getTime());
+		
+		return query.list();
 	}
 }

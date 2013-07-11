@@ -258,4 +258,11 @@ public class DWRAppointmentService {
 		}
 	}
 	
+	public Integer cleanOpenAppointments() {
+		List<Appointment> appointments = Context.getService(AppointmentService.class).cleanOpenAppointments();
+		
+		return appointments.size();
+		
+	}
+	
 }

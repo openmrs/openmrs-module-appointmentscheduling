@@ -13,10 +13,12 @@
  */
 package org.openmrs.module.appointmentscheduling.api.impl;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -640,6 +642,54 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 			}
 		});
 		return appointmentTypes;
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Appointment> getAppointmentsByStatus(List<AppointmentStatus> states) {
+		return appointmentDAO.getAppointmentsByStates(states);
+	}
+	
+	@Override
+	@Transactional(readOnly = false)
+	public List<Appointment> cleanOpenAppointments() {
+		List<AppointmentStatus> states = new LinkedList<AppointmentStatus>();
+		states.add(AppointmentStatus.SCHEDULED);
+		states.add(AppointmentStatus.WAITING);
+		states.add(AppointmentStatus.WALKIN);
+		states.add(AppointmentStatus.INCONSULTATION);
+		
+		List<Appointment> appointmentsInStates = appointmentDAO.getPastAppointmentsByStates(states);
+		if (appointmentsInStates == null)
+			return new LinkedList<Appointment>();
+		Iterator<Appointment> iter = appointmentsInStates.iterator();
+		Date now = Calendar.getInstance().getTime();
+		while (iter.hasNext()) {
+			Appointment appointment = iter.next();
+			//Check if past appointment
+			if (now.after(appointment.getTimeSlot().getEndDate())) {
+				AppointmentStatus status = appointment.getStatus();
+				switch (status) {
+					case SCHEDULED:
+					case WAITING:
+					case WALKIN:
+						changeAppointmentStatus(appointment, AppointmentStatus.MISSED);
+						break;
+					case INCONSULTATION:
+						changeAppointmentStatus(appointment, AppointmentStatus.COMPLETED);
+						break;
+					default:
+						//No need to change
+						appointmentsInStates.remove(appointment);
+						break;
+				}
+				
+			} else {
+				appointmentsInStates.remove(appointment);
+			}
+		}
+		
+		return appointmentsInStates;
 	}
 	
 }

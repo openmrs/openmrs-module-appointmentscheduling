@@ -588,4 +588,26 @@ public interface AppointmentService extends OpenmrsService {
 	 */
 	@Transactional(readOnly = true)
 	List<AppointmentType> getAllAppointmentTypesSorted(boolean includeRetired);
+	
+	/**
+	 * 
+	 * Retrieves list of unvoided appointments that their current status is one of the given states.
+	 * 
+	 * @param states List of states to retrieve by.
+	 * @return list of unvoided appointments that their current status is one of the given states.
+	 */
+	@Transactional(readOnly = true)
+	List<Appointment> getAppointmentsByStatus(List<AppointmentStatus> states);
+	
+	/**
+	 * 
+	 * Update the status of PAST appointments according to the following conditions:
+	 * "SCHEDULED" will be updated to "MISSED"
+	 * "WAITING" or "WALKIN" will be updated to "MISSED"
+	 * "INCONSULTATION" will be updated to "COMPLETED"
+	 * 
+	 * @return List of the updated appointments
+	 */
+	@Transactional(readOnly = false)
+	List<Appointment> cleanOpenAppointments();
 }
