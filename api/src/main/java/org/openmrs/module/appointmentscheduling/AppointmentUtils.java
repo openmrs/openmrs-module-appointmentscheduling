@@ -31,4 +31,6 @@ public class AppointmentUtils {
 	public static final String GP_DEFAULT_VISIT_TYPE = "appointmentscheduling.defaultVisitType";
 	
 	public static final String GP_DEFAULT_APPOINTMENTS_MANAGE_REFRESH = "appointmentscheduling.manageAppointmentsFormTimout";
+	
+	public static final String GP_HIDE_END_VISITS_BUTTONS = "appointmentscheduling.hideEndVisitButtons";
 }

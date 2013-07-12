@@ -613,6 +613,15 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 			
 			appointment.setStatus(newStatus);
 			saveAppointment(appointment);
+			
+			if (newStatus == AppointmentStatus.COMPLETED || newStatus == AppointmentStatus.CANCELLED
+			        || newStatus == AppointmentStatus.MISSED) {
+				Visit visit = appointment.getVisit();
+				if (visit != null && visit.getStopDatetime() != null) {
+					visit.setStopDatetime(new Date());
+					Context.getVisitService().saveVisit(visit);
+				}
+			}
 		}
 		
 	}

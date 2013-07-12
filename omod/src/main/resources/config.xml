@@ -44,6 +44,13 @@
 		<description>Default Time Slot Duration. (In Minutes)
 		</description>
 	</globalProperty>
+	<globalProperty>
+		<property>${project.parent.artifactId}.hideEndVisitButtons
+		</property>
+		<defaultValue>true</defaultValue>
+		<description>Hide "End Visit" buttons on the patient dashboard.
+		</description>
+	</globalProperty>
 
 	<!-- Module Activator -->
 	<activator>${project.parent.groupId}.${project.parent.artifactId}.AppointmentActivator
