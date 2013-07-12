@@ -204,6 +204,39 @@
 						code="appointmentscheduling.Appointment.minutes" /></td>
 			</tr>
 
+			<!--Hide End Visit Buttons GP -->
+			<tr>
+				<td>
+					<div
+						onmouseover="document.getElementById('tt5').style.display='block'"
+						onmouseout="document.getElementById('tt5').style.display='none'"
+						class="questionMark">
+						<img
+							src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/qMark_normal.png'
+							onmouseover="this.src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/qMark_hover.png'"
+							onmouseout="this.src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/qMark_normal.png'"
+							alt='' />
+						<div id="tt5" class="toolTip">
+							<spring:message
+								code="appointmentscheduling.Appointment.gp.desc.hideEndVisit" />
+						</div>
+					</div>
+				</td>
+				
+				<td>
+					<spring:message code="appointmentscheduling.Appointment.settings.label.hideEndVisit" />
+				</td>
+				
+				<td>
+					<input type="radio" name="hideEndVisit" value="false" ${(param.hideEndVisit==null && hideEndVisit=='false') || param.hideEndVisit=='false' ? 'checked' : ''}>
+						<spring:message code="appointmentscheduling.Appointment.settings.label.disable" />
+					</input>
+					<br/>
+					<input type="radio" name="hideEndVisit" value="true" ${(param.hideEndVisit==null && hideEndVisit=='true') || param.hideEndVisit=='true' ? 'checked' : ''}>
+						<spring:message code="appointmentscheduling.Appointment.settings.label.enable" />
+					</input>
+				</td>
+			</tr>
 
 			<tr>
 				<td><br /></td>

@@ -115,6 +115,15 @@ public class AppointmentSettingsFormController {
 		return interval.toString();
 	}
 	
+	@ModelAttribute("hideEndVisit")
+	public String getHideEndVisit(@RequestParam(value = "hideEndVisit", required = false) String value) {
+		
+		value = (value != null) ? value : Context.getAdministrationService().getGlobalProperty(
+		    AppointmentUtils.GP_HIDE_END_VISITS_BUTTONS);
+		
+		return value;
+	}
+	
 	@ModelAttribute("slotDuration")
 	public String getDefaultSlotDuration(@RequestParam(value = "slotDurationInput", required = false) String duration) {
 		duration = (duration != null) ? duration : Context.getAdministrationService().getGlobalProperty(
@@ -138,7 +147,8 @@ public class AppointmentSettingsFormController {
 	        @RequestParam(value = "personAttributeTypeSelect", required = true) PersonAttributeType attributeType,
 	        @RequestParam(value = "slotDurationInput", required = true) String duration,
 	        @RequestParam(value = "refreshDelayInput", required = false) String delay,
-	        @RequestParam(value = "refreshRadio", required = true) String radio) throws Exception {
+	        @RequestParam(value = "refreshRadio", required = true) String radio,
+	        @RequestParam(value = "hideEndVisit", required = true) String hide) throws Exception {
 		
 		Integer slotDuration = null;
 		Integer refreshDelay = null;
@@ -171,16 +181,20 @@ public class AppointmentSettingsFormController {
 			    AppointmentUtils.GP_DEFAULT_APPOINTMENTS_MANAGE_REFRESH);
 			GlobalProperty slotDurationGP = Context.getAdministrationService().getGlobalPropertyObject(
 			    AppointmentUtils.GP_DEFAULT_TIME_SLOT_DURATION);
+			GlobalProperty hideEndVisitGP = Context.getAdministrationService().getGlobalPropertyObject(
+			    AppointmentUtils.GP_HIDE_END_VISITS_BUTTONS);
 			
 			visitTypeGP.setPropertyValue(visitType.getId().toString());
 			phoneAttributeGP.setPropertyValue(attributeType.getId().toString());
 			refreshIntervalGP.setPropertyValue(refreshDelay.toString());
 			slotDurationGP.setPropertyValue(slotDuration.toString());
+			hideEndVisitGP.setPropertyValue(hide);
 			
 			Context.getAdministrationService().saveGlobalProperty(visitTypeGP);
 			Context.getAdministrationService().saveGlobalProperty(phoneAttributeGP);
 			Context.getAdministrationService().saveGlobalProperty(refreshIntervalGP);
 			Context.getAdministrationService().saveGlobalProperty(slotDurationGP);
+			Context.getAdministrationService().saveGlobalProperty(hideEndVisitGP);
 			
 			request.getSession().setAttribute(WebConstants.OPENMRS_MSG_ATTR,
 			    "appointmentscheduling.Appointment.settings.notification.saved");
