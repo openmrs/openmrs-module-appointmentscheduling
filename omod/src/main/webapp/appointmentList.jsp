@@ -312,7 +312,7 @@
             todayStart.setHours(0,0,0,0);
             var todayEnd = new Date();
             todayEnd.setHours(23,59,59,999);
-
+			
             var locale = '${locale}';
 
     		if(locale=='en_US'){

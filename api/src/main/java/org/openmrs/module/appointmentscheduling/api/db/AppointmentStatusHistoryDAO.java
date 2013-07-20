@@ -39,4 +39,17 @@ public interface AppointmentStatusHistoryDAO extends SingleClassDAO {
 	
 	@Transactional(readOnly = true)
 	public List<AppointmentStatusHistory> getAll(AppointmentStatus status);
+	
+	/**
+	 * 
+	 * Retrieves the histories in the given interval that describes the given status
+	 * Does not takes into consideration current appointments with the given status.
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param endDate The upper bound of the date interval.
+	 * @param status The AppointmentStatus status to filter histories by.
+	 * @return A list of AppointmentStatusHistory histories that fits the given criteria.
+	 */
+	@Transactional(readOnly = true)
+	public List<AppointmentStatusHistory> getHistoriesByInterval(Date fromDate, Date endDate, AppointmentStatus status);
 }

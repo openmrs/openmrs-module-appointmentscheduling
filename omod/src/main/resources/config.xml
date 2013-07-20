@@ -82,6 +82,15 @@
 				<include method="checkProviderOpenConsultations"/>
 				<include method="checkProviderOpenConsultationsByPatient"/>
 				<include method="cleanOpenAppointments"/>
+				<include method="getAverageWaitingTimeByType"/>
+				<include method="getAverageConsultationTimeByType"/>
+				<include method="getCountOfWaitingHistories"/>
+				<include method="getCountOfConsultationHistories"/>
+				<include method="getAppointmentTypeDistribution"/>
+				<include method="getAppointmentsCount"/>
+				<include method="getAverageHistoryDurationByCriteriaByProvider"/>
+				<include method="getAverageWaitingTimeByProvider"/>
+				<include method="getAverageConsultationTimeByProvider"/>
 			</create>
 		</allow>
 
@@ -96,6 +105,15 @@
             DWRAppointmentService.checkProviderOpenConsultations(appointmentId);
             DWRAppointmentService.checkProviderOpenConsultationsByPatient(patientId);
             DWRAppointmentService.cleanOpenAppointments();
+            DWRAppointmentService.getAverageWaitingTimeByType(String fromDate, String toDate);
+            DWRAppointmentService.getAverageConsultationTimeByType(String fromDate, String toDate);
+            DWRAppointmentService.getCountOfWaitingHistories(String fromDate, String toDate);
+            DWRAppointmentService.getCountOfConsultationHistories(String fromDate, String toDate);
+            DWRAppointmentService.getAppointmentTypeDistribution(String fromDate, String toDate);
+            DWRAppointmentService.getAppointmentsCount(String fromDate, String toDate);
+            DWRAppointmentService.getAverageHistoryDurationByCriteriaByProvider(String fromDate, String toDate, AppointmentStatus status);
+            DWRAppointmentService.getAverageWaitingTimeByProvider(String fromDate, String toDate);
+            DWRAppointmentService.getAverageConsultationTimeByProvider(String fromDate, String toDate);
             ]]>
 		</signatures>
 	</dwr>
@@ -178,6 +196,10 @@
 	<privilege>
 		<name>Manage Appointments Settings</name>
 		<description>Ability to manage the appointment scheduling module settings</description>
+	</privilege>
+	<privilege>
+		<name>View Appointments Statistics</name>
+		<description>Ability to view the appointments statistics page</description>
 	</privilege>
 	<!-- /Privileges -->
 

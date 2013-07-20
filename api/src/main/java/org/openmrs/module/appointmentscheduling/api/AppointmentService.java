@@ -15,6 +15,7 @@ package org.openmrs.module.appointmentscheduling.api;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.openmrs.Location;
@@ -570,6 +571,56 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param newStatus - The new status
 	 */
 	void changeAppointmentStatus(Appointment appointment, AppointmentStatus newStatus);
+	
+	/**
+	 * 
+	 * Computes the average duration (in Minutes) of a status history by appointment type
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param endDate The upper bound of the date interval.
+	 * @param status The AppointmentStatus status to filter histories by.
+	 * @return A map of AppointmentType,Average duration pairs.
+	 */
+	@Transactional(readOnly = true)
+	Map<AppointmentType, Double> getAverageHistoryDurationByConditions(Date fromDate, Date endDate, AppointmentStatus status);
+	
+	/**
+	 * 
+	 * Computes the average duration (in Minutes) of a status history by provider
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param endDate The upper bound of the date interval.
+	 * @param status The AppointmentStatus status to filter histories by.
+	 * @return A map of Provider,Average duration pairs.
+	 */
+	@Transactional(readOnly = true)
+	public Map<Provider, Double> getAverageHistoryDurationByConditionsPerProvider(Date fromDate, Date endDate,
+	        AppointmentStatus status);
+	
+	/**
+	 * 
+	 * Retrieves the amount of status history objects in the given criteria
+	 * 
+	 * @param fromDate The lower bound of the date interval.
+	 * @param endDate The upper bound of the date interval.
+	 * @param status The AppointmentStatus status to filter histories by.
+	 * @return The amount of status history objects in the given criteria
+	 */
+	@Transactional(readOnly = true)
+	Integer getHistoryCountByConditions(Date fromDate, Date endDate, AppointmentStatus status);
+	
+	/**
+	 * 
+	 * Retrieves the distribution of appointment types in the given appointments dates range.
+	 * 
+	 * @param fromDate The lower bound of the date range.
+	 * @param toDate The upper bound of the date range.
+	 * @return Map of <AppointmentType,Integer> that reflects the appointment types distribution in the given range.
+	 */
+	@Transactional(readOnly = true)
+	public Map<AppointmentType, Integer> getAppointmentTypeDistribution(Date fromDate, Date toDate);
+	
+	// Utility Methods
 	
 	/**
 	 * [Utility Method] Retrieves all providers sorted ascending alphabetically

@@ -17,12 +17,12 @@ import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.criterion.MatchMode;
+import org.hibernate.Query;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.module.appointmentscheduling.Appointment;
-import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
+import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentStatusHistoryDAO;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,4 +52,21 @@ public class HibernateAppointmentStatusHistoryDAO extends HibernateSingleClassDA
 		return endDate;
 	}
 	
+	@Override
+	@Transactional(readOnly = true)
+	public List<AppointmentStatusHistory> getHistoriesByInterval(Date fromDate, Date endDate, AppointmentStatus status) {
+		List<AppointmentStatusHistory> histories = null;
+		if (fromDate == null || endDate == null || status == null)
+			return histories;
+		
+		String stringQuery = "Select history from AppointmentStatusHistory AS history WHERE history.startDate >= :fromDate AND history.endDate <= :endDate AND history.status = :status";
+		Query query = super.sessionFactory.getCurrentSession().createQuery(stringQuery);
+		
+		query.setParameter("fromDate", fromDate).setParameter("endDate", endDate).setParameter("status", status);
+		
+		histories = query.list();
+		
+		return histories;
+		
+	}
 }
