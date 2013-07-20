@@ -91,6 +91,7 @@
 				<include method="getAverageHistoryDurationByCriteriaByProvider"/>
 				<include method="getAverageWaitingTimeByProvider"/>
 				<include method="getAverageConsultationTimeByProvider"/>
+				<include method="cleanOpenAppointments"/>
 			</create>
 		</allow>
 
@@ -114,6 +115,7 @@
             DWRAppointmentService.getAverageHistoryDurationByCriteriaByProvider(String fromDate, String toDate, AppointmentStatus status);
             DWRAppointmentService.getAverageWaitingTimeByProvider(String fromDate, String toDate);
             DWRAppointmentService.getAverageConsultationTimeByProvider(String fromDate, String toDate);
+            DWRAppointmentService.cleanOpenAppointments();
             ]]>
 		</signatures>
 	</dwr>
