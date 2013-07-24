@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="org.openmrs.module.appointmentscheduling">
+
+	<class name="TimeSlot" table="appointmentscheduling_time_slot">
+		<id name="timeSlotId" type="int" column="time_slot_id" unsaved-value="0">
+			<generator class="native" />
+		</id>
+		
+		<discriminator column="time_slot_id" insert="false" />
+		<property name="startDate" type="java.util.Date" column="start_date" not-null="true" length="19" />
+		<property name="endDate" type="java.util.Date" column="end_date" not-null="true" length="19" />
+		<many-to-one name="appointmentBlock" column="appointment_block_id" class="AppointmentBlock" not-null="true" />
+				
+		<property name="uuid" type="java.lang.String" column="uuid" length="38" unique="true" />
+		<property name="dateCreated" type="java.util.Date" column="date_created" not-null="true" length="19" />
+		<property name="dateChanged" type="java.util.Date" column="date_changed" length="19"/>
+		<property name="dateVoided" type="java.util.Date" column="date_voided" length="19" />	
+		
+		<property name="voided" type="boolean" length="1" not-null="true" />
+		<property name="voidReason" type="java.lang.String" column="void_reason" length="255" />
+		
+		<many-to-one name="creator" class="org.openmrs.User" not-null="true" />	
+		<many-to-one name="changedBy" class="org.openmrs.User" column="changed_by"/>
+		<many-to-one name="voidedBy" class="org.openmrs.User" column="voided_by" />
+	</class> 
+
+</hibernate-mapping>
