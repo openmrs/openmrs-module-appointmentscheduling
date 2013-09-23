@@ -199,6 +199,10 @@
 		<name>View Appointments Statistics</name>
 		<description>Ability to view the appointments statistics page</description>
 	</privilege>
+    <privilege>
+        <name>View Appointments Blocks</name>
+        <description>Ability to view the appointment blocks</description>
+    </privilege>
 	<!-- /Privileges -->
 
 </module>
