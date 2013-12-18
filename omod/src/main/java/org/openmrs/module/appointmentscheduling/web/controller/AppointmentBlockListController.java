@@ -241,7 +241,7 @@ public class AppointmentBlockListController {
 				return "redirect:appointmentBlockList.list";
 				
 			}
-
+			
 			// if the user is unvoiding the AppointmentBlock
 			else if (request.getParameter("unvoid") != null) {
 				List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);

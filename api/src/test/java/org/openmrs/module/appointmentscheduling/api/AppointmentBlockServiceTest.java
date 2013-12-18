@@ -249,8 +249,9 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 	        throws Exception {
 		AppointmentBlock appointmentBlock = service.getAppointmentBlock(1);
 		List<AppointmentBlock> appointmentBlocks = null;
-		AppointmentBlock testedAppointmentBlock = new AppointmentBlock(appointmentBlock.getStartDate(), appointmentBlock
-		        .getEndDate(), appointmentBlock.getProvider(), appointmentBlock.getLocation(), appointmentBlock.getTypes());
+		AppointmentBlock testedAppointmentBlock = new AppointmentBlock(appointmentBlock.getStartDate(),
+		        appointmentBlock.getEndDate(), appointmentBlock.getProvider(), appointmentBlock.getLocation(),
+		        appointmentBlock.getTypes());
 		//Full overlap
 		appointmentBlocks = service.getOverlappingAppointmentBlocks(testedAppointmentBlock);
 		assertNotNull(appointmentBlocks);

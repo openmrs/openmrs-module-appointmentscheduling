@@ -38,7 +38,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 /**
- * Tests Appointment Status History methods in the {@link $ AppointmentService}}.
+ * Tests Appointment Status History methods in the {@link $ AppointmentService} .
  */
 public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensitiveTest {
 	

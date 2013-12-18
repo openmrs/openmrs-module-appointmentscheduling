@@ -64,8 +64,9 @@ public abstract class HibernateSingleClassDAO<T> implements SingleClassDAO<T> {
 	@Override
 	@Transactional(readOnly = true)
 	public T getByUuid(String uuid) {
-		return (T) sessionFactory.getCurrentSession().createQuery(
-		    "from " + mappedClass.getSimpleName() + " at where at.uuid = :uuid").setString("uuid", uuid).uniqueResult();
+		return (T) sessionFactory.getCurrentSession()
+		        .createQuery("from " + mappedClass.getSimpleName() + " at where at.uuid = :uuid").setString("uuid", uuid)
+		        .uniqueResult();
 	}
 	
 	@SuppressWarnings("unchecked")

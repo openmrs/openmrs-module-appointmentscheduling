@@ -40,16 +40,16 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 	@Override
 	@Transactional(readOnly = true)
 	public List<Appointment> getAppointmentsByPatient(Patient patient) {
-		return super.sessionFactory.getCurrentSession().createCriteria(Appointment.class).add(
-		    Restrictions.eq("patient", patient)).list();
+		return super.sessionFactory.getCurrentSession().createCriteria(Appointment.class)
+		        .add(Restrictions.eq("patient", patient)).list();
 	}
 	
 	@Override
 	@Transactional(readOnly = true)
 	public Appointment getAppointmentByVisit(Visit visit) {
-		return (Appointment) super.sessionFactory.getCurrentSession().createQuery(
-		    "from " + mappedClass.getSimpleName() + " at where at.visit = :visit").setParameter("visit", visit)
-		        .uniqueResult();
+		return (Appointment) super.sessionFactory.getCurrentSession()
+		        .createQuery("from " + mappedClass.getSimpleName() + " at where at.visit = :visit")
+		        .setParameter("visit", visit).uniqueResult();
 	}
 	
 	@Override
@@ -60,8 +60,8 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 		        + " (select max(timeSlot.startDate) from Appointment as appointment inner join appointment.timeSlot"
 		        + " where appointment.patient = :patient)";
 		
-		List<Appointment> appointment = super.sessionFactory.getCurrentSession().createQuery(query).setParameter("patient",
-		    patient).list();
+		List<Appointment> appointment = super.sessionFactory.getCurrentSession().createQuery(query)
+		        .setParameter("patient", patient).list();
 		
 		if (appointment.size() > 0)
 			return (Appointment) appointment.get(0);

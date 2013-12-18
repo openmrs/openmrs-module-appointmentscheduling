@@ -27,7 +27,6 @@ import org.openmrs.module.appointmentscheduling.TimeSlot;
 public interface TimeSlotDAO extends SingleClassDAO {
 	
 	/**
-	 * 
 	 * Retrieve all appointments in a given time slot.
 	 * 
 	 * @param timeSlot - The time slot to look into.
@@ -52,8 +51,8 @@ public interface TimeSlotDAO extends SingleClassDAO {
 	 * Return a list of time slots that are associated with the given Appointment Block
 	 * 
 	 * @param appointmentBlock - a given appointment block.
-	 * @return List of TimeSlots that are associated with the given Appointment Block, null if illegal values
-	 *         (null appointmentBlock)
+	 * @return List of TimeSlots that are associated with the given Appointment Block, null if
+	 *         illegal values (null appointmentBlock)
 	 */
 	List<TimeSlot> getTimeSlotsByAppointmentBlock(AppointmentBlock appointmentBlock);
 }

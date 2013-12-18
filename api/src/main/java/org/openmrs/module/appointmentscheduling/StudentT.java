@@ -1,58 +1,51 @@
 package org.openmrs.module.appointmentscheduling;
 
 /**
- * A collection of statistical methods supporting computations related to the
- * Student's T distribution.
- *
+ * A collection of statistical methods supporting computations related to the Student's T
+ * distribution.
  * <table cellspacing=4>
- *   <tr>
- *     <th>Date:</th>
- *     <td>2002 as part of Fmath</td>
- *   </tr>
- *   <tr>
- *     <th>Amended:</th>
- *     <td>
- *       12 May 2003 Statistics separated out from Fmath as a new class
- *     </td>
- *   </tr>
- *   <tr>
- *     <th>Update:</th>
- *     <td>
- *       18 June 2005, 5 January 2006, 25 April 2006, 12, 21 November 2006,
- *       4 December 2006 (renaming of cfd and pdf methods - older version
- *       also retained), 31 December 2006, March 2007, 14 April 2007
- *     </td>
- *   </tr>
+ * <tr>
+ * <th>Date:</th>
+ * <td>2002 as part of Fmath</td>
+ * </tr>
+ * <tr>
+ * <th>Amended:</th>
+ * <td>12 May 2003 Statistics separated out from Fmath as a new class</td>
+ * </tr>
+ * <tr>
+ * <th>Update:</th>
+ * <td>18 June 2005, 5 January 2006, 25 April 2006, 12, 21 November 2006, 4 December 2006 (renaming
+ * of cfd and pdf methods - older version also retained), 31 December 2006, March 2007, 14 April
+ * 2007</td>
+ * </tr>
  * </table>
- *
  * <h4>Documentation</h4>
- * <p> See Michael Thomas Flanagan's Java library on-line web page:<br>
- * <a target=_top href="http://www.ee.ucl.ac.uk/~mflanaga/java/Stat.html">http://www.ee.ucl.ac.uk/~mflanaga/java/Stat.html</a>
- * <a target=_top href="http://www.ee.ucl.ac.uk/~mflanaga/java/">http://www.ee.ucl.ac.uk/~mflanaga/java/</a>
- *
- * <p> Copyright &copy; April 2004, June 2005, January 2006, December 2006,
- * April 2007
- *
+ * <p>
+ * See Michael Thomas Flanagan's Java library on-line web page:<br>
+ * <a target=_top
+ * href="http://www.ee.ucl.ac.uk/~mflanaga/java/Stat.html">http://www.ee.ucl.ac.uk/~mflanaga
+ * /java/Stat.html</a> <a target=_top
+ * href="http://www.ee.ucl.ac.uk/~mflanaga/java/">http://www.ee.ucl.ac.uk/~mflanaga/java/</a>
+ * <p>
+ * Copyright &copy; April 2004, June 2005, January 2006, December 2006, April 2007
  * <h4>Permission to Copy</h4>
- * <p> Permission to use, copy and modify this software and its documentation
- * for NON-COMMERCIAL purposes is granted, without fee, provided that an
- * acknowledgement to the author, Michael Thomas Flanagan at
- * <a target=_top href="http://www.ee.ucl.ac.uk/~mflanaga">www.ee.ucl.ac.uk/~mflanaga</a>,
- * appears in all copies.
- *
- * <p> Dr. Michael Thomas Flanagan makes no representations about the
- * suitability or fitness of the software for any or for a particular
- * purpose.  Michael Thomas Flanagan shall not be liable for any damages
- * suffered as a result of using, modifying or distributing this software or
- * its derivatives.
- *
+ * <p>
+ * Permission to use, copy and modify this software and its documentation for NON-COMMERCIAL
+ * purposes is granted, without fee, provided that an acknowledgement to the author, Michael Thomas
+ * Flanagan at <a target=_top
+ * href="http://www.ee.ucl.ac.uk/~mflanaga">www.ee.ucl.ac.uk/~mflanaga</a>, appears in all copies.
+ * <p>
+ * Dr. Michael Thomas Flanagan makes no representations about the suitability or fitness of the
+ * software for any or for a particular purpose. Michael Thomas Flanagan shall not be liable for any
+ * damages suffered as a result of using, modifying or distributing this software or its
+ * derivatives.
+ * 
  * @author Dr. Michael Thomas Flanagan
  **/
 public class StudentT {
 	
 	/**
-	 * A small number close to the smallest representable floating point
-	 * number.
+	 * A small number close to the smallest representable floating point number.
 	 **/
 	public static final double FPMIN = 1e-300;
 	
@@ -76,9 +69,9 @@ public class StudentT {
 	}
 	
 	/**
-	 * factorial of n.  Argument is of type double but must be, numerically, an
-	 * integer factorial returned as double but is, numerically, should be an
-	 * integer numerical rounding may makes this an approximation after n = 21
+	 * factorial of n. Argument is of type double but must be, numerically, an integer factorial
+	 * returned as double but is, numerically, should be an integer numerical rounding may makes
+	 * this an approximation after n = 21
 	 **/
 	public static double factorial(double n) {
 		if (n < 0 || (n - Math.floor(n)) != 0)
@@ -94,9 +87,9 @@ public class StudentT {
 	}
 	
 	/**
-	 * log to base e of the factorial of n.  Argument is of type double but
-	 * must be, numerically, an integer log[e](factorial) returned as double
-	 * numerical rounding may makes this an approximation
+	 * log to base e of the factorial of n. Argument is of type double but must be, numerically, an
+	 * integer log[e](factorial) returned as double numerical rounding may makes this an
+	 * approximation
 	 **/
 	public static double logFactorial(double n) {
 		if (n < 0 || (n - Math.floor(n)) != 0)
@@ -135,8 +128,8 @@ public class StudentT {
 	}
 	
 	/**
-	 * log to base e of the Gamma function, Lanczos approximation (6 terms).
-	 * Retained for backward compatibility.
+	 * log to base e of the Gamma function, Lanczos approximation (6 terms). Retained for backward
+	 * compatibility.
 	 **/
 	public static double logGamma(double x) {
 		double xcopy = x;
@@ -169,8 +162,7 @@ public class StudentT {
 	
 	/**
 	 * Incomplete fraction summation used in the method
-	 * {@link #regularisedBetaFunction(double,double,double)}.  modified
-	 * Lentz's method
+	 * {@link #regularisedBetaFunction(double,double,double)}. modified Lentz's method
 	 **/
 	public static double contFract(double a, double b, double x) {
 		int maxit = 500;
@@ -222,8 +214,8 @@ public class StudentT {
 	}
 	
 	/**
-	 * Regularised Incomplete Beta function.  Continued Fraction approximation
-	 * (see Numerical recipies for details of method)
+	 * Regularised Incomplete Beta function. Continued Fraction approximation (see Numerical
+	 * recipies for details of method)
 	 **/
 	public static double regularisedBetaFunction(double z, double w, double x) {
 		if (x < 0.0D || x > 1.0D)
@@ -260,15 +252,13 @@ public class StudentT {
 	}
 	
 	/**
-	 * Computes the multiplier for the standard error of the mean when finding
-	 * a <i>(1 - alpha) * 100%</i> confidence interval.
-	 *
-	 * @param df     The degrees of freedom.
-	 * @param alpha  The fraction of the distribution to leave outside the
-	 *               interval.
-	 * @return <i>m</i> such that <i>mu +- m s</i> represents a
-	 *         <i>(1 - alpha) * 100%</i> confidence interval, where <i>mu</i>
-	 *         is the sample mean and <i>s</i> is the sample's standard
+	 * Computes the multiplier for the standard error of the mean when finding a <i>(1 - alpha) *
+	 * 100%</i> confidence interval.
+	 * 
+	 * @param df The degrees of freedom.
+	 * @param alpha The fraction of the distribution to leave outside the interval.
+	 * @return <i>m</i> such that <i>mu +- m s</i> represents a <i>(1 - alpha) * 100%</i> confidence
+	 *         interval, where <i>mu</i> is the sample mean and <i>s</i> is the sample's standard
 	 *         deviation.
 	 **/
 	public static double tTable(int df, double alpha) {
@@ -291,16 +281,13 @@ public class StudentT {
 	}
 	
 	/**
-	 * Computes the confidence interval of the specified precision over a set
-	 * of data points.
-	 *
-	 * @param x      The data points.
-	 * @param alpha  The fraction of the distribution to leave outside the
-	 *               interval.
-	 * @return An array containing the mean of the elements in <code>x</code>
-	 *         and half of the size of the confidence interval over
-	 *         <code>x</code>.  If this array is named <code>r</code>, then the
-	 *         confidence interval can be stated as <code>r[0] +/- r[1]</code>.
+	 * Computes the confidence interval of the specified precision over a set of data points.
+	 * 
+	 * @param x The data points.
+	 * @param alpha The fraction of the distribution to leave outside the interval.
+	 * @return An array containing the mean of the elements in <code>x</code> and half of the size
+	 *         of the confidence interval over <code>x</code>. If this array is named <code>r</code>
+	 *         , then the confidence interval can be stated as <code>r[0] +/- r[1]</code>.
 	 **/
 	public static double[] confidenceInterval(double[] x, double alpha) {
 		double mean = 0;

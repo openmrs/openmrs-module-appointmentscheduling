@@ -20,7 +20,6 @@ import org.openmrs.module.appointmentscheduling.AppointmentType;
 public interface AppointmentTypeDAO extends SingleClassDAO {
 	
 	/**
-	 * 
 	 * Retrieves the amount of appointments in the given interval with the given type.
 	 * 
 	 * @param fromDate The lower bound of the interval.

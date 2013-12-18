@@ -23,8 +23,8 @@ import org.openmrs.api.context.Context;
 import org.springframework.util.StringUtils;
 
 /**
- * Allows for serializing/deserializing a provider to a string so that Spring knows how to pass
- * a provider back and forth through an html form or other medium. <br/>
+ * Allows for serializing/deserializing a provider to a string so that Spring knows how to pass a
+ * provider back and forth through an html form or other medium. <br/>
  * 
  * @see Provider
  * @since 1.10.0

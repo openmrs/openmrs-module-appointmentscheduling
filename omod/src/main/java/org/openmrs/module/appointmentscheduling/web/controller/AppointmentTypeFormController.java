@@ -82,7 +82,7 @@ public class AppointmentTypeFormController {
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointmentscheduling.AppointmentType.saved");
 				}
 			}
-
+			
 			// if the user is retiring out the AppointmentType
 			else if (request.getParameter("retire") != null) {
 				String retireReason = request.getParameter("retireReason");
@@ -95,14 +95,14 @@ public class AppointmentTypeFormController {
 				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
 				    "appointmentscheduling.AppointmentType.retiredSuccessfully");
 			}
-
+			
 			// if the user is unretiring the AppointmentType
 			else if (request.getParameter("unretire") != null) {
 				appointmentService.unretireAppointmentType(appointmentType);
 				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
 				    "appointmentscheduling.AppointmentType.unretiredSuccessfully");
 			}
-
+			
 			// if the user is purging the appointmentType
 			else if (request.getParameter("purge") != null) {
 				

@@ -46,7 +46,7 @@ public class AppointmentSettingsFormController {
 	@RequestMapping(value = "/module/appointmentscheduling/appointmentSettingsForm", method = RequestMethod.GET)
 	public void showForm(ModelMap model, HttpServletRequest request) {
 		if (Context.isAuthenticated()) {
-
+			
 		}
 	}
 	

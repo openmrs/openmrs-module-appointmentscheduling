@@ -317,8 +317,8 @@ public class AppointmentListController {
 				if (newStatus == AppointmentStatus.WAITING) {
 					//Update waiting time according to new status
 					Map<Integer, String> waitingTimes = (Map<Integer, String>) model.get("waitingTimes");
-					waitingTimes.put(selectedAppointment.getId(), "0 "
-					        + Context.getMessageSourceService().getMessage("appointmentscheduling.Appointment.minutes"));
+					waitingTimes.put(selectedAppointment.getId(),
+					    "0 " + Context.getMessageSourceService().getMessage("appointmentscheduling.Appointment.minutes"));
 					model.put("waitingTimes", waitingTimes);
 					
 					Map<Integer, Integer> sortableTimes = (Map<Integer, Integer>) model.get("sortableWaitingTimes");

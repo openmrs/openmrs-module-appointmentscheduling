@@ -57,8 +57,8 @@ public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implem
 			Disjunction disjunction = Restrictions.disjunction();
 			LocationService locationService = Context.getLocationService();
 			for (int i = 0; i < locationsAsArray.length; i++) {
-				disjunction.add(Restrictions.eq("location", locationService.getLocation(Integer
-				        .parseInt(locationsAsArray[i]))));
+				disjunction.add(Restrictions.eq("location",
+				    locationService.getLocation(Integer.parseInt(locationsAsArray[i]))));
 			}
 			criteria.add(disjunction);
 		}
@@ -75,8 +75,8 @@ public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implem
 		if (appointmentType != null) {
 			filteredAppointmentBlocks = new ArrayList<AppointmentBlock>();
 			String stringQuery = "SELECT appointmentBlock FROM AppointmentBlock AS appointmentBlock WHERE :appointmentType IN elements(appointmentBlock.types)";
-			Query query = super.sessionFactory.getCurrentSession().createQuery(stringQuery).setParameter("appointmentType",
-			    appointmentType);
+			Query query = super.sessionFactory.getCurrentSession().createQuery(stringQuery)
+			        .setParameter("appointmentType", appointmentType);
 			List<AppointmentBlock> appointmentBlocksFilteredByType = query.list();
 			for (AppointmentBlock appointmentBlockContainsType : appointmentBlocksFilteredByType) {
 				for (AppointmentBlock appointmentBlock : appointmentBlocks) {

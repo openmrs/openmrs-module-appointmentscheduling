@@ -121,8 +121,8 @@ public class AppointmentBlockFormController {
 				AppointmentService as = Context.getService(AppointmentService.class);
 				//If the AppointmentBlock is being Edited than load its slot duration.
 				if (appointmentBlock.getCreator() != null) {
-					TimeSlot timeSlot = Context.getService(AppointmentService.class).getTimeSlotsInAppointmentBlock(
-					    appointmentBlock).get(0);
+					TimeSlot timeSlot = Context.getService(AppointmentService.class)
+					        .getTimeSlotsInAppointmentBlock(appointmentBlock).get(0);
 					return (timeSlot.getEndDate().getTime() - timeSlot.getStartDate().getTime()) / 60000 + "";
 				}
 				//Else display the default slot length, defined by the global property 'defaultTimeSlotDuration'
@@ -225,9 +225,7 @@ public class AppointmentBlockFormController {
 				} else {
 					//Error checking
 					if (appointmentBlock.getStartDate().before(Calendar.getInstance().getTime())) {
-						result
-						        .rejectValue("startDate",
-						            "appointmentscheduling.AppointmentBlock.error.dateCannotBeInThePast");
+						result.rejectValue("startDate", "appointmentscheduling.AppointmentBlock.error.dateCannotBeInThePast");
 						return null;
 					}
 					if (!appointmentBlock.getStartDate().before(appointmentBlock.getEndDate())) {
@@ -303,7 +301,7 @@ public class AppointmentBlockFormController {
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointmentscheduling.AppointmentBlock.saved");
 				}
 			}
-
+			
 			// if the user is unvoiding the AppointmentBlock
 			else if (request.getParameter("unvoid") != null) {
 				appointmentService.unvoidAppointmentBlock(appointmentBlock);

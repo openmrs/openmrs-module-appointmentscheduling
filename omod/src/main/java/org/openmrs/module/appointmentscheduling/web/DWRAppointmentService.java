@@ -155,15 +155,15 @@ public class DWRAppointmentService {
 						String startTimeOnly = Context.getTimeFormat().format(appointment.getTimeSlot().getStartDate());
 						String endTimeOnly = Context.getTimeFormat().format(appointment.getTimeSlot().getEndDate());
 						AppointmentData appointmentdata = new AppointmentData(patientDescription, appointment
-						        .getAppointmentType().getName(), dateOnly, startTimeOnly, endTimeOnly, appointment
-						        .getReason());
+						        .getAppointmentType().getName(), dateOnly, startTimeOnly, endTimeOnly,
+						        appointment.getReason());
 						if (appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.INCONSULTATION.toString())
 						        || appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.WAITING.toString())
 						        || appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.WALKIN.toString())) {
 							//Active appointments (In-Consultation\Waiting\Walk-In)
 							patients.get(0).add(appointmentdata);
-						} else if (appointment.getStatus().toString().equalsIgnoreCase(
-						    AppointmentStatus.SCHEDULED.toString())) {
+						} else if (appointment.getStatus().toString()
+						        .equalsIgnoreCase(AppointmentStatus.SCHEDULED.toString())) {
 							patients.get(1).add(appointmentdata); //Scheduled appointments
 						} else {
 							patients.get(2).add(appointmentdata); //Missed\Cancelled\Completed appointments
@@ -208,8 +208,8 @@ public class DWRAppointmentService {
 			if (Context.isAuthenticated()) {
 				AppointmentService as = Context.getService(AppointmentService.class);
 				AppointmentBlock appointmentBlock = as.getAppointmentBlock(appointmentBlockId);
-				TimeSlot timeSlot = Context.getService(AppointmentService.class).getTimeSlotsInAppointmentBlock(
-				    appointmentBlock).get(0);
+				TimeSlot timeSlot = Context.getService(AppointmentService.class)
+				        .getTimeSlotsInAppointmentBlock(appointmentBlock).get(0);
 				return (timeSlot.getEndDate().getTime() - timeSlot.getStartDate().getTime()) / 60000 + "";
 			}
 		}
@@ -364,7 +364,6 @@ public class DWRAppointmentService {
 	}
 	
 	/**
-	 * 
 	 * Retrieves the appointment type distribution in the given date interval.
 	 * 
 	 * @param fromDate The lower bound of the date interval.
@@ -390,7 +389,6 @@ public class DWRAppointmentService {
 	}
 	
 	/**
-	 * 
 	 * Get the count of appointments in the given date interval
 	 * 
 	 * @param fromDate The lower bound of the date interval.
@@ -460,8 +458,7 @@ public class DWRAppointmentService {
 	 * 
 	 * @param fromDate The lower bound of the date interval.
 	 * @param endDate The upper bound of the date interval.
-	 * @return An array of <String, Double> provider_name,
-	 *         average_history_inconsultation_time
+	 * @return An array of <String, Double> provider_name, average_history_inconsultation_time
 	 * @throws ParseException
 	 */
 	public Object[][] getAverageConsultationTimeByProvider(String fromDate, String toDate) throws ParseException {

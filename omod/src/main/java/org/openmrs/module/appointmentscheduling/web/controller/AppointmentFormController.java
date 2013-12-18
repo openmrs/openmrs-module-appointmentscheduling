@@ -140,7 +140,7 @@ public class AppointmentFormController {
 				if (currentSelectedSlot != null && !availableTimeSlots.contains(currentSelectedSlot))
 					appointment.setTimeSlot(null);
 			}
-
+			
 			//Include full and indicate which are full using the model attribute fullSlots
 			else {
 				availableTimeSlots = Context.getService(AppointmentService.class).getTimeSlotsByConstraintsIncludingFull(

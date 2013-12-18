@@ -45,8 +45,8 @@ public class HibernateAppointmentStatusHistoryDAO extends HibernateSingleClassDA
 	@Transactional(readOnly = true)
 	public Date getStartDateOfCurrentStatus(Appointment appointment) {
 		String query = "Select Max(endDate) from AppointmentStatusHistory where appointment=:appointment";
-		Date endDate = (Date) super.sessionFactory.getCurrentSession().createQuery(query).setParameter("appointment",
-		    appointment).uniqueResult();
+		Date endDate = (Date) super.sessionFactory.getCurrentSession().createQuery(query)
+		        .setParameter("appointment", appointment).uniqueResult();
 		endDate = (endDate == null && appointment != null) ? appointment.getDateCreated() : endDate;
 		
 		return endDate;

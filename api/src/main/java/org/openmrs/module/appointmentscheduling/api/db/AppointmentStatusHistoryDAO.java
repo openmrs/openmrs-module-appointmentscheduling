@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 public interface AppointmentStatusHistoryDAO extends SingleClassDAO {
 	
 	/**
-	 * 
 	 * Retrives the start date of the current status of a given appointment.
 	 * 
 	 * @param appointment - The appointment.
@@ -41,9 +40,8 @@ public interface AppointmentStatusHistoryDAO extends SingleClassDAO {
 	public List<AppointmentStatusHistory> getAll(AppointmentStatus status);
 	
 	/**
-	 * 
-	 * Retrieves the histories in the given interval that describes the given status
-	 * Does not takes into consideration current appointments with the given status.
+	 * Retrieves the histories in the given interval that describes the given status Does not takes
+	 * into consideration current appointments with the given status.
 	 * 
 	 * @param fromDate The lower bound of the date interval.
 	 * @param endDate The upper bound of the date interval.
