@@ -13,13 +13,9 @@
  */
 package org.openmrs.module.appointmentscheduling.api;
 
-import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.AppointmentType;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.openmrs.test.Verifies;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,12 +24,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
+import junit.framework.Assert;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.appointmentscheduling.AppointmentType;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.Verifies;
 
 /**
- * Tests Appointment Type methods in the {@link $ AppointmentService} .
+ * Tests Appointment Type methods in the {@link $ AppointmentService}}.
  */
 public class AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest {
 	
