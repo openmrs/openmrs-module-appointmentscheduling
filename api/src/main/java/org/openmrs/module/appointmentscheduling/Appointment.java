@@ -13,13 +13,13 @@
  */
 package org.openmrs.module.appointmentscheduling;
 
-import java.io.Serializable;
-
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
+
+import java.io.Serializable;
 
 /**
  * It is a model class. It should extend either {@link BaseOpenmrsObject} or

@@ -13,13 +13,12 @@
  */
 package org.openmrs.module.appointmentscheduling;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.Location;
 import org.openmrs.Provider;
+
+import java.util.Date;
+import java.util.Set;
 
 public class AppointmentBlock extends BaseOpenmrsData {
 	
