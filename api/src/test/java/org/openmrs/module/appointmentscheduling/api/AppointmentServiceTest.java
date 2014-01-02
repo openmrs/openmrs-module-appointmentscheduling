@@ -13,21 +13,9 @@
  */
 package org.openmrs.module.appointmentscheduling.api;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
 import junit.framework.Assert;
-
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.Patient;
@@ -36,12 +24,19 @@ import org.openmrs.Visit;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
-import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
-import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+
+import static junit.framework.Assert.*;
 
 /**
  * Tests Appointment methods in the {@link $ AppointmentService} .
@@ -394,5 +389,42 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertTrue(appointment.getStatus().equals(AppointmentStatus.MISSED));
 		
 	}
-	
+
+
+    @Ignore
+    @Test
+    public void shouldGetAllTimeSlotsByConstraintsSortedByStartDate() throws  ParseException{
+        AppointmentType type = service.getAppointmentType(1);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        Date fromDate = format.parse("2005-01-01 00:00:00.0");
+
+        List<TimeSlot> result = service.getTimeSlotsByConstraintsIncludingFull(type,fromDate,null,null,null);
+        assertNotNull(result);
+        assertTrue(result.size() == 6);
+
+        TimeSlot firstTimeSlot = result.get(0);
+        assertTrue(firstTimeSlot.getTimeSlotId().equals(5));
+
+        TimeSlot lastTimeSlot = result.get(result.size()-1);
+        assertTrue(lastTimeSlot.getTimeSlotId().equals(4));
+    }
+
+    @Ignore
+    @Test
+    public void shouldGetOnlyAvailableTimeSlotsByConstraintsSortedByStartDate() throws  ParseException{
+        AppointmentType type = service.getAppointmentType(1);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        Date fromDate =  format.parse("2005-01-01 00:00:00.0");
+
+        List<TimeSlot> result = service.getTimeSlotsByConstraints(type,fromDate,null,null,null);
+        assertNotNull(result);
+        assertTrue(result.size() == 4);
+
+        TimeSlot firstTimeSlot = result.get(0);
+        assertTrue(firstTimeSlot.getTimeSlotId().equals(5));
+
+        TimeSlot lastTimeSlot = result.get(result.size()-1);
+        assertTrue(lastTimeSlot.getTimeSlotId().equals(2));
+    }
+
 }
