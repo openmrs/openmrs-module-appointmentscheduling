@@ -389,42 +389,39 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertTrue(appointment.getStatus().equals(AppointmentStatus.MISSED));
 		
 	}
-
-
-    @Ignore
-    @Test
-    public void shouldGetAllTimeSlotsByConstraintsSortedByStartDate() throws  ParseException{
-        AppointmentType type = service.getAppointmentType(1);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-        Date fromDate = format.parse("2005-01-01 00:00:00.0");
-
-        List<TimeSlot> result = service.getTimeSlotsByConstraintsIncludingFull(type,fromDate,null,null,null);
-        assertNotNull(result);
-        assertTrue(result.size() == 6);
-
-        TimeSlot firstTimeSlot = result.get(0);
-        assertTrue(firstTimeSlot.getTimeSlotId().equals(5));
-
-        TimeSlot lastTimeSlot = result.get(result.size()-1);
-        assertTrue(lastTimeSlot.getTimeSlotId().equals(4));
-    }
-
-    @Ignore
-    @Test
-    public void shouldGetOnlyAvailableTimeSlotsByConstraintsSortedByStartDate() throws  ParseException{
-        AppointmentType type = service.getAppointmentType(1);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-        Date fromDate =  format.parse("2005-01-01 00:00:00.0");
-
-        List<TimeSlot> result = service.getTimeSlotsByConstraints(type,fromDate,null,null,null);
-        assertNotNull(result);
-        assertTrue(result.size() == 4);
-
-        TimeSlot firstTimeSlot = result.get(0);
-        assertTrue(firstTimeSlot.getTimeSlotId().equals(5));
-
-        TimeSlot lastTimeSlot = result.get(result.size()-1);
-        assertTrue(lastTimeSlot.getTimeSlotId().equals(2));
-    }
-
+	
+	@Test
+	public void shouldGetAllTimeSlotsByConstraintsSortedByStartDate() throws ParseException {
+		AppointmentType type = service.getAppointmentType(1);
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		Date fromDate = format.parse("2005-01-01 00:00:00.0");
+		
+		List<TimeSlot> result = service.getTimeSlotsByConstraintsIncludingFull(type, fromDate, null, null, null);
+		assertNotNull(result);
+		assertTrue(result.size() == 6);
+		
+		TimeSlot firstTimeSlot = result.get(0);
+		assertTrue(firstTimeSlot.getTimeSlotId().equals(5));
+		
+		TimeSlot lastTimeSlot = result.get(result.size() - 1);
+		assertTrue(lastTimeSlot.getTimeSlotId().equals(4));
+	}
+	
+	@Test
+	public void shouldGetOnlyAvailableTimeSlotsByConstraintsSortedByStartDate() throws ParseException {
+		AppointmentType type = service.getAppointmentType(1);
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		Date fromDate = format.parse("2005-01-01 00:00:00.0");
+		
+		List<TimeSlot> result = service.getTimeSlotsByConstraints(type, fromDate, null, null, null);
+		assertNotNull(result);
+		assertTrue(result.size() == 4);
+		
+		TimeSlot firstTimeSlot = result.get(0);
+		assertTrue(firstTimeSlot.getTimeSlotId().equals(5));
+		
+		TimeSlot lastTimeSlot = result.get(result.size() - 1);
+		assertTrue(lastTimeSlot.getTimeSlotId().equals(4));
+	}
+	
 }

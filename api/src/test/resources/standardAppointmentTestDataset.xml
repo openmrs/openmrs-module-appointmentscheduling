@@ -27,8 +27,12 @@
 	<appointmentscheduling_time_slot time_slot_id="2" appointment_block_id="1" start_date="2006-01-01 00:00:00.1" end_date="2006-01-01 01:00:00.1" uuid="c0c579b0-8e59-401d-8a4a-976a0b183605" date_created="2005-01-01 00:00:00.0" voided="false" creator="1" />
 	<appointmentscheduling_time_slot time_slot_id="3" appointment_block_id="1" start_date="2007-01-01 00:00:00.2" end_date="2006-01-01 00:00:00.0" uuid="c0c579b0-8e59-401d-8a4a-976a0b183606" date_created="2005-01-01 00:00:00.0" voided="true" void_reason="void reason" creator="1" />
 	<appointmentscheduling_time_slot time_slot_id="4" appointment_block_id="1" start_date="2006-01-01 00:00:00.1" end_date="2006-01-01 01:00:00.1" uuid="c0c579b0-8e59-401d-8a4a-976a0b183607" date_created="2005-01-01 00:00:00.0" voided="false" creator="1" />
-	
-	<visit visit_id="1" patient_id="2" date_started="2005-01-01 00:00:00.0" uuid="c0c579b0-8e59-401d-8a4a-976a0b183600" date_created="2005-01-01 00:00:00.0" voided="false" creator="1" />
+    <appointmentscheduling_time_slot time_slot_id="5" appointment_block_id="1" start_date="2005-01-01 00:00:00.0" end_date="2005-01-01 01:00:00.0" uuid="c0c579b0-8e59-401d-8a4a-976a0b183608" date_created="2005-01-01 00:00:00.0" voided="false" creator="1" />
+    <appointmentscheduling_time_slot time_slot_id="6" appointment_block_id="1" start_date="2005-01-02 00:00:00.0" end_date="2005-01-02 01:00:00.0" uuid="c0c579b0-8e59-401d-8a4a-976a0b183609" date_created="2005-01-01 00:00:00.0" voided="false" creator="1" />
+    <appointmentscheduling_time_slot time_slot_id="7" appointment_block_id="1" start_date="2005-01-03 00:00:00.0" end_date="2005-01-03 00:30:00.0" uuid="c0c579b0-8e59-401d-8a4a-976a0b1836010" date_created="2005-01-01 00:00:00.0" voided="false" creator="1" />
+
+
+    <visit visit_id="1" patient_id="2" date_started="2005-01-01 00:00:00.0" uuid="c0c579b0-8e59-401d-8a4a-976a0b183600" date_created="2005-01-01 00:00:00.0" voided="false" creator="1" />
 	<patient patient_id="1" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"/>
 	<patient patient_id="2" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"/>
 	

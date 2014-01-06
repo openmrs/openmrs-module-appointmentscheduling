@@ -1,22 +1,19 @@
 package org.openmrs.module.appointmentscheduling.api.db.hibernate;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
-
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
-import org.openmrs.Location;
 import org.openmrs.Provider;
 import org.openmrs.api.APIException;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.api.db.TimeSlotDAO;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Vector;
 
 public class HibernateTimeSlotDAO extends HibernateSingleClassDAO implements TimeSlotDAO {
 	
@@ -42,7 +39,7 @@ public class HibernateTimeSlotDAO extends HibernateSingleClassDAO implements Tim
 			Date startDate = (fromDate == null) ? new Date() : fromDate;
 			
 			String stringQuery = "SELECT timeSlot FROM TimeSlot AS timeSlot WHERE timeSlot.appointmentBlock IN("
-			        + " FROM AppointmentBlock WHERE :appointmentType IN elements(types)) AND voided = 0 AND endDate > :startDate";
+			        + " FROM AppointmentBlock WHERE :appointmentType IN elements(types)) AND voided = 0 AND endDate > :startDate ORDER BY startDate";
 			
 			if (toDate != null)
 				stringQuery += " AND endDate <= :endDate";
@@ -56,8 +53,8 @@ public class HibernateTimeSlotDAO extends HibernateSingleClassDAO implements Tim
 				query.setParameter("endDate", toDate);
 			if (provider != null)
 				query.setParameter("provider", provider);
-			
-			return query.list();
+
+			return  query.list();
 		}
 	}
 	
