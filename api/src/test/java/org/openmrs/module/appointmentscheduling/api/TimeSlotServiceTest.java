@@ -13,19 +13,7 @@
  */
 package org.openmrs.module.appointmentscheduling.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
 import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Provider;
@@ -35,9 +23,19 @@ import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
-import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests Time Slot methods in the {@link $ AppointmentService} .
@@ -46,7 +44,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 	
 	private AppointmentService service;
 	
-	private Integer amountOfTimeSlots = 4;
+	private Integer amountOfTimeSlots = 7;
 	
 	@Before
 	public void before() throws Exception {
@@ -65,7 +63,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 	@Verifies(value = "should get all time slots by a given bool whether to include voided", method = "getAllTimeSlots(boolean)")
 	public void getAllTimeSlots_shouldGetAllUnvoidedTimeSlots() {
 		List<TimeSlot> timeSlots = service.getAllTimeSlots(false);
-		Assert.assertEquals(3, timeSlots.size());
+		Assert.assertEquals(6, timeSlots.size());
 	}
 	
 	@Test
@@ -119,7 +117,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(timeSlot);
 		assertEquals("2007-01-01 00:00:00.2", startDate.toString());
 		
-		timeSlot = service.getTimeSlot(5);
+		timeSlot = service.getTimeSlot(8);
 		Assert.assertNull(timeSlot);
 	}
 	
@@ -368,7 +366,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(appointmentBlock);
 		
 		List<TimeSlot> timeSlots = service.getTimeSlotsInAppointmentBlock(appointmentBlock);
-		assertEquals(4, timeSlots.size());
+		assertEquals(7, timeSlots.size());
 		
 		//Should be empty list because appointment block is not exists
 		timeSlots = service.getTimeSlotsInAppointmentBlock(null);
@@ -390,5 +388,41 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		Assert.assertNotNull(timeSlot);
 		timeLeft = service.getTimeLeftInTimeSlot(timeSlot);
 		assertEquals((Integer) 6, timeLeft);
+	}
+	
+	@Test
+	@Verifies(value = "should return all time slots by constraints and non voided ordered by the earliest start date", method = "getTimeSlotsByConstraintsIncludingFull")
+	public void shouldGetAllTimeSlotsByConstraintsSortedByStartDate() throws ParseException {
+		AppointmentType type = service.getAppointmentType(1);
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		Date fromDate = format.parse("2005-01-01 00:00:00.0");
+		
+		List<TimeSlot> result = service.getTimeSlotsByConstraintsIncludingFull(type, fromDate, null, null, null);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result.size() == 6);
+		
+		TimeSlot firstTimeSlot = result.get(0);
+		Assert.assertTrue(firstTimeSlot.getTimeSlotId().equals(5));
+		
+		TimeSlot lastTimeSlot = result.get(result.size() - 1);
+		Assert.assertTrue(lastTimeSlot.getTimeSlotId().equals(4));
+	}
+	
+	@Test
+	@Verifies(value = "should return  a list of time slots available by appointment type and constraints ordered by the earliest start date", method = "getTimeSlotsByConstraints")
+	public void shouldGetOnlyAvailableTimeSlotsByConstraintsSortedByStartDate() throws ParseException {
+		AppointmentType type = service.getAppointmentType(1);
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		Date fromDate = format.parse("2005-01-01 00:00:00.0");
+		
+		List<TimeSlot> result = service.getTimeSlotsByConstraints(type, fromDate, null, null, null);
+		Assert.assertNotNull(result);
+		Assert.assertTrue(result.size() == 4);
+		
+		TimeSlot firstTimeSlot = result.get(0);
+		Assert.assertTrue(firstTimeSlot.getTimeSlotId().equals(5));
+		
+		TimeSlot lastTimeSlot = result.get(result.size() - 1);
+		Assert.assertTrue(lastTimeSlot.getTimeSlotId().equals(4));
 	}
 }
