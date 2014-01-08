@@ -210,7 +210,9 @@
 	function ConfirmationDialogOpen(){
 		$j('#appointmentInformationDialog').dialog('open');
 	}				
-	
+	function CancelAppointmentForm(){
+		window.location = "appointmentForm.action";
+		}
 	function addQueryParameter(paramName){
 		var value = queryParameters[paramName];
 		var currentURL = window.location.href;
@@ -503,8 +505,12 @@
 				<td></td>
 				<td><input type="button" class="saveButton"
 					value="<spring:message code='appointmentscheduling.Appointment.create.save'/>"
-					name="save" onclick="ConfirmationDialogOpen();"></td>
+					name="save" onclick="ConfirmationDialogOpen();">
+					<input type="button" class="saveButton"
+					value="<spring:message code='appointmentscheduling.Appointment.create.cancel'/>"
+					name="cancel" onclick="CancelAppointmentForm();"></td>
 			</tr>
+			
 		</table>
 	</fieldset>
 </form:form>
