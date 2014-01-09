@@ -122,10 +122,10 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#getAppointmentTypes(java.lang.String)
 	 */
 	@Transactional(readOnly = true)
-	public List<AppointmentType> getAppointmentTypes(String fuzzySearchPhrase) {
+	public List<AppointmentType> getAppointmentTypes(String fuzzySearchPhrase, boolean includeRetired) {
 		return getAppointmentTypeDAO().getAll(fuzzySearchPhrase);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#saveAppointmentType(org.openmrs.AppointmentType)
 	 */

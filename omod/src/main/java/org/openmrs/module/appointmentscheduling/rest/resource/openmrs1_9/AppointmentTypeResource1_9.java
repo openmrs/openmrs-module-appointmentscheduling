@@ -94,7 +94,7 @@ public class AppointmentTypeResource1_9 extends MetadataDelegatingCrudResource<A
 	protected PageableResult doSearch(RequestContext context) {
 		// TODO: needs to be updated to call new getAppointmentTypes that can exclude retired
 		return new NeedsPaging<AppointmentType>(Context.getService(AppointmentService.class).getAppointmentTypes(
-		    context.getParameter("q")), context);
+		    context.getParameter("q"), context.getIncludeAll()), context);
 	}
 	
 }
