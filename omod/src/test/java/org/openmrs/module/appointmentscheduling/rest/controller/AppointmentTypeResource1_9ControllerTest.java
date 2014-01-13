@@ -3,7 +3,6 @@ package org.openmrs.module.appointmentscheduling.rest.controller;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
@@ -131,10 +130,23 @@ public class AppointmentTypeResource1_9ControllerTest extends MainResourceContro
 	}
 	
 	@Test
-	@Ignore
-	public void shouldSearchByStringAndReturnMatchingAppointmentTypes() throws Exception {
+	public void shouldSearchByStringAndReturnMatchingAppointmentTypesIncludingRetired() throws Exception {
 		
-		// TODO this will fail until we fix to ignore retired types based on parameter
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_INCLUDE_ALL, String.valueOf(true));
+		req.addParameter("q", "al");
+		SimpleObject result = deserialize(handle(req));
+		
+		List<Object> hits = (List<Object>) result.get("results");
+		Assert.assertEquals(3, hits.size());
+		Assert.assertEquals("Hospitalization", PropertyUtils.getProperty(hits.get(0), "display"));
+		Assert.assertEquals(true, PropertyUtils.getProperty(hits.get(0), "retired"));
+		Assert.assertEquals("Hospitalization2", PropertyUtils.getProperty(hits.get(1), "display"));
+		Assert.assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(hits.get(2), "display"));
+	}
+	
+	@Test
+	public void shouldSearchByStringAndReturnMatchingAppointmentTypesIgnoringRetired() throws Exception {
 		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "al");
@@ -142,9 +154,8 @@ public class AppointmentTypeResource1_9ControllerTest extends MainResourceContro
 		
 		List<Object> hits = (List<Object>) result.get("results");
 		Assert.assertEquals(2, hits.size());
-		Assert.assertEquals("Hospitalization", PropertyUtils.getProperty(hits.get(0), "display"));
+		Assert.assertEquals("Hospitalization2", PropertyUtils.getProperty(hits.get(0), "display"));
 		Assert.assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(hits.get(1), "display"));
-		
 	}
 	
 	@Override

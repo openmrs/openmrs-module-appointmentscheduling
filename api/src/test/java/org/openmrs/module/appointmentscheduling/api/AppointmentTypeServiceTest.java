@@ -38,7 +38,8 @@ import static junit.framework.Assert.assertTrue;
 public class AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest {
 	
 	private AppointmentService service;
-    private Integer amountOfAppointmentTypesNotRetired = 3;
+	
+	private Integer amountOfAppointmentTypesNotRetired = 3;
 	
 	@Before
 	public void before() throws Exception {
@@ -109,24 +110,22 @@ public class AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(appointmentTypes);
 		assertEquals(0, appointmentTypes.size());
 	}
-
-
-    @Test
-    @Verifies(value = "should get appointment types with fuzzy search", method="getAppointmentTypes(String)")
-    public void getAppointmentTypes_shouldGetCorrectAppointmentTypesWithFuzzySearch()throws Exception{
-        List<AppointmentType> appointmentTypes = service.getAppointmentTypes("HIV");
-        assertNotNull(appointmentTypes);
-        assertTrue(appointmentTypes.get(0).getName().equals("Initial HIV Clinic Appointment"));
-    }
-
-
-    @Test
-    @Verifies(value = "should get all appointment types not retired ", method = "getAppointmentTypes")
-    public void getAppointmentTypes_shouldGetAppointmentTypesNotRetired()throws Exception{
-        List<AppointmentType> appointmentTypes = service.getAppointmentTypes("");
-        assertNotNull(appointmentTypes);
-        assertEquals((Object) amountOfAppointmentTypesNotRetired, appointmentTypes.size());
-    }
+	
+	@Test
+	@Verifies(value = "should get appointment types with fuzzy search", method = "getAppointmentTypes(String)")
+	public void getAppointmentTypes_shouldGetCorrectAppointmentTypesWithFuzzySearch() throws Exception {
+		List<AppointmentType> appointmentTypes = service.getAppointmentTypes("HIV");
+		assertNotNull(appointmentTypes);
+		assertTrue(appointmentTypes.get(0).getName().equals("Initial HIV Clinic Appointment"));
+	}
+	
+	@Test
+	@Verifies(value = "should get all appointment types not retired ", method = "getAppointmentTypes")
+	public void getAppointmentTypes_shouldGetAppointmentTypesNotRetired() throws Exception {
+		List<AppointmentType> appointmentTypes = service.getAppointmentTypes("", false);
+		assertNotNull(appointmentTypes);
+		assertEquals((Object) amountOfAppointmentTypesNotRetired, appointmentTypes.size());
+	}
 	
 	@Test
 	@Verifies(value = "should save new appointment type", method = "saveAppointmentType(AppointmentType)")

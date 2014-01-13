@@ -93,7 +93,10 @@ public interface AppointmentService extends OpenmrsService {
 	 * @should get correct appointment types
 	 */
 	@Transactional(readOnly = true)
-	List<AppointmentType> getAppointmentTypes(String fuzzySearchPhrase,boolean includeRetired);
+	List<AppointmentType> getAppointmentTypes(String fuzzySearchPhrase);
+	
+	@Transactional(readOnly = true)
+	List<AppointmentType> getAppointmentTypes(String fuzzySearchPhrase, boolean includeRetired);
 	
 	/**
 	 * Creates or updates the given appointment type in the database.

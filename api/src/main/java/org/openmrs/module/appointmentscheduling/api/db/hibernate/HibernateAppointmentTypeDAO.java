@@ -13,13 +13,16 @@
  */
 package org.openmrs.module.appointmentscheduling.api.db.hibernate;
 
-import java.util.Date;
-import java.util.List;
-
+import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.openmrs.module.appointmentscheduling.Appointment;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentTypeDAO;
+
+import java.util.Date;
+import java.util.List;
 
 public class HibernateAppointmentTypeDAO extends HibernateSingleClassDAO implements AppointmentTypeDAO {
 	
@@ -36,5 +39,14 @@ public class HibernateAppointmentTypeDAO extends HibernateSingleClassDAO impleme
 		        .setParameter("endDate", endDate).setParameter("appointmentType", type);
 		
 		return ((Long) query.uniqueResult()).intValue();
+	}
+	
+	public List<AppointmentType> getAppointmentTypes(String fuzzySearchPhrase, boolean includeRetired) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mappedClass);
+		criteria.add(Restrictions.ilike("name", fuzzySearchPhrase, MatchMode.ANYWHERE));
+		if (!includeRetired)
+			criteria.add(Restrictions.eq("retired", includeRetired)).list();
+		criteria.addOrder(Order.asc("name"));
+		return criteria.list();
 	}
 }

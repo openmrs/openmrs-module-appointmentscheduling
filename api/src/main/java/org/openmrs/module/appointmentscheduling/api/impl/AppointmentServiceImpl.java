@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openmrs.module.appointmentscheduling.StudentT;
-import org.apache.commons.chain.web.MapEntry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
@@ -123,9 +122,14 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	 */
 	@Transactional(readOnly = true)
 	public List<AppointmentType> getAppointmentTypes(String fuzzySearchPhrase, boolean includeRetired) {
-		return getAppointmentTypeDAO().getAll(fuzzySearchPhrase);
+		return getAppointmentTypeDAO().getAppointmentTypes(fuzzySearchPhrase, includeRetired);
 	}
-
+	
+	@Transactional(readOnly = true)
+	public List<AppointmentType> getAppointmentTypes(String fuzzySearchPhrase) {
+		return getAppointmentTypes(fuzzySearchPhrase, true);
+	}
+	
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#saveAppointmentType(org.openmrs.AppointmentType)
 	 */
