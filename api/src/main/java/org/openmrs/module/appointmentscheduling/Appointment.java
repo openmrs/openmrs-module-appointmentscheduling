@@ -21,6 +21,8 @@ import org.openmrs.Visit;
 
 import java.io.Serializable;
 
+// TODO: remove this comment
+
 /**
  * It is a model class. It should extend either {@link BaseOpenmrsObject} or
  * {@link BaseOpenmrsMetadata}.
