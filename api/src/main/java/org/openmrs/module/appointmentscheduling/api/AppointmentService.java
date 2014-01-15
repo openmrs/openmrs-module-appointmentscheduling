@@ -86,15 +86,25 @@ public interface AppointmentService extends OpenmrsService {
 	AppointmentType getAppointmentTypeByUuid(String uuid);
 	
 	/**
-	 * Gets all appointment types whose names are similar to or contain the given search phrase.
+	 * Gets all appointment types (including retired) whose names are similar to or contain the
+	 * given search phrase.
 	 * 
 	 * @param fuzzySearchPhrase the search phrase to use.
 	 * @return a list of all appointment types with names similar to or containing the given phrase
 	 * @should get correct appointment types
+	 * @should include retired appointment types
 	 */
 	@Transactional(readOnly = true)
 	List<AppointmentType> getAppointmentTypes(String fuzzySearchPhrase);
 	
+	/**
+	 * Gets all appointment types whose names are similar to or contain the given search phrase.
+	 * 
+	 * @param fuzzySearchPhrase the search phrase to use.
+	 * @param includeRetired whether or not to include retired types
+	 * @return a list of all appointment types with names similar to or containing the given phrase
+	 * @should get correct appointment types
+	 */
 	@Transactional(readOnly = true)
 	List<AppointmentType> getAppointmentTypes(String fuzzySearchPhrase, boolean includeRetired);
 	

@@ -45,7 +45,7 @@ public class HibernateAppointmentTypeDAO extends HibernateSingleClassDAO impleme
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mappedClass);
 		criteria.add(Restrictions.ilike("name", fuzzySearchPhrase, MatchMode.ANYWHERE));
 		if (!includeRetired)
-			criteria.add(Restrictions.eq("retired", includeRetired)).list();
+			criteria.add(Restrictions.eq("retired", includeRetired));
 		criteria.addOrder(Order.asc("name"));
 		return criteria.list();
 	}
