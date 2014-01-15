@@ -25,59 +25,61 @@
 		<property name="moduleService">
 			<list>
 				<value>${project.parent.groupId}.${project.parent.artifactId}.api.AppointmentService</value>
-				<bean
-					class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-					<property name="transactionManager">
-						<ref bean="transactionManager" />
-					</property>
-					<property name="target">
-						<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.AppointmentServiceImpl">
-							<property name="appointmentTypeDAO">
-								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateAppointmentTypeDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
-								</bean>
-							</property>
-							<property name="appointmentBlockDAO">
-								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateAppointmentBlockDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
-								</bean>
-							</property>
-							<property name="appointmentDAO">
-								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateAppointmentDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
-								</bean>
-							</property>
-							<property name="timeSlotDAO">
-								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateTimeSlotDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
-								</bean>
-							</property>
-							<property name="appointmentStatusHistoryDAO">
-								<bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateAppointmentStatusHistoryDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
-								</bean>
-							</property>
-						</bean>
-					</property>
-					<property name="preInterceptors">
-						<ref bean="serviceInterceptors" />
-					</property>
-					<property name="transactionAttributeSource">
-						<ref bean="transactionAttributeSource" />
-					</property>
-				</bean>
+                <ref bean="appointmentService"></ref>
 			</list>
 		</property>
 	</bean>
+
+    <bean id="appointmentService"
+          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager" />
+        </property>
+        <property name="target">
+            <bean class="${project.parent.groupId}.${project.parent.artifactId}.api.impl.AppointmentServiceImpl">
+                <property name="appointmentTypeDAO">
+                    <bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateAppointmentTypeDAO">
+                        <property name="sessionFactory">
+                            <ref bean="sessionFactory" />
+                        </property>
+                    </bean>
+                </property>
+                <property name="appointmentBlockDAO">
+                    <bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateAppointmentBlockDAO">
+                        <property name="sessionFactory">
+                            <ref bean="sessionFactory" />
+                        </property>
+                    </bean>
+                </property>
+                <property name="appointmentDAO">
+                    <bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateAppointmentDAO">
+                        <property name="sessionFactory">
+                            <ref bean="sessionFactory" />
+                        </property>
+                    </bean>
+                </property>
+                <property name="timeSlotDAO">
+                    <bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateTimeSlotDAO">
+                        <property name="sessionFactory">
+                            <ref bean="sessionFactory" />
+                        </property>
+                    </bean>
+                </property>
+                <property name="appointmentStatusHistoryDAO">
+                    <bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateAppointmentStatusHistoryDAO">
+                        <property name="sessionFactory">
+                            <ref bean="sessionFactory" />
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors" />
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource" />
+        </property>
+    </bean>
 	
 </beans>
