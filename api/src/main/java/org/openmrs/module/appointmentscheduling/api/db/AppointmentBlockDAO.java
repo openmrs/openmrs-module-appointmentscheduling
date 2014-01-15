@@ -13,12 +13,12 @@
  */
 package org.openmrs.module.appointmentscheduling.api.db;
 
-import java.util.Date;
-import java.util.List;
-
 import org.openmrs.Provider;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
+
+import java.util.Date;
+import java.util.List;
 
 public interface AppointmentBlockDAO extends SingleClassDAO {
 	
