@@ -668,7 +668,7 @@ public interface AppointmentService extends OpenmrsService {
 	 */
 	@Transactional(readOnly = false)
 	List<Appointment> cleanOpenAppointments();
-
-    @Transactional(readOnly = true)
-    boolean verifyAppointmentTypeNameExists(String appointmentTypeName);
+	
+	@Transactional(readOnly = true)
+	boolean verifyAppointmentTypeNameExists(String appointmentTypeName);
 }

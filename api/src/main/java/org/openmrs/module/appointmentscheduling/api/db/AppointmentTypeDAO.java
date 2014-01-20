@@ -31,6 +31,6 @@ public interface AppointmentTypeDAO extends SingleClassDAO {
 	public Integer getAppointmentTypeCount(Date fromDate, Date toDate, AppointmentType type);
 	
 	public List<AppointmentType> getAppointmentTypes(String fuzzySearchPhrase, boolean includeRetired);
-
-    boolean verifyAppointmentTypeNameExists(String appointmentTypeName);
+	
+	boolean verifyAppointmentTypeNameExists(String appointmentTypeName);
 }
