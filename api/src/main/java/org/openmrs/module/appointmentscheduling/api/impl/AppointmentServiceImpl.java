@@ -708,8 +708,12 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		
 		return appointmentsInStates;
 	}
-	
-	public Map<AppointmentType, Double> getAverageHistoryDurationByConditions(Date fromDate, Date endDate,
+
+    public boolean verifyAppointmentTypeNameExists(String appointmentTypeName) {
+        return appointmentTypeDAO.verifyAppointmentTypeNameExists(appointmentTypeName);
+    }
+
+    public Map<AppointmentType, Double> getAverageHistoryDurationByConditions(Date fromDate, Date endDate,
 	        AppointmentStatus status) {
 		Map<AppointmentType, Double> averages = new HashMap<AppointmentType, Double>();
 		Map<AppointmentType, Integer> counters = new HashMap<AppointmentType, Integer>();

@@ -49,4 +49,13 @@ public class HibernateAppointmentTypeDAO extends HibernateSingleClassDAO impleme
 		criteria.addOrder(Order.asc("name"));
 		return criteria.list();
 	}
+
+    @Override
+    public boolean verifyAppointmentTypeNameExists(String appointmentTypeName) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mappedClass);
+        criteria.add(Restrictions.eq("name", appointmentTypeName).ignoreCase());
+        criteria.add(Restrictions.eq("retired", false));
+
+        return !criteria.list().isEmpty();
+    }
 }

@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
@@ -238,6 +239,26 @@ public class AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest {
 		Assert.assertFalse(distribution.containsKey(type2));
 		assertEquals((Integer) 2, (Integer) distribution.get(type1));
 		assertEquals(2, distribution.size());
-		
 	}
+
+    @Test
+    @Verifies(value = "should return true when appointment type name exists",
+            method = "verifyAppointmentTypeNameExists(String appointmentTypeName)")
+    public void shouldReturnTrueWhenAppointmentTypeNameExists() throws Exception {
+        assertTrue(service.verifyAppointmentTypeNameExists("Initial HIV Clinic Appointment"));
+    }
+
+    @Test
+    @Verifies(value = "should return false when appointment type name does not exists",
+            method = "verifyAppointmentTypeNameExists(String appointmentTypeName)")
+    public void shouldReturnFalseWhenAppointmentTypeNameDoesNorExists() throws Exception {
+        assertFalse(service.verifyAppointmentTypeNameExists("New Appointment Type"));
+    }
+
+    @Test
+    @Verifies(value = "should return false when appointment type exist but it is retired",
+            method = "verifyAppointmentTypeNameExists(String appointmentTypeName)")
+    public void shouldReturnFalseWhenAppointmentTypeNameExistsButRetired() throws Exception {
+        assertFalse(service.verifyAppointmentTypeNameExists("Hospitalization"));
+    }
 }
