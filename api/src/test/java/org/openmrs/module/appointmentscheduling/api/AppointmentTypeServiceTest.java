@@ -38,6 +38,24 @@ import static junit.framework.Assert.assertTrue;
  */
 public class AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest {
 	
+	public static final String INITIAL_HIV_CLINIC_APPOINTMENT = "Initial HIV Clinic Appointment";
+	
+	public static final String HOSPITALIZATION = "Hospitalization";
+	
+	public static final String NEW_APPOINTMENT_TYPE = "New Appointment Type";
+	
+	public static final String RETURN_TB_CLINIC_APPOINTMENT = "Return TB Clinic Appointment";
+	
+	public static final String HOSPITALIZATION_2 = "Hospitalization2";
+	
+	public static final String TB_CLINIC_APPOINTMENT_UUID = "759799ab-c9a5-435e-b671-77773ada74e4";
+	
+	public static final String HOSPITALIZATION_2_UUID = "759799ab-c9a5-435e-b671-77773ada74e6";
+	
+	public static final String INVALID_UUID = "759799ab-c9a5-435e-b671-77773ada74e1";
+	
+	public static final String INITIAL_HIV_CLINIC_APPOINTMENT_UUID = "c0c579b0-8e59-401d-8a4a-976a0b183519";
+	
 	private AppointmentService service;
 	
 	private Integer amountOfAppointmentTypesNotRetired = 3;
@@ -60,15 +78,15 @@ public class AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest {
 	public void getAppointmentType_shouldGetCorrectAppointmentType() throws Exception {
 		AppointmentType appointmentType = service.getAppointmentType(1);
 		assertNotNull(appointmentType);
-		assertEquals("Initial HIV Clinic Appointment", appointmentType.getName());
+		assertEquals(INITIAL_HIV_CLINIC_APPOINTMENT, appointmentType.getName());
 		
 		appointmentType = service.getAppointmentType(2);
 		assertNotNull(appointmentType);
-		assertEquals("Return TB Clinic Appointment", appointmentType.getName());
+		assertEquals(RETURN_TB_CLINIC_APPOINTMENT, appointmentType.getName());
 		
 		appointmentType = service.getAppointmentType(3);
 		assertNotNull(appointmentType);
-		assertEquals("Hospitalization2", appointmentType.getName());
+		assertEquals(HOSPITALIZATION_2, appointmentType.getName());
 		
 		appointmentType = service.getAppointmentType(5);
 		Assert.assertNull(appointmentType);
@@ -77,19 +95,19 @@ public class AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	@Verifies(value = "should get correct appointment type", method = "getAppointmentTypeByUuid(String)")
 	public void getAppointmentTypeByUuid_shouldGetCorrentAppointmentType() throws Exception {
-		AppointmentType appointmentType = service.getAppointmentTypeByUuid("c0c579b0-8e59-401d-8a4a-976a0b183519");
+		AppointmentType appointmentType = service.getAppointmentTypeByUuid(INITIAL_HIV_CLINIC_APPOINTMENT_UUID);
 		assertNotNull(appointmentType);
-		assertEquals("Initial HIV Clinic Appointment", appointmentType.getName());
+		assertEquals(INITIAL_HIV_CLINIC_APPOINTMENT, appointmentType.getName());
 		
-		appointmentType = service.getAppointmentTypeByUuid("759799ab-c9a5-435e-b671-77773ada74e4");
+		appointmentType = service.getAppointmentTypeByUuid(TB_CLINIC_APPOINTMENT_UUID);
 		assertNotNull(appointmentType);
-		assertEquals("Return TB Clinic Appointment", appointmentType.getName());
+		assertEquals(RETURN_TB_CLINIC_APPOINTMENT, appointmentType.getName());
 		
-		appointmentType = service.getAppointmentTypeByUuid("759799ab-c9a5-435e-b671-77773ada74e6");
+		appointmentType = service.getAppointmentTypeByUuid(HOSPITALIZATION_2_UUID);
 		assertNotNull(appointmentType);
-		assertEquals("Hospitalization2", appointmentType.getName());
+		assertEquals(HOSPITALIZATION_2, appointmentType.getName());
 		
-		appointmentType = service.getAppointmentTypeByUuid("759799ab-c9a5-435e-b671-77773ada74e1");
+		appointmentType = service.getAppointmentTypeByUuid(INVALID_UUID);
 		Assert.assertNull(appointmentType);
 	}
 	
@@ -99,13 +117,13 @@ public class AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest {
 		List<AppointmentType> appointmentTypes = service.getAppointmentTypes("HIV Clinic");
 		assertNotNull(appointmentTypes);
 		assertEquals(1, appointmentTypes.size());
-		assertEquals("Initial HIV Clinic Appointment", appointmentTypes.get(0).getName());
+		assertEquals(INITIAL_HIV_CLINIC_APPOINTMENT, appointmentTypes.get(0).getName());
 		
 		appointmentTypes = service.getAppointmentTypes("Clinic Appointment");
 		assertNotNull(appointmentTypes);
 		assertEquals(2, appointmentTypes.size());
-		assertEquals("Initial HIV Clinic Appointment", appointmentTypes.get(0).getName());
-		assertEquals("Return TB Clinic Appointment", appointmentTypes.get(1).getName());
+		assertEquals(INITIAL_HIV_CLINIC_APPOINTMENT, appointmentTypes.get(0).getName());
+		assertEquals(RETURN_TB_CLINIC_APPOINTMENT, appointmentTypes.get(1).getName());
 		
 		appointmentTypes = service.getAppointmentTypes("ClinicAppointment");
 		assertNotNull(appointmentTypes);
@@ -117,7 +135,7 @@ public class AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest {
 	public void getAppointmentTypes_shouldGetCorrectAppointmentTypesWithFuzzySearch() throws Exception {
 		List<AppointmentType> appointmentTypes = service.getAppointmentTypes("HIV");
 		assertNotNull(appointmentTypes);
-		assertTrue(appointmentTypes.get(0).getName().equals("Initial HIV Clinic Appointment"));
+		assertTrue(appointmentTypes.get(0).getName().equals(INITIAL_HIV_CLINIC_APPOINTMENT));
 	}
 	
 	@Test
@@ -149,7 +167,7 @@ public class AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest {
 	public void saveAppointmentType_shouldSaveEditedAppointmentType() throws Exception {
 		AppointmentType appointmentType = service.getAppointmentType(1);
 		assertNotNull(appointmentType);
-		assertEquals("Initial HIV Clinic Appointment", appointmentType.getName());
+		assertEquals(INITIAL_HIV_CLINIC_APPOINTMENT, appointmentType.getName());
 		
 		appointmentType.setName("Edited Name");
 		appointmentType.setDescription("Edited Description");
@@ -240,25 +258,32 @@ public class AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals((Integer) 2, (Integer) distribution.get(type1));
 		assertEquals(2, distribution.size());
 	}
-
-    @Test
-    @Verifies(value = "should return true when appointment type name exists",
-            method = "verifyAppointmentTypeNameExists(String appointmentTypeName)")
-    public void shouldReturnTrueWhenAppointmentTypeNameExists() throws Exception {
-        assertTrue(service.verifyAppointmentTypeNameExists("Initial HIV Clinic Appointment"));
-    }
-
-    @Test
-    @Verifies(value = "should return false when appointment type name does not exists",
-            method = "verifyAppointmentTypeNameExists(String appointmentTypeName)")
-    public void shouldReturnFalseWhenAppointmentTypeNameDoesNorExists() throws Exception {
-        assertFalse(service.verifyAppointmentTypeNameExists("New Appointment Type"));
-    }
-
-    @Test
-    @Verifies(value = "should return false when appointment type exist but it is retired",
-            method = "verifyAppointmentTypeNameExists(String appointmentTypeName)")
-    public void shouldReturnFalseWhenAppointmentTypeNameExistsButRetired() throws Exception {
-        assertFalse(service.verifyAppointmentTypeNameExists("Hospitalization"));
-    }
+	
+	@Test
+	@Verifies(value = "should return true when appointment type name exists and uuid does not", method = "verifyAppointmentTypeNameExists(String appointmentTypeName)")
+	public void shouldReturnTrueWhenAppointmentTypeNameExists() throws Exception {
+		AppointmentType appointmentType = new AppointmentType(INITIAL_HIV_CLINIC_APPOINTMENT, "DESCRIPTION", 10);
+		assertTrue(service.verifyDuplicatedAppointmentTypeName(appointmentType));
+	}
+	
+	@Test
+	@Verifies(value = "should return false when appointment type name does not exists", method = "verifyAppointmentTypeNameExists(String appointmentTypeName)")
+	public void shouldReturnFalseWhenAppointmentTypeNameDoesNotExists() throws Exception {
+		AppointmentType appointmentType = new AppointmentType(NEW_APPOINTMENT_TYPE, "DESCRIPTION", 10);
+		assertFalse(service.verifyDuplicatedAppointmentTypeName(appointmentType));
+	}
+	
+	@Test
+	@Verifies(value = "should return false when appointment type name exists but it is retired", method = "verifyAppointmentTypeNameExists(String appointmentTypeName)")
+	public void shouldReturnFalseWhenAppointmentTypeNameExistsButRetired() throws Exception {
+		AppointmentType appointmentType = new AppointmentType(HOSPITALIZATION, "DESCRIPTION", 10);
+		assertFalse(service.verifyDuplicatedAppointmentTypeName(appointmentType));
+	}
+	
+	@Test
+	@Verifies(value = "should return false when appointment type has the same name and uuid", method = "verifyAppointmentTypeNameExists(String appointmentTypeName)")
+	public void shouldReturnFalseWhenAppointmentTypeHasTheSameNameAndUuid() throws Exception {
+		AppointmentType appointmentType = service.getAppointmentTypeByUuid(INITIAL_HIV_CLINIC_APPOINTMENT_UUID);
+		assertFalse(service.verifyDuplicatedAppointmentTypeName(appointmentType));
+	}
 }

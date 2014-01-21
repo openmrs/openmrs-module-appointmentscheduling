@@ -64,13 +64,16 @@ public class AppointmentTypeValidator implements Validator {
 		if (appointmentType == null) {
 			errors.rejectValue("appointmentType", "error.general");
 		} else {
-			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "error.name");
 			ValidationUtils.rejectIfEmpty(errors, "duration", "appointmentscheduling.AppointmentType.durationEmpty");
-            if(appointmentService.verifyAppointmentTypeNameExists(appointmentType.getName())){
-                errors.rejectValue("name", "Duplicated Name");
-            }
+            validateFieldName(errors, appointmentType);
 		}
 	}
 
+    private void validateFieldName(Errors errors, AppointmentType appointmentType) {
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "error.name");
+        if (appointmentService.verifyDuplicatedAppointmentTypeName(appointmentType)) {
+            errors.rejectValue("name", "appointmentscheduling.AppointmentType.nameDuplicated");
+        }
+    }
 
 }

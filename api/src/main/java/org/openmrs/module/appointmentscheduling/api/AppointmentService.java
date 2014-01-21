@@ -670,5 +670,5 @@ public interface AppointmentService extends OpenmrsService {
 	List<Appointment> cleanOpenAppointments();
 	
 	@Transactional(readOnly = true)
-	boolean verifyAppointmentTypeNameExists(String appointmentTypeName);
+	boolean verifyDuplicatedAppointmentTypeName(AppointmentType appointmentType);
 }
