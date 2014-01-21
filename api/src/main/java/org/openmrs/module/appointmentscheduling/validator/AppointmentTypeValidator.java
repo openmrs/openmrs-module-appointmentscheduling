@@ -32,10 +32,10 @@ public class AppointmentTypeValidator implements Validator {
 	
 	/** Log for this class and subclasses */
 	protected final Log log = LogFactory.getLog(getClass());
-
-    @Autowired
-    @Qualifier("appointmentService")
-    private AppointmentService appointmentService;
+	
+	@Autowired
+	@Qualifier("appointmentService")
+	private AppointmentService appointmentService;
 	
 	/**
 	 * Determines if the command object being submitted is a valid type
@@ -46,10 +46,14 @@ public class AppointmentTypeValidator implements Validator {
 	public boolean supports(Class c) {
 		return c.equals(AppointmentType.class);
 	}
-
-    public void setAppointmentService(AppointmentService appointmentService) {
-        this.appointmentService = appointmentService;
-    }
+	
+	public void setAppointmentService(AppointmentService appointmentService) {
+		this.appointmentService = appointmentService;
+	}
+	
+	public AppointmentService getAppointmentService() {
+		return appointmentService;
+	}
 	
 	/**
 	 * Checks the form object for any inconsistencies/errors
@@ -65,15 +69,15 @@ public class AppointmentTypeValidator implements Validator {
 			errors.rejectValue("appointmentType", "error.general");
 		} else {
 			ValidationUtils.rejectIfEmpty(errors, "duration", "appointmentscheduling.AppointmentType.durationEmpty");
-            validateFieldName(errors, appointmentType);
+			validateFieldName(errors, appointmentType);
 		}
 	}
-
-    private void validateFieldName(Errors errors, AppointmentType appointmentType) {
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "error.name");
-        if (appointmentService.verifyDuplicatedAppointmentTypeName(appointmentType)) {
-            errors.rejectValue("name", "appointmentscheduling.AppointmentType.nameDuplicated");
-        }
-    }
-
+	
+	private void validateFieldName(Errors errors, AppointmentType appointmentType) {
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "error.name");
+		if (appointmentService.verifyDuplicatedAppointmentTypeName(appointmentType)) {
+			errors.rejectValue("name", "appointmentscheduling.AppointmentType.nameDuplicated");
+		}
+	}
+	
 }
