@@ -16,7 +16,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-@Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_REST_NAMESPACE + "/appointmentblock", supportedClass = AppointmentBlock.class, supportedOpenmrsVersions = "1.9.*")
+@Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE
+        + "/appointmentblock", supportedClass = AppointmentBlock.class, supportedOpenmrsVersions = "1.9.*")
 public class AppointmentBlockResource1_9 extends DataDelegatingCrudResource<AppointmentBlock> {
 	
 	@Override

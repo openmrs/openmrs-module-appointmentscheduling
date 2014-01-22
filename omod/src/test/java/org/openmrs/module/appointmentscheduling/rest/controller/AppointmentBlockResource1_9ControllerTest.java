@@ -146,7 +146,7 @@ public class AppointmentBlockResource1_9ControllerTest extends MainResourceContr
 	
 	@Override
 	public String getURI() {
-		return AppointmentRestController.APPOINTMENT_REST_NAMESPACE + "/appointmentblock";
+		return AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE + "/appointmentblock";
 	}
 	
 	@Override

@@ -160,7 +160,7 @@ public class AppointmentTypeResource1_9ControllerTest extends MainResourceContro
 	
 	@Override
 	public String getURI() {
-		return AppointmentRestController.APPOINTMENT_REST_NAMESPACE + "/appointmenttype";
+		return AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE + "/appointmenttype";
 	}
 	
 	@Override
