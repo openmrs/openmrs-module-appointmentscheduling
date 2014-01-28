@@ -48,4 +48,39 @@ public class AppointmentTypeValidatorTest {
 		
 		Mockito.verify(errors, never()).rejectValue("name", "appointmentscheduling.AppointmentType.nameDuplicated");
 	}
+	
+	@Test
+	public void mustRejectAppointmentTypeWithNegativeDuration() throws Exception {
+		AppointmentType appointmentType = new AppointmentType("name", "desciption", -5);
+		
+		appointmentTypeValidator.validate(appointmentType, errors);
+		
+		Mockito.verify(errors).rejectValue("duration", "appointmentscheduling.AppointmentType.duration.errorMessage");
+	}
+	
+	@Test
+	public void mustRejectAppointmentTypeWithDurationEqualsZero() throws Exception {
+		AppointmentType appointmentType = new AppointmentType("name", "desciption", 0);
+		
+		appointmentTypeValidator.validate(appointmentType, errors);
+		
+		Mockito.verify(errors).rejectValue("duration", "appointmentscheduling.AppointmentType.duration.errorMessage");
+	}
+	
+	@Test
+	public void mustAcceptAppointmentTypeWithPositiveDuration() throws Exception {
+		appointmentTypeValidator.validate(appointmentType, errors);
+		
+		Mockito.verify(errors, never()).rejectValue("duration",
+		    "appointmentscheduling.AppointmentType.duration.errorMessage");
+	}
+	
+	@Test
+	public void mustRejectAppointmentTypeWithNullValue() throws Exception {
+		AppointmentType appointmentType = new AppointmentType();
+		
+		appointmentTypeValidator.validate(appointmentType, errors);
+		
+		Mockito.verify(errors).rejectValue("duration", "appointmentscheduling.AppointmentType.duration.errorMessage");
+	}
 }

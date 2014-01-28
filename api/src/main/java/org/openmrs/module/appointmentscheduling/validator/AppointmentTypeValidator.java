@@ -68,7 +68,7 @@ public class AppointmentTypeValidator implements Validator {
 		if (appointmentType == null) {
 			errors.rejectValue("appointmentType", "error.general");
 		} else {
-			ValidationUtils.rejectIfEmpty(errors, "duration", "appointmentscheduling.AppointmentType.durationEmpty");
+			validateDurationField(errors, appointmentType);
 			validateFieldName(errors, appointmentType);
 		}
 	}
@@ -77,6 +77,13 @@ public class AppointmentTypeValidator implements Validator {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "error.name");
 		if (appointmentService.verifyDuplicatedAppointmentTypeName(appointmentType)) {
 			errors.rejectValue("name", "appointmentscheduling.AppointmentType.nameDuplicated");
+		}
+	}
+	
+	private void validateDurationField(Errors errors, AppointmentType appointmentType) {
+		ValidationUtils.rejectIfEmpty(errors, "duration", "appointmentscheduling.AppointmentType.durationEmpty");
+		if (appointmentType.getDuration() == null || appointmentType.getDuration() <= 0) {
+			errors.rejectValue("duration", "appointmentscheduling.AppointmentType.duration.errorMessage");
 		}
 	}
 	
