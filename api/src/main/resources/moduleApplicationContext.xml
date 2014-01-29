@@ -81,5 +81,11 @@
             <ref bean="transactionAttributeSource" />
         </property>
     </bean>
+
+    <bean id="appointmentTypeValidator" class="org.openmrs.module.appointmentscheduling.validator.AppointmentTypeValidator">
+        <property name="appointmentService">
+            <ref bean="appointmentService" />
+        </property>
+    </bean>
 	
 </beans>
