@@ -75,7 +75,6 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		
 		Object appt = deserialize(handle(req));
 		Assert.assertNotNull(PropertyUtils.getProperty(appt, "uuid"));
-		// TODO: figure out why the the lines below fails on bamboo
 		Assert.assertTrue(PropertyUtils.getProperty(appt, "startDate").toString().contains("2005-01-03T09:00:00"));
 		Assert.assertTrue(PropertyUtils.getProperty(appt, "endDate").toString().contains("2005-01-03T10:00:00"));
 		Assert.assertEquals("759799ab-c9a5-435e-b671-77773ada7499",
