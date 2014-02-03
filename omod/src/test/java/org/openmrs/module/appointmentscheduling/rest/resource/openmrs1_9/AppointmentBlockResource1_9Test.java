@@ -10,7 +10,7 @@ public class AppointmentBlockResource1_9Test extends BaseDelegatingResourceTest<
 	
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("standardAppointmentTestDataset.xml");
+		executeDataSet("standardWebAppointmentTestDataset.xml");
 	}
 	
 	@Override
@@ -21,7 +21,7 @@ public class AppointmentBlockResource1_9Test extends BaseDelegatingResourceTest<
 	@Override
 	public void validateRefRepresentation() throws Exception {
 		super.validateRefRepresentation();
-		assertPropEquals("voided", getObject().isVoided());
+		assertPropEquals("voided", null); // voided parameter only included if voided
 	}
 	
 	@Override
@@ -50,7 +50,7 @@ public class AppointmentBlockResource1_9Test extends BaseDelegatingResourceTest<
 	
 	@Override
 	public String getDisplayProperty() {
-		return "Super User, Xanadu: 2005-01-03 00:00:00.0 - 2005-01-03 11:00:00.0";
+		return "Mr. Horatio Test Hornblower Esq., Xanadu: 2005-01-03 00:00:00.0 - 2005-01-03 11:00:00.0";
 	}
 	
 	@Override

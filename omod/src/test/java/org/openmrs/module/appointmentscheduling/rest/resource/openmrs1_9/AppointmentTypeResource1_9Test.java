@@ -10,7 +10,7 @@ public class AppointmentTypeResource1_9Test extends BaseDelegatingResourceTest<A
 	
 	@Before
 	public void setup() throws Exception {
-		executeDataSet("standardAppointmentTestDataset.xml");
+		executeDataSet("standardWebAppointmentTestDataset.xml");
 	}
 	
 	@Override

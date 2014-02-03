@@ -21,7 +21,7 @@ public class AppointmentBlockResource1_9ControllerTest extends MainResourceContr
 	@Before
 	public void setup() throws Exception {
 		appointmentService = Context.getService(AppointmentService.class);
-		executeDataSet("standardAppointmentTestDataset.xml");
+		executeDataSet("standardWebAppointmentTestDataset.xml");
 	}
 	
 	@Test
@@ -81,7 +81,7 @@ public class AppointmentBlockResource1_9ControllerTest extends MainResourceContr
 	@Test
 	public void shouldCreateNewAppointmentBlock() throws Exception {
 		
-		int originalCount = 3;
+		int originalCount = 4;
 		String json = "{ \"startDate\":\"2005-03-01T00:00:00.000-0500\", \"endDate\":\"2005-03-01T11:00:00.000-0500\", "
 		        + "\"provider\":\"c0c54sd0-8e59-401d-8a4a-976a0b183599\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", "
 		        + "\"types\": [ \"c0c579b0-8e59-401d-8a4a-976a0b183519\" ]" + "}";
@@ -98,7 +98,7 @@ public class AppointmentBlockResource1_9ControllerTest extends MainResourceContr
 		    PropertyUtils.getProperty(PropertyUtils.getProperty(appt, "provider"), "uuid"));
 		Assert.assertEquals("9356400c-a5a2-4532-8f2b-2361b3446eb8",
 		    PropertyUtils.getProperty(PropertyUtils.getProperty(appt, "location"), "uuid"));
-		Assert.assertEquals(originalCount + 1, appointmentService.getAllAppointmentTypes().size());
+		Assert.assertEquals(originalCount + 1, appointmentService.getAllAppointmentBlocks().size());
 		
 	}
 	
@@ -132,14 +132,14 @@ public class AppointmentBlockResource1_9ControllerTest extends MainResourceContr
 	@Test
 	public void shouldPurgeAnAppointmentBlock() throws Exception {
 		
-		int originalCount = 3;
+		int originalCount = 4;
 		
-		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/759799ab-c9a5-435e-b671-77773ada7499");
+		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/759799ab-c9a5-435e-b671-77773ada7410");
 		req.addParameter("purge", "");
 		req.addParameter("reason", "really ridiculous random reason");
 		handle(req);
 		
-		Assert.assertNull(appointmentService.getAppointmentBlockByUuid("759799ab-c9a5-435e-b671-77773ada7499"));
+		Assert.assertNull(appointmentService.getAppointmentBlockByUuid("759799ab-c9a5-435e-b671-77773ada7410"));
 		Assert.assertEquals(originalCount - 1, appointmentService.getAllAppointmentBlocks().size());
 		
 	}
@@ -156,6 +156,6 @@ public class AppointmentBlockResource1_9ControllerTest extends MainResourceContr
 	
 	@Override
 	public long getAllCount() {
-		return 2;
+		return 3;
 	}
 }

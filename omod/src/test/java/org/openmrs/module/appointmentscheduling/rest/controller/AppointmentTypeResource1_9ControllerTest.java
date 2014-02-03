@@ -22,7 +22,7 @@ public class AppointmentTypeResource1_9ControllerTest extends MainResourceContro
 	@Before
 	public void setup() throws Exception {
 		appointmentService = Context.getService(AppointmentService.class);
-		executeDataSet("standardAppointmentTestDataset.xml");
+		executeDataSet("standardWebAppointmentTestDataset.xml");
 	}
 	
 	@Test
@@ -36,7 +36,7 @@ public class AppointmentTypeResource1_9ControllerTest extends MainResourceContro
 		Assert.assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(result, "name"));
 		Assert.assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(result, "display"));
 		Assert.assertEquals("Initial HIV Clinic Appointment Description", PropertyUtils.getProperty(result, "description"));
-		Assert.assertEquals(54, PropertyUtils.getProperty(result, "duration"));
+		Assert.assertEquals(45, PropertyUtils.getProperty(result, "duration"));
 		Assert.assertEquals(false, PropertyUtils.getProperty(result, "retired"));
 	}
 	
@@ -53,7 +53,7 @@ public class AppointmentTypeResource1_9ControllerTest extends MainResourceContro
 		Assert.assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(result, "name"));
 		Assert.assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(result, "display"));
 		Assert.assertEquals("Initial HIV Clinic Appointment Description", PropertyUtils.getProperty(result, "description"));
-		Assert.assertEquals(54, PropertyUtils.getProperty(result, "duration"));
+		Assert.assertEquals(45, PropertyUtils.getProperty(result, "duration"));
 		Assert.assertEquals(false, PropertyUtils.getProperty(result, "retired"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}

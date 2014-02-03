@@ -107,6 +107,7 @@ public class AppointmentBlockResource1_9 extends DataDelegatingCrudResource<Appo
 	
 	@Override
 	protected PageableResult doSearch(RequestContext context) {
+		// TODO: implement this
 		//return new NeedsPaging<AppointmentType>(Context.getService(AppointmentService.class).getAppointmentTypes(
 		// context.getParameter("q")), context);
 		return null;
