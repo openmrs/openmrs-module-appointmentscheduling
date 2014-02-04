@@ -61,6 +61,8 @@ public class AppointmentFormController {
 	/** Logger for this class and subclasses */
 	protected final Log log = LogFactory.getLog(getClass());
 	
+	private static String URL_PREVIOUS = "url_previous";
+	
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(TimeSlot.class, new TimeSlotEditor());
@@ -70,11 +72,22 @@ public class AppointmentFormController {
 	
 	@RequestMapping(value = "/module/appointmentscheduling/appointmentForm", method = RequestMethod.GET)
 	public void showForm(ModelMap model, HttpServletRequest request) {
+		request.getSession().setAttribute(URL_PREVIOUS, request.getHeader("Referer"));
 		if (Context.isAuthenticated()) {
 			model.put("selectedLocation", Context.getUserContext().getLocation());
 			if (request.getParameter("patientId") != null) {
 				model.put("appointment", getAppointment(null, Integer.parseInt(request.getParameter("patientId"))));
 			}
+		}
+	}
+	
+	@RequestMapping(value = "/module/appointmentscheduling/appointmentForm.action", method = RequestMethod.GET)
+	public String cancelForm(HttpServletRequest request) {
+		String url = request.getSession().getAttribute(URL_PREVIOUS).toString();
+		if (url.equalsIgnoreCase(null) || url.equalsIgnoreCase("")) {
+			return "appointmentForm.form";
+		} else {
+			return "redirect:" + url;
 		}
 	}
 	
