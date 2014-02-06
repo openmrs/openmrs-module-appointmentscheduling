@@ -35,9 +35,12 @@
 
 
     <visit visit_id="1" patient_id="2" date_started="2005-01-01 00:00:00.0" uuid="c0c579b0-8e59-401d-8a4a-976a0b183600" date_created="2005-01-01 00:00:00.0" voided="false" creator="1" />
-	<patient patient_id="1" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"/>
-	<patient patient_id="2" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"/>
-	
+	<patient patient_id="1" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" />
+	<patient patient_id="2" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" />
+
+    <person person_id="1" voided="false" date_created="2005-01-01 00:00:00.0" uuid="22b47970-8f52-11e3-baa8-0800200c9a66" creator="1" />
+    <person person_id="2" voided="false" date_created="2005-01-01 00:00:00.0" uuid="31e09960-8f52-11e3-baa8-0800200c9a66" creator="1" />
+
 	<appointmentscheduling_appointment appointment_id="1" time_slot_id="1" appointment_type_id="1" patient_id="1" status="SCHEDULED" uuid="c0c579b0-8e59-401d-8a4a-976a0b183601" date_created="2005-01-01 00:00:00.0" voided="false" creator="1"/>
 	<appointmentscheduling_appointment appointment_id="2" time_slot_id="2" appointment_type_id="1" patient_id="2" status="MISSED" visit_id="1" uuid="c0c579b0-8e59-401d-8a4a-976a0b183602" date_created="2005-01-01 00:00:00.0" voided="false" creator="1"/>
 	<appointmentscheduling_appointment appointment_id="3" time_slot_id="1" appointment_type_id="2" patient_id="2" status="COMPLETED" uuid="c0c579b0-8e59-401d-8a4a-976a0b183603" date_created="2005-01-01 00:00:00.0" voided="true" creator="1" void_reason="some void reason"/>

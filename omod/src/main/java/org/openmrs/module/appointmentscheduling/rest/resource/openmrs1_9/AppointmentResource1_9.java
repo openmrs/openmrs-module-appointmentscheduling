@@ -59,6 +59,23 @@ public class AppointmentResource1_9  extends DataDelegatingCrudResource<Appointm
     }
 
     @Override
+    public DelegatingResourceDescription getCreatableProperties() {
+        DelegatingResourceDescription description = new DelegatingResourceDescription();
+        description.addRequiredProperty("timeSlot");
+        description.addRequiredProperty("visit");
+        description.addRequiredProperty("patient");
+        description.addRequiredProperty("status");
+        description.addRequiredProperty("reason");
+        description.addRequiredProperty("appointmentType");
+        return description;
+    }
+
+    @Override
+    public DelegatingResourceDescription getUpdatableProperties() {
+        return getCreatableProperties();
+    }
+
+    @Override
     public Appointment getByUniqueId(String uuid) {
         return Context.getService(AppointmentService.class).getAppointmentByUuid(uuid);
     }
