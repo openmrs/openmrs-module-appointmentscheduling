@@ -62,10 +62,10 @@ public class AppointmentResource1_9  extends DataDelegatingCrudResource<Appointm
     public DelegatingResourceDescription getCreatableProperties() {
         DelegatingResourceDescription description = new DelegatingResourceDescription();
         description.addRequiredProperty("timeSlot");
-        description.addRequiredProperty("visit");
+        description.addProperty("visit");
         description.addRequiredProperty("patient");
         description.addRequiredProperty("status");
-        description.addRequiredProperty("reason");
+        description.addProperty("reason");
         description.addRequiredProperty("appointmentType");
         return description;
     }
