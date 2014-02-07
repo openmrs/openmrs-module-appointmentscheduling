@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Location;
@@ -128,5 +129,16 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 		query.setParameter("endDate", Calendar.getInstance().getTime());
 		
 		return query.list();
+	}
+	
+	@Override
+	public List<Appointment> getScheduledAppointmentsForPatient(Patient patient) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mappedClass);
+		criteria.add(Restrictions.eq("patient", patient));
+		criteria.add(Restrictions.or(Restrictions.eq("status", AppointmentStatus.SCHEDULED),
+		    Restrictions.eq("status", AppointmentStatus.RESCHEDULED)));
+		criteria.add(Restrictions.eq("voided", false));
+		
+		return criteria.list();
 	}
 }

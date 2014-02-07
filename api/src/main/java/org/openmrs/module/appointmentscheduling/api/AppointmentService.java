@@ -671,4 +671,7 @@ public interface AppointmentService extends OpenmrsService {
 	
 	@Transactional(readOnly = true)
 	boolean verifyDuplicatedAppointmentTypeName(AppointmentType appointmentType);
+	
+	@Transactional(readOnly = true)
+	List<Appointment> getScheduledAppointmentsForPatient(Patient patient);
 }

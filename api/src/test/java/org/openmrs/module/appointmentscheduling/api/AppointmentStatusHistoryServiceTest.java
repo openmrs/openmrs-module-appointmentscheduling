@@ -151,7 +151,7 @@ public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensit
 		assertEquals(4, service.getAllAppointmentStatusHistories().size());
 		
 		//Should not add new appointment
-		assertEquals(4, service.getAllAppointments().size());
+		assertEquals(6, service.getAllAppointments().size());
 	}
 	
 	@Test

@@ -45,7 +45,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	
 	private AppointmentService service;
 	
-	private Integer amountOfAppointments = 4;
+	private Integer amountOfAppointments = 6;
 	
 	@Before
 	public void before() throws Exception {
@@ -75,7 +75,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(appointment);
 		assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183603", appointment.getUuid());
 		
-		appointment = service.getAppointment(5);
+		appointment = service.getAppointment(7);
 		Assert.assertNull(appointment);
 	}
 	
@@ -149,8 +149,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertTrue(appointment.isVoided());
 		assertEquals("void reason", appointment.getVoidReason());
 		
-		//Should not change the number of appointment types.
-		assertEquals(4, service.getAllAppointments().size());
+		assertEquals(6, service.getAllAppointments().size());
 	}
 	
 	@Test
@@ -191,7 +190,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	@Verifies(value = "should get all appointments of patient", method = "getAppointmentsOfPatient(Integer patientId")
 	public void getAppointmentsOfPatient_shouldGetAllAppointmentsOfPatient() throws Exception {
 		List<Appointment> appointments = service.getAppointmentsOfPatient(new Patient(1));
-		Assert.assertEquals(2, appointments.size());
+		Assert.assertEquals(4, appointments.size());
 		
 		appointments = service.getAppointmentsOfPatient(new Patient(40));
 		Assert.assertEquals(0, appointments.size());
@@ -270,7 +269,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		
 		Date toDate = format.parse("2006-01-01 01:00:00.3");
 		appointments = service.getAppointmentsByConstraints(null, toDate, null, null, null, null);
-		assertEquals(2, appointments.size());
+		assertEquals(4, appointments.size());
 		
 		fromDate = format.parse("2007-01-01 00:00:00.0");
 		toDate = format.parse("2007-01-01 01:00:00.1");
@@ -302,7 +301,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		Appointment specificAppointment = service.getAppointment(4);
 		appointments = service.getAppointmentsByConstraints(null, null, null, null, type, null);
 		assertEquals(specificAppointment, appointments.iterator().next());
-		assertEquals(1, appointments.size());
+		assertEquals(3, appointments.size());
 	}
 	
 	@Test
@@ -311,12 +310,12 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		Location location = Context.getLocationService().getLocation(3);
 		assertNotNull(location);
 		List<Appointment> appointments = service.getAppointmentsByConstraints(null, null, location, null, null, null);
-		assertEquals(3, appointments.size());
+		assertEquals(5, appointments.size());
 		
 		location = Context.getLocationService().getLocation(2);
 		assertNotNull(location);
 		appointments = service.getAppointmentsByConstraints(null, null, location, null, null, null);
-		assertEquals(3, appointments.size());
+		assertEquals(5, appointments.size());
 		
 		location = Context.getLocationService().getLocation(4);
 		assertNotNull(location);
@@ -336,7 +335,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		appointments = service.getAppointmentsByConstraints(null, null, null, null, null, AppointmentStatus.MISSED);
 		Appointment specificAppointment = service.getAppointment(2);
 		assertEquals(specificAppointment, appointments.iterator().next());
-		assertEquals(1, appointments.size());
+		assertEquals(2, appointments.size());
 	}
 	
 	@Test
@@ -360,7 +359,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		// +"MISSED": 2
 		states.add(AppointmentStatus.MISSED);
 		result = service.getAppointmentsByStatus(states);
-		assertEquals((Integer) 3, (Integer) result.size());
+		assertEquals((Integer) 4, (Integer) result.size());
 		appointment = service.getAppointment(1);
 		assertNotNull(appointment);
 		assertTrue(result.contains(appointment));
@@ -390,4 +389,17 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		
 	}
 	
+	@Test
+	public void shouldGetScheduledAppointmentsForPatient() {
+		Patient patient = Context.getPatientService().getPatient(1);
+		List<Appointment> appointments = service.getScheduledAppointmentsForPatient(patient);
+		int expectedNumberOfScheduledAppointments = 3;
+		
+		assertNotNull(appointments);
+		assertEquals(expectedNumberOfScheduledAppointments, appointments.size());
+		
+		assertEquals(AppointmentStatus.SCHEDULED, appointments.get(0).getStatus());
+		assertEquals(AppointmentStatus.SCHEDULED, appointments.get(1).getStatus());
+		assertEquals(AppointmentStatus.RESCHEDULED, appointments.get(2).getStatus());
+	}
 }

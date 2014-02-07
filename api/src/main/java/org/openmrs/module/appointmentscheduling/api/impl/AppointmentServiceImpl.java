@@ -714,6 +714,10 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		return appointmentTypeDAO.verifyDuplicatedAppointmentTypeName(appointmentTypeName);
 	}
 	
+	public List<Appointment> getScheduledAppointmentsForPatient(Patient patient) {
+		return appointmentDAO.getScheduledAppointmentsForPatient(patient);
+	}
+	
 	public Map<AppointmentType, Double> getAverageHistoryDurationByConditions(Date fromDate, Date endDate,
 	        AppointmentStatus status) {
 		Map<AppointmentType, Double> averages = new HashMap<AppointmentType, Double>();

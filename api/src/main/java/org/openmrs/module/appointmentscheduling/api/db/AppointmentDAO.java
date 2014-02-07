@@ -43,4 +43,5 @@ public interface AppointmentDAO extends SingleClassDAO {
 	
 	List<Appointment> getPastAppointmentsByStates(List<AppointmentStatus> states);
 	
+	List<Appointment> getScheduledAppointmentsForPatient(Patient patient);
 }
