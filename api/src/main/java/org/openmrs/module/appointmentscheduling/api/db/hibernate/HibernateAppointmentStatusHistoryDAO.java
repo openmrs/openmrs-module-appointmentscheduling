@@ -70,12 +70,12 @@ public class HibernateAppointmentStatusHistoryDAO extends HibernateSingleClassDA
 		return histories;
 		
 	}
-
-    @Override
-    public void purgeHistoryBy(Appointment appointment) {
-        String hql = "delete from AppointmentStatusHistory where appointment= :appointment";
-        Session currentSession = sessionFactory.getCurrentSession();
-        Query query = currentSession.createQuery(hql);
-        query.setParameter("appointment", appointment).executeUpdate();
-    }
+	
+	@Override
+	public void purgeHistoryBy(Appointment appointment) {
+		String hql = "delete from AppointmentStatusHistory where appointment= :appointment";
+		Session currentSession = sessionFactory.getCurrentSession();
+		Query query = currentSession.createQuery(hql);
+		query.setParameter("appointment", appointment).executeUpdate();
+	}
 }

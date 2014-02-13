@@ -221,7 +221,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		
 		appointment = service.getLastAppointment(new Patient(5));
 		assertNull(appointment);
-
+		
 		appointment = service.getLastAppointment(patient);
 		assertEquals(7, appointment.getAppointmentId().intValue());
 		
@@ -385,11 +385,11 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		Appointment appointment = service.getAppointment(1);
 		assertNotNull(appointment);
 		assertEquals(AppointmentStatus.MISSED, appointment.getStatus());
-
-        appointment = service.getAppointment(4);
-        assertNotNull(appointment);
-        assertEquals(AppointmentStatus.MISSED, appointment.getStatus());
-
+		
+		appointment = service.getAppointment(4);
+		assertNotNull(appointment);
+		assertEquals(AppointmentStatus.MISSED, appointment.getStatus());
+		
 	}
 	
 	@Test

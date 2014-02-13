@@ -156,7 +156,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(timeSlot);
 		assertTrue(timeSlot.isVoided());
 		
-		assertEquals(TOTAL_TIME_SLOTS,service.getAllTimeSlots().size());
+		assertEquals(TOTAL_TIME_SLOTS, service.getAllTimeSlots().size());
 	}
 	
 	@Test
@@ -402,8 +402,8 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(7, result.size());
 		
 		TimeSlot firstTimeSlot = result.get(0);
-        assertEquals(5, firstTimeSlot.getTimeSlotId().intValue());
-
+		assertEquals(5, firstTimeSlot.getTimeSlotId().intValue());
+		
 		TimeSlot lastTimeSlot = result.get(result.size() - 1);
 		assertEquals(8, lastTimeSlot.getTimeSlotId().intValue());
 	}

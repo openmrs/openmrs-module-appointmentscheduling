@@ -868,7 +868,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	
 	@Override
 	public List<DailyAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date) {
-
+		
 		List<AppointmentBlock> appointmentBlockList = getAppointmentBlocks(setDateToStartOfDay(date),
 		    setDateToEndOfDay(date), location.getId().toString(), null, null);
 		
@@ -884,26 +884,26 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		
 		return dailyAppointmentBlockList;
 	}
-
-    private Date setDateToEndOfDay(Date date) {
-        return setupDate(date, 23, 59, 59);
-    }
-
-    private Date setDateToStartOfDay(Date date) {
-        return setupDate(date, 0, 0, 0);
-    }
-
-    private Date setupDate(Date date, int hour, int minute, int second) {
-        Calendar endDateCalendar = Calendar.getInstance();
-        endDateCalendar.setTime(date);
-
-        endDateCalendar.set(Calendar.HOUR, hour);
-        endDateCalendar.set(Calendar.MINUTE, minute);
-        endDateCalendar.set(Calendar.SECOND, second);
-        return endDateCalendar.getTime();
-    }
-
-    private double[] confidenceInterval(Double[] data) {
+	
+	private Date setDateToEndOfDay(Date date) {
+		return setupDate(date, 23, 59, 59);
+	}
+	
+	private Date setDateToStartOfDay(Date date) {
+		return setupDate(date, 0, 0, 0);
+	}
+	
+	private Date setupDate(Date date, int hour, int minute, int second) {
+		Calendar endDateCalendar = Calendar.getInstance();
+		endDateCalendar.setTime(date);
+		
+		endDateCalendar.set(Calendar.HOUR, hour);
+		endDateCalendar.set(Calendar.MINUTE, minute);
+		endDateCalendar.set(Calendar.SECOND, second);
+		return endDateCalendar.getTime();
+	}
+	
+	private double[] confidenceInterval(Double[] data) {
 		//Empty Dataset
 		if (data.length == 0)
 			return new double[] { 0.0, 0.0 };

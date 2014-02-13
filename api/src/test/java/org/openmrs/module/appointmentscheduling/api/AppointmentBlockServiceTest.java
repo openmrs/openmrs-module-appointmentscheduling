@@ -41,9 +41,10 @@ import static org.junit.Assert.assertFalse;
  * Tests Appointment Block methods in the {@link $ AppointmentService} .
  */
 public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest {
-
-    private static final int TOTAL_APPOINTMENT_BLOCKS = 4;
-    private AppointmentService service;
+	
+	private static final int TOTAL_APPOINTMENT_BLOCKS = 4;
+	
+	private AppointmentService service;
 	
 	@Before
 	public void before() throws Exception {
@@ -177,7 +178,7 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		//Should not change the number of appointment blocks.
 		assertEquals(TOTAL_APPOINTMENT_BLOCKS, service.getAllAppointmentBlocks().size());
 	}
-
+	
 	@Test
 	@Verifies(value = "should delete given appointment block", method = "purgeAppointmentBlock(AppointmentBlock)")
 	public void purgeAppointmentBlock_shouldDeleteGivenAppointmentBlock() throws Exception {

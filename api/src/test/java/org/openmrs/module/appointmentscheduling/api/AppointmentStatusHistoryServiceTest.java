@@ -41,9 +41,10 @@ import org.openmrs.test.Verifies;
  * Tests Appointment Status History methods in the {@link $ AppointmentService} .
  */
 public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensitiveTest {
-
-    public static final int TOTAL_APPOINTMENTS = 7;
-    private AppointmentService service;
+	
+	public static final int TOTAL_APPOINTMENTS = 7;
+	
+	private AppointmentService service;
 	
 	@Before
 	public void before() throws Exception {
