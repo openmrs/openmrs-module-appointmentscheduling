@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.appointmentscheduling.api.impl;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.openmrs.module.appointmentscheduling.DailyAppointmentBlock;
 import org.openmrs.module.appointmentscheduling.StudentT;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -312,7 +314,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	
 	@Override
 	public void purgeAppointment(Appointment appointment) {
-        getAppointmentStatusHistoryDAO().purgeHistoryBy(appointment);
+		getAppointmentStatusHistoryDAO().purgeHistoryBy(appointment);
 		getAppointmentDAO().delete(appointment);
 	}
 	
@@ -862,6 +864,43 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		
 		return distribution;
 		
+	}
+	
+	@Override
+	public List<DailyAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date) {
+		
+		List<AppointmentBlock> appointmentBlockList = getAppointmentBlocks(setDateToStartOfDay(date),
+		    setDateToEndOfDay(date), location.getId().toString(), null, null);
+		
+		List<DailyAppointmentBlock> dailyAppointmentBlockList = new ArrayList<DailyAppointmentBlock>();
+		
+		for (int i = 0; i < appointmentBlockList.size(); i++) {
+			List<Appointment> appointmentList = getAppointmentDAO().getAppointmentByAppointmentBlock(
+			    appointmentBlockList.get(i));
+			DailyAppointmentBlock dailyAppointmentBlock = new DailyAppointmentBlock(appointmentList,
+			        appointmentBlockList.get(i));
+			dailyAppointmentBlockList.add(dailyAppointmentBlock);
+		}
+		
+		return dailyAppointmentBlockList;
+	}
+	
+	private Date setDateToEndOfDay(Date date) {
+		return setupDate(date, 23, 59, 59);
+	}
+	
+	private Date setDateToStartOfDay(Date date) {
+		return setupDate(date, 0, 0, 0);
+	}
+	
+	private Date setupDate(Date date, int hour, int minute, int second) {
+		Calendar endDateCalendar = Calendar.getInstance();
+		endDateCalendar.setTime(date);
+		
+		endDateCalendar.set(Calendar.HOUR, hour);
+		endDateCalendar.set(Calendar.MINUTE, minute);
+		endDateCalendar.set(Calendar.SECOND, second);
+		return endDateCalendar.getTime();
 	}
 	
 	private double[] confidenceInterval(Double[] data) {

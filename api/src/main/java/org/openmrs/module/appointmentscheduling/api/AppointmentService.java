@@ -28,6 +28,7 @@ import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
+import org.openmrs.module.appointmentscheduling.DailyAppointmentBlock;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -674,4 +675,6 @@ public interface AppointmentService extends OpenmrsService {
 	
 	@Transactional(readOnly = true)
 	List<Appointment> getScheduledAppointmentsForPatient(Patient patient);
+	
+	List<DailyAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date);
 }

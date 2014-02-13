@@ -44,7 +44,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 	
 	private AppointmentService service;
 	
-	private Integer amountOfTimeSlots = 7;
+	private static int TOTAL_TIME_SLOTS = 8;
 	
 	@Before
 	public void before() throws Exception {
@@ -56,21 +56,21 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 	@Verifies(value = "should get all time slots", method = "getAllTimeSlots()")
 	public void getAllTimeSlots_shouldGetAllTimeSlots() {
 		List<TimeSlot> timeSlots = service.getAllTimeSlots();
-		Assert.assertEquals(amountOfTimeSlots, (Integer) timeSlots.size());
+		assertEquals(TOTAL_TIME_SLOTS, timeSlots.size());
 	}
 	
 	@Test
 	@Verifies(value = "should get all time slots by a given bool whether to include voided", method = "getAllTimeSlots(boolean)")
 	public void getAllTimeSlots_shouldGetAllUnvoidedTimeSlots() {
 		List<TimeSlot> timeSlots = service.getAllTimeSlots(false);
-		Assert.assertEquals(6, timeSlots.size());
+		assertEquals(7, timeSlots.size());
 	}
 	
 	@Test
 	@Verifies(value = "should get all time slots including voided", method = "getAllTimeSlots(boolean)")
 	public void getAllTimeSlots_shouldGetAllIncludingVoidedTimeSlots() {
 		List<TimeSlot> timeSlots = service.getAllTimeSlots(true);
-		Assert.assertEquals(amountOfTimeSlots, (Integer) timeSlots.size());
+		assertEquals(TOTAL_TIME_SLOTS, timeSlots.size());
 	}
 	
 	@Test
@@ -82,8 +82,8 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		timeSlot = service.saveTimeSlot(timeSlot);
 		List<TimeSlot> timeSlots = service.getAllTimeSlots();
 		
-		Assert.assertNotNull(timeSlot);
-		Assert.assertEquals(amountOfTimeSlots + 1, timeSlots.size());
+		assertNotNull(timeSlot);
+		assertEquals(TOTAL_TIME_SLOTS + 1, timeSlots.size());
 	}
 	
 	@Test
@@ -93,10 +93,10 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		Date currentDate = new Date();
 		timeSlot.setEndDate(currentDate);
 		timeSlot = service.saveTimeSlot(timeSlot);
-		Assert.assertNotNull(timeSlot);
+		assertNotNull(timeSlot);
 		
 		timeSlot = service.getTimeSlot(1);
-		Assert.assertEquals(currentDate, timeSlot.getEndDate());
+		assertEquals(currentDate, timeSlot.getEndDate());
 	}
 	
 	@Test
@@ -117,8 +117,8 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(timeSlot);
 		assertEquals("2007-01-01 00:00:00.2", startDate.toString());
 		
-		timeSlot = service.getTimeSlot(8);
-		Assert.assertNull(timeSlot);
+		timeSlot = service.getTimeSlot(9);
+		assertNull(timeSlot);
 	}
 	
 	@Test
@@ -156,7 +156,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(timeSlot);
 		assertTrue(timeSlot.isVoided());
 		
-		assertEquals(amountOfTimeSlots, (Integer) service.getAllTimeSlots().size());
+		assertEquals(TOTAL_TIME_SLOTS, service.getAllTimeSlots().size());
 	}
 	
 	@Test
@@ -174,7 +174,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		assertFalse(timeSlot.isVoided());
 		assertNull(timeSlot.getVoidReason());
 		
-		assertEquals(amountOfTimeSlots, (Integer) service.getAllTimeSlots().size());
+		assertEquals(TOTAL_TIME_SLOTS, service.getAllTimeSlots().size());
 	}
 	
 	@Test
@@ -188,7 +188,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		timeSlot = service.getTimeSlot(4);
 		assertNull(timeSlot);
 		
-		assertEquals(amountOfTimeSlots - 1, service.getAllTimeSlots().size());
+		assertEquals(TOTAL_TIME_SLOTS - 1, service.getAllTimeSlots().size());
 	}
 	
 	@Test
@@ -398,14 +398,14 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		Date fromDate = format.parse("2005-01-01 00:00:00.0");
 		
 		List<TimeSlot> result = service.getTimeSlotsByConstraintsIncludingFull(type, fromDate, null, null, null);
-		Assert.assertNotNull(result);
-		Assert.assertTrue(result.size() == 6);
+		assertNotNull(result);
+		assertEquals(7, result.size());
 		
 		TimeSlot firstTimeSlot = result.get(0);
-		Assert.assertTrue(firstTimeSlot.getTimeSlotId().equals(5));
+		assertEquals(5, firstTimeSlot.getTimeSlotId().intValue());
 		
 		TimeSlot lastTimeSlot = result.get(result.size() - 1);
-		Assert.assertTrue(lastTimeSlot.getTimeSlotId().equals(4));
+		assertEquals(8, lastTimeSlot.getTimeSlotId().intValue());
 	}
 	
 	@Test
@@ -416,13 +416,13 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		Date fromDate = format.parse("2005-01-01 00:00:00.0");
 		
 		List<TimeSlot> result = service.getTimeSlotsByConstraints(type, fromDate, null, null, null);
-		Assert.assertNotNull(result);
-		Assert.assertTrue(result.size() == 4);
+		assertNotNull(result);
+		assertEquals(5, result.size());
 		
 		TimeSlot firstTimeSlot = result.get(0);
-		Assert.assertTrue(firstTimeSlot.getTimeSlotId().equals(5));
+		assertEquals(5, firstTimeSlot.getTimeSlotId().intValue());
 		
 		TimeSlot lastTimeSlot = result.get(result.size() - 1);
-		Assert.assertTrue(lastTimeSlot.getTimeSlotId().equals(4));
+		assertEquals(8, lastTimeSlot.getTimeSlotId().intValue());
 	}
 }

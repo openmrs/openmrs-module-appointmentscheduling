@@ -15,7 +15,6 @@ package org.openmrs.module.appointmentscheduling.api;
 
 import junit.framework.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.Patient;
@@ -26,6 +25,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
+import org.openmrs.module.appointmentscheduling.DailyAppointmentBlock;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
@@ -36,7 +36,10 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Tests Appointment methods in the {@link $ AppointmentService} .
@@ -45,7 +48,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	
 	private AppointmentService service;
 	
-	private Integer amountOfAppointments = 6;
+	private static int TOTAL_APPOINTMENTS = 7;
 	
 	@Before
 	public void before() throws Exception {
@@ -57,7 +60,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	@Verifies(value = "should get all appointments", method = "getAllAppointments()")
 	public void getAllAppointments_shouldGetAllAppointments() throws Exception {
 		List<Appointment> appointments = service.getAllAppointments();
-		assertEquals(amountOfAppointments, (Integer) appointments.size());
+		assertEquals(TOTAL_APPOINTMENTS, appointments.size());
 	}
 	
 	@Test
@@ -75,8 +78,8 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(appointment);
 		assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183603", appointment.getUuid());
 		
-		appointment = service.getAppointment(7);
-		Assert.assertNull(appointment);
+		appointment = service.getAppointment(8);
+		assertNull(appointment);
 	}
 	
 	@Test
@@ -95,7 +98,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals((Integer) 3, appointment.getId());
 		
 		appointment = service.getAppointmentByUuid("c0c579b0-8e59-401d-8a4a-976a0b183700");
-		Assert.assertNull(appointment);
+		assertNull(appointment);
 	}
 	
 	@Test
@@ -113,7 +116,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		
 		//Should create a new appointment type row.
 		List<Appointment> appointments = service.getAllAppointments();
-		assertEquals(amountOfAppointments + 1, appointments.size());
+		assertEquals(TOTAL_APPOINTMENTS + 1, appointments.size());
 	}
 	
 	@Test
@@ -131,7 +134,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(AppointmentStatus.MISSED, appointment.getStatus());
 		
 		//Should not change the number of appointment types.
-		assertEquals(amountOfAppointments, (Integer) service.getAllAppointments().size());
+		assertEquals(TOTAL_APPOINTMENTS, service.getAllAppointments().size());
 	}
 	
 	@Test
@@ -140,7 +143,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		Appointment appointment = service.getAppointment(1);
 		assertNotNull(appointment);
 		Assert.assertFalse(appointment.isVoided());
-		Assert.assertNull(appointment.getVoidReason());
+		assertNull(appointment.getVoidReason());
 		
 		service.voidAppointment(appointment, "void reason");
 		
@@ -149,7 +152,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertTrue(appointment.isVoided());
 		assertEquals("void reason", appointment.getVoidReason());
 		
-		assertEquals(6, service.getAllAppointments().size());
+		assertEquals(TOTAL_APPOINTMENTS, service.getAllAppointments().size());
 	}
 	
 	@Test
@@ -165,10 +168,10 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		appointment = service.getAppointment(3);
 		assertNotNull(appointment);
 		Assert.assertFalse(appointment.isVoided());
-		Assert.assertNull(appointment.getVoidReason());
+		assertNull(appointment.getVoidReason());
 		
 		//Should not change the number of appointment types.
-		assertEquals(amountOfAppointments, (Integer) service.getAllAppointments().size());
+		assertEquals(TOTAL_APPOINTMENTS, service.getAllAppointments().size());
 	}
 	
 	@Test
@@ -180,20 +183,20 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		service.purgeAppointment(appointment);
 		
 		appointment = service.getAppointment(3);
-		Assert.assertNull(appointment);
+		assertNull(appointment);
 		
 		//Should reduce the existing number of appointment types.
-		assertEquals(amountOfAppointments - 1, service.getAllAppointments().size());
+		assertEquals(TOTAL_APPOINTMENTS - 1, service.getAllAppointments().size());
 	}
 	
 	@Test
 	@Verifies(value = "should get all appointments of patient", method = "getAppointmentsOfPatient(Integer patientId")
 	public void getAppointmentsOfPatient_shouldGetAllAppointmentsOfPatient() throws Exception {
 		List<Appointment> appointments = service.getAppointmentsOfPatient(new Patient(1));
-		Assert.assertEquals(4, appointments.size());
+		assertEquals(5, appointments.size());
 		
 		appointments = service.getAppointmentsOfPatient(new Patient(40));
-		Assert.assertEquals(0, appointments.size());
+		assertEquals(0, appointments.size());
 	}
 	
 	@Test
@@ -203,7 +206,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		Assert.assertNotNull(appointment);
 		
 		appointment = service.getAppointmentByVisit(new Visit(13));
-		Assert.assertNull(appointment);
+		assertNull(appointment);
 	}
 	
 	@Test
@@ -214,17 +217,17 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		
 		Appointment appointment = null;
 		appointment = service.getLastAppointment(null);
-		Assert.assertNull(appointment);
+		assertNull(appointment);
 		
 		appointment = service.getLastAppointment(new Patient(5));
-		Assert.assertNull(appointment);
+		assertNull(appointment);
 		
 		appointment = service.getLastAppointment(patient);
-		assertEquals((Integer) 4, appointment.getAppointmentId());
+		assertEquals(7, appointment.getAppointmentId().intValue());
 		
 		patient = Context.getPatientService().getPatient(2);
 		appointment = service.getLastAppointment(patient);
-		assertEquals((Integer) 2, appointment.getAppointmentId());
+		assertEquals(2, appointment.getAppointmentId().intValue());
 	}
 	
 	@Test
@@ -255,7 +258,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	@Verifies(value = "Should Get All unvoided Appointments", method = "getAppointmentsByConstraints(Date, Date, Location, Provider, AppointmentType, String)")
 	public void shouldGetAllUnvoidedAppointments_getAppointmentsByConstraints() {
 		List<Appointment> appointments = service.getAppointmentsByConstraints(null, null, null, null, null, null);
-		assertEquals(amountOfAppointments - 1, appointments.size());
+		assertEquals(TOTAL_APPOINTMENTS - 1, appointments.size());
 	}
 	
 	@Test
@@ -265,7 +268,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		Date fromDate = format.parse("2006-01-01 00:00:00.0");
 		
 		List<Appointment> appointments = service.getAppointmentsByConstraints(fromDate, null, null, null, null, null);
-		assertEquals(3, appointments.size());
+		assertEquals(4, appointments.size());
 		
 		Date toDate = format.parse("2006-01-01 01:00:00.3");
 		appointments = service.getAppointmentsByConstraints(null, toDate, null, null, null, null);
@@ -286,7 +289,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		Provider provider = Context.getProviderService().getProvider(1);
 		assertNotNull(provider);
 		List<Appointment> appointments = service.getAppointmentsByConstraints(null, null, null, provider, null, null);
-		assertEquals((Integer) (amountOfAppointments - 1), (Integer) appointments.size());
+		assertEquals((Integer) (TOTAL_APPOINTMENTS - 1), (Integer) appointments.size());
 	}
 	
 	@Test
@@ -295,7 +298,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		AppointmentType type = service.getAppointmentType(1);
 		assertNotNull(type);
 		List<Appointment> appointments = service.getAppointmentsByConstraints(null, null, null, null, type, null);
-		assertEquals((Integer) 2, (Integer) appointments.size());
+		assertEquals(3, appointments.size());
 		
 		type = service.getAppointmentType(3);
 		Appointment specificAppointment = service.getAppointment(4);
@@ -315,7 +318,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		location = Context.getLocationService().getLocation(2);
 		assertNotNull(location);
 		appointments = service.getAppointmentsByConstraints(null, null, location, null, null, null);
-		assertEquals(5, appointments.size());
+		assertEquals(6, appointments.size());
 		
 		location = Context.getLocationService().getLocation(4);
 		assertNotNull(location);
@@ -330,7 +333,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		
 		List<Appointment> appointments = service.getAppointmentsByConstraints(null, null, null, null, null,
 		    AppointmentStatus.SCHEDULED);
-		assertEquals(2, appointments.size());
+		assertEquals(3, appointments.size());
 		
 		appointments = service.getAppointmentsByConstraints(null, null, null, null, null, AppointmentStatus.MISSED);
 		Appointment specificAppointment = service.getAppointment(2);
@@ -348,7 +351,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		// "SCHEDULED": 1 & 4
 		states.add(AppointmentStatus.SCHEDULED);
 		result = service.getAppointmentsByStatus(states);
-		assertEquals((Integer) 2, (Integer) result.size());
+		assertEquals(3, result.size());
 		appointment = service.getAppointment(1);
 		assertNotNull(appointment);
 		assertTrue(result.contains(appointment));
@@ -359,7 +362,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		// +"MISSED": 2
 		states.add(AppointmentStatus.MISSED);
 		result = service.getAppointmentsByStatus(states);
-		assertEquals((Integer) 4, (Integer) result.size());
+		assertEquals(5, result.size());
 		appointment = service.getAppointment(1);
 		assertNotNull(appointment);
 		assertTrue(result.contains(appointment));
@@ -377,15 +380,15 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	public void shouldChangeCorrectAppointments_cleanOpenAppointments() {
 		List<Appointment> result = service.cleanOpenAppointments();
 		assertNotNull(result);
-		assertTrue(result.size() == 2);
+		assertEquals(3, result.size());
 		
 		Appointment appointment = service.getAppointment(1);
 		assertNotNull(appointment);
-		assertTrue(appointment.getStatus().equals(AppointmentStatus.MISSED));
+		assertEquals(AppointmentStatus.MISSED, appointment.getStatus());
 		
 		appointment = service.getAppointment(4);
 		assertNotNull(appointment);
-		assertTrue(appointment.getStatus().equals(AppointmentStatus.MISSED));
+		assertEquals(AppointmentStatus.MISSED, appointment.getStatus());
 		
 	}
 	
@@ -393,7 +396,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	public void shouldGetScheduledAppointmentsForPatient() {
 		Patient patient = Context.getPatientService().getPatient(1);
 		List<Appointment> appointments = service.getScheduledAppointmentsForPatient(patient);
-		int expectedNumberOfScheduledAppointments = 3;
+		int expectedNumberOfScheduledAppointments = 4;
 		
 		assertNotNull(appointments);
 		assertEquals(expectedNumberOfScheduledAppointments, appointments.size());
@@ -401,5 +404,32 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(AppointmentStatus.SCHEDULED, appointments.get(0).getStatus());
 		assertEquals(AppointmentStatus.SCHEDULED, appointments.get(1).getStatus());
 		assertEquals(AppointmentStatus.RESCHEDULED, appointments.get(2).getStatus());
+	}
+	
+	@Test
+	public void shouldGetDailyAppointments() throws Exception {
+		Location location = Context.getLocationService().getLocation(2);
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		Date date = format.parse("2014-01-02 10:00:00.0");
+		Provider provider = Context.getProviderService().getProvider(1);
+		
+		List<DailyAppointmentBlock> dailyAppointmentBlockList = service.getDailyAppointmentBlocks(location, date);
+		
+		assertNotNull(dailyAppointmentBlockList);
+		assertEquals(1, dailyAppointmentBlockList.size());
+		
+		DailyAppointmentBlock dailyAppointmentBlock = dailyAppointmentBlockList.get(0);
+		
+		assertEquals(1, dailyAppointmentBlock.getAppointments().size());
+		assertEquals(format.parse("2014-01-02 00:00:00.0"), dailyAppointmentBlock.getStartDate());
+		assertEquals(format.parse("2014-01-02 12:00:00.0"), dailyAppointmentBlock.getEndDate());
+		assertEquals(provider, dailyAppointmentBlock.getProvider());
+		
+		List<Appointment> appointmentList = dailyAppointmentBlock.getAppointments();
+		Appointment appointment = appointmentList.get(0);
+		
+		assertEquals(1, appointment.getPatient().getId().intValue());
+		assertEquals("Initial HIV Clinic Appointment", appointment.getAppointmentType().getName());
+		
 	}
 }

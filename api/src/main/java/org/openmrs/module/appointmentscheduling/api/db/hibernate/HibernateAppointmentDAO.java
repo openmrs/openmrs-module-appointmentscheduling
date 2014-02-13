@@ -20,17 +20,19 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
-import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.api.APIException;
 import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
-import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentDAO;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus.RESCHEDULED;
+import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus.SCHEDULED;
 
 public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements AppointmentDAO {
 	
@@ -135,10 +137,21 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 	public List<Appointment> getScheduledAppointmentsForPatient(Patient patient) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mappedClass);
 		criteria.add(Restrictions.eq("patient", patient));
-		criteria.add(Restrictions.or(Restrictions.eq("status", AppointmentStatus.SCHEDULED),
-		    Restrictions.eq("status", AppointmentStatus.RESCHEDULED)));
+		criteria.add(Restrictions.or(Restrictions.eq("status", SCHEDULED), Restrictions.eq("status", RESCHEDULED)));
 		criteria.add(Restrictions.eq("voided", false));
 		
 		return criteria.list();
 	}
+	
+	@Override
+	public List<Appointment> getAppointmentByAppointmentBlock(AppointmentBlock appointmentBlock) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mappedClass);
+		criteria.createAlias("timeSlot", "time_slot");
+		criteria.add(Restrictions.eq("time_slot.appointmentBlock", appointmentBlock));
+		criteria.add(Restrictions.or(Restrictions.eq("status", SCHEDULED), Restrictions.eq("status", RESCHEDULED)));
+		criteria.add(Restrictions.eq("voided", false));
+		
+		return criteria.list();
+	}
+	
 }
