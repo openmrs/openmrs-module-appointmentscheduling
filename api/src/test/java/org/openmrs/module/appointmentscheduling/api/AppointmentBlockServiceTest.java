@@ -219,7 +219,8 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		// should ignore voided blocks
 		appointmentBlocks = service.getAppointmentBlocks(toDate, null, "", provider, null);
 		assertNotNull(appointmentBlocks);
-		assertEquals(0, appointmentBlocks.size());
+		assertEquals(1, appointmentBlocks.size());
+		assertEquals(new Integer(4), appointmentBlocks.get(0).getAppointmentBlockId());
 		
 		appointmentBlocks = service.getAppointmentBlocks(null, toDate, "", provider, null);
 		assertNotNull(appointmentBlocks);
@@ -233,9 +234,10 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
 		
 		appointmentBlocks = service.getAppointmentBlocks(null, null, "", provider, null);
-		assertEquals(2, appointmentBlocks.size());
+		assertEquals(3, appointmentBlocks.size());
 		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
 		assertEquals(new Integer(2), appointmentBlocks.get(1).getAppointmentBlockId());
+		assertEquals(new Integer(4), appointmentBlocks.get(2).getAppointmentBlockId());
 		
 		//test filtering by appointment type only
 		appointmentBlocks = service.getAppointmentBlocks(null, null, "", null, appointmentType);
