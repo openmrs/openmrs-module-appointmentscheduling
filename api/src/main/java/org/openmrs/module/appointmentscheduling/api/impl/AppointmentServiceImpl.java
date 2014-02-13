@@ -50,7 +50,6 @@ import org.openmrs.module.appointmentscheduling.api.db.AppointmentDAO;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentStatusHistoryDAO;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentTypeDAO;
 import org.openmrs.module.appointmentscheduling.api.db.TimeSlotDAO;
-import org.openmrs.module.appointmentscheduling.api.db.hibernate.HibernateAppointmentDAO;
 import org.openmrs.validator.ValidateUtil;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -869,23 +868,9 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	
 	@Override
 	public List<DailyAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date) {
-		
-		Calendar startDateCalendar = Calendar.getInstance();
-		startDateCalendar.setTime(date);
-		
-		startDateCalendar.set(Calendar.HOUR, 0);
-		startDateCalendar.set(Calendar.MINUTE, 0);
-		startDateCalendar.set(Calendar.SECOND, 0);
-		
-		Calendar endDateCalendar = Calendar.getInstance();
-		endDateCalendar.setTime(date);
-		
-		endDateCalendar.set(Calendar.HOUR, 23);
-		endDateCalendar.set(Calendar.MINUTE, 59);
-		endDateCalendar.set(Calendar.SECOND, 59);
-		
-		List<AppointmentBlock> appointmentBlockList = getAppointmentBlocks(startDateCalendar.getTime(),
-		    endDateCalendar.getTime(), location.getId().toString(), null, null);
+
+		List<AppointmentBlock> appointmentBlockList = getAppointmentBlocks(setDateToStartOfDay(date),
+		    setDateToEndOfDay(date), location.getId().toString(), null, null);
 		
 		List<DailyAppointmentBlock> dailyAppointmentBlockList = new ArrayList<DailyAppointmentBlock>();
 		
@@ -899,8 +884,26 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		
 		return dailyAppointmentBlockList;
 	}
-	
-	private double[] confidenceInterval(Double[] data) {
+
+    private Date setDateToEndOfDay(Date date) {
+        return setupDate(date, 23, 59, 59);
+    }
+
+    private Date setDateToStartOfDay(Date date) {
+        return setupDate(date, 0, 0, 0);
+    }
+
+    private Date setupDate(Date date, int hour, int minute, int second) {
+        Calendar endDateCalendar = Calendar.getInstance();
+        endDateCalendar.setTime(date);
+
+        endDateCalendar.set(Calendar.HOUR, hour);
+        endDateCalendar.set(Calendar.MINUTE, minute);
+        endDateCalendar.set(Calendar.SECOND, second);
+        return endDateCalendar.getTime();
+    }
+
+    private double[] confidenceInterval(Double[] data) {
 		//Empty Dataset
 		if (data.length == 0)
 			return new double[] { 0.0, 0.0 };

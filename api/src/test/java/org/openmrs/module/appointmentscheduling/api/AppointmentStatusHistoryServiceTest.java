@@ -41,8 +41,9 @@ import org.openmrs.test.Verifies;
  * Tests Appointment Status History methods in the {@link $ AppointmentService} .
  */
 public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensitiveTest {
-	
-	private AppointmentService service;
+
+    public static final int TOTAL_APPOINTMENTS = 7;
+    private AppointmentService service;
 	
 	@Before
 	public void before() throws Exception {
@@ -151,7 +152,7 @@ public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensit
 		assertEquals(4, service.getAllAppointmentStatusHistories().size());
 		
 		//Should not add new appointment
-		assertEquals(6, service.getAllAppointments().size());
+		assertEquals(TOTAL_APPOINTMENTS, service.getAllAppointments().size());
 	}
 	
 	@Test
