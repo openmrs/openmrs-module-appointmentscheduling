@@ -52,7 +52,10 @@ public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implem
 	        AppointmentType appointmentType) {
 		List<AppointmentBlock> filteredAppointmentBlocks = null;
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(AppointmentBlock.class);
-		if (!locations.isEmpty()) {
+		
+		criteria.add(Restrictions.eq("voided", false)); // we only want voided appointment blocks
+		
+		if (locations != null && !locations.isEmpty()) {
 			String[] locationsAsArray = locations.split(",");
 			Disjunction disjunction = Restrictions.disjunction();
 			LocationService locationService = Context.getLocationService();
@@ -71,10 +74,11 @@ public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implem
 		if (provider != null) {
 			criteria.add(Restrictions.eq("provider.id", provider.getProviderId()));
 		}
+		
 		List<AppointmentBlock> appointmentBlocks = criteria.list();
 		if (appointmentType != null) {
 			filteredAppointmentBlocks = new ArrayList<AppointmentBlock>();
-			String stringQuery = "SELECT appointmentBlock FROM AppointmentBlock AS appointmentBlock WHERE :appointmentType IN elements(appointmentBlock.types)";
+			String stringQuery = "SELECT appointmentBlock FROM AppointmentBlock AS appointmentBlock WHERE :appointmentType IN elements(appointmentBlock.types) AND voided = 0";
 			Query query = super.sessionFactory.getCurrentSession().createQuery(stringQuery)
 			        .setParameter("appointmentType", appointmentType);
 			List<AppointmentBlock> appointmentBlocksFilteredByType = query.list();

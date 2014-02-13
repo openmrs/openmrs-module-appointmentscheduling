@@ -1,9 +1,12 @@
 package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 
+import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
+import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.appointmentscheduling.rest.controller.AppointmentRestController;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -15,6 +18,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudR
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import java.util.Date;
 
 @Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE
         + "/appointmentblock", supportedClass = AppointmentBlock.class, supportedOpenmrsVersions = "1.9.*")
@@ -29,8 +34,8 @@ public class AppointmentBlockResource1_9 extends DataDelegatingCrudResource<Appo
 			description.addProperty("startDate");
 			description.addProperty("endDate");
 			description.addProperty("provider", Representation.DEFAULT);
-			description.addProperty("location", Representation.DEFAULT);
-			description.addProperty("types", Representation.DEFAULT);
+			description.addProperty("location", Representation.REF);
+			description.addProperty("types", Representation.REF);
 			description.addProperty("voided");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -105,12 +110,38 @@ public class AppointmentBlockResource1_9 extends DataDelegatingCrudResource<Appo
 		    context.getIncludeAll()), context);
 	}
 	
+	/**
+	 * Returns a list of AppointmentBlocks that fall within the give constraints
+	 * 
+	 * @param appointmentType - Type of the appointment this block must support
+	 * @param fromDate - (optional) earliest start date.
+	 * @param toDate - (optional) latest start date.
+	 * @param provider - (optional) the appointment block's provider.
+	 * @param location - (optional) the appointment block's location. (or predecessor location)t
+	 * @return
+	 */
 	@Override
 	protected PageableResult doSearch(RequestContext context) {
-		// TODO: implement this
-		//return new NeedsPaging<AppointmentType>(Context.getService(AppointmentService.class).getAppointmentTypes(
-		// context.getParameter("q")), context);
-		return null;
+		
+		Date startDate = context.getParameter("fromDate") != null ? (Date) ConversionUtil.convert(
+		    context.getParameter("fromDate"), Date.class) : null;
+		
+		Date endDate = context.getParameter("toDate") != null ? (Date) ConversionUtil.convert(
+		    context.getParameter("toDate"), Date.class) : null;
+		
+		AppointmentType appointmentType = context.getParameter("appointmentType") != null ? Context.getService(
+		    AppointmentService.class).getAppointmentTypeByUuid(context.getParameter("appointmentType")) : null;
+		
+		Provider provider = context.getParameter("provider") != null ? Context.getProviderService().getProviderByUuid(
+		    context.getParameter("provider")) : null;
+		
+		// for some reason the getAppointmentBlocks service method takes a comma-separated string of location ids instead of a list of location
+		String location = context.getParameter("location") != null ? Context.getLocationService()
+		        .getLocationByUuid(context.getParameter("location")).getId().toString() : null;
+		
+		return new NeedsPaging<AppointmentBlock>(Context.getService(AppointmentService.class).getAppointmentBlocks(
+		    startDate, endDate, location, provider, appointmentType), context);
+		
 	}
 	
 	public String getDisplayString(AppointmentBlock appointmentBlock) {

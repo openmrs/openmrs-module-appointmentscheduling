@@ -44,7 +44,7 @@ public class TimeSlotResource1_9 extends DataDelegatingCrudResource<TimeSlot> {
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("startDate");
 			description.addProperty("endDate");
-			description.addProperty("appointmentBlock", Representation.DEFAULT);
+			description.addProperty("appointmentBlock", Representation.FULL);
 			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
@@ -104,17 +104,18 @@ public class TimeSlotResource1_9 extends DataDelegatingCrudResource<TimeSlot> {
 		    context.getIncludeAll()), context);
 	}
 	
-	@Override
 	/**
-	 * Return a list of time slots that stands within the given constraints.
-	 *
-	 * @param appointmentType - Type of the appointment
+	 * Return a list of time slots that fall within the given constraints.
+	 * 
+	 * @param appointmentType - Type of the appointment this slot must support
 	 * @param fromDate - (optional) earliest start date.
 	 * @param toDate - (optional) latest start date.
-	 * @param provider - (optional) the appointment's provider.
-	 * @param location - (optional) the appointment's location. (or predecessor location)
-	 * @param includeFull - (optional, default false) include time slots that are already fully booked
+	 * @param provider - (optional) the time slots's provider.
+	 * @param location - (optional) the time slots's location. (or predecessor location)
+	 * @param includeFull - (optional, default false) include time slots that are already fully
+	 *            booked
 	 */
+	@Override
 	protected PageableResult doSearch(RequestContext context) {
 		
 		Date startDate = context.getParameter("fromDate") != null ? (Date) ConversionUtil.convert(

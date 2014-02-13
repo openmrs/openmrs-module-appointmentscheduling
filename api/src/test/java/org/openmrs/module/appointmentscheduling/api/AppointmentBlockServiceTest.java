@@ -213,28 +213,36 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		assertNotNull(appointmentBlocks);
 		assertEquals(new Integer(2), appointmentBlocks.get(0).getAppointmentBlockId());
 		
+		// should ignore voided blocks
 		appointmentBlocks = service.getAppointmentBlocks(toDate, null, "", provider, null);
 		assertNotNull(appointmentBlocks);
-		assertEquals(new Integer(3), appointmentBlocks.get(0).getAppointmentBlockId());
+		assertEquals(0, appointmentBlocks.size());
 		
 		appointmentBlocks = service.getAppointmentBlocks(null, toDate, "", provider, null);
 		assertNotNull(appointmentBlocks);
 		assertEquals(2, appointmentBlocks.size());
+		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
+		assertEquals(new Integer(2), appointmentBlocks.get(1).getAppointmentBlockId());
 		
 		appointmentBlocks = service.getAppointmentBlocks(null, null, locaitons, provider, null);
 		assertNotNull(appointmentBlocks);
 		assertEquals(1, appointmentBlocks.size());
+		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
 		
 		appointmentBlocks = service.getAppointmentBlocks(null, null, "", provider, null);
-		assertEquals(3, appointmentBlocks.size());
+		assertEquals(2, appointmentBlocks.size());
+		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
+		assertEquals(new Integer(2), appointmentBlocks.get(1).getAppointmentBlockId());
 		
 		//test filtering by appointment type only
 		appointmentBlocks = service.getAppointmentBlocks(null, null, "", null, appointmentType);
-		assertEquals(2, appointmentBlocks.size());
+		assertEquals(1, appointmentBlocks.size());
+		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
 		
 		//test filtering by appointment type and provider
 		appointmentBlocks = service.getAppointmentBlocks(null, null, "", provider, appointmentType);
-		assertEquals(2, appointmentBlocks.size());
+		assertEquals(1, appointmentBlocks.size());
+		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
 		
 		provider = Context.getProviderService().getProvider(2);
 		appointmentBlocks = service.getAppointmentBlocks(null, null, "", provider, null);
