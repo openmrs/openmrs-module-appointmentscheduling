@@ -15,7 +15,6 @@ package org.openmrs.module.appointmentscheduling.api;
 
 import junit.framework.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.Patient;
@@ -26,6 +25,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
+import org.openmrs.module.appointmentscheduling.DailyAppointmentBlock;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
@@ -36,7 +36,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Tests Appointment methods in the {@link $ AppointmentService} .
@@ -401,5 +403,32 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(AppointmentStatus.SCHEDULED, appointments.get(0).getStatus());
 		assertEquals(AppointmentStatus.SCHEDULED, appointments.get(1).getStatus());
 		assertEquals(AppointmentStatus.RESCHEDULED, appointments.get(2).getStatus());
+	}
+	
+	@Test
+	public void shouldGetDailyAppointments() throws Exception {
+		Location location = Context.getLocationService().getLocation(2);
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		Date date = format.parse("2014-01-02 10:00:00.0");
+		Provider provider = Context.getProviderService().getProvider(1);
+		
+		List<DailyAppointmentBlock> dailyAppointmentBlockList = service.getDailyAppointmentBlocks(location, date);
+		
+		assertNotNull(dailyAppointmentBlockList);
+		assertEquals(1, dailyAppointmentBlockList.size());
+		
+		DailyAppointmentBlock dailyAppointmentBlock = dailyAppointmentBlockList.get(0);
+		
+		assertEquals(1, dailyAppointmentBlock.getAppointments().size());
+		assertEquals(format.parse("2014-01-02 00:00:00.0"), dailyAppointmentBlock.getStartDate());
+		assertEquals(format.parse("2014-01-02 12:00:00.0"), dailyAppointmentBlock.getEndDate());
+		assertEquals(provider, dailyAppointmentBlock.getProvider());
+		
+		List<Appointment> appointmentList = dailyAppointmentBlock.getAppointments();
+		Appointment appointment = appointmentList.get(0);
+		
+		assertEquals(1, appointment.getPatient().getId().intValue());
+		assertEquals("Initial HIV Clinic Appointment", appointment.getAppointmentType().getName());
+		
 	}
 }

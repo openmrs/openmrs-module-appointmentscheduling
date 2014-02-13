@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.appointmentscheduling.api.impl;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.openmrs.module.appointmentscheduling.DailyAppointmentBlock;
 import org.openmrs.module.appointmentscheduling.StudentT;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,6 +50,7 @@ import org.openmrs.module.appointmentscheduling.api.db.AppointmentDAO;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentStatusHistoryDAO;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentTypeDAO;
 import org.openmrs.module.appointmentscheduling.api.db.TimeSlotDAO;
+import org.openmrs.module.appointmentscheduling.api.db.hibernate.HibernateAppointmentDAO;
 import org.openmrs.validator.ValidateUtil;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -312,7 +315,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	
 	@Override
 	public void purgeAppointment(Appointment appointment) {
-        getAppointmentStatusHistoryDAO().purgeHistoryBy(appointment);
+		getAppointmentStatusHistoryDAO().purgeHistoryBy(appointment);
 		getAppointmentDAO().delete(appointment);
 	}
 	
@@ -862,6 +865,39 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		
 		return distribution;
 		
+	}
+	
+	@Override
+	public List<DailyAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date) {
+		
+		Calendar startDateCalendar = Calendar.getInstance();
+		startDateCalendar.setTime(date);
+		
+		startDateCalendar.set(Calendar.HOUR, 0);
+		startDateCalendar.set(Calendar.MINUTE, 0);
+		startDateCalendar.set(Calendar.SECOND, 0);
+		
+		Calendar endDateCalendar = Calendar.getInstance();
+		endDateCalendar.setTime(date);
+		
+		endDateCalendar.set(Calendar.HOUR, 23);
+		endDateCalendar.set(Calendar.MINUTE, 59);
+		endDateCalendar.set(Calendar.SECOND, 59);
+		
+		List<AppointmentBlock> appointmentBlockList = getAppointmentBlocks(startDateCalendar.getTime(),
+		    endDateCalendar.getTime(), location.getId().toString(), null, null);
+		
+		List<DailyAppointmentBlock> dailyAppointmentBlockList = new ArrayList<DailyAppointmentBlock>();
+		
+		for (int i = 0; i < appointmentBlockList.size(); i++) {
+			List<Appointment> appointmentList = getAppointmentDAO().getAppointmentByAppointmentBlock(
+			    appointmentBlockList.get(i));
+			DailyAppointmentBlock dailyAppointmentBlock = new DailyAppointmentBlock(appointmentList,
+			        appointmentBlockList.get(i));
+			dailyAppointmentBlockList.add(dailyAppointmentBlock);
+		}
+		
+		return dailyAppointmentBlockList;
 	}
 	
 	private double[] confidenceInterval(Double[] data) {
