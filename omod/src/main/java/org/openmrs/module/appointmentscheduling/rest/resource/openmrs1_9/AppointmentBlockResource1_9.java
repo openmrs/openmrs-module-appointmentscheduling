@@ -62,9 +62,9 @@ public class AppointmentBlockResource1_9 extends DataDelegatingCrudResource<Appo
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("startDate");
 		description.addRequiredProperty("endDate");
-		description.addRequiredProperty("provider");
 		description.addRequiredProperty("location");
 		description.addRequiredProperty("types");
+		description.addProperty("provider");
 		return description;
 	}
 	

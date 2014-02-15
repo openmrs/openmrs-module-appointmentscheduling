@@ -14,16 +14,19 @@
 package org.openmrs.module.appointmentscheduling.api;
 
 import junit.framework.Assert;
+import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.Provider;
+import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 import org.openmrs.util.OpenmrsUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -35,7 +38,11 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests Appointment Block methods in the {@link $ AppointmentService} .
@@ -44,11 +51,14 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 	
 	private static final int TOTAL_APPOINTMENT_BLOCKS = 4;
 	
+	@Autowired
 	private AppointmentService service;
+	
+	@Autowired
+	LocationService locationService;
 	
 	@Before
 	public void before() throws Exception {
-		service = Context.getService(AppointmentService.class);
 		executeDataSet("standardAppointmentTestDataset.xml");
 	}
 	
@@ -118,6 +128,25 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		
 		//Should create a new appointment block row
 		assertEquals(TOTAL_APPOINTMENT_BLOCKS + 1, service.getAllAppointmentBlocks().size());
+	}
+	
+	@Test
+	@Verifies(value = "save a providerless appointment block", method = "saveAppointmentBlock(AppointmentBlock)")
+	public void saveAppointmentBlock_shouldSaveAProviderlessAppointmentBlock() throws Exception {
+		List<AppointmentBlock> appointmentBlocks = service.getAllAppointmentBlocks(true);
+		assertEquals(TOTAL_APPOINTMENT_BLOCKS, appointmentBlocks.size());
+		
+		Date started = new Date();
+		Set<AppointmentType> appointmentTypes = service.getAllAppointmentTypes();
+		AppointmentBlock appointmentBlock = new AppointmentBlock(started, OpenmrsUtil.getLastMomentOfDay(started), null,
+		        new Location(1), appointmentTypes);
+		service.saveAppointmentBlock(appointmentBlock);
+		
+		assertThat(appointmentBlock.getProvider(), is(nullValue()));
+		
+		appointmentBlocks = service.getAllAppointmentBlocks(true);
+		assertThat(appointmentBlocks, hasItem(appointmentBlock));
+		assertEquals(TOTAL_APPOINTMENT_BLOCKS + 1, appointmentBlocks.size());
 	}
 	
 	@Test
@@ -253,6 +282,24 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		appointmentBlocks = service.getAppointmentBlocks(null, null, "", provider, null);
 		assertEquals(0, appointmentBlocks.size());
 		
+	}
+	
+	@Test
+	@Verifies(value = "allow overlapping providerless appointment blocks", method = "getOverlappingAppointmentBlocks(AppointmentBlock)")
+	public void getOverlappingAppointmentBlocks_shouldAllowOverlappingProviderlessAppointmentBlocks() throws Exception {
+		// the test dataset has a block from 2005-01-01 00:00:00.0 - 11:00:00.0 with provider 1 at location 3
+		// we will also create a providerless block at the same time; neither of these should overlap with a third block
+		// at the same time that is also providerless
+		
+		Date fromDate = DateUtils.parseDate("2005-01-01 00:00", "yyyy-MM-dd HH:mm");
+		Date toDate = DateUtils.parseDate("2005-01-01 11:00", "yyyy-MM-dd HH:mm");
+		Location atLocation = locationService.getLocation(3);
+		Set<AppointmentType> appointmentTypes = service.getAllAppointmentTypes();
+		
+		AppointmentBlock block = new AppointmentBlock(fromDate, toDate, null, atLocation, appointmentTypes);
+		service.saveAppointmentBlock(block);
+		
+		assertThat(service.getOverlappingAppointmentBlocks(block).size(), is(0));
 	}
 	
 	@SuppressWarnings("deprecation")

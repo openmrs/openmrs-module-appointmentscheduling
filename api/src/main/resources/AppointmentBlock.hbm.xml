@@ -13,7 +13,7 @@
 		<discriminator column="appointment_block_id" insert="false" />
 		<property name="startDate" type="java.util.Date" column="start_date" not-null="true" length="19" />
 		<property name="endDate" type="java.util.Date" column="end_date" not-null="true" length="19" />
-		<many-to-one name="provider" column="provider_id" class="org.openmrs.Provider" not-null="true" />
+		<many-to-one name="provider" column="provider_id" class="org.openmrs.Provider" />
 		<many-to-one name="location" column="location_id" class="org.openmrs.Location" not-null="true" />
 		<set name="types" table="appointmentscheduling_block_type_map" cascade="save-update">
 			<key column="appointment_block_id"/>

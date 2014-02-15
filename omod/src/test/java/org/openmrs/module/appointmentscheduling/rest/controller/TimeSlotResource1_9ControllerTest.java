@@ -9,13 +9,19 @@ import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.openmrs.module.appointmentscheduling.rest.test.SameDatetimeMatcher.sameDatetime;
 
 public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTest {
 	
@@ -33,10 +39,12 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
 		
+		TimeSlot timeSlot = appointmentService.getTimeSlotByUuid(getUuid());
+		
 		Assert.assertNotNull(result);
 		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertTrue(PropertyUtils.getProperty(result, "startDate").toString().contains("2007-01-01T00:00:00.200-0500"));
-		Assert.assertTrue(PropertyUtils.getProperty(result, "endDate").toString().contains("2007-01-01T01:00:00.000-0500"));
+		assertThat((String) PropertyUtils.getProperty(result, "startDate"), sameDatetime(timeSlot.getStartDate()));
+		assertThat((String) PropertyUtils.getProperty(result, "endDate"), sameDatetime(timeSlot.getEndDate()));
 		Assert.assertEquals("Super User, Xanadu: 2007-01-01 00:00:00.2 - 2007-01-01 01:00:00.0",
 		    PropertyUtils.getProperty(result, "display"));
 		
@@ -51,10 +59,12 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		        RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL));
 		SimpleObject result = deserialize(handle(req));
 		
+		TimeSlot timeSlot = appointmentService.getTimeSlotByUuid(getUuid());
+		
 		Assert.assertNotNull(result);
 		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertTrue(PropertyUtils.getProperty(result, "startDate").toString().contains("2007-01-01T00:00:00.200-0500"));
-		Assert.assertTrue(PropertyUtils.getProperty(result, "endDate").toString().contains("2007-01-01T01:00:00.000-0500"));
+		assertThat((String) PropertyUtils.getProperty(result, "startDate"), sameDatetime(timeSlot.getStartDate()));
+		assertThat((String) PropertyUtils.getProperty(result, "endDate"), sameDatetime(timeSlot.getEndDate()));
 		Assert.assertEquals("Super User, Xanadu: 2007-01-01 00:00:00.2 - 2007-01-01 01:00:00.0",
 		    PropertyUtils.getProperty(result, "display"));
 		
@@ -75,8 +85,8 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		
 		Object appt = deserialize(handle(req));
 		Assert.assertNotNull(PropertyUtils.getProperty(appt, "uuid"));
-		Assert.assertTrue(PropertyUtils.getProperty(appt, "startDate").toString().contains("2005-01-03T09:00:00"));
-		Assert.assertTrue(PropertyUtils.getProperty(appt, "endDate").toString().contains("2005-01-03T10:00:00"));
+		assertThat((String) PropertyUtils.getProperty(appt, "startDate"), sameDatetime("2005-01-03T09:00:00.000-0500"));
+		assertThat((String) PropertyUtils.getProperty(appt, "endDate"), sameDatetime("2005-01-03T10:00:00.000-0500"));
 		Assert.assertEquals("759799ab-c9a5-435e-b671-77773ada7499",
 		    PropertyUtils.getProperty(PropertyUtils.getProperty(appt, "appointmentBlock"), "uuid"));
 		Assert.assertEquals(originalCount + 1, appointmentService.getAllTimeSlots().size());
@@ -93,8 +103,11 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		
 		TimeSlot updated = appointmentService.getTimeSlotByUuid("c0c579b0-8e59-401d-8a4a-976a0b183606");
 		Assert.assertNotNull(updated);
-		Assert.assertEquals("Mon Jan 03 11:00:00 EST 2005", updated.getEndDate().toString());
-		
+		assertThat(updated.getEndDate(), is(date("2005-01-03T11:00:00.000-0500")));
+	}
+	
+	private Date date(String date) {
+		return (Date) ConversionUtil.convert(date, Date.class);
 	}
 	
 	@Test

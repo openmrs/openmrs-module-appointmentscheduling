@@ -1,21 +1,30 @@
 package org.openmrs.module.appointmentscheduling.rest.controller;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
+import org.openmrs.module.appointmentscheduling.rest.test.SameDatetimeMatcher;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import static org.junit.Assert.assertThat;
+import static org.openmrs.module.appointmentscheduling.rest.test.SameDatetimeMatcher.sameDatetime;
 
 public class AppointmentBlockResource1_9ControllerTest extends MainResourceControllerTest {
 	
@@ -94,8 +103,8 @@ public class AppointmentBlockResource1_9ControllerTest extends MainResourceContr
 		
 		Object appt = deserialize(handle(req));
 		Assert.assertNotNull(PropertyUtils.getProperty(appt, "uuid"));
-		Assert.assertTrue(PropertyUtils.getProperty(appt, "startDate").toString().contains("2005-03-01T00:00:00.00"));
-		Assert.assertTrue(PropertyUtils.getProperty(appt, "endDate").toString().contains("2005-03-01T11:00:00.00"));
+		assertThat((String) PropertyUtils.getProperty(appt, "startDate"), sameDatetime("2005-03-01T00:00:00.000-0500"));
+		assertThat((String) PropertyUtils.getProperty(appt, "endDate"), sameDatetime("2005-03-01T11:00:00.000-0500"));
 		Assert.assertEquals("c0c54sd0-8e59-401d-8a4a-976a0b183599",
 		    PropertyUtils.getProperty(PropertyUtils.getProperty(appt, "provider"), "uuid"));
 		Assert.assertEquals("9356400c-a5a2-4532-8f2b-2361b3446eb8",

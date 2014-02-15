@@ -194,6 +194,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param appointmentBlock the appointment block to create or update.
 	 * @return the created or updated appointment block.
 	 * @should save new appointment block
+	 * @should save a providerless appointment block
 	 * @should save edited appointment block
 	 * @should throw error when name is null
 	 * @should throw error when name is empty string
@@ -243,6 +244,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * 
 	 * @return a list of appointment block objects.
 	 * @should get all appointment blocks which overlap to the given appointment block
+	 * @should allow overlapping providerless appointment blocks
 	 */
 	@Transactional(readOnly = true)
 	List<AppointmentBlock> getOverlappingAppointmentBlocks(AppointmentBlock appointmentBlock);
