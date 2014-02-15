@@ -431,14 +431,14 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(1, appointment.getPatient().getId().intValue());
 		assertEquals("Initial HIV Clinic Appointment", appointment.getAppointmentType().getName());
 	}
-
-    @Test
-    public void shouldNotReturnDailyAppointmentsWhenThereIsNoScheduledAppointments() throws Exception {
-        Location location = Context.getLocationService().getLocation(1);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-        Date date = format.parse("2005-01-02 10:00:00.0");
-
-        List<DailyAppointmentBlock> dailyAppointmentBlockList = service.getDailyAppointmentBlocks(location,date);
-        assertEquals(0, dailyAppointmentBlockList.size());
-    }
+	
+	@Test
+	public void shouldNotReturnDailyAppointmentsWhenThereIsNoScheduledAppointments() throws Exception {
+		Location location = Context.getLocationService().getLocation(1);
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		Date date = format.parse("2005-01-02 10:00:00.0");
+		
+		List<DailyAppointmentBlock> dailyAppointmentBlockList = service.getDailyAppointmentBlocks(location, date);
+		assertEquals(0, dailyAppointmentBlockList.size());
+	}
 }
