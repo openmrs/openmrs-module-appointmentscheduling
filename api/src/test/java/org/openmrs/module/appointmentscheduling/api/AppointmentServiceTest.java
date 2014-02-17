@@ -25,7 +25,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
-import org.openmrs.module.appointmentscheduling.DailyAppointmentBlock;
+import org.openmrs.module.appointmentscheduling.ScheduledAppointmentBlock;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
@@ -413,32 +413,32 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		Date date = format.parse("2014-01-02 10:00:00.0");
 		Provider provider = Context.getProviderService().getProvider(1);
 		
-		List<DailyAppointmentBlock> dailyAppointmentBlockList = service.getDailyAppointmentBlocks(location, date);
+		List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = service.getDailyAppointmentBlocks(location, date);
 		
-		assertNotNull(dailyAppointmentBlockList);
-		assertEquals(1, dailyAppointmentBlockList.size());
+		assertNotNull(scheduledAppointmentBlockList);
+		assertEquals(1, scheduledAppointmentBlockList.size());
 		
-		DailyAppointmentBlock dailyAppointmentBlock = dailyAppointmentBlockList.get(0);
+		ScheduledAppointmentBlock scheduledAppointmentBlock = scheduledAppointmentBlockList.get(0);
 		
-		assertTrue(dailyAppointmentBlock.getAppointments().size() > 0);
-		assertEquals(format.parse("2014-01-02 00:00:00.0"), dailyAppointmentBlock.getStartDate());
-		assertEquals(format.parse("2014-01-02 12:00:00.0"), dailyAppointmentBlock.getEndDate());
-		assertEquals(provider, dailyAppointmentBlock.getProvider());
+		assertTrue(scheduledAppointmentBlock.getAppointments().size() > 0);
+		assertEquals(format.parse("2014-01-02 00:00:00.0"), scheduledAppointmentBlock.getStartDate());
+		assertEquals(format.parse("2014-01-02 12:00:00.0"), scheduledAppointmentBlock.getEndDate());
+		assertEquals(provider, scheduledAppointmentBlock.getProvider());
 		
-		List<Appointment> appointmentList = dailyAppointmentBlock.getAppointments();
+		List<Appointment> appointmentList = scheduledAppointmentBlock.getAppointments();
 		Appointment appointment = appointmentList.get(0);
 		
 		assertEquals(1, appointment.getPatient().getId().intValue());
 		assertEquals("Initial HIV Clinic Appointment", appointment.getAppointmentType().getName());
 	}
-
-    @Test
-    public void shouldNotReturnDailyAppointmentsWhenThereIsNoScheduledAppointments() throws Exception {
-        Location location = Context.getLocationService().getLocation(1);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-        Date date = format.parse("2005-01-02 10:00:00.0");
-
-        List<DailyAppointmentBlock> dailyAppointmentBlockList = service.getDailyAppointmentBlocks(location,date);
-        assertEquals(0, dailyAppointmentBlockList.size());
-    }
+	
+	@Test
+	public void shouldNotReturnDailyAppointmentsWhenThereIsNoScheduledAppointments() throws Exception {
+		Location location = Context.getLocationService().getLocation(1);
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		Date date = format.parse("2005-01-02 10:00:00.0");
+		
+		List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = service.getDailyAppointmentBlocks(location, date);
+		assertEquals(0, scheduledAppointmentBlockList.size());
+	}
 }

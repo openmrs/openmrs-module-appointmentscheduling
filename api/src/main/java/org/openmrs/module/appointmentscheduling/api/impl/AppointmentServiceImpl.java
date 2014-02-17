@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.openmrs.module.appointmentscheduling.DailyAppointmentBlock;
+import org.openmrs.module.appointmentscheduling.ScheduledAppointmentBlock;
 import org.openmrs.module.appointmentscheduling.StudentT;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -867,36 +867,36 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	@Override
-	public List<DailyAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date) {
-        AppointmentDAO appointmentDao = getAppointmentDAO();
-
-        List<DailyAppointmentBlock> dailyAppointmentBlockList = new ArrayList<DailyAppointmentBlock>();
-
-        for (AppointmentBlock appointmentBlock : getAppointmentBlockList(location, date)) {
-
-            List<Appointment> appointmentList = appointmentDao.getAppointmentByAppointmentBlock(appointmentBlock);
-
-            if(!appointmentList.isEmpty()){
-
-                dailyAppointmentBlockList.add(createDailyAppointment(appointmentBlock, appointmentList));
-
-            }
-        }
+	public List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date) {
+		AppointmentDAO appointmentDao = getAppointmentDAO();
 		
-		return dailyAppointmentBlockList;
+		List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = new ArrayList<ScheduledAppointmentBlock>();
+		
+		for (AppointmentBlock appointmentBlock : getAppointmentBlockList(location, date)) {
+			
+			List<Appointment> appointmentList = appointmentDao.getAppointmentByAppointmentBlock(appointmentBlock);
+			
+			if (!appointmentList.isEmpty()) {
+				
+				scheduledAppointmentBlockList.add(createDailyAppointment(appointmentBlock, appointmentList));
+				
+			}
+		}
+		
+		return scheduledAppointmentBlockList;
 	}
-
-    private DailyAppointmentBlock createDailyAppointment(AppointmentBlock appointmentBlock, List<Appointment> appointmentList) {
-        return new DailyAppointmentBlock(appointmentList,
-                            appointmentBlock);
-    }
-
-    private List<AppointmentBlock> getAppointmentBlockList(Location location, Date date) {
-        return getAppointmentBlocks(setDateToStartOfDay(date),
-                setDateToEndOfDay(date), location.getId().toString(), null, null);
-    }
-
-    private Date setDateToEndOfDay(Date date) {
+	
+	private ScheduledAppointmentBlock createDailyAppointment(AppointmentBlock appointmentBlock,
+	        List<Appointment> appointmentList) {
+		return new ScheduledAppointmentBlock(appointmentList, appointmentBlock);
+	}
+	
+	private List<AppointmentBlock> getAppointmentBlockList(Location location, Date date) {
+		return getAppointmentBlocks(setDateToStartOfDay(date), setDateToEndOfDay(date), location.getId().toString(), null,
+		    null);
+	}
+	
+	private Date setDateToEndOfDay(Date date) {
 		return setupDate(date, 23, 59, 59);
 	}
 	
