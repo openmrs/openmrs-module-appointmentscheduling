@@ -18,7 +18,7 @@ public class ScheduledAppointmentBlockResource1_9Test extends BaseModuleWebConte
 	}
 	
 	@Test
-	public void testSomething() {
+	public void shouldSearchForScheduledAppointmentBlock() {
 		ScheduledAppointmentBlockResource1_9 scheduledAppointmentBlockResource1_9 = new ScheduledAppointmentBlockResource1_9();
 		
 		RequestContext context = Mockito.mock(RequestContext.class);

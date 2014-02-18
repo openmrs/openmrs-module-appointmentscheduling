@@ -25,40 +25,59 @@ public class ScheduledAppointmentBlockResource1_9 implements Searchable {
 	
 	@Override
 	public SimpleObject search(RequestContext context) throws ResponseException {
-		
-		Date startDate = context.getParameter("fromDate") != null ? (Date) ConversionUtil.convert(
-		    context.getParameter("fromDate"), Date.class) : null;
-		
-		Location location = context.getParameter("location") != null ? Context.getLocationService().getLocationByUuid(
-		    context.getParameter("location")) : null;
-		
-		List<ScheduledAppointmentBlock> dailyAppointmentBlocks = Context.getService(AppointmentService.class)
-		        .getDailyAppointmentBlocks(location, startDate);
-		
-		List<SimpleObject> simpleObjects = new ArrayList<SimpleObject>();
-		
-		for (ScheduledAppointmentBlock dailyAppointmentBlock : dailyAppointmentBlocks) {
-			
-			Object appointmentBlock = ConversionUtil.getPropertyWithRepresentation(dailyAppointmentBlock,
-			    "appointmentBlock", Representation.DEFAULT);
-			Object appointments = ConversionUtil.getPropertyWithRepresentation(dailyAppointmentBlock, "appointments",
-			    Representation.DEFAULT);
-			SimpleObject simpleObject = new SimpleObject();
-			simpleObject.add("appointmentBlock", appointmentBlock);
-			simpleObject.add("appointments", appointments);
-			simpleObjects.add(simpleObject);
-		}
-		
-		SimpleObject result = new SimpleObject();
-		result.add("result", simpleObjects);
+
+        Date startDate = getDate(context);
+        Location location = getLocation(context);
+
+        List<ScheduledAppointmentBlock> dailyAppointmentBlocks = getScheduledAppointmentBlocks(startDate, location);
+
+        SimpleObject result = new SimpleObject();
+		result.add("result", convertToSimpleObjectList(dailyAppointmentBlocks));
 		
 		return result;
 	}
-	
-	@Override
+
+    private List<ScheduledAppointmentBlock> getScheduledAppointmentBlocks(Date startDate, Location location) {
+        return Context.getService(AppointmentService.class)
+                    .getDailyAppointmentBlocks(location, startDate);
+    }
+
+    private Location getLocation(RequestContext context) {
+        return context.getParameter("location") != null ? Context.getLocationService().getLocationByUuid(
+                context.getParameter("location")) : null;
+    }
+
+    private Date getDate(RequestContext context) {
+        return context.getParameter("fromDate") != null ? (Date) ConversionUtil.convert(
+                context.getParameter("fromDate"), Date.class) : null;
+    }
+
+    private List<SimpleObject> convertToSimpleObjectList(List<ScheduledAppointmentBlock> dailyAppointmentBlocks) {
+        List<SimpleObject> simpleObjects = new ArrayList<SimpleObject>();
+
+        for (ScheduledAppointmentBlock dailyAppointmentBlock : dailyAppointmentBlocks) {
+            simpleObjects.add(getSimpleObject(dailyAppointmentBlock));
+        }
+
+        return simpleObjects;
+    }
+
+    private SimpleObject getSimpleObject(ScheduledAppointmentBlock dailyAppointmentBlock) {
+        SimpleObject simpleObject = new SimpleObject();
+        simpleObject.add("appointmentBlock", convertProperty(dailyAppointmentBlock, "appointmentBlock"));
+        simpleObject.add("appointments", convertProperty(dailyAppointmentBlock, "appointments"));
+        return simpleObject;
+    }
+
+    private Object convertProperty(ScheduledAppointmentBlock dailyAppointmentBlock, String appointmentBlock) {
+        return ConversionUtil.getPropertyWithRepresentation(dailyAppointmentBlock,
+                appointmentBlock, Representation.DEFAULT);
+    }
+
+    @Override
 	public String getUri(Object delegate) {
 		
-		return RestConstants.URI_PREFIX + "/appointmentscheduling/scheduledappointmentblock";
+		return RestConstants.URI_PREFIX + "/appointmentscheduling/scheduledappointmentblock/startDate=?";
 	}
 	
 	private String getUniqueId(ScheduledAppointmentBlock delegate) {
