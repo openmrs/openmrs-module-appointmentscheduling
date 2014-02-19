@@ -76,7 +76,7 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 	@Test
 	public void shouldCreateNewTimeSlot() throws Exception {
 		
-		int originalCount = 7;
+		int originalCount = 8;
 		String json = "{ \"startDate\":\"2005-01-03T09:00:00.000-0500\", \"endDate\":\"2005-01-03T10:00:00.000-0500\", "
 		        + "\"appointmentBlock\": \"759799ab-c9a5-435e-b671-77773ada7499\" }";
 		
@@ -126,7 +126,7 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 	@Test
 	public void shouldPurgeATimeSlot() throws Exception {
 		
-		int originalCount = 7;
+		int originalCount = 8;
 		
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/c0c579b0-8e59-401d-8a4a-976a0b183607");
 		req.addParameter("purge", "");
@@ -147,9 +147,8 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		handle(req);
 		
 		List<Map<String, String>> timeSlots = (List<Map<String, String>>) deserialize(handle(req)).get("results");
-		Assert.assertEquals(2, timeSlots.size());
+		Assert.assertEquals(1, timeSlots.size());
 		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183607", timeSlots.get(0).get("uuid"));
-		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183610", timeSlots.get(1).get("uuid"));
 	}
 	
 	@Test
@@ -179,7 +178,7 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		
 		List<Map<String, String>> timeSlots = (List<Map<String, String>>) deserialize(handle(req)).get("results");
 		Assert.assertEquals(2, timeSlots.size());
-		;
+		
 		// note that the first time slot is full, so it is not returned here
 		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183605", timeSlots.get(0).get("uuid"));
 		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183607", timeSlots.get(1).get("uuid"));
@@ -249,7 +248,7 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 	
 	@Override
 	public long getAllCount() {
-		return 6;
+		return 7;
 	}
 	
 }

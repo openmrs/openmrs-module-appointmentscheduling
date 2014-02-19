@@ -93,7 +93,7 @@ public class AppointmentBlockResource1_9ControllerTest extends MainResourceContr
 	@Test
 	public void shouldCreateNewAppointmentBlock() throws Exception {
 		
-		int originalCount = 4;
+		int originalCount = 5;
 		String json = "{ \"startDate\":\"2005-03-01T00:00:00.000-0500\", \"endDate\":\"2005-03-01T11:00:00.000-0500\", "
 		        + "\"provider\":\"c0c54sd0-8e59-401d-8a4a-976a0b183599\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", "
 		        + "\"types\": [ \"c0c579b0-8e59-401d-8a4a-976a0b183519\" ]" + "}";
@@ -143,7 +143,7 @@ public class AppointmentBlockResource1_9ControllerTest extends MainResourceContr
 	@Test
 	public void shouldPurgeAnAppointmentBlock() throws Exception {
 		
-		int originalCount = 4;
+		int originalCount = 5;
 		
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/759799ab-c9a5-435e-b671-77773ada7410");
 		req.addParameter("purge", "");
@@ -164,7 +164,7 @@ public class AppointmentBlockResource1_9ControllerTest extends MainResourceContr
 		handle(req);
 		
 		List<Map<String, String>> appointmentBlocks = (List<Map<String, String>>) deserialize(handle(req)).get("results");
-		Assert.assertEquals(1, appointmentBlocks.size());
+		Assert.assertEquals(2, appointmentBlocks.size());
 		Assert.assertEquals("759799ab-c9a5-435e-b671-77773ada99e9", appointmentBlocks.get(0).get("uuid"));
 	}
 	
@@ -223,7 +223,7 @@ public class AppointmentBlockResource1_9ControllerTest extends MainResourceContr
 		handle(req);
 		
 		List<Map<String, String>> appointmentBlocks = (List<Map<String, String>>) deserialize(handle(req)).get("results");
-		Assert.assertEquals(1, appointmentBlocks.size());
+		Assert.assertEquals(2, appointmentBlocks.size());
 		Assert.assertEquals("759799ab-c9a5-435e-b671-77773ada7499", appointmentBlocks.get(0).get("uuid"));
 		
 	}
@@ -237,7 +237,7 @@ public class AppointmentBlockResource1_9ControllerTest extends MainResourceContr
 		handle(req);
 		
 		List<Map<String, String>> appointmentBlocks = (List<Map<String, String>>) deserialize(handle(req)).get("results");
-		Assert.assertEquals(1, appointmentBlocks.size());
+		Assert.assertEquals(2, appointmentBlocks.size());
 		Assert.assertEquals("759799ab-c9a5-435e-b671-77773ada7499", appointmentBlocks.get(0).get("uuid"));
 		
 	}
@@ -271,6 +271,6 @@ public class AppointmentBlockResource1_9ControllerTest extends MainResourceContr
 	
 	@Override
 	public long getAllCount() {
-		return 3;
+		return 4;
 	}
 }

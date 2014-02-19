@@ -437,7 +437,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		Location location = Context.getLocationService().getLocation(1);
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 		Date date = format.parse("2005-01-02 10:00:00.0");
-
+		
 		List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = service.getDailyAppointmentBlocks(location, date);
 		assertEquals(0, scheduledAppointmentBlockList.size());
 	}

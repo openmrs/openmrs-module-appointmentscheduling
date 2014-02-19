@@ -871,13 +871,13 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		AppointmentDAO appointmentDao = getAppointmentDAO();
 		
 		List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = new ArrayList<ScheduledAppointmentBlock>();
-
+		
 		for (AppointmentBlock appointmentBlock : getAppointmentBlockList(location, date)) {
 			
 			List<Appointment> appointmentList = appointmentDao.getAppointmentByAppointmentBlock(appointmentBlock);
 			
 			if (!appointmentList.isEmpty()) {
-
+				
 				scheduledAppointmentBlockList.add(createDailyAppointment(appointmentBlock, appointmentList));
 				
 			}
@@ -885,11 +885,11 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		
 		return scheduledAppointmentBlockList;
 	}
-
+	
 	private ScheduledAppointmentBlock createDailyAppointment(AppointmentBlock appointmentBlock,
 	        List<Appointment> appointmentList) {
 		return new ScheduledAppointmentBlock(appointmentList, appointmentBlock);
-
+		
 	}
 	
 	private List<AppointmentBlock> getAppointmentBlockList(Location location, Date date) {

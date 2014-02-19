@@ -141,6 +141,6 @@ public class AppointmentResource1_9ControllerTest extends MainResourceController
 	
 	@Override
 	public long getAllCount() {
-		return 4;
+		return 7;
 	}
 }
