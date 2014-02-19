@@ -13,11 +13,6 @@
  */
 package org.openmrs.module.appointmentscheduling.api;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
@@ -25,13 +20,18 @@ import org.openmrs.Visit;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
-import org.openmrs.module.appointmentscheduling.DailyAppointmentBlock;
+import org.openmrs.module.appointmentscheduling.ScheduledAppointmentBlock;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
-import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This service exposes module's core functionality. It is a Spring managed bean which is configured
@@ -678,5 +678,5 @@ public interface AppointmentService extends OpenmrsService {
 	@Transactional(readOnly = true)
 	List<Appointment> getScheduledAppointmentsForPatient(Patient patient);
 	
-	List<DailyAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date);
+	List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date);
 }

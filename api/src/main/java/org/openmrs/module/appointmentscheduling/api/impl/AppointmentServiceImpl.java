@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.openmrs.module.appointmentscheduling.DailyAppointmentBlock;
+import org.openmrs.module.appointmentscheduling.ScheduledAppointmentBlock;
 import org.openmrs.module.appointmentscheduling.StudentT;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -867,27 +867,29 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	@Override
-	public List<DailyAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date) {
+	public List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date) {
 		AppointmentDAO appointmentDao = getAppointmentDAO();
 		
-		List<DailyAppointmentBlock> dailyAppointmentBlockList = new ArrayList<DailyAppointmentBlock>();
-		
+		List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = new ArrayList<ScheduledAppointmentBlock>();
+
 		for (AppointmentBlock appointmentBlock : getAppointmentBlockList(location, date)) {
 			
 			List<Appointment> appointmentList = appointmentDao.getAppointmentByAppointmentBlock(appointmentBlock);
 			
 			if (!appointmentList.isEmpty()) {
-				
-				dailyAppointmentBlockList.add(createDailyAppointment(appointmentBlock, appointmentList));
+
+				scheduledAppointmentBlockList.add(createDailyAppointment(appointmentBlock, appointmentList));
 				
 			}
 		}
 		
-		return dailyAppointmentBlockList;
+		return scheduledAppointmentBlockList;
 	}
-	
-	private DailyAppointmentBlock createDailyAppointment(AppointmentBlock appointmentBlock, List<Appointment> appointmentList) {
-		return new DailyAppointmentBlock(appointmentList, appointmentBlock);
+
+	private ScheduledAppointmentBlock createDailyAppointment(AppointmentBlock appointmentBlock,
+	        List<Appointment> appointmentList) {
+		return new ScheduledAppointmentBlock(appointmentList, appointmentBlock);
+
 	}
 	
 	private List<AppointmentBlock> getAppointmentBlockList(Location location, Date date) {
