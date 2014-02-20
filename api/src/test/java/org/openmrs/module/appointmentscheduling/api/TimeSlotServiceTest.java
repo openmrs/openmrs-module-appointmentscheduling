@@ -199,7 +199,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		
 		List<Appointment> appointments = service.getAppointmentsInTimeSlot(timeSlot);
 		assertNotNull(appointments);
-		assertEquals(2, appointments.size());
+		assertEquals(1, appointments.size()); // there are two appointments in this time slot, but one is voided
 		
 		timeSlot = service.getTimeSlot(3);
 		assertNotNull(timeSlot);
@@ -366,7 +366,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(appointmentBlock);
 		
 		List<TimeSlot> timeSlots = service.getTimeSlotsInAppointmentBlock(appointmentBlock);
-		assertEquals(7, timeSlots.size());
+		assertEquals(6, timeSlots.size()); // there are 7 time slots, but this should exclude the voided time slot
 		
 		//Should be empty list because appointment block is not exists
 		timeSlots = service.getTimeSlotsInAppointmentBlock(null);

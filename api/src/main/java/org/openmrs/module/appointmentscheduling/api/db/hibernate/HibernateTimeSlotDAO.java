@@ -24,7 +24,7 @@ public class HibernateTimeSlotDAO extends HibernateSingleClassDAO implements Tim
 	@Override
 	public List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot) {
 		return super.sessionFactory.getCurrentSession().createCriteria(Appointment.class)
-		        .add(Restrictions.eq("timeSlot", timeSlot)).list();
+		        .add(Restrictions.eq("timeSlot", timeSlot)).add(Restrictions.eq("voided", false)).list();
 	}
 	
 	@Override
@@ -66,7 +66,7 @@ public class HibernateTimeSlotDAO extends HibernateSingleClassDAO implements Tim
 		if (appointmentBlock == null)
 			return new Vector<TimeSlot>();
 		return super.sessionFactory.getCurrentSession().createCriteria(TimeSlot.class)
-		        .add(Restrictions.eq("appointmentBlock", appointmentBlock)).list();
+		        .add(Restrictions.eq("appointmentBlock", appointmentBlock)).add(Restrictions.eq("voided", false)).list();
 	}
 	
 }

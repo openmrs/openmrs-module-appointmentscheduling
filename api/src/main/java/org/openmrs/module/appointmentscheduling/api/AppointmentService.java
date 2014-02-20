@@ -428,6 +428,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * 
 	 * @param timeSlot the time slot to search by.
 	 * @return the appointments in the given time slot.
+	 * @should not return voided appointments
 	 */
 	@Transactional(readOnly = true)
 	List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot);
@@ -437,6 +438,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * 
 	 * @param appointmentBlock - the appointment block to search by.
 	 * @return the time slots in the given appointment block.
+	 * @should not return voided time slots
 	 */
 	@Transactional(readOnly = true)
 	List<TimeSlot> getTimeSlotsInAppointmentBlock(AppointmentBlock appointmentBlock);
