@@ -224,6 +224,12 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	 *      java.lang.String)
 	 */
 	public AppointmentBlock voidAppointmentBlock(AppointmentBlock appointmentBlock, String reason) {
+
+        // first void all associated time slots
+        for (TimeSlot timeSlot : Context.getService(AppointmentService.class).getTimeSlotsInAppointmentBlock(appointmentBlock))  {
+            Context.getService(AppointmentService.class).voidTimeSlot(timeSlot, reason);
+        }
+
 		return saveAppointmentBlock(appointmentBlock);
 	}
 	
