@@ -184,10 +184,10 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		assertNotNull(appointmentBlock);
 		assertTrue(appointmentBlock.isVoided());
 		assertEquals("void reason", appointmentBlock.getVoidReason());
-
-        // make sure all the underlying appointment blocks have been voided
-        assertEquals(0, service.getTimeSlotsInAppointmentBlock(appointmentBlock).size());
-
+		
+		// make sure all the underlying appointment blocks have been voided
+		assertEquals(0, service.getTimeSlotsInAppointmentBlock(appointmentBlock).size());
+		
 		//Should not change the number of appointment blocks.
 		assertEquals(4, service.getAllAppointmentBlocks().size());
 	}

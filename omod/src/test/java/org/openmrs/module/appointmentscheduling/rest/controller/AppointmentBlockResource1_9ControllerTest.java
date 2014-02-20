@@ -1,25 +1,19 @@
 package org.openmrs.module.appointmentscheduling.rest.controller;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
-import org.openmrs.module.appointmentscheduling.rest.test.SameDatetimeMatcher;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
-import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +22,7 @@ import static org.openmrs.module.appointmentscheduling.rest.test.SameDatetimeMat
 
 public class AppointmentBlockResource1_9ControllerTest extends MainResourceControllerTest {
 	
-	private AppointmentService appointmentService;
+	protected AppointmentService appointmentService;
 	
 	@Before
 	public void setup() throws Exception {
@@ -128,7 +122,7 @@ public class AppointmentBlockResource1_9ControllerTest extends MainResourceContr
 	}
 	
 	@Test
-	public void shouldVoidAnAppointmentBlock() throws Exception {
+	public void shouldVoidAnAppointmentBlockAndVoidAssociatedTimeSlots() throws Exception {
 		
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/c0c579b0-8e59-401d-8a4a-976a0b183599");
 		req.addParameter("!purge", "");
@@ -138,6 +132,9 @@ public class AppointmentBlockResource1_9ControllerTest extends MainResourceContr
 		AppointmentBlock voided = appointmentService.getAppointmentBlockByUuid("c0c579b0-8e59-401d-8a4a-976a0b183599");
 		Assert.assertTrue(voided.isVoided());
 		Assert.assertEquals("really ridiculous random reason", voided.getVoidReason());
+		
+		// make sure all the associated time slots have been voided
+		Assert.assertEquals(0, appointmentService.getTimeSlotsInAppointmentBlock(voided).size());
 	}
 	
 	@Test
