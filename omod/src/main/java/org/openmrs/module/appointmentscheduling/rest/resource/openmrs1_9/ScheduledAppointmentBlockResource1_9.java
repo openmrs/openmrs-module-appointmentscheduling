@@ -34,7 +34,7 @@ public class ScheduledAppointmentBlockResource1_9 implements Searchable, Retriev
 		List<ScheduledAppointmentBlock> dailyAppointmentBlocks = getScheduledAppointmentBlocks(date, location);
 		
 		SimpleObject result = new SimpleObject();
-		result.add("result", convertToSimpleObjectList(dailyAppointmentBlocks));
+		result.add("results", convertToSimpleObjectList(dailyAppointmentBlocks));
 		
 		return result;
 	}
