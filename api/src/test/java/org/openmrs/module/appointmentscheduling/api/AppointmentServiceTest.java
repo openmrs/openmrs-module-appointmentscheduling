@@ -393,17 +393,19 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	@Test
-	public void shouldGetScheduledAppointmentsForPatient() {
+	public void shouldGetScheduledAppointmentsForPatientOrderedByStartData() {
 		Patient patient = Context.getPatientService().getPatient(1);
 		List<Appointment> appointments = service.getScheduledAppointmentsForPatient(patient);
 		int expectedNumberOfScheduledAppointments = 4;
 		
 		assertNotNull(appointments);
 		assertEquals(expectedNumberOfScheduledAppointments, appointments.size());
-		
-		assertEquals(AppointmentStatus.SCHEDULED, appointments.get(0).getStatus());
-		assertEquals(AppointmentStatus.SCHEDULED, appointments.get(1).getStatus());
-		assertEquals(AppointmentStatus.RESCHEDULED, appointments.get(2).getStatus());
+
+        // verify they are in order
+        assertEquals(new Integer(6), appointments.get(0).getId());
+        assertEquals(new Integer(1), appointments.get(1).getId());
+        assertEquals(new Integer(4), appointments.get(2).getId());
+        assertEquals(new Integer(7), appointments.get(3).getId());
 	}
 	
 	@Test

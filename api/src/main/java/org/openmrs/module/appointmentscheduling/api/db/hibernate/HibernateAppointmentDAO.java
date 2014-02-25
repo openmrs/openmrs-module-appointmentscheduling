@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
@@ -139,7 +140,9 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 		criteria.add(Restrictions.eq("patient", patient));
 		criteria.add(Restrictions.or(Restrictions.eq("status", SCHEDULED), Restrictions.eq("status", RESCHEDULED)));
 		criteria.add(Restrictions.eq("voided", false));
-		
+        criteria.createAlias("timeSlot", "timeSlot");
+        criteria.addOrder(Order.asc("timeSlot.startDate"));
+
 		return criteria.list();
 	}
 	
