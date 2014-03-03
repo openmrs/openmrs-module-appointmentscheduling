@@ -1,5 +1,10 @@
 package org.openmrs.module.appointmentscheduling.api.db.hibernate;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Vector;
+
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Provider;
@@ -11,20 +16,10 @@ import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.api.db.TimeSlotDAO;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Vector;
-
 public class HibernateTimeSlotDAO extends HibernateSingleClassDAO implements TimeSlotDAO {
 	
 	public HibernateTimeSlotDAO() {
 		super(TimeSlot.class);
-	}
-	
-	@Override
-	public List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot) {
-		return super.sessionFactory.getCurrentSession().createCriteria(Appointment.class)
-		        .add(Restrictions.eq("timeSlot", timeSlot)).add(Restrictions.eq("voided", false)).list();
 	}
 	
 	@Override

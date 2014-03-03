@@ -14,6 +14,7 @@
 package org.openmrs.module.appointmentscheduling.api.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.joda.time.DateTime;
+import org.joda.time.Minutes;
 import org.openmrs.module.appointmentscheduling.ScheduledAppointmentBlock;
 import org.openmrs.module.appointmentscheduling.StudentT;
 import org.apache.commons.logging.Log;
@@ -399,7 +402,28 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	
 	@Override
 	public List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot) {
-		return getTimeSlotDAO().getAppointmentsInTimeSlot(timeSlot);
+		return getAppointmentDAO().getAppointmentsInTimeSlot(timeSlot);
+	}
+	
+	@Override
+	public List<Appointment> getAppointmentsInTimeSlotExcludingMissedAndCancelled(TimeSlot timeSlot) {
+		return getAppointmentDAO().getAppointmentsInTimeSlotByStatus(
+		    timeSlot,
+		    Arrays.asList(AppointmentStatus.COMPLETED, AppointmentStatus.INCONSULTATION, AppointmentStatus.RESCHEDULED,
+		        AppointmentStatus.SCHEDULED, AppointmentStatus.WAITING, AppointmentStatus.WALKIN));
+	}
+	
+	@Override
+	public Integer getCountOfAppointmentsInTimeSlot(TimeSlot timeSlot) {
+		return getAppointmentDAO().getCountOfAppointmentsInTimeSlot(timeSlot);
+	}
+	
+	@Override
+	public Integer getCountOfAppointmentsInTimeSlotExcludingMissedAndCancelled(TimeSlot timeSlot) {
+		return getAppointmentDAO().getCountOfAppointmentsInTimeSlotByStatus(
+		    timeSlot,
+		    Arrays.asList(AppointmentStatus.COMPLETED, AppointmentStatus.INCONSULTATION, AppointmentStatus.RESCHEDULED,
+		        AppointmentStatus.SCHEDULED, AppointmentStatus.WAITING, AppointmentStatus.WALKIN));
 	}
 	
 	@Override
@@ -881,22 +905,34 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		
 		for (AppointmentBlock appointmentBlock : getAppointmentBlockList(location, date)) {
 			
-			List<Appointment> appointmentList = appointmentDao.getAppointmentByAppointmentBlock(appointmentBlock);
+			ScheduledAppointmentBlock scheduledAppointmentBlock = createScheduledAppointmentBlock(appointmentBlock);
 			
-			if (!appointmentList.isEmpty()) {
-				
-				scheduledAppointmentBlockList.add(createDailyAppointment(appointmentBlock, appointmentList));
-				
+			if (!scheduledAppointmentBlock.getAppointments().isEmpty()) {
+				scheduledAppointmentBlockList.add(scheduledAppointmentBlock);
 			}
 		}
 		
 		return scheduledAppointmentBlockList;
 	}
 	
-	private ScheduledAppointmentBlock createDailyAppointment(AppointmentBlock appointmentBlock,
-	        List<Appointment> appointmentList) {
+	@Override
+	public ScheduledAppointmentBlock createScheduledAppointmentBlock(AppointmentBlock appointmentBlock) {
+		List<Appointment> appointmentList = getAppointmentDAO().getAppointmentsByAppointmentBlock(appointmentBlock);
 		return new ScheduledAppointmentBlock(appointmentList, appointmentBlock);
+	}
+	
+	@Override
+	public Integer calculateUnallocatedMinutesInTimeSlot(TimeSlot timeSlot) {
 		
+		Integer minutes = Minutes.minutesBetween(new DateTime(timeSlot.getStartDate()), new DateTime(timeSlot.getEndDate()))
+		        .getMinutes();
+		
+		for (Appointment appointment : Context.getService(AppointmentService.class)
+		        .getAppointmentsInTimeSlotExcludingMissedAndCancelled(timeSlot)) {
+			minutes = minutes - appointment.getAppointmentType().getDuration();
+		}
+		
+		return minutes;
 	}
 	
 	private List<AppointmentBlock> getAppointmentBlockList(Location location, Date date) {

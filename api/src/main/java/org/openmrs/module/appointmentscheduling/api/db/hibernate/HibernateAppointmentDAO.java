@@ -20,18 +20,22 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.api.APIException;
 import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
-import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
+import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentDAO;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus.CANCELLED;
+import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus.MISSED;
 import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus.RESCHEDULED;
 import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus.SCHEDULED;
 
@@ -140,21 +144,57 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 		criteria.add(Restrictions.eq("patient", patient));
 		criteria.add(Restrictions.or(Restrictions.eq("status", SCHEDULED), Restrictions.eq("status", RESCHEDULED)));
 		criteria.add(Restrictions.eq("voided", false));
-        criteria.createAlias("timeSlot", "timeSlot");
-        criteria.addOrder(Order.asc("timeSlot.startDate"));
-
+		criteria.createAlias("timeSlot", "timeSlot");
+		criteria.addOrder(Order.asc("timeSlot.startDate"));
+		
 		return criteria.list();
 	}
 	
 	@Override
-	public List<Appointment> getAppointmentByAppointmentBlock(AppointmentBlock appointmentBlock) {
+	public List<Appointment> getAppointmentsByAppointmentBlock(AppointmentBlock appointmentBlock) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mappedClass);
 		criteria.createAlias("timeSlot", "time_slot");
 		criteria.add(Restrictions.eq("time_slot.appointmentBlock", appointmentBlock));
-		criteria.add(Restrictions.or(Restrictions.eq("status", SCHEDULED), Restrictions.eq("status", RESCHEDULED)));
+		// skip cancelled and missed appointment blocks
+		criteria.add(Restrictions.and(Restrictions.ne("status", CANCELLED), Restrictions.ne("status", MISSED)));
 		criteria.add(Restrictions.eq("voided", false));
 		
 		return criteria.list();
 	}
 	
+	@Override
+	public List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot) {
+		return createAppointmentsInTimeSlotCriteria(timeSlot).list();
+	}
+	
+	@Override
+	public List<Appointment> getAppointmentsInTimeSlotByStatus(TimeSlot timeSlot, List<AppointmentStatus> statuses) {
+		return createAppointmentsInTimeSlotByStatusCriteria(timeSlot, statuses).list();
+		
+	}
+	
+	@Override
+	public Integer getCountOfAppointmentsInTimeSlot(TimeSlot timeSlot) {
+		return ((Number) createAppointmentsInTimeSlotCriteria(timeSlot).setProjection(Projections.rowCount()).uniqueResult())
+		        .intValue();
+	}
+	
+	@Override
+	public Integer getCountOfAppointmentsInTimeSlotByStatus(TimeSlot timeSlot, List<AppointmentStatus> statuses) {
+		return ((Number) createAppointmentsInTimeSlotByStatusCriteria(timeSlot, statuses).setProjection(
+		    Projections.rowCount()).uniqueResult()).intValue();
+	}
+	
+	private Criteria createAppointmentsInTimeSlotCriteria(TimeSlot timeSlot) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Appointment.class);
+		criteria.add(Restrictions.eq("timeSlot", timeSlot));
+		criteria.add(Restrictions.eq("voided", false));
+		return criteria;
+	}
+	
+	private Criteria createAppointmentsInTimeSlotByStatusCriteria(TimeSlot timeSlot, List<AppointmentStatus> statuses) {
+		Criteria criteria = createAppointmentsInTimeSlotCriteria(timeSlot);
+		criteria.add(Restrictions.in("status", statuses));
+		return criteria;
+	}
 }

@@ -1,5 +1,9 @@
 package org.openmrs.module.appointmentscheduling.rest.controller;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -14,10 +18,6 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -50,6 +50,7 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		
 		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183599", Util.getByPath(result, "appointmentBlock/uuid"));
 		Assert.assertEquals(true, PropertyUtils.getProperty(result, "voided"));
+		Assert.assertEquals(1, PropertyUtils.getProperty(result, "countOfAppointments"));
 	}
 	
 	@Test
@@ -70,7 +71,8 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		
 		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183599", Util.getByPath(result, "appointmentBlock/uuid"));
 		Assert.assertEquals(true, PropertyUtils.getProperty(result, "voided"));
-		
+		Assert.assertEquals(1, PropertyUtils.getProperty(result, "countOfAppointments"));
+		Assert.assertEquals(49, PropertyUtils.getProperty(result, "unallocatedMinutes")); // 59 min slot minus one 10 minute appt
 	}
 	
 	@Test

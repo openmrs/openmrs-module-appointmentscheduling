@@ -13,23 +13,22 @@
  */
 package org.openmrs.module.appointmentscheduling.api;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Provider;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -189,24 +188,6 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		assertNull(timeSlot);
 		
 		assertEquals(TOTAL_TIME_SLOTS - 1, service.getAllTimeSlots().size());
-	}
-	
-	@Test
-	@Verifies(value = "retrieve all appointments scheduled in a given time slot", method = "getAppointmentsInTimeSlot(TimeSlot)")
-	public void getAppointmentsInTimeSlot_shouldGetCorrectAppointments() {
-		TimeSlot timeSlot = service.getTimeSlot(1);
-		assertNotNull(timeSlot);
-		
-		List<Appointment> appointments = service.getAppointmentsInTimeSlot(timeSlot);
-		assertNotNull(appointments);
-		assertEquals(1, appointments.size()); // there are two appointments in this time slot, but one is voided
-		
-		timeSlot = service.getTimeSlot(3);
-		assertNotNull(timeSlot);
-		appointments = service.getAppointmentsInTimeSlot(timeSlot);
-		assertNotNull(appointments);
-		assertEquals(1, appointments.size());
-		
 	}
 	
 	@Test
@@ -424,5 +405,12 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		
 		TimeSlot lastTimeSlot = result.get(result.size() - 1);
 		assertEquals(8, lastTimeSlot.getTimeSlotId().intValue());
+	}
+	
+	@Test
+	public void calculateUnallocatedMinutesInTimeSlot_shouldProperlyCalculateUnallocatedMinutes() {
+		TimeSlot timeSlot = service.getTimeSlot(8);
+		// block is 12 hours long, with 2 appointments of 54 each = 12 * 60 - 54 + 2
+		assertEquals(new Integer(612), service.calculateUnallocatedMinutesInTimeSlot(timeSlot));
 	}
 }

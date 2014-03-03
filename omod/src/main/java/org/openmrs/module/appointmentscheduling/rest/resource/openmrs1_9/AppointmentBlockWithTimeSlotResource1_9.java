@@ -1,5 +1,7 @@
 package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 
+import java.util.List;
+
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
@@ -9,13 +11,12 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 /**
  * This is a special resource for interacting with AppointmentBlocks in the use case where we want a
- * 1-to-1 relationship with Time Slots (that is, each AppointmentBlock has a single  TimeSlot with the same start and end time);
- * this resource overrides the save method of the main AppointmentBlockResource1_9 to create/update an associated Time Slot
- * whenever an AppointmentBlock is updated
+ * 1-to-1 relationship with Time Slots (that is, each AppointmentBlock has a single TimeSlot with
+ * the same start and end time); this resource overrides the save method of the main
+ * AppointmentBlockResource1_9 to create/update an associated Time Slot whenever an AppointmentBlock
+ * is updated
  */
 
 @Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE

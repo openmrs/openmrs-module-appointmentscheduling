@@ -1,5 +1,7 @@
 package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 
+import java.util.Date;
+
 import org.openmrs.Location;
 import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
@@ -20,8 +22,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import java.util.Date;
-
 @Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE + "/timeslot", supportedClass = TimeSlot.class, supportedOpenmrsVersions = "1.9.*")
 public class TimeSlotResource1_9 extends DataDelegatingCrudResource<TimeSlot> {
 	
@@ -34,6 +34,8 @@ public class TimeSlotResource1_9 extends DataDelegatingCrudResource<TimeSlot> {
 			description.addProperty("startDate");
 			description.addProperty("endDate");
 			description.addProperty("appointmentBlock", Representation.DEFAULT);
+			description.addProperty("countOfAppointments", findMethod("getCountOfAppointments"));
+			description.addProperty("unallocatedMinutes", findMethod("getUnallocatedMinutes"));
 			description.addProperty("voided");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -45,6 +47,8 @@ public class TimeSlotResource1_9 extends DataDelegatingCrudResource<TimeSlot> {
 			description.addProperty("startDate");
 			description.addProperty("endDate");
 			description.addProperty("appointmentBlock", Representation.FULL);
+			description.addProperty("countOfAppointments", findMethod("getCountOfAppointments"));
+			description.addProperty("unallocatedMinutes", findMethod("getUnallocatedMinutes"));
 			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
@@ -150,6 +154,15 @@ public class TimeSlotResource1_9 extends DataDelegatingCrudResource<TimeSlot> {
 	public String getDisplayString(TimeSlot timeSlot) {
 		return timeSlot.getAppointmentBlock().getProvider() + ", " + timeSlot.getAppointmentBlock().getLocation() + ": "
 		        + timeSlot.getStartDate() + " - " + timeSlot.getEndDate();
+	}
+	
+	public Integer getCountOfAppointments(TimeSlot timeSlot) {
+		return Context.getService(AppointmentService.class).getCountOfAppointmentsInTimeSlotExcludingMissedAndCancelled(
+		    timeSlot);
+	}
+	
+	public Integer getUnallocatedMinutes(TimeSlot timeSlot) {
+		return Context.getService(AppointmentService.class).calculateUnallocatedMinutesInTimeSlot(timeSlot);
 	}
 	
 }

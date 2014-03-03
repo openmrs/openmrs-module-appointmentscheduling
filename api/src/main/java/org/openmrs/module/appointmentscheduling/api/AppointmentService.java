@@ -434,6 +434,38 @@ public interface AppointmentService extends OpenmrsService {
 	List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot);
 	
 	/**
+	 * Should retrieve all appointments in the given time slot that are not missed or cancelled
+	 * 
+	 * @param timeSlot the time slot to search by.
+	 * @return the appointments in the given time slo
+	 * @should not return missed and cancelled appointments.
+	 * @should not return voided appointments
+	 */
+	@Transactional(readOnly = true)
+	List<Appointment> getAppointmentsInTimeSlotExcludingMissedAndCancelled(TimeSlot timeSlot);
+	
+	/**
+	 * Gets a count of the number of appointments in a time slot
+	 * 
+	 * @param timeSlot the time slot to search by.
+	 * @return the count of appointments in the given time slot
+	 * @should not count voided appointments
+	 */
+	@Transactional(readOnly = true)
+	Integer getCountOfAppointmentsInTimeSlot(TimeSlot timeSlot);
+	
+	/**
+	 * Gets a count of the number of appointments in a time slot that are not missed or cancelled
+	 * 
+	 * @param timeSlot the time slot to search by.
+	 * @return the count of appointments in the given time slot
+	 * @should not count missed and cancelled appointments.
+	 * @should not count voided appointments
+	 */
+	@Transactional(readOnly = true)
+	Integer getCountOfAppointmentsInTimeSlotExcludingMissedAndCancelled(TimeSlot timeSlot);
+	
+	/**
 	 * Should retrieve all time slots in the given appointment block.
 	 * 
 	 * @param appointmentBlock - the appointment block to search by.
@@ -677,8 +709,45 @@ public interface AppointmentService extends OpenmrsService {
 	@Transactional(readOnly = true)
 	boolean verifyDuplicatedAppointmentTypeName(AppointmentType appointmentType);
 	
+	/**
+	 * Retrieves the list of scheduled (appts in states SCHEDULED or RESCHEDULED for a patient)
+	 * 
+	 * @param patient
+	 * @return
+	 */
 	@Transactional(readOnly = true)
 	List<Appointment> getScheduledAppointmentsForPatient(Patient patient);
 	
+	/**
+	 * Given an appointment block, this method creates a ScheduledAppointmentBlock convenience
+	 * object that contains all the appointments in the block that are not CANCELLED or MISSED, as
+	 * well as the remaining time available in the blocks
+	 * 
+	 * @param appointmentBlock
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	ScheduledAppointmentBlock createScheduledAppointmentBlock(AppointmentBlock appointmentBlock);
+	
+	/**
+	 * Gets all scheduled appointment blocks for a certain day at a certain location Ignores any
+	 * blocks within the time period that *do not* have any appointments that are not CANCELLED or
+	 * MISSED
+	 * 
+	 * @param location
+	 * @param date
+	 * @return
+	 */
+	@Transactional(readOnly = true)
 	List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date);
+	
+	/**
+	 * Calculate the unallocated minutes in the time slot. As follows: Number minutes in time slot
+	 * minus minutes allocated for all appts in the time slot that aren't CANCELLED or MISSED
+	 * 
+	 * @param timeSlot
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	Integer calculateUnallocatedMinutesInTimeSlot(TimeSlot timeSlot);
 }

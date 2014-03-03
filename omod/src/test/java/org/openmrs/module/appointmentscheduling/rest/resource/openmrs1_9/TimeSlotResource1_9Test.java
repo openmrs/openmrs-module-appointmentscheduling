@@ -31,6 +31,8 @@ public class TimeSlotResource1_9Test extends BaseDelegatingResourceTest<TimeSlot
 		assertPropEquals("endDate", getObject().getEndDate());
 		assertPropEquals("voided", getObject().isVoided());
 		assertPropPresent("appointmentBlock");
+		assertPropPresent("countOfAppointments");
+		assertPropPresent("unallocatedMinutes");
 		assertPropNotPresent("auditInfo");
 	}
 	
@@ -41,6 +43,8 @@ public class TimeSlotResource1_9Test extends BaseDelegatingResourceTest<TimeSlot
 		assertPropEquals("endDate", getObject().getEndDate());
 		assertPropEquals("voided", getObject().isVoided());
 		assertPropPresent("appointmentBlock");
+		assertPropPresent("countOfAppointments");
+		assertPropPresent("unallocatedMinutes");
 		assertPropPresent("auditInfo");
 	}
 	

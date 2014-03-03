@@ -125,9 +125,15 @@
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>webservices.rest-omod-common</artifactId>
                 <version>2.3</version>
-
             </dependency>
 
+
+            <!-- Other dependencies -->
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>2.2</version>
+            </dependency>
 
 		</dependencies>
 	</dependencyManagement>
