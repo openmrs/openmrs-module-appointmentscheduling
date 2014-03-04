@@ -53,6 +53,7 @@ import org.openmrs.module.appointmentscheduling.api.db.AppointmentDAO;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentStatusHistoryDAO;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentTypeDAO;
 import org.openmrs.module.appointmentscheduling.api.db.TimeSlotDAO;
+import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
 import org.openmrs.validator.ValidateUtil;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -898,6 +899,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date) {
 		AppointmentDAO appointmentDao = getAppointmentDAO();
 		
@@ -916,12 +918,14 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public ScheduledAppointmentBlock createScheduledAppointmentBlock(AppointmentBlock appointmentBlock) {
 		List<Appointment> appointmentList = getAppointmentDAO().getAppointmentsByAppointmentBlock(appointmentBlock);
 		return new ScheduledAppointmentBlock(appointmentList, appointmentBlock);
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public Integer calculateUnallocatedMinutesInTimeSlot(TimeSlot timeSlot) {
 		
 		Integer minutes = Minutes.minutesBetween(new DateTime(timeSlot.getStartDate()), new DateTime(timeSlot.getEndDate()))
@@ -933,6 +937,29 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		}
 		
 		return minutes;
+	}
+	
+	@Override
+	@Transactional
+	public Appointment bookAppointment(Appointment appointment, Boolean allowOverbook) throws TimeSlotFullException {
+		
+		// can only book new appointments
+		if (appointment.getId() != null) {
+			throw new APIException("Cannot book appointment that has already been persisted");
+		}
+
+        // annoying that we have to do this, since it will be called during save, but otherwise we might get a NPE below if time slot or appointment type == null
+		ValidateUtil.validate(appointment);
+		
+		if (!allowOverbook) {
+			if (calculateUnallocatedMinutesInTimeSlot(appointment.getTimeSlot()) < appointment.getAppointmentType()
+			        .getDuration()) {
+				throw new TimeSlotFullException();
+			}
+		}
+		
+		appointment.setStatus(AppointmentStatus.SCHEDULED);
+		return Context.getService(AppointmentService.class).saveAppointment(appointment);
 	}
 	
 	private List<AppointmentBlock> getAppointmentBlockList(Location location, Date date) {

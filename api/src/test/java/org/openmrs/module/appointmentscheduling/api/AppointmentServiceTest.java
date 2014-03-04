@@ -34,6 +34,7 @@ import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.ScheduledAppointmentBlock;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
+import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
@@ -527,4 +528,72 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(new Integer(2), service.getCountOfAppointmentsInTimeSlotExcludingMissedAndCancelled(timeSlot)); // there are five appointments in this time slot, but one is voided, one is cancelled, and one is missed
 	}
 	
+	@Test(expected = APIException.class)
+	public void bookAppointment_shouldFailIfAppointmentHasAlreadyBeenPersisted() throws Exception {
+		Appointment appointment = service.getAppointment(1);
+		service.bookAppointment(appointment, false);
+	}
+	
+	@Test
+	public void bookAppointment_shouldBookNewAppointment() throws Exception {
+		
+		TimeSlot timeSlot = service.getTimeSlot(4);
+		AppointmentType appointmentType = service.getAppointmentType(1);
+		Patient patient = Context.getPatientService().getPatient(1);
+		
+		Appointment appointment = new Appointment();
+		appointment.setTimeSlot(timeSlot);
+		appointment.setPatient(patient);
+		appointment.setReason("follow-up");
+		appointment.setAppointmentType(appointmentType);
+		service.bookAppointment(appointment, false);
+		
+		assertNotNull(appointment.getAppointmentId());
+		assertEquals(timeSlot, appointment.getTimeSlot());
+		assertEquals(patient, appointment.getPatient());
+		assertEquals("follow-up", appointment.getReason());
+		assertEquals(appointmentType, appointment.getAppointmentType());
+		assertEquals(AppointmentStatus.SCHEDULED, appointment.getStatus());
+		assertNull(appointment.getVisit());
+	}
+	
+	@Test(expected = TimeSlotFullException.class)
+	public void bookAppointment_shouldNotBookNewAppointmentIfTimeSlotFull() throws Exception {
+		
+		TimeSlot timeSlot = service.getTimeSlot(1);
+		AppointmentType appointmentType = service.getAppointmentType(1);
+		Patient patient = Context.getPatientService().getPatient(1);
+		
+		Appointment appointment = new Appointment();
+		appointment.setTimeSlot(timeSlot);
+		appointment.setPatient(patient);
+		appointment.setReason("follow-up");
+		appointment.setAppointmentType(appointmentType);
+		service.bookAppointment(appointment, false);
+		
+	}
+	
+	@Test
+	public void bookAppointment_shouldBookNewAppointmentEvenIfTimeSlotFullIfOverbookSetToTrue() throws Exception {
+		
+		TimeSlot timeSlot = service.getTimeSlot(1);
+		AppointmentType appointmentType = service.getAppointmentType(1);
+		Patient patient = Context.getPatientService().getPatient(1);
+		
+		Appointment appointment = new Appointment();
+		appointment.setTimeSlot(timeSlot);
+		appointment.setPatient(patient);
+		appointment.setReason("follow-up");
+		appointment.setAppointmentType(appointmentType);
+		service.bookAppointment(appointment, true);
+		
+		assertNotNull(appointment.getAppointmentId());
+		assertEquals(timeSlot, appointment.getTimeSlot());
+		assertEquals(patient, appointment.getPatient());
+		assertEquals("follow-up", appointment.getReason());
+		assertEquals(appointmentType, appointment.getAppointmentType());
+		assertEquals(AppointmentStatus.SCHEDULED, appointment.getStatus());
+		assertNull(appointment.getVisit());
+		
+	}
 }

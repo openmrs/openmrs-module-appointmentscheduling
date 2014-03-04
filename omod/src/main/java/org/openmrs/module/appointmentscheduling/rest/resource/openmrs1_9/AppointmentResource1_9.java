@@ -1,8 +1,10 @@
 package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
+import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
 import org.openmrs.module.appointmentscheduling.rest.controller.AppointmentRestController;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -68,7 +70,12 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 	
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() {
-		return getCreatableProperties();
+        // note that time slot and appointment type are not updateable
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addProperty("visit");
+		description.addRequiredProperty("status");
+		description.addProperty("reason");
+		return description;
 	}
 	
 	@Override
@@ -91,7 +98,23 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 	
 	@Override
 	public Appointment save(Appointment appointment) {
-		return Context.getService(AppointmentService.class).saveAppointment(appointment);
+		return save(appointment, false);
+	}
+	
+	protected Appointment save(Appointment appointment, Boolean allowOverbook) {
+		if (appointment.getId() != null) {
+			// existing appointments get updated
+			return Context.getService(AppointmentService.class).saveAppointment(appointment);
+		} else {
+			// new appointments get booked
+			try {
+				return Context.getService(AppointmentService.class).bookAppointment(appointment, allowOverbook);
+			}
+			catch (TimeSlotFullException e) {
+				// TODO once we have model to return a proper error result, use that here instead of just throwing an exception
+				throw new APIException(e);
+			}
+		}
 	}
 	
 	@Override

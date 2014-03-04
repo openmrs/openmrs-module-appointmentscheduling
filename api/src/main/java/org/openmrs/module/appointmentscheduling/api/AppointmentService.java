@@ -26,6 +26,7 @@ import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.ScheduledAppointmentBlock;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
+import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -750,4 +751,17 @@ public interface AppointmentService extends OpenmrsService {
 	 */
 	@Transactional(readOnly = true)
 	Integer calculateUnallocatedMinutesInTimeSlot(TimeSlot timeSlot);
+	
+	/**
+	 * Books a new appointment
+	 * 
+	 * @param appointment
+	 * @param allowOverbook
+	 * @return The newly-created appointment
+	 * @should throw exception if this appointment has already been persisted
+	 * @should throw exception if not enough available time in time slot and allowOverbook = false
+	 */
+	@Transactional
+	Appointment bookAppointment(Appointment appointment, Boolean allowOverbook) throws TimeSlotFullException;
+	
 }
