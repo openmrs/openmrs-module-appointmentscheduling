@@ -340,7 +340,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(3, appointments.size());
 		
 		appointments = service.getAppointmentsByConstraints(null, null, null, null, null, AppointmentStatus.MISSED);
-		assertEquals(3, appointments.size());
+		assertEquals(2, appointments.size());
 		;
 	}
 	
@@ -365,10 +365,10 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(appointment);
 		assertTrue(result.contains(appointment));
 		
-		// +"MISSED": 2 5 9
+		// +"MISSED": 2 5
 		states.add(AppointmentStatus.MISSED);
 		result = service.getAppointmentsByStatus(states);
-		assertEquals(6, result.size());
+		assertEquals(5, result.size());
 		appointment = service.getAppointment(1);
 		assertNotNull(appointment);
 		assertTrue(result.contains(appointment));
@@ -384,10 +384,6 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		appointment = service.getAppointment(5);
 		assertNotNull(appointment);
 		assertTrue(result.contains(appointment));
-		appointment = service.getAppointment(9);
-		assertNotNull(appointment);
-		assertTrue(result.contains(appointment));
-		
 	}
 	
 	@Test
@@ -523,13 +519,13 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	@Test
-	public void getAppointmentsInTimeSlotExcludingMissedAndCancelled_shouldGetCorrectAppointments() {
+	public void getAppointmentsInTimeSlotThatAreNotCancelled_shouldGetCorrectAppointments() {
 		TimeSlot timeSlot = service.getTimeSlot(8);
 		assertNotNull(timeSlot);
 		
-		List<Appointment> appointments = service.getAppointmentsInTimeSlotExcludingMissedAndCancelled(timeSlot);
+		List<Appointment> appointments = service.getAppointmentsInTimeSlotThatAreNotCancelled(timeSlot);
 		assertNotNull(appointments);
-		assertEquals(2, appointments.size()); // there are five appointments in this time slot, but one is voided, one is cancelled, and one is missed
+		assertEquals(2, appointments.size()); // there are five appointments in this time slot, but one is voided, one is cancelled, and one is needs_reschedule
 		
 		Appointment appointment = service.getAppointment(7);
 		assertTrue(appointments.contains(appointment));
@@ -538,9 +534,9 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	@Test
-	public void getCountOfAppointmentsInTimeSlotExcludingMissedAndCancelled_shouldGetCorrectAppointments() {
+	public void getCountOfAppointmentsInTimeSlotThatAreNotCancelled_shouldGetCorrectAppointments() {
 		TimeSlot timeSlot = service.getTimeSlot(8);
-		assertEquals(new Integer(2), service.getCountOfAppointmentsInTimeSlotExcludingMissedAndCancelled(timeSlot)); // there are five appointments in this time slot, but one is voided, one is cancelled, and one is missed
+		assertEquals(new Integer(2), service.getCountOfAppointmentsInTimeSlotThatAreNotCancelled(timeSlot)); // there are five appointments in this time slot, but one is voided, one is need_reschedule, and one is missed
 	}
 	
 	@Test(expected = APIException.class)

@@ -72,7 +72,7 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 	
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() {
-        // note that time slot and appointment type are not updateable
+		// note that time slot and appointment type are not updateable
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("visit");
 		description.addRequiredProperty("status");
@@ -113,8 +113,8 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 				return Context.getService(AppointmentService.class).bookAppointment(appointment, allowOverbook);
 			}
 			catch (TimeSlotFullException e) {
-                Errors errors = new BindException(appointment, "");
-                errors.reject("appointmentscheduling.Appointment.error.timeSlotFull");
+				Errors errors = new BindException(appointment, "");
+				errors.reject("appointmentscheduling.Appointment.error.timeSlotFull");
 				throw new ValidationException("appointmentscheduling.Appointment.error.timeSlotFull", errors);
 			}
 		}

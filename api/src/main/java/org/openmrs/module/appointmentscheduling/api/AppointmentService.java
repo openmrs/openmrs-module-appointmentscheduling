@@ -209,6 +209,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param reason the reason why the appointment block is voided.
 	 * @return the appointment block that has been voided.
 	 * @should void given appointment block
+	 * @should void all associated time slots
 	 */
 	AppointmentBlock voidAppointmentBlock(AppointmentBlock appointmentBlock, String reason);
 	
@@ -235,6 +236,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return a list of appointment block objects.
 	 * @should get all appointment blocks which have contains in a given date interval and
 	 *         corresponds to a given locations, provider and appointment type.
+	 * @should not return voided appointment blocks
 	 */
 	@Transactional(readOnly = true)
 	List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, String locations, Provider provider,
@@ -435,15 +437,17 @@ public interface AppointmentService extends OpenmrsService {
 	List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot);
 	
 	/**
-	 * Should retrieve all appointments in the given time slot that are not missed or cancelled
+	 * Should retrieve all appointments in the given time slot that do not have a status that means
+	 * the appointment has been cancelled (ie status=CANCELLED, CANCELLED_AND_NEEDS_RESCHEDULE,
+	 * MISSED, etc)
 	 * 
 	 * @param timeSlot the time slot to search by.
 	 * @return the appointments in the given time slo
-	 * @should not return missed and cancelled appointments.
+	 * @should not return missed, cancelled, and needs_reschedule appointments.
 	 * @should not return voided appointments
 	 */
 	@Transactional(readOnly = true)
-	List<Appointment> getAppointmentsInTimeSlotExcludingMissedAndCancelled(TimeSlot timeSlot);
+	List<Appointment> getAppointmentsInTimeSlotThatAreNotCancelled(TimeSlot timeSlot);
 	
 	/**
 	 * Gets a count of the number of appointments in a time slot
@@ -456,15 +460,17 @@ public interface AppointmentService extends OpenmrsService {
 	Integer getCountOfAppointmentsInTimeSlot(TimeSlot timeSlot);
 	
 	/**
-	 * Gets a count of the number of appointments in a time slot that are not missed or cancelled
+	 * Gets a count of all appointments in the given time slot that do not have a status that means
+	 * the appointment has been cancelled (ie status=CANCELLED, CANCELLED_AND_NEEDS_RESCHEDULE,
+	 * MISSED, etc)
 	 * 
 	 * @param timeSlot the time slot to search by.
 	 * @return the count of appointments in the given time slot
-	 * @should not count missed and cancelled appointments.
+	 * @should not count missed, cancelled and needs rescheduled appointments.
 	 * @should not count voided appointments
 	 */
 	@Transactional(readOnly = true)
-	Integer getCountOfAppointmentsInTimeSlotExcludingMissedAndCancelled(TimeSlot timeSlot);
+	Integer getCountOfAppointmentsInTimeSlotThatAreNotCancelled(TimeSlot timeSlot);
 	
 	/**
 	 * Should retrieve all time slots in the given appointment block.
@@ -576,6 +582,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param timeSlot the given time slot.
 	 * @return The amount of minutes left in the given time slot. Returns null if the given time
 	 *         slot was null;
+	 * @should ignore appointments with statuses that reflect a "cancelled" appointment
 	 */
 	@Transactional(readOnly = true)
 	Integer getTimeLeftInTimeSlot(TimeSlot timeSlot);
@@ -721,8 +728,8 @@ public interface AppointmentService extends OpenmrsService {
 	
 	/**
 	 * Given an appointment block, this method creates a ScheduledAppointmentBlock convenience
-	 * object that contains all the appointments in the block that are not CANCELLED or MISSED, as
-	 * well as the remaining time available in the blocks
+	 * object that contains all the appointments in the block that are not voided or in one of the
+	 * "cancelled" states
 	 * 
 	 * @param appointmentBlock
 	 * @return
@@ -731,9 +738,8 @@ public interface AppointmentService extends OpenmrsService {
 	ScheduledAppointmentBlock createScheduledAppointmentBlock(AppointmentBlock appointmentBlock);
 	
 	/**
-	 * Gets all scheduled appointment blocks for a certain day at a certain location Ignores any
-	 * blocks within the time period that *do not* have any appointments that are not CANCELLED or
-	 * MISSED
+	 * Gets all scheduled appointment blocks for a certain day at a certain location. Ignores any
+	 * appointments that are voided or in one of the "cancelled" states
 	 * 
 	 * @param location
 	 * @param date
@@ -741,16 +747,6 @@ public interface AppointmentService extends OpenmrsService {
 	 */
 	@Transactional(readOnly = true)
 	List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date);
-	
-	/**
-	 * Calculate the unallocated minutes in the time slot. As follows: Number minutes in time slot
-	 * minus minutes allocated for all appts in the time slot that aren't CANCELLED or MISSED
-	 * 
-	 * @param timeSlot
-	 * @return
-	 */
-	@Transactional(readOnly = true)
-	Integer calculateUnallocatedMinutesInTimeSlot(TimeSlot timeSlot);
 	
 	/**
 	 * Books a new appointment

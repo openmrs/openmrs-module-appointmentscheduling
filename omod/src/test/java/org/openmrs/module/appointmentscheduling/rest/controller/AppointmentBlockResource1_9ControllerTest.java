@@ -1,5 +1,8 @@
 package org.openmrs.module.appointmentscheduling.rest.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,9 +16,6 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertThat;
 import static org.openmrs.module.appointmentscheduling.rest.test.SameDatetimeMatcher.sameDatetime;
@@ -71,7 +71,7 @@ public class AppointmentBlockResource1_9ControllerTest extends MainResourceContr
 		    PropertyUtils.getProperty(result, "display"));
 		
 		Assert.assertEquals("c0c549b0-8e59-401d-8a4a-976a0b183599", Util.getByPath(result, "provider/uuid"));
-		Assert.assertEquals("Super User", Util.getByPath(result, "provider/person/preferredName/display"));
+		Assert.assertEquals("Super User", Util.getByPath(result, "provider/person/display"));
 		
 		Assert.assertEquals("9356400c-a5a2-4532-8f2b-2361b3446eb8", Util.getByPath(result, "location/uuid"));
 		Assert.assertEquals("Xanadu", Util.getByPath(result, "location/name"));

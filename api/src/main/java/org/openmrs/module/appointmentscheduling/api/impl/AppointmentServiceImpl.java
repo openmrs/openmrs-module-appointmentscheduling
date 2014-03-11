@@ -14,7 +14,6 @@
 package org.openmrs.module.appointmentscheduling.api.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,12 +26,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.joda.time.DateTime;
-import org.joda.time.Minutes;
-import org.openmrs.module.appointmentscheduling.ScheduledAppointmentBlock;
-import org.openmrs.module.appointmentscheduling.StudentT;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
+import org.joda.time.Minutes;
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
@@ -46,6 +45,8 @@ import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
+import org.openmrs.module.appointmentscheduling.ScheduledAppointmentBlock;
+import org.openmrs.module.appointmentscheduling.StudentT;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentBlockDAO;
@@ -91,7 +92,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#getAllAppointmentTypes()
 	 */
-    @Override
+	@Override
 	@Transactional(readOnly = true)
 	public Set<AppointmentType> getAllAppointmentTypes() {
 		HashSet set = new HashSet();
@@ -242,6 +243,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#unvoidAppointmentBlock(org.openmrs.AppointmentBlock)
 	 */
+	// TODO what should this do regarding voided time slots within this block?
 	public AppointmentBlock unvoidAppointmentBlock(AppointmentBlock appointmentBlock) {
 		return saveAppointmentBlock(appointmentBlock);
 	}
@@ -408,11 +410,9 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	@Override
-	public List<Appointment> getAppointmentsInTimeSlotExcludingMissedAndCancelled(TimeSlot timeSlot) {
-		return getAppointmentDAO().getAppointmentsInTimeSlotByStatus(
-		    timeSlot,
-		    Arrays.asList(AppointmentStatus.COMPLETED, AppointmentStatus.INCONSULTATION, AppointmentStatus.RESCHEDULED,
-		        AppointmentStatus.SCHEDULED, AppointmentStatus.WAITING, AppointmentStatus.WALKIN));
+	public List<Appointment> getAppointmentsInTimeSlotThatAreNotCancelled(TimeSlot timeSlot) {
+		return getAppointmentDAO().getAppointmentsInTimeSlotByStatus(timeSlot,
+		    AppointmentStatus.filter(AppointmentStatus.cancelledPredicate));
 	}
 	
 	@Override
@@ -421,11 +421,9 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	@Override
-	public Integer getCountOfAppointmentsInTimeSlotExcludingMissedAndCancelled(TimeSlot timeSlot) {
-		return getAppointmentDAO().getCountOfAppointmentsInTimeSlotByStatus(
-		    timeSlot,
-		    Arrays.asList(AppointmentStatus.COMPLETED, AppointmentStatus.INCONSULTATION, AppointmentStatus.RESCHEDULED,
-		        AppointmentStatus.SCHEDULED, AppointmentStatus.WAITING, AppointmentStatus.WALKIN));
+	public Integer getCountOfAppointmentsInTimeSlotThatAreNotCancelled(TimeSlot timeSlot) {
+		return getAppointmentDAO().getCountOfAppointmentsInTimeSlotByStatus(timeSlot,
+		    AppointmentStatus.filter(AppointmentStatus.cancelledPredicate));
 	}
 	
 	@Override
@@ -565,27 +563,20 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Override
 	@Transactional(readOnly = true)
 	public Integer getTimeLeftInTimeSlot(TimeSlot timeSlot) {
-		Integer timeLeft = null;
 		
-		if (timeSlot == null)
-			return timeLeft;
-		
-		Date startDate = timeSlot.getStartDate();
-		Date endDate = timeSlot.getEndDate();
-		
-		//Calculate total number of minutes in the time slot.
-		timeLeft = (int) ((endDate.getTime() / 60000) - (startDate.getTime() / 60000));
-		
-		//Subtract from time left the amounts of minutes already scheduled
-		//Should not take into consideration cancelled or missed appointments 
-		List<Appointment> appointments = getAppointmentsInTimeSlot(timeSlot);
-		for (Appointment appointment : appointments) {
-			if (!appointment.isVoided() && appointment.getStatus() != AppointmentStatus.CANCELLED
-			        && appointment.getStatus() != AppointmentStatus.MISSED)
-				timeLeft -= appointment.getAppointmentType().getDuration();
+		if (timeSlot == null) {
+			return null;
 		}
 		
-		return timeLeft;
+		Integer minutes = Minutes.minutesBetween(new DateTime(timeSlot.getStartDate()), new DateTime(timeSlot.getEndDate()))
+		        .getMinutes();
+		
+		for (Appointment appointment : Context.getService(AppointmentService.class)
+		        .getAppointmentsInTimeSlotThatAreNotCancelled(timeSlot)) {
+			minutes = minutes - appointment.getAppointmentType().getDuration();
+		}
+		
+		return minutes;
 	}
 	
 	@Override
@@ -922,22 +913,19 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Transactional(readOnly = true)
 	public ScheduledAppointmentBlock createScheduledAppointmentBlock(AppointmentBlock appointmentBlock) {
 		List<Appointment> appointmentList = getAppointmentDAO().getAppointmentsByAppointmentBlock(appointmentBlock);
+		
+		// only include appointments that aren't "cancelled"
+		CollectionUtils.filter(appointmentList, new Predicate() {
+			
+			List<AppointmentStatus> cancelledStatuses = AppointmentStatus.filter(AppointmentStatus.cancelledPredicate);
+			
+			@Override
+			public boolean evaluate(Object o) {
+				return cancelledStatuses.contains(((Appointment) o).getStatus());
+			}
+		});
+		
 		return new ScheduledAppointmentBlock(appointmentList, appointmentBlock);
-	}
-	
-	@Override
-	@Transactional(readOnly = true)
-	public Integer calculateUnallocatedMinutesInTimeSlot(TimeSlot timeSlot) {
-		
-		Integer minutes = Minutes.minutesBetween(new DateTime(timeSlot.getStartDate()), new DateTime(timeSlot.getEndDate()))
-		        .getMinutes();
-		
-		for (Appointment appointment : Context.getService(AppointmentService.class)
-		        .getAppointmentsInTimeSlotExcludingMissedAndCancelled(timeSlot)) {
-			minutes = minutes - appointment.getAppointmentType().getDuration();
-		}
-		
-		return minutes;
 	}
 	
 	@Override
@@ -948,13 +936,12 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		if (appointment.getId() != null) {
 			throw new APIException("Cannot book appointment that has already been persisted");
 		}
-
-        // annoying that we have to do this, since it will be called during save, but otherwise we might get a NPE below if time slot or appointment type == null
+		
+		// annoying that we have to do this, since it will be called during save, but otherwise we might get a NPE below if time slot or appointment type == null
 		ValidateUtil.validate(appointment);
 		
 		if (!allowOverbook) {
-			if (calculateUnallocatedMinutesInTimeSlot(appointment.getTimeSlot()) < appointment.getAppointmentType()
-			        .getDuration()) {
+			if (getTimeLeftInTimeSlot(appointment.getTimeSlot()) < appointment.getAppointmentType().getDuration()) {
 				throw new TimeSlotFullException();
 			}
 		}
