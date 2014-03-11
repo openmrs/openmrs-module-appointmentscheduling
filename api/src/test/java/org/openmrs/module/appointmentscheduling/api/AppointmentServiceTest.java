@@ -13,12 +13,6 @@
  */
 package org.openmrs.module.appointmentscheduling.api;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,21 +32,27 @@ import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 
 /**
- * Tests Appointment methods in the {@link $ AppointmentService} .
+ * Tests Appointment methods in the {@link$ AppointmentService} .
  */
 public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	
 	private AppointmentService service;
 	
-	private static int TOTAL_APPOINTMENTS = 11;
+	private static int TOTAL_APPOINTMENTS = 12;
 	
-	private static int TOTAL_APPOINTMENTS_EXCLUDING_VOIDED = 9;
+	private static int TOTAL_APPOINTMENTS_EXCLUDING_VOIDED = 10;
 	
 	@Before
 	public void before() throws Exception {
@@ -273,7 +273,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		Date fromDate = format.parse("2006-01-01 00:00:00.0");
 		
 		List<Appointment> appointments = service.getAppointmentsByConstraints(fromDate, null, null, null, null, null);
-		assertEquals(7, appointments.size());
+		assertEquals(8, appointments.size());
 		
 		Date toDate = format.parse("2006-01-01 01:00:00.3");
 		appointments = service.getAppointmentsByConstraints(null, toDate, null, null, null, null);
@@ -303,7 +303,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		AppointmentType type = service.getAppointmentType(1);
 		assertNotNull(type);
 		List<Appointment> appointments = service.getAppointmentsByConstraints(null, null, null, null, type, null);
-		assertEquals(6, appointments.size());
+		assertEquals(7, appointments.size());
 		
 		type = service.getAppointmentType(3);
 		Appointment specificAppointment = service.getAppointment(4);
@@ -318,18 +318,17 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		Location location = Context.getLocationService().getLocation(3);
 		assertNotNull(location);
 		List<Appointment> appointments = service.getAppointmentsByConstraints(null, null, location, null, null, null);
-		assertEquals(5, appointments.size());
+		assertEquals(6, appointments.size());
 		
 		location = Context.getLocationService().getLocation(2);
 		assertNotNull(location);
 		appointments = service.getAppointmentsByConstraints(null, null, location, null, null, null);
-		assertEquals(9, appointments.size());
+		assertEquals(10, appointments.size());
 		
 		location = Context.getLocationService().getLocation(4);
 		assertNotNull(location);
 		appointments = service.getAppointmentsByConstraints(null, null, location, null, null, null);
 		assertTrue(appointments.isEmpty());
-		
 	}
 	
 	@Test
@@ -396,7 +395,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	public void shouldChangeCorrectAppointments_cleanOpenAppointments() {
 		List<Appointment> result = service.cleanOpenAppointments();
 		assertNotNull(result);
-		assertEquals(4, result.size());
+		assertEquals(5, result.size());
 		
 		Appointment appointment = service.getAppointment(1);
 		assertNotNull(appointment);
@@ -482,6 +481,22 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = service.getDailyAppointmentBlocks(location, date);
 		assertEquals(0, scheduledAppointmentBlockList.size());
 	}
+
+    @Test
+    public void shouldReturnDailyAppointmentsWithoutProviderAssigned() throws Exception {
+        Location location = Context.getLocationService().getLocation(3);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        Date date = format.parse("2014-01-02 10:00:00.0");
+
+        List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = service.getDailyAppointmentBlocks(location, date);
+        assertEquals(1, scheduledAppointmentBlockList.size());
+
+        AppointmentBlock appointmentBlock = scheduledAppointmentBlockList.get(0).getAppointmentBlock();
+        assertEquals(null, appointmentBlock.getProvider());
+
+        List<Appointment> appointmentList = scheduledAppointmentBlockList.get(0).getAppointments();
+        assertEquals(1, appointmentList.size());
+    }
 	
 	@Test
 	@Verifies(value = "retrieve all appointments scheduled in a given time slot", method = "getAppointmentsInTimeSlot(TimeSlot)")

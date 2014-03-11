@@ -49,7 +49,7 @@ import static org.junit.Assert.assertThat;
  */
 public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest {
 	
-	private static final int TOTAL_APPOINTMENT_BLOCKS = 4;
+	private static final int TOTAL_APPOINTMENT_BLOCKS = 5;
 	
 	@Autowired
 	private AppointmentService service;
@@ -84,7 +84,7 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		assertNotNull(appointmentBlock);
 		assertEquals("2005-01-03 00:00:00.0", appointmentBlock.getStartDate().toString());
 		
-		appointmentBlock = service.getAppointmentBlock(5);
+		appointmentBlock = service.getAppointmentBlock(6);
 		assertNull(appointmentBlock);
 	}
 	
@@ -189,7 +189,7 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		assertEquals(0, service.getTimeSlotsInAppointmentBlock(appointmentBlock).size());
 		
 		//Should not change the number of appointment blocks.
-		assertEquals(4, service.getAllAppointmentBlocks().size());
+		assertEquals(TOTAL_APPOINTMENT_BLOCKS, service.getAllAppointmentBlocks().size());
 	}
 	
 	@Test

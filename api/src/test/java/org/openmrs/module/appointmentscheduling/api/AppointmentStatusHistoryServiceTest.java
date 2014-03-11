@@ -41,7 +41,7 @@ import static junit.framework.Assert.assertNotNull;
  */
 public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensitiveTest {
 	
-	public static final int TOTAL_APPOINTMENTS = 11;
+	public static final int TOTAL_APPOINTMENTS = 12;
 	
 	private AppointmentService service;
 	

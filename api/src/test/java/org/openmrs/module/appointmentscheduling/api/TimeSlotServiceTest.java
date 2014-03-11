@@ -43,7 +43,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 	
 	private AppointmentService service;
 	
-	private static int TOTAL_TIME_SLOTS = 8;
+	private static int TOTAL_TIME_SLOTS = 9;
 	
 	@Before
 	public void before() throws Exception {
@@ -62,7 +62,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 	@Verifies(value = "should get all time slots by a given bool whether to include voided", method = "getAllTimeSlots(boolean)")
 	public void getAllTimeSlots_shouldGetAllUnvoidedTimeSlots() {
 		List<TimeSlot> timeSlots = service.getAllTimeSlots(false);
-		assertEquals(7, timeSlots.size());
+		assertEquals(8, timeSlots.size());
 	}
 	
 	@Test
@@ -116,7 +116,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(timeSlot);
 		assertEquals("2007-01-01 00:00:00.2", startDate.toString());
 		
-		timeSlot = service.getTimeSlot(9);
+		timeSlot = service.getTimeSlot(10);
 		assertNull(timeSlot);
 	}
 	
@@ -380,13 +380,13 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		
 		List<TimeSlot> result = service.getTimeSlotsByConstraintsIncludingFull(type, fromDate, null, null, null);
 		assertNotNull(result);
-		assertEquals(7, result.size());
+		assertEquals(8, result.size());
 		
 		TimeSlot firstTimeSlot = result.get(0);
 		assertEquals(5, firstTimeSlot.getTimeSlotId().intValue());
 		
 		TimeSlot lastTimeSlot = result.get(result.size() - 1);
-		assertEquals(8, lastTimeSlot.getTimeSlotId().intValue());
+		assertEquals(9, lastTimeSlot.getTimeSlotId().intValue());
 	}
 	
 	@Test
@@ -398,13 +398,13 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		
 		List<TimeSlot> result = service.getTimeSlotsByConstraints(type, fromDate, null, null, null);
 		assertNotNull(result);
-		assertEquals(5, result.size());
+		assertEquals(6, result.size());
 		
 		TimeSlot firstTimeSlot = result.get(0);
 		assertEquals(5, firstTimeSlot.getTimeSlotId().intValue());
 		
 		TimeSlot lastTimeSlot = result.get(result.size() - 1);
-		assertEquals(8, lastTimeSlot.getTimeSlotId().intValue());
+		assertEquals(9, lastTimeSlot.getTimeSlotId().intValue());
 	}
 	
 	@Test
