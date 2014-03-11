@@ -91,6 +91,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#getAllAppointmentTypes()
 	 */
+    @Override
 	@Transactional(readOnly = true)
 	public Set<AppointmentType> getAllAppointmentTypes() {
 		HashSet set = new HashSet();

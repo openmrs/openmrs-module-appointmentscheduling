@@ -1,6 +1,5 @@
 package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 
-import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
@@ -17,6 +16,9 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudR
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.validation.ValidationException;
+import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
 
 @Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE + "/appointment", supportedClass = Appointment.class, supportedOpenmrsVersions = "1.9.*")
 public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointment> {
@@ -111,8 +113,9 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 				return Context.getService(AppointmentService.class).bookAppointment(appointment, allowOverbook);
 			}
 			catch (TimeSlotFullException e) {
-				// TODO once we have model to return a proper error result, use that here instead of just throwing an exception
-				throw new APIException(e);
+                Errors errors = new BindException(appointment, "");
+                errors.reject("appointmentscheduling.Appointment.error.timeSlotFull");
+				throw new ValidationException("appointmentscheduling.Appointment.error.timeSlotFull", errors);
 			}
 		}
 	}
