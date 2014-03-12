@@ -50,7 +50,7 @@ public class TimeSlotResource1_9Test extends BaseDelegatingResourceTest<TimeSlot
 	
 	@Override
 	public String getDisplayProperty() {
-		return "Super User, Xanadu: 2007-01-01 00:00:00.2 - 2007-01-01 01:00:00.0";
+		return "Hippocrates of Cos, Xanadu: 2007-01-01 00:00:00.2 - 2007-01-01 01:00:00.0";
 	}
 	
 	@Override

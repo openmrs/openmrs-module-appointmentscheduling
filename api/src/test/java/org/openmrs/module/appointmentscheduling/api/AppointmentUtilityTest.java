@@ -1,8 +1,5 @@
 package org.openmrs.module.appointmentscheduling.api;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,9 +10,11 @@ import org.openmrs.Location;
 import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
-import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 
 public class AppointmentUtilityTest extends BaseModuleContextSensitiveTest {
 	
@@ -32,8 +31,8 @@ public class AppointmentUtilityTest extends BaseModuleContextSensitiveTest {
 	public void getAllProvidersSorted_shouldGetCorrectSort() {
 		List<Provider> providers = service.getAllProvidersSorted(false);
 		
-		Provider shouldBeFirst = Context.getProviderService().getProvider(2);
-		Provider shouldBeLast = Context.getProviderService().getProvider(1);
+		Provider shouldBeFirst = Context.getProviderService().getProvider(1);
+		Provider shouldBeLast = Context.getProviderService().getProvider(2);
 		assertNotNull(shouldBeFirst);
 		assertNotNull(shouldBeLast);
 		
@@ -43,7 +42,7 @@ public class AppointmentUtilityTest extends BaseModuleContextSensitiveTest {
 		
 		providers = service.getAllProvidersSorted(true);
 		
-		shouldBeFirst = Context.getProviderService().getProvider(2);
+		shouldBeFirst = Context.getProviderService().getProvider(1);
 		shouldBeLast = Context.getProviderService().getProvider(3);
 		assertNotNull(shouldBeFirst);
 		assertNotNull(shouldBeLast);

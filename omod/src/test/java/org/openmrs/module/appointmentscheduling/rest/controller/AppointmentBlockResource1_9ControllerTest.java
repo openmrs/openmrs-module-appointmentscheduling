@@ -40,7 +40,7 @@ public class AppointmentBlockResource1_9ControllerTest extends MainResourceContr
 		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertTrue(PropertyUtils.getProperty(result, "startDate").toString().contains("2005-01-01T00:00:00.00"));
 		Assert.assertTrue(PropertyUtils.getProperty(result, "endDate").toString().contains("2005-01-01T11:00:00.00"));
-		Assert.assertEquals("Super User, Xanadu: 2005-01-01 00:00:00.0 - 2005-01-01 11:00:00.0",
+		Assert.assertEquals("Hippocrates of Cos, Xanadu: 2005-01-01 00:00:00.0 - 2005-01-01 11:00:00.0",
 		    PropertyUtils.getProperty(result, "display"));
 		
 		Assert.assertEquals("c0c549b0-8e59-401d-8a4a-976a0b183599", Util.getByPath(result, "provider/uuid"));
@@ -67,11 +67,11 @@ public class AppointmentBlockResource1_9ControllerTest extends MainResourceContr
 		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertTrue(PropertyUtils.getProperty(result, "startDate").toString().contains("2005-01-01T00:00:00.00"));
 		Assert.assertTrue(PropertyUtils.getProperty(result, "endDate").toString().contains("2005-01-01T11:00:00.00"));
-		Assert.assertEquals("Super User, Xanadu: 2005-01-01 00:00:00.0 - 2005-01-01 11:00:00.0",
+		Assert.assertEquals("Hippocrates of Cos, Xanadu: 2005-01-01 00:00:00.0 - 2005-01-01 11:00:00.0",
 		    PropertyUtils.getProperty(result, "display"));
 		
 		Assert.assertEquals("c0c549b0-8e59-401d-8a4a-976a0b183599", Util.getByPath(result, "provider/uuid"));
-		Assert.assertEquals("Super User", Util.getByPath(result, "provider/person/display"));
+		Assert.assertEquals("Hippocrates of Cos", Util.getByPath(result, "provider/person/display"));
 		
 		Assert.assertEquals("9356400c-a5a2-4532-8f2b-2361b3446eb8", Util.getByPath(result, "location/uuid"));
 		Assert.assertEquals("Xanadu", Util.getByPath(result, "location/name"));
