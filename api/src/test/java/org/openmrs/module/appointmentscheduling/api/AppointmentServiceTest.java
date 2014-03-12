@@ -13,6 +13,12 @@
  */
 package org.openmrs.module.appointmentscheduling.api;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,12 +37,6 @@ import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -342,6 +342,18 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		appointments = service.getAppointmentsByConstraints(null, null, null, null, null, AppointmentStatus.MISSED);
 		assertEquals(2, appointments.size());
 		;
+	}
+	
+	@Test
+	@Verifies(value = "Should get all unvoided appointments by patient", method = "getAppointmentsByConstraints(Date, Date, Location, Provider, AppointmentType, AppointmentStatus, Patient)")
+	public void shouldgetAllUnvoidedAppointmentsByPatient_getAppointmentsByConstraints() {
+		
+		Patient patient = Context.getPatientService().getPatient(2);
+		
+		List<Appointment> appointments = service.getAppointmentsByConstraints(null, null, null, null, null, null, patient);
+		assertEquals(2, appointments.size());
+		assertEquals(patient, appointments.get(0).getPatient());
+		assertEquals(patient, appointments.get(1).getPatient());
 	}
 	
 	@Test

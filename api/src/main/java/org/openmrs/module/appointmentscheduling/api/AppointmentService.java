@@ -575,6 +575,21 @@ public interface AppointmentService extends OpenmrsService {
 	        AppointmentType type, AppointmentStatus status) throws APIException;
 	
 	/**
+	 * Retrieves Appointments that satisfy the given constraints
+	 * 
+	 * @param fromDate - The appointment start date
+	 * @param toDate - The appointment end date
+	 * @param location - The appointment location
+	 * @param provider - The appointment provider
+	 * @param type - The appointment type
+	 * @param status - The appointment status
+	 * @param patient - The patient
+	 * @return a list of appointments that satisfy the given constraints
+	 */
+	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Location location, Provider provider,
+	        AppointmentType type, AppointmentStatus status, Patient patient) throws APIException;
+	
+	/**
 	 * Retrives the start date of the current status of a given appointment.
 	 * 
 	 * @param appointment - The appointment.
