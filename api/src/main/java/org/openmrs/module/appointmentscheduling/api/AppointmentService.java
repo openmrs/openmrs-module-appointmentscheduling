@@ -737,10 +737,11 @@ public interface AppointmentService extends OpenmrsService {
 	 * 
 	 * @param location
 	 * @param date
+	 * @param appointmentType
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date);
+	List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date, AppointmentType appointmentType);
 	
 	/**
 	 * Calculate the unallocated minutes in the time slot. As follows: Number minutes in time slot

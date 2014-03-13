@@ -449,8 +449,10 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 		Date date = format.parse("2014-01-02 10:00:00.0");
 		Provider provider = Context.getProviderService().getProvider(1);
+		AppointmentType appointmentType = Context.getService(AppointmentService.class).getAppointmentType(1);
 		
-		List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = service.getDailyAppointmentBlocks(location, date);
+		List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = service.getDailyAppointmentBlocks(location, date,
+		    appointmentType);
 		
 		assertNotNull(scheduledAppointmentBlockList);
 		assertEquals(1, scheduledAppointmentBlockList.size());
@@ -477,26 +479,30 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		Location location = Context.getLocationService().getLocation(1);
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 		Date date = format.parse("2005-01-02 10:00:00.0");
+		AppointmentType appointmentType = null;
 		
-		List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = service.getDailyAppointmentBlocks(location, date);
+		List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = service.getDailyAppointmentBlocks(location, date,
+		    appointmentType);
 		assertEquals(0, scheduledAppointmentBlockList.size());
 	}
-
-    @Test
-    public void shouldReturnDailyAppointmentsWithoutProviderAssigned() throws Exception {
-        Location location = Context.getLocationService().getLocation(3);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-        Date date = format.parse("2014-01-02 10:00:00.0");
-
-        List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = service.getDailyAppointmentBlocks(location, date);
-        assertEquals(1, scheduledAppointmentBlockList.size());
-
-        AppointmentBlock appointmentBlock = scheduledAppointmentBlockList.get(0).getAppointmentBlock();
-        assertEquals(null, appointmentBlock.getProvider());
-
-        List<Appointment> appointmentList = scheduledAppointmentBlockList.get(0).getAppointments();
-        assertEquals(1, appointmentList.size());
-    }
+	
+	@Test
+	public void shouldReturnDailyAppointmentsWithoutProviderAssigned() throws Exception {
+		Location location = Context.getLocationService().getLocation(3);
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		Date date = format.parse("2014-01-02 10:00:00.0");
+		AppointmentType appointmentType = null;
+		
+		List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = service.getDailyAppointmentBlocks(location, date,
+		    appointmentType);
+		assertEquals(1, scheduledAppointmentBlockList.size());
+		
+		AppointmentBlock appointmentBlock = scheduledAppointmentBlockList.get(0).getAppointmentBlock();
+		assertEquals(null, appointmentBlock.getProvider());
+		
+		List<Appointment> appointmentList = scheduledAppointmentBlockList.get(0).getAppointments();
+		assertEquals(1, appointmentList.size());
+	}
 	
 	@Test
 	@Verifies(value = "retrieve all appointments scheduled in a given time slot", method = "getAppointmentsInTimeSlot(TimeSlot)")

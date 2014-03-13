@@ -900,12 +900,13 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	
 	@Override
 	@Transactional(readOnly = true)
-	public List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date) {
+	public List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date,
+	        AppointmentType appointmentType) {
 		AppointmentDAO appointmentDao = getAppointmentDAO();
 		
 		List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = new ArrayList<ScheduledAppointmentBlock>();
 		
-		for (AppointmentBlock appointmentBlock : getAppointmentBlockList(location, date)) {
+		for (AppointmentBlock appointmentBlock : getAppointmentBlockList(location, date, appointmentType)) {
 			
 			ScheduledAppointmentBlock scheduledAppointmentBlock = createScheduledAppointmentBlock(appointmentBlock);
 			
@@ -962,9 +963,9 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		return Context.getService(AppointmentService.class).saveAppointment(appointment);
 	}
 	
-	private List<AppointmentBlock> getAppointmentBlockList(Location location, Date date) {
+	private List<AppointmentBlock> getAppointmentBlockList(Location location, Date date, AppointmentType appointmentType) {
 		return getAppointmentBlocks(setDateToStartOfDay(date), setDateToEndOfDay(date), location.getId().toString(), null,
-		    null);
+		    appointmentType);
 	}
 	
 	private Date setDateToEndOfDay(Date date) {

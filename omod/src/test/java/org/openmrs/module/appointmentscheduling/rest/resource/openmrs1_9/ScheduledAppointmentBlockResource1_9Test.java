@@ -24,6 +24,7 @@ public class ScheduledAppointmentBlockResource1_9Test extends BaseModuleWebConte
 		RequestContext context = Mockito.mock(RequestContext.class);
 		when(context.getParameter("date")).thenReturn("2005-01-03 00:00:00.0");
 		when(context.getParameter("location")).thenReturn("9356400c-a5a2-4532-8f2b-2361b3446eb7");
+		when(context.getParameter("appointmentType")).thenReturn("759799ab-c9a5-435e-b671-77773ada74e6");
 		
 		SimpleObject search = scheduledAppointmentBlockResource1_9.search(context);
 		

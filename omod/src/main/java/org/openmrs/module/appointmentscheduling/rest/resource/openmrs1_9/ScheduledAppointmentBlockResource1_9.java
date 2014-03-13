@@ -3,6 +3,7 @@ package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.ScheduledAppointmentBlock;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.appointmentscheduling.rest.controller.AppointmentRestController;
@@ -30,8 +31,10 @@ public class ScheduledAppointmentBlockResource1_9 implements Searchable, Retriev
 		
 		Date date = getDate(context);
 		Location location = getLocation(context);
+		AppointmentType appointmentType = getAppointmentType(context);
 		
-		List<ScheduledAppointmentBlock> dailyAppointmentBlocks = getScheduledAppointmentBlocks(date, location);
+		List<ScheduledAppointmentBlock> dailyAppointmentBlocks = getScheduledAppointmentBlocks(date, location,
+		    appointmentType);
 		
 		SimpleObject result = new SimpleObject();
 		result.add("results", convertToSimpleObjectList(dailyAppointmentBlocks));
@@ -39,8 +42,9 @@ public class ScheduledAppointmentBlockResource1_9 implements Searchable, Retriev
 		return result;
 	}
 	
-	private List<ScheduledAppointmentBlock> getScheduledAppointmentBlocks(Date startDate, Location location) {
-		return Context.getService(AppointmentService.class).getDailyAppointmentBlocks(location, startDate);
+	private List<ScheduledAppointmentBlock> getScheduledAppointmentBlocks(Date startDate, Location location,
+	        AppointmentType appointmentType) {
+		return Context.getService(AppointmentService.class).getDailyAppointmentBlocks(location, startDate, appointmentType);
 	}
 	
 	private Location getLocation(RequestContext context) {
@@ -51,6 +55,11 @@ public class ScheduledAppointmentBlockResource1_9 implements Searchable, Retriev
 	private Date getDate(RequestContext context) {
 		return context.getParameter("date") != null ? (Date) ConversionUtil
 		        .convert(context.getParameter("date"), Date.class) : null;
+	}
+	
+	private AppointmentType getAppointmentType(RequestContext context) {
+		return context.getParameter("serviceType") != null ? Context.getService(AppointmentService.class)
+		        .getAppointmentTypeByUuid(context.getParameter("serviceType")) : null;
 	}
 	
 	private List<SimpleObject> convertToSimpleObjectList(List<ScheduledAppointmentBlock> dailyAppointmentBlocks) {
