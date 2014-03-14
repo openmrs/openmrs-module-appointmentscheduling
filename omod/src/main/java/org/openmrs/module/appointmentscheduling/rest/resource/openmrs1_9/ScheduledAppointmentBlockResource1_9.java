@@ -58,8 +58,8 @@ public class ScheduledAppointmentBlockResource1_9 implements Searchable, Retriev
 	}
 	
 	private AppointmentType getAppointmentType(RequestContext context) {
-		return context.getParameter("serviceType") != null ? Context.getService(AppointmentService.class)
-		        .getAppointmentTypeByUuid(context.getParameter("serviceType")) : null;
+		return context.getParameter("appointmentType") != null ? Context.getService(AppointmentService.class)
+		        .getAppointmentTypeByUuid(context.getParameter("appointmentType")) : null;
 	}
 	
 	private List<SimpleObject> convertToSimpleObjectList(List<ScheduledAppointmentBlock> dailyAppointmentBlocks) {

@@ -720,17 +720,6 @@ public interface AppointmentService extends OpenmrsService {
 	List<Appointment> getScheduledAppointmentsForPatient(Patient patient);
 	
 	/**
-	 * Given an appointment block, this method creates a ScheduledAppointmentBlock convenience
-	 * object that contains all the appointments in the block that are not CANCELLED or MISSED, as
-	 * well as the remaining time available in the blocks
-	 * 
-	 * @param appointmentBlock
-	 * @return
-	 */
-	@Transactional(readOnly = true)
-	ScheduledAppointmentBlock createScheduledAppointmentBlock(AppointmentBlock appointmentBlock);
-	
-	/**
 	 * Gets all scheduled appointment blocks for a certain day at a certain location Ignores any
 	 * blocks within the time period that *do not* have any appointments that are not CANCELLED or
 	 * MISSED

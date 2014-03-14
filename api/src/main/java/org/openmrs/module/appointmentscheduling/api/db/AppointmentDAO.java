@@ -13,9 +13,6 @@
  */
 package org.openmrs.module.appointmentscheduling.api.db;
 
-import java.util.Date;
-import java.util.List;
-
 import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
@@ -26,6 +23,9 @@ import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Database methods for {@link AppointmentService}.
@@ -47,7 +47,8 @@ public interface AppointmentDAO extends SingleClassDAO {
 	
 	List<Appointment> getScheduledAppointmentsForPatient(Patient patient);
 	
-	List<Appointment> getAppointmentsByAppointmentBlock(AppointmentBlock appointmentBlock);
+	List<Appointment> getAppointmentsByAppointmentBlockAndAppointmentType(AppointmentBlock appointmentBlock,
+	        AppointmentType appointmentType);
 	
 	/**
 	 * Retrieve all appointments in a given time slot.

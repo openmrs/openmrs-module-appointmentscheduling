@@ -13,26 +13,10 @@
  */
 package org.openmrs.module.appointmentscheduling.api.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.joda.time.DateTime;
-import org.joda.time.Minutes;
-import org.openmrs.module.appointmentscheduling.ScheduledAppointmentBlock;
-import org.openmrs.module.appointmentscheduling.StudentT;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
+import org.joda.time.Minutes;
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
@@ -46,6 +30,8 @@ import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
+import org.openmrs.module.appointmentscheduling.ScheduledAppointmentBlock;
+import org.openmrs.module.appointmentscheduling.StudentT;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentBlockDAO;
@@ -56,6 +42,20 @@ import org.openmrs.module.appointmentscheduling.api.db.TimeSlotDAO;
 import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
 import org.openmrs.validator.ValidateUtil;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * It is a default implementation of {@link AppointmentService}.
@@ -908,7 +908,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		
 		for (AppointmentBlock appointmentBlock : getAppointmentBlockList(location, date, appointmentType)) {
 			
-			ScheduledAppointmentBlock scheduledAppointmentBlock = createScheduledAppointmentBlock(appointmentBlock);
+			ScheduledAppointmentBlock scheduledAppointmentBlock = createScheduledAppointmentBlock(appointmentBlock,
+			    appointmentType);
 			
 			if (!scheduledAppointmentBlock.getAppointments().isEmpty()) {
 				scheduledAppointmentBlockList.add(scheduledAppointmentBlock);
@@ -918,10 +919,10 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		return scheduledAppointmentBlockList;
 	}
 	
-	@Override
-	@Transactional(readOnly = true)
-	public ScheduledAppointmentBlock createScheduledAppointmentBlock(AppointmentBlock appointmentBlock) {
-		List<Appointment> appointmentList = getAppointmentDAO().getAppointmentsByAppointmentBlock(appointmentBlock);
+	private ScheduledAppointmentBlock createScheduledAppointmentBlock(AppointmentBlock appointmentBlock,
+	        AppointmentType appointmentType) {
+		List<Appointment> appointmentList = getAppointmentDAO().getAppointmentsByAppointmentBlockAndAppointmentType(
+		    appointmentBlock, appointmentType);
 		return new ScheduledAppointmentBlock(appointmentList, appointmentBlock);
 	}
 	
@@ -948,8 +949,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		if (appointment.getId() != null) {
 			throw new APIException("Cannot book appointment that has already been persisted");
 		}
-
-        // annoying that we have to do this, since it will be called during save, but otherwise we might get a NPE below if time slot or appointment type == null
+		
+		// annoying that we have to do this, since it will be called during save, but otherwise we might get a NPE below if time slot or appointment type == null
 		ValidateUtil.validate(appointment);
 		
 		if (!allowOverbook) {
