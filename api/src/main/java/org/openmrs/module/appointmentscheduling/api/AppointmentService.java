@@ -692,6 +692,7 @@ public interface AppointmentService extends OpenmrsService {
 	List<Appointment> getScheduledAppointmentsForPatient(Patient patient);
 	
 	/**
+<<<<<<< HEAD
 
 	 * Given an appointment block, this method creates a ScheduledAppointmentBlock convenience
 	 * object that contains all the appointments in the block that are not voided or in one of the
