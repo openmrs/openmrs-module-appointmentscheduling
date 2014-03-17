@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.appointmentscheduling.api.impl;
 
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -29,7 +28,6 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
-=
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
@@ -77,6 +75,7 @@ import java.util.Set;
 /**
  * It is a default implementation of {@link AppointmentService}.
  */
+
 public class AppointmentServiceImpl extends BaseOpenmrsService implements AppointmentService {
 	
 	protected final Log log = LogFactory.getLog(this.getClass());
@@ -959,7 +958,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		
 		return scheduledAppointmentBlockList;
 	}
-
+	
 	private ScheduledAppointmentBlock createScheduledAppointmentBlock(AppointmentBlock appointmentBlock,
 	        AppointmentType appointmentType) {
 		List<Appointment> appointmentList = getAppointmentDAO().getAppointmentsByAppointmentBlockAndAppointmentType(

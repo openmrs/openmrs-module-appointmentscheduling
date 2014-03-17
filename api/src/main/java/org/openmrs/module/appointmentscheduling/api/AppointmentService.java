@@ -27,6 +27,7 @@ import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.ScheduledAppointmentBlock;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -692,18 +693,6 @@ public interface AppointmentService extends OpenmrsService {
 	List<Appointment> getScheduledAppointmentsForPatient(Patient patient);
 	
 	/**
-<<<<<<< HEAD
-
-	 * Given an appointment block, this method creates a ScheduledAppointmentBlock convenience
-	 * object that contains all the appointments in the block that are not voided or in one of the
-	 * "cancelled" states
-	 * 
-	 * @param appointmentBlock
-	 * @return
-	 */
-	ScheduledAppointmentBlock createScheduledAppointmentBlock(AppointmentBlock appointmentBlock);
-	
-	/**
 	 * Gets all scheduled appointment blocks for a certain day at a certain location. Ignores any
 	 * appointments that are voided or in one of the "cancelled" state
 	 * 
@@ -712,7 +701,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param appointmentType
 	 * @return
 	 */
-
+	
 	@Transactional(readOnly = true)
 	List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date, AppointmentType appointmentType);
 	

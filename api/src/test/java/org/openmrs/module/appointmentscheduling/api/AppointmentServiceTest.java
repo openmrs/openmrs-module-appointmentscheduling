@@ -13,12 +13,6 @@
  */
 package org.openmrs.module.appointmentscheduling.api;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -467,7 +461,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		
 		ScheduledAppointmentBlock scheduledAppointmentBlock = scheduledAppointmentBlockList.get(0);
 		
-		assertTrue(scheduledAppointmentBlock.getAppointments().size() == 2);
+		assertEquals(scheduledAppointmentBlock.getAppointments().size(), 3);
 		assertEquals(format.parse("2014-01-02 00:00:00.0"), scheduledAppointmentBlock.getStartDate());
 		assertEquals(format.parse("2014-01-02 12:00:00.0"), scheduledAppointmentBlock.getEndDate());
 		assertEquals(provider, scheduledAppointmentBlock.getProvider());
@@ -478,7 +472,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals("Initial HIV Clinic Appointment", appointment.getAppointmentType().getName());
 		
 		appointment = appointmentList.get(1);
-		assertEquals(6, appointment.getPatient().getId().intValue());
+		assertEquals(2  , appointment.getPatient().getId().intValue());
 		assertEquals("Initial HIV Clinic Appointment", appointment.getAppointmentType().getName());
 	}
 	
@@ -499,15 +493,12 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		Location location = Context.getLocationService().getLocation(3);
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 		Date date = format.parse("2014-01-02 10:00:00.0");
-<<<<<<< HEAD
+		
 		AppointmentType appointmentType = null;
 		
 		List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = service.getDailyAppointmentBlocks(location, date,
 		    appointmentType);
-=======
 		
-		List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = service.getDailyAppointmentBlocks(location, date);
->>>>>>> c8c8a43550dfe33f44a44f2fdd7514a20aa27f0e
 		assertEquals(1, scheduledAppointmentBlockList.size());
 		
 		AppointmentBlock appointmentBlock = scheduledAppointmentBlockList.get(0).getAppointmentBlock();

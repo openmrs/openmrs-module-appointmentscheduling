@@ -161,7 +161,7 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mappedClass);
 		criteria.createAlias("timeSlot", "time_slot");
 		criteria.add(Restrictions.eq("time_slot.appointmentBlock", appointmentBlock));
-
+		
 		if (appointmentType != null)
 			criteria.add(Restrictions.eq("appointmentType", appointmentType));
 		// skip cancelled and missed appointment blocks
