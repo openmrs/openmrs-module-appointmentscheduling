@@ -78,7 +78,7 @@ public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implem
 		List<AppointmentBlock> appointmentBlocks = criteria.list();
 		if (appointmentType != null) {
 			filteredAppointmentBlocks = new ArrayList<AppointmentBlock>();
-			String stringQuery = "SELECT appointmentBlock FROM AppointmentBlock AS appointmentBlock WHERE :appointmentType IN elements(appointmentBlock.types) AND voided = 0";
+			String stringQuery = "SELECT appointmentBlock FROM AppointmentBlock AS appointmentBlock WHERE :appointmentType IN elements(appointmentBlock.types) AND voided = 0 ORDER BY appointmentBlock.startDate, appointmentBlock.endDate, appointmentBlock.provider";
 			Query query = super.sessionFactory.getCurrentSession().createQuery(stringQuery)
 			        .setParameter("appointmentType", appointmentType);
 			List<AppointmentBlock> appointmentBlocksFilteredByType = query.list();
