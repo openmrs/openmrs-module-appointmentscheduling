@@ -45,7 +45,7 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		assertThat((String) PropertyUtils.getProperty(result, "startDate"), sameDatetime(timeSlot.getStartDate()));
 		assertThat((String) PropertyUtils.getProperty(result, "endDate"), sameDatetime(timeSlot.getEndDate()));
-		Assert.assertEquals("Super User, Xanadu: 2007-01-01 00:00:00.2 - 2007-01-01 01:00:00.0",
+		Assert.assertEquals("Hippocrates of Cos, Xanadu: 2007-01-01 00:00:00.2 - 2007-01-01 01:00:00.0",
 		    PropertyUtils.getProperty(result, "display"));
 		
 		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183599", Util.getByPath(result, "appointmentBlock/uuid"));
@@ -66,7 +66,7 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		assertThat((String) PropertyUtils.getProperty(result, "startDate"), sameDatetime(timeSlot.getStartDate()));
 		assertThat((String) PropertyUtils.getProperty(result, "endDate"), sameDatetime(timeSlot.getEndDate()));
-		Assert.assertEquals("Super User, Xanadu: 2007-01-01 00:00:00.2 - 2007-01-01 01:00:00.0",
+		Assert.assertEquals("Hippocrates of Cos, Xanadu: 2007-01-01 00:00:00.2 - 2007-01-01 01:00:00.0",
 		    PropertyUtils.getProperty(result, "display"));
 		
 		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183599", Util.getByPath(result, "appointmentBlock/uuid"));

@@ -13,6 +13,12 @@
  */
 package org.openmrs.module.appointmentscheduling.api;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,12 +37,6 @@ import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -340,8 +340,20 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(3, appointments.size());
 		
 		appointments = service.getAppointmentsByConstraints(null, null, null, null, null, AppointmentStatus.MISSED);
-		assertEquals(3, appointments.size());
+		assertEquals(2, appointments.size());
 		;
+	}
+	
+	@Test
+	@Verifies(value = "Should get all unvoided appointments by patient", method = "getAppointmentsByConstraints(Date, Date, Location, Provider, AppointmentType, AppointmentStatus, Patient)")
+	public void shouldgetAllUnvoidedAppointmentsByPatient_getAppointmentsByConstraints() {
+		
+		Patient patient = Context.getPatientService().getPatient(2);
+		
+		List<Appointment> appointments = service.getAppointmentsByConstraints(null, null, null, null, null, null, patient);
+		assertEquals(2, appointments.size());
+		assertEquals(patient, appointments.get(0).getPatient());
+		assertEquals(patient, appointments.get(1).getPatient());
 	}
 	
 	@Test
@@ -365,10 +377,10 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(appointment);
 		assertTrue(result.contains(appointment));
 		
-		// +"MISSED": 2 5 9
+		// +"MISSED": 2 5
 		states.add(AppointmentStatus.MISSED);
 		result = service.getAppointmentsByStatus(states);
-		assertEquals(6, result.size());
+		assertEquals(5, result.size());
 		appointment = service.getAppointment(1);
 		assertNotNull(appointment);
 		assertTrue(result.contains(appointment));
@@ -384,10 +396,6 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		appointment = service.getAppointment(5);
 		assertNotNull(appointment);
 		assertTrue(result.contains(appointment));
-		appointment = service.getAppointment(9);
-		assertNotNull(appointment);
-		assertTrue(result.contains(appointment));
-		
 	}
 	
 	@Test
@@ -491,10 +499,15 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		Location location = Context.getLocationService().getLocation(3);
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 		Date date = format.parse("2014-01-02 10:00:00.0");
+<<<<<<< HEAD
 		AppointmentType appointmentType = null;
 		
 		List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = service.getDailyAppointmentBlocks(location, date,
 		    appointmentType);
+=======
+		
+		List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = service.getDailyAppointmentBlocks(location, date);
+>>>>>>> c8c8a43550dfe33f44a44f2fdd7514a20aa27f0e
 		assertEquals(1, scheduledAppointmentBlockList.size());
 		
 		AppointmentBlock appointmentBlock = scheduledAppointmentBlockList.get(0).getAppointmentBlock();
@@ -529,13 +542,13 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	@Test
-	public void getAppointmentsInTimeSlotExcludingMissedAndCancelled_shouldGetCorrectAppointments() {
+	public void getAppointmentsInTimeSlotThatAreNotCancelled_shouldGetCorrectAppointments() {
 		TimeSlot timeSlot = service.getTimeSlot(8);
 		assertNotNull(timeSlot);
 		
-		List<Appointment> appointments = service.getAppointmentsInTimeSlotExcludingMissedAndCancelled(timeSlot);
+		List<Appointment> appointments = service.getAppointmentsInTimeSlotThatAreNotCancelled(timeSlot);
 		assertNotNull(appointments);
-		assertEquals(2, appointments.size()); // there are five appointments in this time slot, but one is voided, one is cancelled, and one is missed
+		assertEquals(2, appointments.size()); // there are five appointments in this time slot, but one is voided, one is cancelled, and one is needs_reschedule
 		
 		Appointment appointment = service.getAppointment(7);
 		assertTrue(appointments.contains(appointment));
@@ -544,9 +557,9 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	@Test
-	public void getCountOfAppointmentsInTimeSlotExcludingMissedAndCancelled_shouldGetCorrectAppointments() {
+	public void getCountOfAppointmentsInTimeSlotThatAreNotCancelled_shouldGetCorrectAppointments() {
 		TimeSlot timeSlot = service.getTimeSlot(8);
-		assertEquals(new Integer(2), service.getCountOfAppointmentsInTimeSlotExcludingMissedAndCancelled(timeSlot)); // there are five appointments in this time slot, but one is voided, one is cancelled, and one is missed
+		assertEquals(new Integer(2), service.getCountOfAppointmentsInTimeSlotThatAreNotCancelled(timeSlot)); // there are five appointments in this time slot, but one is voided, one is need_reschedule, and one is missed
 	}
 	
 	@Test(expected = APIException.class)

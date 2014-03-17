@@ -39,7 +39,7 @@ public interface AppointmentDAO extends SingleClassDAO {
 	Appointment getLastAppointment(Patient patient);
 	
 	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider, AppointmentType type,
-	        AppointmentStatus status) throws APIException;
+	        AppointmentStatus status, Patient patient) throws APIException;
 	
 	List<Appointment> getAppointmentsByStates(List<AppointmentStatus> states);
 	

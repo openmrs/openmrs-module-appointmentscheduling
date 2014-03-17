@@ -407,10 +407,4 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(9, lastTimeSlot.getTimeSlotId().intValue());
 	}
 	
-	@Test
-	public void calculateUnallocatedMinutesInTimeSlot_shouldProperlyCalculateUnallocatedMinutes() {
-		TimeSlot timeSlot = service.getTimeSlot(8);
-		// block is 12 hours long, with 2 appointments of 54 each = 12 * 60 - 54 + 2
-		assertEquals(new Integer(612), service.calculateUnallocatedMinutesInTimeSlot(timeSlot));
-	}
 }

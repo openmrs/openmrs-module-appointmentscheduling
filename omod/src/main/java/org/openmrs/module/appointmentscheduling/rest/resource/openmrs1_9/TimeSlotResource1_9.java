@@ -157,12 +157,11 @@ public class TimeSlotResource1_9 extends DataDelegatingCrudResource<TimeSlot> {
 	}
 	
 	public Integer getCountOfAppointments(TimeSlot timeSlot) {
-		return Context.getService(AppointmentService.class).getCountOfAppointmentsInTimeSlotExcludingMissedAndCancelled(
-		    timeSlot);
+		return Context.getService(AppointmentService.class).getCountOfAppointmentsInTimeSlotThatAreNotCancelled(timeSlot);
 	}
 	
 	public Integer getUnallocatedMinutes(TimeSlot timeSlot) {
-		return Context.getService(AppointmentService.class).calculateUnallocatedMinutesInTimeSlot(timeSlot);
+		return Context.getService(AppointmentService.class).getTimeLeftInTimeSlot(timeSlot);
 	}
 	
 }

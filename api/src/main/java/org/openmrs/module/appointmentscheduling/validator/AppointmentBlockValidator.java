@@ -16,9 +16,9 @@ package org.openmrs.module.appointmentscheduling.validator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
@@ -28,9 +28,6 @@ import org.springframework.validation.Validator;
  */
 @Handler(supports = { AppointmentBlock.class }, order = 50)
 public class AppointmentBlockValidator implements Validator {
-	
-	@Autowired
-	private AppointmentService appointmentService;
 	
 	/** Log for this class and subclasses */
 	protected final Log log = LogFactory.getLog(getClass());
@@ -65,7 +62,7 @@ public class AppointmentBlockValidator implements Validator {
 			if (appointmentBlock.getTypes() == null) {
 				ValidationUtils.rejectIfEmpty(errors, "types", "appointmentscheduling.AppointmentBlock.emptyTypes");
 			}
-			if (appointmentService.getOverlappingAppointmentBlocks(appointmentBlock).size() > 0) {
+			if (Context.getService(AppointmentService.class).getOverlappingAppointmentBlocks(appointmentBlock).size() > 0) {
 				errors.rejectValue("provider", "appointmentscheduling.AppointmentBlock.error.appointmentBlockOverlap");
 			}
 		}

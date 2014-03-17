@@ -80,7 +80,7 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 	@Override
 	@Transactional(readOnly = true)
 	public List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider,
-	        AppointmentType appointmentType, AppointmentStatus status) throws APIException {
+	        AppointmentType appointmentType, AppointmentStatus status, Patient patient) throws APIException {
 		if (fromDate != null && toDate != null && !fromDate.before(toDate))
 			throw new APIException("fromDate can not be later than toDate");
 		
@@ -97,6 +97,9 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 				stringQuery += " AND appointment.status=:status";
 			if (appointmentType != null)
 				stringQuery += " AND appointment.appointmentType=:appointmentType";
+			if (patient != null) {
+				stringQuery += " AND appointment.patient=:patient";
+			}
 			
 			Query query = super.sessionFactory.getCurrentSession().createQuery(stringQuery);
 			
@@ -110,6 +113,8 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 				query.setParameter("status", status);
 			if (appointmentType != null)
 				query.setParameter("appointmentType", appointmentType);
+			if (patient != null)
+				query.setParameter("patient", patient);
 			
 			return query.list();
 		}
@@ -156,6 +161,7 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mappedClass);
 		criteria.createAlias("timeSlot", "time_slot");
 		criteria.add(Restrictions.eq("time_slot.appointmentBlock", appointmentBlock));
+
 		if (appointmentType != null)
 			criteria.add(Restrictions.eq("appointmentType", appointmentType));
 		// skip cancelled and missed appointment blocks

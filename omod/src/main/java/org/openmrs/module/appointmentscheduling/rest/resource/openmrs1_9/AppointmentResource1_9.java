@@ -1,11 +1,17 @@
 package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 
-import org.openmrs.api.APIException;
+import java.util.Date;
+
+import org.openmrs.Location;
+import org.openmrs.Patient;
+import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
 import org.openmrs.module.appointmentscheduling.rest.controller.AppointmentRestController;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -17,6 +23,9 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudR
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.validation.ValidationException;
+import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
 
 @Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE + "/appointment", supportedClass = Appointment.class, supportedOpenmrsVersions = "1.9.*")
 public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointment> {
@@ -70,7 +79,7 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 	
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() {
-        // note that time slot and appointment type are not updateable
+		// note that time slot and appointment type are not updateable
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("visit");
 		description.addRequiredProperty("status");
@@ -111,8 +120,9 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 				return Context.getService(AppointmentService.class).bookAppointment(appointment, allowOverbook);
 			}
 			catch (TimeSlotFullException e) {
-				// TODO once we have model to return a proper error result, use that here instead of just throwing an exception
-				throw new APIException(e);
+				Errors errors = new BindException(appointment, "");
+				errors.reject("appointmentscheduling.Appointment.error.timeSlotFull");
+				throw new ValidationException("appointmentscheduling.Appointment.error.timeSlotFull", errors);
 			}
 		}
 	}
@@ -129,6 +139,47 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
 		AppointmentService service = Context.getService(AppointmentService.class);
 		return new NeedsPaging<Appointment>(service.getAllAppointments(), context);
+	}
+	
+	/**
+	 * Retrieves Appointments that satisfy the given constraints
+	 * 
+	 * @param fromDate (optional) - The appointment start date
+	 * @param toDate (optional) - The appointment end date
+	 * @param location (optional) - The appointment location
+	 * @param provider (optional) - The appointment provider
+	 * @param appointmentType (optional) - The appointment type
+	 * @param status (optional) - The appointment status
+	 * @param patient (optional) - The patient
+	 * @return a list of appointments that satisfy the given constraints
+	 */
+	@Override
+	protected PageableResult doSearch(RequestContext context) {
+		
+		Date fromDate = context.getParameter("fromDate") != null ? (Date) ConversionUtil.convert(
+		    context.getParameter("fromDate"), Date.class) : null;
+		
+		Date toDate = context.getParameter("toDate") != null ? (Date) ConversionUtil.convert(context.getParameter("toDate"),
+		    Date.class) : null;
+		
+		AppointmentType appointmentType = context.getParameter("appointmentType") != null ? Context.getService(
+		    AppointmentService.class).getAppointmentTypeByUuid(context.getParameter("appointmentType")) : null;
+		
+		Provider provider = context.getParameter("provider") != null ? Context.getProviderService().getProviderByUuid(
+		    context.getParameter("provider")) : null;
+		
+		Patient patient = context.getParameter("patient") != null ? Context.getPatientService().getPatientByUuid(
+		    context.getParameter("patient")) : null;
+		
+		Location location = context.getParameter("location") != null ? Context.getLocationService().getLocationByUuid(
+		    context.getParameter("location")) : null;
+		
+		Appointment.AppointmentStatus status = context.getParameter("status") != null ? Appointment.AppointmentStatus
+		        .valueOf(context.getParameter("status")) : null;
+		
+		return new NeedsPaging<Appointment>(Context.getService(AppointmentService.class).getAppointmentsByConstraints(
+		    fromDate, toDate, location, provider, appointmentType, status, patient), context);
+		
 	}
 	
 	public String getDisplayString(Appointment appointment) {

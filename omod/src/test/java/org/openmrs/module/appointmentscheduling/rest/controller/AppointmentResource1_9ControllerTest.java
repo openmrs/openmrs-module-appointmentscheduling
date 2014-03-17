@@ -1,5 +1,8 @@
 package org.openmrs.module.appointmentscheduling.rest.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -140,6 +143,88 @@ public class AppointmentResource1_9ControllerTest extends MainResourceController
 		
 		Assert.assertNull(appointmentService.getTimeSlotByUuid(getUuid()));
 		Assert.assertEquals(getAllCount() - 1, appointmentService.getAllAppointments().size());
+		
+	}
+	
+	@Test
+	public void shouldFetchAppointmentsByDate() throws Exception {
+		
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("fromDate", "2005-12-02T00:00:00.000");
+		req.addParameter("toDate", "2006-12-02T00:00:00.000");
+		handle(req);
+		
+		List<Map<String, String>> appointments = (List<Map<String, String>>) deserialize(handle(req)).get("results");
+		Assert.assertEquals(2, appointments.size());
+		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183601", appointments.get(0).get("uuid"));
+		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183602", appointments.get(1).get("uuid"));
+	}
+	
+	@Test
+	public void shouldFetchAppointmentsByAppointmentType() throws Exception {
+		
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("appointmentType", "c0c579b0-8e59-401d-8a4a-976a0b183519");
+		handle(req);
+		
+		List<Map<String, String>> appointments = (List<Map<String, String>>) deserialize(handle(req)).get("results");
+		Assert.assertEquals(2, appointments.size());
+		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183601", appointments.get(0).get("uuid"));
+		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183602", appointments.get(1).get("uuid"));
+	}
+	
+	@Test
+	public void shouldFetchAppointmentsByProvider() throws Exception {
+		
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("provider", "c0c54sd0-8e59-401d-8a4a-976a0b183599");
+		handle(req);
+		
+		List<Map<String, String>> appointments = (List<Map<String, String>>) deserialize(handle(req)).get("results");
+		Assert.assertEquals(3, appointments.size());
+		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183607", appointments.get(0).get("uuid"));
+		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183605", appointments.get(1).get("uuid"));
+		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183606", appointments.get(2).get("uuid"));
+	}
+	
+	@Test
+	public void shouldFetchAppointmentsByPatient() throws Exception {
+		
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("patient", "31e09960-8f52-11e3-baa8-0800200c9a66");
+		handle(req);
+		
+		List<Map<String, String>> appointments = (List<Map<String, String>>) deserialize(handle(req)).get("results");
+		Assert.assertEquals(1, appointments.size());
+		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183602", appointments.get(0).get("uuid"));
+		
+	}
+	
+	@Test
+	public void shouldFetchAppointmentsByLocation() throws Exception {
+		
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("location", "9356400c-a5a2-4532-8f2b-2361b3446eb8");
+		handle(req);
+		
+		List<Map<String, String>> appointments = (List<Map<String, String>>) deserialize(handle(req)).get("results");
+		Assert.assertEquals(3, appointments.size());
+		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183601", appointments.get(0).get("uuid"));
+		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183602", appointments.get(1).get("uuid"));
+		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183604", appointments.get(2).get("uuid"));
+		
+	}
+	
+	@Test
+	public void shouldFetchAppointmentsByStatus() throws Exception {
+		
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("status", "MISSED");
+		handle(req);
+		
+		List<Map<String, String>> appointments = (List<Map<String, String>>) deserialize(handle(req)).get("results");
+		Assert.assertEquals(1, appointments.size());
+		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183602", appointments.get(0).get("uuid"));
 		
 	}
 	

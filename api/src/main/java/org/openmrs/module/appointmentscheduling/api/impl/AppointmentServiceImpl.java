@@ -13,6 +13,21 @@
  */
 package org.openmrs.module.appointmentscheduling.api.impl;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
@@ -43,20 +58,6 @@ import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
 import org.openmrs.validator.ValidateUtil;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * It is a default implementation of {@link AppointmentService}.
  */
@@ -75,22 +76,53 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	private AppointmentStatusHistoryDAO appointmentStatusHistoryDAO;
 	
 	/**
-	 * @param dao the appointment type dao to set
+	 * Getters and Setters
 	 */
+	
 	public void setAppointmentTypeDAO(AppointmentTypeDAO appointmentTypeDAO) {
 		this.appointmentTypeDAO = appointmentTypeDAO;
 	}
 	
-	/**
-	 * @return the appointment type dao
-	 */
 	public AppointmentTypeDAO getAppointmentTypeDAO() {
 		return appointmentTypeDAO;
+	}
+	
+	public void setAppointmentDAO(AppointmentDAO appointmentDAO) {
+		this.appointmentDAO = appointmentDAO;
+	}
+	
+	public AppointmentDAO getAppointmentDAO() {
+		return appointmentDAO;
+	}
+	
+	public void setAppointmentBlockDAO(AppointmentBlockDAO appointmentBlockDAO) {
+		this.appointmentBlockDAO = appointmentBlockDAO;
+	}
+	
+	public AppointmentBlockDAO getAppointmentBlockDAO() {
+		return appointmentBlockDAO;
+	}
+	
+	public void setTimeSlotDAO(TimeSlotDAO timeSlotDAO) {
+		this.timeSlotDAO = timeSlotDAO;
+	}
+	
+	public TimeSlotDAO getTimeSlotDAO() {
+		return timeSlotDAO;
+	}
+	
+	public void setAppointmentStatusHistoryDAO(AppointmentStatusHistoryDAO appointmentStatusHistoryDAO) {
+		this.appointmentStatusHistoryDAO = appointmentStatusHistoryDAO;
+	}
+	
+	public AppointmentStatusHistoryDAO getAppointmentStatusHistoryDAO() {
+		return appointmentStatusHistoryDAO;
 	}
 	
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#getAllAppointmentTypes()
 	 */
+	@Override
 	@Transactional(readOnly = true)
 	public Set<AppointmentType> getAllAppointmentTypes() {
 		HashSet set = new HashSet();
@@ -110,6 +142,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#getAppointmentType(java.lang.Integer)
 	 */
+	@Override
 	@Transactional(readOnly = true)
 	public AppointmentType getAppointmentType(Integer appointmentTypeId) {
 		return (AppointmentType) getAppointmentTypeDAO().getById(appointmentTypeId);
@@ -118,6 +151,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#getAppointmentTypeByUuid(java.lang.String)
 	 */
+	@Override
 	@Transactional(readOnly = true)
 	public AppointmentType getAppointmentTypeByUuid(String uuid) {
 		return (AppointmentType) getAppointmentTypeDAO().getByUuid(uuid);
@@ -126,11 +160,13 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#getAppointmentTypes(java.lang.String)
 	 */
+	@Override
 	@Transactional(readOnly = true)
 	public List<AppointmentType> getAppointmentTypes(String fuzzySearchPhrase, boolean includeRetired) {
 		return getAppointmentTypeDAO().getAppointmentTypes(fuzzySearchPhrase, includeRetired);
 	}
 	
+	@Override
 	@Transactional(readOnly = true)
 	public List<AppointmentType> getAppointmentTypes(String fuzzySearchPhrase) {
 		return getAppointmentTypes(fuzzySearchPhrase, true);
@@ -139,6 +175,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#saveAppointmentType(org.openmrs.AppointmentType)
 	 */
+	@Override
+	@Transactional
 	public AppointmentType saveAppointmentType(AppointmentType appointmentType) throws APIException {
 		ValidateUtil.validate(appointmentType);
 		return (AppointmentType) getAppointmentTypeDAO().saveOrUpdate(appointmentType);
@@ -148,6 +186,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#retireAppointmentType(org.openmrs.AppointmentType,
 	 *      java.lang.String)
 	 */
+	@Override
+	@Transactional
 	public AppointmentType retireAppointmentType(AppointmentType appointmentType, String reason) {
 		return saveAppointmentType(appointmentType);
 	}
@@ -155,6 +195,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#unretireAppointmentType(org.openmrs.AppointmentType)
 	 */
+	@Override
+	@Transactional
 	public AppointmentType unretireAppointmentType(AppointmentType appointmentType) {
 		return saveAppointmentType(appointmentType);
 	}
@@ -162,6 +204,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#purgeAppointmentType(org.openmrs.AppointmentType)
 	 */
+	@Override
+	@Transactional
 	public void purgeAppointmentType(AppointmentType appointmentType) {
 		getAppointmentTypeDAO().delete(appointmentType);
 	}
@@ -169,22 +213,9 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	//Appointment Block
 	
 	/**
-	 * @param dao the appointment block dao to set
-	 */
-	public void setAppointmentBlockDAO(AppointmentBlockDAO appointmentBlockDAO) {
-		this.appointmentBlockDAO = appointmentBlockDAO;
-	}
-	
-	/**
-	 * @return the appointment block dao
-	 */
-	public AppointmentBlockDAO getAppointmentBlockDAO() {
-		return appointmentBlockDAO;
-	}
-	
-	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#getAllAppointmentBlocks()
 	 */
+	@Override
 	@Transactional(readOnly = true)
 	public List<AppointmentBlock> getAllAppointmentBlocks() {
 		return getAppointmentBlockDAO().getAll();
@@ -202,6 +233,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#getAppointmentBlock(java.lang.Integer)
 	 */
+	@Override
 	@Transactional(readOnly = true)
 	public AppointmentBlock getAppointmentBlock(Integer appointmentBlockId) {
 		return (AppointmentBlock) getAppointmentBlockDAO().getById(appointmentBlockId);
@@ -210,6 +242,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#getAppointmentBlockByUuid(java.lang.String)
 	 */
+	@Override
 	@Transactional(readOnly = true)
 	public AppointmentBlock getAppointmentBlockByUuid(String uuid) {
 		return (AppointmentBlock) getAppointmentBlockDAO().getByUuid(uuid);
@@ -218,6 +251,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#saveAppointmentBlock(org.openmrs.AppointmentBlock)
 	 */
+	@Override
+	@Transactional
 	public AppointmentBlock saveAppointmentBlock(AppointmentBlock appointmentBlock) throws APIException {
 		ValidateUtil.validate(appointmentBlock);
 		return (AppointmentBlock) getAppointmentBlockDAO().saveOrUpdate(appointmentBlock);
@@ -227,6 +262,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#voidAppointmentBlock(org.openmrs.AppointmentBlock,
 	 *      java.lang.String)
 	 */
+	@Override
+	@Transactional
 	public AppointmentBlock voidAppointmentBlock(AppointmentBlock appointmentBlock, String reason) {
 		
 		// first void all associated time slots
@@ -241,6 +278,9 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#unvoidAppointmentBlock(org.openmrs.AppointmentBlock)
 	 */
+	// TODO what should this do regarding voided time slots within this block?
+	@Override
+	@Transactional
 	public AppointmentBlock unvoidAppointmentBlock(AppointmentBlock appointmentBlock) {
 		return saveAppointmentBlock(appointmentBlock);
 	}
@@ -248,18 +288,16 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#purgeAppointmentBlock(org.openmrs.AppointmentBlock)
 	 */
+	@Override
+	@Transactional
 	public void purgeAppointmentBlock(AppointmentBlock appointmentBlock) {
 		getAppointmentBlockDAO().delete(appointmentBlock);
 	}
 	
-	public void setAppointmentDAO(AppointmentDAO appointmentDAO) {
-		this.appointmentDAO = appointmentDAO;
-	}
-	
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#getAppointmentBlocks(java.util.Date,java.util.Date,java.util.String,org.openmrs.Provider,org.openmrs.AppointmentType)
-	 *      )
 	 */
+	@Override
 	@Transactional(readOnly = true)
 	public List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, String locations, Provider provider,
 	        AppointmentType appointmentType) {
@@ -270,17 +308,10 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#getOverlappingAppointmentBlocks(org.openmrs.AppointmentBlock)
 	 *      )
 	 */
+	@Override
 	@Transactional(readOnly = true)
 	public List<AppointmentBlock> getOverlappingAppointmentBlocks(AppointmentBlock appointmentBlock) {
 		return getAppointmentBlockDAO().getOverlappingAppointmentBlocks(appointmentBlock);
-	}
-	
-	//Appointment
-	/**
-	 * @return the appointment dao
-	 */
-	public AppointmentDAO getAppointmentDAO() {
-		return appointmentDAO;
 	}
 	
 	@Override
@@ -308,22 +339,26 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	@Override
+	@Transactional
 	public Appointment saveAppointment(Appointment appointment) throws APIException {
 		ValidateUtil.validate(appointment);
 		return (Appointment) getAppointmentDAO().saveOrUpdate(appointment);
 	}
 	
 	@Override
+	@Transactional
 	public Appointment voidAppointment(Appointment appointment, String reason) {
 		return saveAppointment(appointment);
 	}
 	
 	@Override
+	@Transactional
 	public Appointment unvoidAppointment(Appointment appointment) {
 		return saveAppointment(appointment);
 	}
 	
 	@Override
+	@Transactional
 	public void purgeAppointment(Appointment appointment) {
 		getAppointmentStatusHistoryDAO().purgeHistoryBy(appointment);
 		getAppointmentDAO().delete(appointment);
@@ -342,21 +377,9 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	//TimeSlot
-	/**
-	 * @param dao the time slot dao to set
-	 */
-	public void setTimeSlotDAO(TimeSlotDAO timeSlotDAO) {
-		this.timeSlotDAO = timeSlotDAO;
-	}
-	
-	/**
-	 * @return the time slot dao
-	 */
-	public TimeSlotDAO getTimeSlotDAO() {
-		return timeSlotDAO;
-	}
 	
 	@Override
+	@Transactional
 	public TimeSlot saveTimeSlot(TimeSlot timeSlot) throws APIException {
 		ValidateUtil.validate(timeSlot);
 		return (TimeSlot) getTimeSlotDAO().saveOrUpdate(timeSlot);
@@ -387,44 +410,47 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	@Override
+	@Transactional
 	public TimeSlot voidTimeSlot(TimeSlot timeSlot, String reason) {
 		return saveTimeSlot(timeSlot);
 	}
 	
 	@Override
+	@Transactional
 	public TimeSlot unvoidTimeSlot(TimeSlot timeSlot) {
 		return saveTimeSlot(timeSlot);
 	}
 	
 	@Override
+	@Transactional
 	public void purgeTimeSlot(TimeSlot timeSlot) {
 		getTimeSlotDAO().delete(timeSlot);
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot) {
 		return getAppointmentDAO().getAppointmentsInTimeSlot(timeSlot);
 	}
 	
 	@Override
-	public List<Appointment> getAppointmentsInTimeSlotExcludingMissedAndCancelled(TimeSlot timeSlot) {
-		return getAppointmentDAO().getAppointmentsInTimeSlotByStatus(
-		    timeSlot,
-		    Arrays.asList(AppointmentStatus.COMPLETED, AppointmentStatus.INCONSULTATION, AppointmentStatus.RESCHEDULED,
-		        AppointmentStatus.SCHEDULED, AppointmentStatus.WAITING, AppointmentStatus.WALKIN));
+	@Transactional(readOnly = true)
+	public List<Appointment> getAppointmentsInTimeSlotThatAreNotCancelled(TimeSlot timeSlot) {
+		return getAppointmentDAO().getAppointmentsInTimeSlotByStatus(timeSlot,
+		    AppointmentStatus.filter(AppointmentStatus.cancelledPredicate));
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public Integer getCountOfAppointmentsInTimeSlot(TimeSlot timeSlot) {
 		return getAppointmentDAO().getCountOfAppointmentsInTimeSlot(timeSlot);
 	}
 	
 	@Override
-	public Integer getCountOfAppointmentsInTimeSlotExcludingMissedAndCancelled(TimeSlot timeSlot) {
-		return getAppointmentDAO().getCountOfAppointmentsInTimeSlotByStatus(
-		    timeSlot,
-		    Arrays.asList(AppointmentStatus.COMPLETED, AppointmentStatus.INCONSULTATION, AppointmentStatus.RESCHEDULED,
-		        AppointmentStatus.SCHEDULED, AppointmentStatus.WAITING, AppointmentStatus.WALKIN));
+	@Transactional(readOnly = true)
+	public Integer getCountOfAppointmentsInTimeSlotThatAreNotCancelled(TimeSlot timeSlot) {
+		return getAppointmentDAO().getCountOfAppointmentsInTimeSlotByStatus(timeSlot,
+		    AppointmentStatus.filter(AppointmentStatus.cancelledPredicate));
 	}
 	
 	@Override
@@ -434,23 +460,11 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	//AppointmentStatusHistory
-	/**
-	 * @param dao the appointment status history dao to set
-	 */
-	public void setAppointmentStatusHistoryDAO(AppointmentStatusHistoryDAO appointmentStatusHistoryDAO) {
-		this.appointmentStatusHistoryDAO = appointmentStatusHistoryDAO;
-	}
-	
-	/**
-	 * @return the appointment status dao
-	 */
-	public AppointmentStatusHistoryDAO getAppointmentStatusHistoryDAO() {
-		return appointmentStatusHistoryDAO;
-	}
 	
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#getAllAppointmentStatusHistories()
 	 */
+	@Override
 	@Transactional(readOnly = true)
 	public List<AppointmentStatusHistory> getAllAppointmentStatusHistories() {
 		return getAppointmentStatusHistoryDAO().getAll();
@@ -459,6 +473,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#getAppointmentStatusHistory(java.lang.Integer)
 	 */
+	@Override
 	@Transactional(readOnly = true)
 	public AppointmentStatusHistory getAppointmentStatusHistory(Integer appointmentStatusHistoryId) {
 		return (AppointmentStatusHistory) getAppointmentStatusHistoryDAO().getById(appointmentStatusHistoryId);
@@ -467,6 +482,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#getAppointmentStatusHistories(java.lang.String)
 	 */
+	@Override
 	@Transactional(readOnly = true)
 	public List<AppointmentStatusHistory> getAppointmentStatusHistories(AppointmentStatus status) {
 		return getAppointmentStatusHistoryDAO().getAll(status);
@@ -475,6 +491,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	/**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#saveAppointmentStatusHistory(org.openmrs.AppointmentStatusHistory)
 	 */
+	@Override
+	@Transactional
 	public AppointmentStatusHistory saveAppointmentStatusHistory(AppointmentStatusHistory appointmentStatusHistory)
 	        throws APIException {
 		ValidateUtil.validate(appointmentStatusHistory);
@@ -564,27 +582,20 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Override
 	@Transactional(readOnly = true)
 	public Integer getTimeLeftInTimeSlot(TimeSlot timeSlot) {
-		Integer timeLeft = null;
 		
-		if (timeSlot == null)
-			return timeLeft;
-		
-		Date startDate = timeSlot.getStartDate();
-		Date endDate = timeSlot.getEndDate();
-		
-		//Calculate total number of minutes in the time slot.
-		timeLeft = (int) ((endDate.getTime() / 60000) - (startDate.getTime() / 60000));
-		
-		//Subtract from time left the amounts of minutes already scheduled
-		//Should not take into consideration cancelled or missed appointments 
-		List<Appointment> appointments = getAppointmentsInTimeSlot(timeSlot);
-		for (Appointment appointment : appointments) {
-			if (!appointment.isVoided() && appointment.getStatus() != AppointmentStatus.CANCELLED
-			        && appointment.getStatus() != AppointmentStatus.MISSED)
-				timeLeft -= appointment.getAppointmentType().getDuration();
+		if (timeSlot == null) {
+			return null;
 		}
 		
-		return timeLeft;
+		Integer minutes = Minutes.minutesBetween(new DateTime(timeSlot.getStartDate()), new DateTime(timeSlot.getEndDate()))
+		        .getMinutes();
+		
+		for (Appointment appointment : Context.getService(AppointmentService.class)
+		        .getAppointmentsInTimeSlotThatAreNotCancelled(timeSlot)) {
+			minutes = minutes - appointment.getAppointmentType().getDuration();
+		}
+		
+		return minutes;
 	}
 	
 	@Override
@@ -605,12 +616,18 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	@Override
-	@Transactional(readOnly = true)
 	public List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Location location, Provider provider,
 	        AppointmentType type, AppointmentStatus status) throws APIException {
+		return getAppointmentsByConstraints(fromDate, toDate, location, provider, type, status, null);
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Location location, Provider provider,
+	        AppointmentType type, AppointmentStatus status, Patient patient) throws APIException {
 		
 		List<Appointment> appointments = appointmentDAO.getAppointmentsByConstraints(fromDate, toDate, provider, type,
-		    status);
+		    status, patient);
 		
 		List<Appointment> appointmentsInLocation = new LinkedList<Appointment>();
 		
@@ -644,6 +661,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	@Override
+	@Transactional
 	public void changeAppointmentStatus(Appointment appointment, AppointmentStatus newStatus) {
 		if (appointment != null) {
 			AppointmentStatusHistory history = new AppointmentStatusHistory();
@@ -703,7 +721,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	@Override
-	@Transactional(readOnly = false)
+	@Transactional
 	public List<Appointment> cleanOpenAppointments() {
 		List<AppointmentStatus> states = new LinkedList<AppointmentStatus>();
 		states.add(AppointmentStatus.SCHEDULED);
@@ -744,14 +762,20 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		return appointmentsInStates;
 	}
 	
+	@Override
+	@Transactional(readOnly = true)
 	public boolean verifyDuplicatedAppointmentTypeName(AppointmentType appointmentTypeName) {
 		return appointmentTypeDAO.verifyDuplicatedAppointmentTypeName(appointmentTypeName);
 	}
 	
+	@Override
+	@Transactional(readOnly = true)
 	public List<Appointment> getScheduledAppointmentsForPatient(Patient patient) {
 		return appointmentDAO.getScheduledAppointmentsForPatient(patient);
 	}
 	
+	@Override
+	@Transactional(readOnly = true)
 	public Map<AppointmentType, Double> getAverageHistoryDurationByConditions(Date fromDate, Date endDate,
 	        AppointmentStatus status) {
 		Map<AppointmentType, Double> averages = new HashMap<AppointmentType, Double>();
@@ -812,6 +836,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		return averages;
 	}
 	
+	@Override
 	@Transactional(readOnly = true)
 	public Map<Provider, Double> getAverageHistoryDurationByConditionsPerProvider(Date fromDate, Date endDate,
 	        AppointmentStatus status) {
@@ -918,27 +943,12 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		
 		return scheduledAppointmentBlockList;
 	}
-	
+
 	private ScheduledAppointmentBlock createScheduledAppointmentBlock(AppointmentBlock appointmentBlock,
 	        AppointmentType appointmentType) {
 		List<Appointment> appointmentList = getAppointmentDAO().getAppointmentsByAppointmentBlockAndAppointmentType(
 		    appointmentBlock, appointmentType);
 		return new ScheduledAppointmentBlock(appointmentList, appointmentBlock);
-	}
-	
-	@Override
-	@Transactional(readOnly = true)
-	public Integer calculateUnallocatedMinutesInTimeSlot(TimeSlot timeSlot) {
-		
-		Integer minutes = Minutes.minutesBetween(new DateTime(timeSlot.getStartDate()), new DateTime(timeSlot.getEndDate()))
-		        .getMinutes();
-		
-		for (Appointment appointment : Context.getService(AppointmentService.class)
-		        .getAppointmentsInTimeSlotExcludingMissedAndCancelled(timeSlot)) {
-			minutes = minutes - appointment.getAppointmentType().getDuration();
-		}
-		
-		return minutes;
 	}
 	
 	@Override
@@ -954,8 +964,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		ValidateUtil.validate(appointment);
 		
 		if (!allowOverbook) {
-			if (calculateUnallocatedMinutesInTimeSlot(appointment.getTimeSlot()) < appointment.getAppointmentType()
-			        .getDuration()) {
+			if (getTimeLeftInTimeSlot(appointment.getTimeSlot()) < appointment.getAppointmentType().getDuration()) {
 				throw new TimeSlotFullException();
 			}
 		}

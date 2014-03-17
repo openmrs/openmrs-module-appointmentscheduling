@@ -11,7 +11,7 @@
     <appointmentscheduling_appointment_block appointment_block_id="4" start_date="2014-01-02 00:00:00.0" end_date="2014-01-02 12:00:00.0" provider_id="1" location_id="2"  uuid="759799ab-c9a5-435e-b671-77773ada7490" date_created="2014-01-02 00:00:00.0" date_changed="2014-01-02 00:00:00.0" date_voided="2014-01-02 00:00:00.0" voided="false" creator="1" changed_by="1"/>
     <appointmentscheduling_appointment_block appointment_block_id="5" start_date="2014-01-02 00:00:00.0" end_date="2014-01-02 12:00:00.0" location_id="3"  uuid="759799ab-c9a5-435e-b671-77773ada7491" date_created="2014-01-02 00:00:00.0" date_changed="2014-01-02 00:00:00.0" date_voided="2014-01-02 00:00:00.0" voided="false" creator="1" changed_by="1"/>
 
-	<provider provider_id="1" person_id="1" identifier="Test Provider" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c0c549b0-8e59-401d-8a4a-976a0b183599" />
+	<provider provider_id="1" person_id="502" identifier="Test Provider" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c0c549b0-8e59-401d-8a4a-976a0b183599" />
 	<provider provider_id="2" person_id="2" identifier="Test Provider" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c0c54sd0-8e59-401d-8a4a-976a0b183599" />
 	<provider provider_id="3" person_id="1" identifier="Test Provider" creator="1" date_created="2005-01-01 00:00:00.0" retired="true" retire_reason="Some Retire Reason" uuid="c0c54sd0-8e59-401d-8a4a-976a0b1835p0" />
 	
@@ -51,7 +51,7 @@
 	<appointmentscheduling_appointment appointment_id="6" time_slot_id="7" appointment_type_id="3" patient_id="1" status="RESCHEDULED" uuid="c0c579b0-8e59-401d-8a4a-976a0b183606" date_created="2005-01-01 00:00:00.0" voided="false" creator="1"/>
     <appointmentscheduling_appointment appointment_id="7" time_slot_id="8" appointment_type_id="1" patient_id="1" status="SCHEDULED" uuid="c0c579b0-8e59-401d-8a4a-976a0b183607" date_created="2005-01-01 00:00:00.0" voided="false" creator="1"/>
     <appointmentscheduling_appointment appointment_id="8" time_slot_id="8" appointment_type_id="1" patient_id="1" status="CANCELLED" uuid="aaaa79b0-8e59-401d-8a4a-976a0b183607" date_created="2005-01-01 00:00:00.0" voided="false" creator="1"/>
-    <appointmentscheduling_appointment appointment_id="9" time_slot_id="8" appointment_type_id="1" patient_id="2" status="MISSED" uuid="bbbb79b0-8e59-401d-8a4a-976a0b183607" date_created="2005-01-01 00:00:00.0" voided="false" creator="1"/>
+    <appointmentscheduling_appointment appointment_id="9" time_slot_id="8" appointment_type_id="1" patient_id="2" status="CANCELLED_AND_NEEDS_RESCHEDULE" uuid="bbbb79b0-8e59-401d-8a4a-976a0b183607" date_created="2005-01-01 00:00:00.0" voided="false" creator="1"/>
     <appointmentscheduling_appointment appointment_id="10" time_slot_id="8" appointment_type_id="1" patient_id="3" status="SCHEDULED" uuid="cccc79b0-8e59-401d-8a4a-976a0b183607" date_created="2005-01-01 00:00:00.0" voided="true" creator="1"/>
     <appointmentscheduling_appointment appointment_id="11" time_slot_id="8" appointment_type_id="1" patient_id="6" status="WALKIN" uuid="dddd79b0-8e59-401d-8a4a-976a0b183607" date_created="2005-01-01 00:00:00.0" voided="false" creator="1"/>
     <appointmentscheduling_appointment appointment_id="12" time_slot_id="9" appointment_type_id="1" patient_id="6" status="WALKIN" uuid="dddd79b0-8e59-401d-8a4a-976a0b183608" date_created="2005-01-01 00:00:00.0" voided="false" creator="1"/>

@@ -13,13 +13,18 @@
  */
 package org.openmrs.module.appointmentscheduling;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
-
-import java.io.Serializable;
 
 /**
  * It is a model class. It should extend either {@link BaseOpenmrsObject} or
@@ -29,24 +34,63 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
+	// TODO confirm that "WALK-IN" should be considered active
 	public enum AppointmentStatus {
-		SCHEDULED("Scheduled"), RESCHEDULED("Rescheduled"), WALKIN("Walk-In"), CANCELLED("Cancelled"), WAITING("Waiting"), INCONSULTATION(
-		        "In-Consultation"), COMPLETED("Completed"), MISSED("Missed");
+		SCHEDULED("Scheduled", true, false), RESCHEDULED("Rescheduled", true, false), WALKIN("Walk-In", true, true), CANCELLED(
+		        "Cancelled", false, false), WAITING("Waiting", true, true), INCONSULTATION("In-Consultation", true, true), COMPLETED(
+		        "Completed", true, false), MISSED("Missed", false, false), CANCELLED_AND_NEEDS_RESCHEDULE(
+		        "Cancelled and Needs Reschedule", false, false);
 		
 		private final String name;
+		
+		/**
+		 * Whether or not an appointment with this status should be considered "cancelled" Right now
+		 * we consider CANCELLED, CANCELLED_AND_NEEDS_RESCHEDULE, and MISSED appts as cancelled
+		 */
+		private Boolean cancelled;
+		
+		/**
+		 * Whether or not this appointment represents an "active" appointment, where active=patient
+		 * checked-in and present within the health facility
+		 */
+		private Boolean active;
+		
+		private AppointmentStatus(final String name, final Boolean cancelled, final Boolean active) {
+			this.name = name;
+			this.cancelled = cancelled;
+			this.active = active;
+		}
 		
 		public String getName() {
 			return this.name;
 		}
 		
-		private AppointmentStatus(final String name) {
-			this.name = name;
+		public Boolean isCancelled() {
+			return this.cancelled;
+		}
+		
+		public Boolean isActive() {
+			return this.active;
 		}
 		
 		@Override
 		public String toString() {
 			return name;
 		}
+		
+		public static List<AppointmentStatus> filter(Predicate predicate) {
+			List<AppointmentStatus> appointmentStatuses = new ArrayList(Arrays.asList(AppointmentStatus.values())); // need to assign to a new array because Arrays.asList is fixed length
+			CollectionUtils.filter(appointmentStatuses, predicate);
+			return appointmentStatuses;
+		}
+		
+		public static Predicate cancelledPredicate = new Predicate() {
+			
+			@Override
+			public boolean evaluate(Object o) {
+				return ((AppointmentStatus) o).isCancelled();
+			}
+		};
 		
 	}
 	
