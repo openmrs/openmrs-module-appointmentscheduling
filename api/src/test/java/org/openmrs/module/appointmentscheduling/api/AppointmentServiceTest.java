@@ -32,6 +32,12 @@ import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
@@ -425,26 +431,6 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(new Integer(7), appointments.get(3).getId());
 	}
 	
-	//	@Test
-	//	public void shouldCreateScheduledAppointmentBlock() throws Exception {
-	//
-	//		AppointmentBlock appointmentBlock = service.getAppointmentBlock(4);
-	//
-	//		ScheduledAppointmentBlock scheduledAppointmentBlock = service.createScheduledAppointmentBlock(appointmentBlock, );
-	//
-	//		assertEquals(appointmentBlock, scheduledAppointmentBlock.getAppointmentBlock());
-	//		assertEquals(2, scheduledAppointmentBlock.getAppointments().size());
-	//
-	//		List<Appointment> appointmentList = scheduledAppointmentBlock.getAppointments();
-	//		Appointment appointment = appointmentList.get(0);
-	//		assertEquals(1, appointment.getPatient().getId().intValue());
-	//		assertEquals("Initial HIV Clinic Appointment", appointment.getAppointmentType().getName());
-	//
-	//		appointment = appointmentList.get(1);
-	//		assertEquals(6, appointment.getPatient().getId().intValue());
-	//		assertEquals("Initial HIV Clinic Appointment", appointment.getAppointmentType().getName());
-	//	}
-	
 	@Test
 	public void shouldGetDailyAppointments() throws Exception {
 		Location location = Context.getLocationService().getLocation(2);
@@ -472,7 +458,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals("Initial HIV Clinic Appointment", appointment.getAppointmentType().getName());
 		
 		appointment = appointmentList.get(1);
-		assertEquals(2  , appointment.getPatient().getId().intValue());
+		assertEquals(2, appointment.getPatient().getId().intValue());
 		assertEquals("Initial HIV Clinic Appointment", appointment.getAppointmentType().getName());
 	}
 	
