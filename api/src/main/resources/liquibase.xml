@@ -294,4 +294,16 @@
         <dropNotNullConstraint tableName="appointmentscheduling_appointment_block" columnName="provider_id" columnDataType="int"/>
     </changeSet>
 
+    <changeSet id="201403171701-appointmentscheduling_appointment_cancel_reason" author="cioan">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists tableName="appointmentscheduling_appointment" columnName="cancel_reason" /></not>
+        </preConditions>
+        <comment>Adding cancel_reason column to appointmentscheduling_appointment table</comment>
+        <addColumn tableName="appointmentscheduling_appointment">
+            <column name="cancel_reason" type="varchar(1024)">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

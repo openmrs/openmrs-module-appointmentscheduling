@@ -41,6 +41,7 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 			description.addProperty("patient", Representation.DEFAULT);
 			description.addProperty("status");
 			description.addProperty("reason");
+			description.addProperty("cancelReason");
 			description.addProperty("appointmentType", Representation.REF);
 			description.addProperty("voided");
 			description.addSelfLink();
@@ -55,6 +56,7 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 			description.addProperty("patient", Representation.FULL);
 			description.addProperty("status");
 			description.addProperty("reason");
+			description.addProperty("cancelReason");
 			description.addProperty("appointmentType", Representation.FULL);
 			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
@@ -73,6 +75,7 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 		description.addRequiredProperty("patient");
 		description.addRequiredProperty("status");
 		description.addProperty("reason");
+		description.addProperty("cancelReason");
 		description.addRequiredProperty("appointmentType");
 		return description;
 	}
@@ -84,6 +87,7 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 		description.addProperty("visit");
 		description.addRequiredProperty("status");
 		description.addProperty("reason");
+		description.addProperty("cancelReason");
 		return description;
 	}
 	
