@@ -22,7 +22,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
-import org.openmrs.module.appointmentscheduling.validator.AppointmentTypeValidator;
+import org.openmrs.validator.ValidateUtil;
 import org.openmrs.web.WebConstants;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -74,7 +74,7 @@ public class AppointmentTypeFormController {
 			AppointmentService appointmentService = Context.getService(AppointmentService.class);
 			
 			if (request.getParameter("save") != null) {
-				new AppointmentTypeValidator().validate(appointmentType, result);
+				ValidateUtil.validate(appointmentType, result);
 				if (result.hasErrors()) {
 					return null;
 				} else {
