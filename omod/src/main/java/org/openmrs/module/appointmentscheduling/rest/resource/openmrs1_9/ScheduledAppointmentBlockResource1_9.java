@@ -16,6 +16,7 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Retrievable;
 import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.validation.ValidationException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +33,10 @@ public class ScheduledAppointmentBlockResource1_9 implements Searchable, Retriev
 		Date date = getDate(context);
 		Location location = getLocation(context);
 		AppointmentType appointmentType = getAppointmentType(context);
+		
+		if (date == null || location == null) {
+			throw new ValidationException("appointmentschedulingui.dailyScheduledAppointments.validationExeptionMessage");
+		}
 		
 		List<ScheduledAppointmentBlock> dailyAppointmentBlocks = getScheduledAppointmentBlocks(date, location,
 		    appointmentType);
