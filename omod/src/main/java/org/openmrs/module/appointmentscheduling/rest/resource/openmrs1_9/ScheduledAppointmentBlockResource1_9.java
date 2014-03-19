@@ -35,7 +35,7 @@ public class ScheduledAppointmentBlockResource1_9 implements Searchable, Retriev
 		AppointmentType appointmentType = getAppointmentType(context);
 		
 		if (date == null || location == null) {
-			throw new ValidationException("appointmentschedulingui.dailyScheduledAppointments.validationExeptionMessage");
+			throw new ValidationException("appointmentscheduling.AppointmentBlock.error.scheduledAppointmentBlocks");
 		}
 		
 		List<ScheduledAppointmentBlock> dailyAppointmentBlocks = getScheduledAppointmentBlocks(date, location,
