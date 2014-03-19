@@ -79,10 +79,10 @@ public class ScheduledAppointmentBlockResource1_9Test extends BaseModuleWebConte
 		        .toString());
 		
 		assertTrue(appointmentBlock.containsKey("startDate"));
-		assertEquals("2005-01-03T00:00:00.000-0200", appointmentBlock.get("startDate").toString());
+		assertEquals("2005-01-03T00:00:00.000-0500", appointmentBlock.get("startDate").toString());
 		
 		assertTrue(appointmentBlock.containsKey("endDate"));
-		assertEquals("2005-01-03T11:00:00.000-0200", appointmentBlock.get("endDate").toString());
+		assertEquals("2005-01-03T11:00:00.000-0500", appointmentBlock.get("endDate").toString());
 	}
 	
 	private void assertRepresentationOfEachResult(List results) {
