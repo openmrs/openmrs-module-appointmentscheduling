@@ -1,5 +1,6 @@
 package org.openmrs.module.appointmentscheduling.validator;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -85,13 +86,23 @@ public class AppointmentTypeValidatorTest {
 	}
 	
 	@Test
-	public void mustRejectAppointmentTypesWithNameWithMoreThan100Characters() throws Exception {
-		String longName = "123456789 123456789 123456789 123456789 123456789 123456789 123456789 "
-		        + "123456789 123456789 123456789 1";
+	public void mustRejectAppointmentTypeNameWithMoreThan100Characters() throws Exception {
+		String longName = StringUtils.repeat("*", 101);
 		AppointmentType appointmentTypeLongName = new AppointmentType(longName, "", 10);
 		
 		appointmentTypeValidator.validate(appointmentTypeLongName, errors);
 		
 		Mockito.verify(errors).rejectValue("name", "appointmentscheduling.AppointmentType.longName.errorMessage");
 	}
+	
+	@Test
+	public void mustRejectAppointmentTypeDescriptionWithMoreThan1024Characters() throws Exception {
+		String longDescription = StringUtils.repeat("*", 1025);
+		AppointmentType appointmentTypeLongDuration = new AppointmentType("long description", longDescription, 10);
+		
+		appointmentTypeValidator.validate(appointmentTypeLongDuration, errors);
+		
+		Mockito.verify(errors).rejectValue("description", "appointmentscheduling.AppointmentType.description.errorMessage");
+	}
+	
 }

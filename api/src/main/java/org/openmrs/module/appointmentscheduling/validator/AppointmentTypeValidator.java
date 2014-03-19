@@ -70,6 +70,7 @@ public class AppointmentTypeValidator implements Validator {
 		} else {
 			validateDurationField(errors, appointmentType);
 			validateFieldName(errors, appointmentType);
+			validateDescriptionField(errors, appointmentType.getDescription());
 		}
 	}
 	
@@ -95,6 +96,19 @@ public class AppointmentTypeValidator implements Validator {
 		if (appointmentType.getDuration() == null || appointmentType.getDuration() <= 0) {
 			errors.rejectValue("duration", "appointmentscheduling.AppointmentType.duration.errorMessage");
 		}
+	}
+	
+	private void validateDescriptionField(Errors errors, String description) {
+		if (verifyIfDescriptionHasMoreThan1024Characters(description)) {
+			errors.rejectValue("description", "appointmentscheduling.AppointmentType.description.errorMessage");
+		}
+	}
+	
+	private boolean verifyIfDescriptionHasMoreThan1024Characters(String description) {
+		if (description != null) {
+			return (description.length() > 1024) ? true : false;
+		}
+		return false;
 	}
 	
 }
