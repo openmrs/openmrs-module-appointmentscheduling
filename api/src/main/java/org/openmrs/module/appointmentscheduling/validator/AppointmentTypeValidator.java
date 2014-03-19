@@ -78,6 +78,16 @@ public class AppointmentTypeValidator implements Validator {
 		if (appointmentService.verifyDuplicatedAppointmentTypeName(appointmentType)) {
 			errors.rejectValue("name", "appointmentscheduling.AppointmentType.nameDuplicated");
 		}
+		if (verifyIfNameHasMoreThan100Characters(appointmentType.getName())) {
+			errors.rejectValue("name", "appointmentscheduling.AppointmentType.longName.errorMessage");
+		}
+	}
+	
+	private boolean verifyIfNameHasMoreThan100Characters(String appointmentName) {
+		if (appointmentName != null) {
+			return (appointmentName.length() > 100) ? true : false;
+		}
+		return false;
 	}
 	
 	private void validateDurationField(Errors errors, AppointmentType appointmentType) {

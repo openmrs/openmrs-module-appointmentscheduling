@@ -83,4 +83,15 @@ public class AppointmentTypeValidatorTest {
 		
 		Mockito.verify(errors).rejectValue("duration", "appointmentscheduling.AppointmentType.duration.errorMessage");
 	}
+	
+	@Test
+	public void mustRejectAppointmentTypesWithNameWithMoreThan100Characters() throws Exception {
+		String longName = "123456789 123456789 123456789 123456789 123456789 123456789 123456789 "
+		        + "123456789 123456789 123456789 1";
+		AppointmentType appointmentTypeLongName = new AppointmentType(longName, "", 10);
+		
+		appointmentTypeValidator.validate(appointmentTypeLongName, errors);
+		
+		Mockito.verify(errors).rejectValue("name", "appointmentscheduling.AppointmentType.longName.errorMessage");
+	}
 }
