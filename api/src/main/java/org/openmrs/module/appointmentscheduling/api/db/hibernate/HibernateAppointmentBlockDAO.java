@@ -17,6 +17,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Provider;
 import org.openmrs.api.LocationService;
@@ -75,10 +76,13 @@ public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implem
 			criteria.add(Restrictions.eq("provider.id", provider.getProviderId()));
 		}
 		
+		criteria.addOrder(Order.asc("startDate"));
+		criteria.addOrder(Order.asc("endDate"));
+		
 		List<AppointmentBlock> appointmentBlocks = criteria.list();
 		if (appointmentType != null) {
 			filteredAppointmentBlocks = new ArrayList<AppointmentBlock>();
-			String stringQuery = "SELECT appointmentBlock FROM AppointmentBlock AS appointmentBlock WHERE :appointmentType IN elements(appointmentBlock.types) AND voided = 0 ORDER BY appointmentBlock.startDate, appointmentBlock.endDate, appointmentBlock.provider";
+			String stringQuery = "SELECT appointmentBlock FROM AppointmentBlock AS appointmentBlock WHERE :appointmentType IN elements(appointmentBlock.types) AND voided = 0 ORDER BY appointmentBlock.startDate, appointmentBlock.endDate";
 			Query query = super.sessionFactory.getCurrentSession().createQuery(stringQuery)
 			        .setParameter("appointmentType", appointmentType);
 			List<AppointmentBlock> appointmentBlocksFilteredByType = query.list();
