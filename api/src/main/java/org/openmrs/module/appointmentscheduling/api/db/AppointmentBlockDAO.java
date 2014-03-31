@@ -23,7 +23,7 @@ import java.util.List;
 public interface AppointmentBlockDAO extends SingleClassDAO {
 	
 	List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, String locations, Provider provider,
-	        AppointmentType appointmentType);
+	        List<AppointmentType> appointmentType);
 	
 	List<AppointmentBlock> getOverlappingAppointmentBlocks(AppointmentBlock appointmentBlock);
 }

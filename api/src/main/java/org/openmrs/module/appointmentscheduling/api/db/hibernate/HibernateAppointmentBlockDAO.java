@@ -27,9 +27,7 @@ import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentBlockDAO;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implements AppointmentBlockDAO {
 	
@@ -44,13 +42,13 @@ public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implem
 	 * @param toDate the upper bound of the date interval.
 	 * @param locations the of locations to filter by.
 	 * @param provider the provider to filter by.
-	 * @param appointment type the type of appointment to filter by.
+	 * @param appointmentTypes types of appointment to filter by.
 	 * @return the appointment blocks that is on the given date interval and locations.
 	 */
 	@Override
 	@Transactional(readOnly = true)
 	public List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, String locations, Provider provider,
-	        AppointmentType appointmentType) {
+	        List<AppointmentType> appointmentTypes) {
 		List<AppointmentBlock> filteredAppointmentBlocks = null;
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(AppointmentBlock.class);
 		
@@ -75,29 +73,21 @@ public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implem
 		if (provider != null) {
 			criteria.add(Restrictions.eq("provider.id", provider.getProviderId()));
 		}
+		if (appointmentTypes != null && appointmentTypes.size() > 0) {
+			Set<Integer> types = new HashSet<Integer>();
+			for (AppointmentType type : appointmentTypes) {
+				types.add(type.getAppointmentTypeId());
+			}
+			criteria.createAlias("types", "appointmentType");
+			criteria.add(Restrictions.in("appointmentType.id", types));
+		}
 		
 		criteria.addOrder(Order.asc("startDate"));
 		criteria.addOrder(Order.asc("endDate"));
 		
 		List<AppointmentBlock> appointmentBlocks = criteria.list();
-		if (appointmentType != null) {
-			filteredAppointmentBlocks = new ArrayList<AppointmentBlock>();
-			String stringQuery = "SELECT appointmentBlock FROM AppointmentBlock AS appointmentBlock WHERE :appointmentType IN elements(appointmentBlock.types) AND voided = 0 ORDER BY appointmentBlock.startDate, appointmentBlock.endDate";
-			Query query = super.sessionFactory.getCurrentSession().createQuery(stringQuery)
-			        .setParameter("appointmentType", appointmentType);
-			List<AppointmentBlock> appointmentBlocksFilteredByType = query.list();
-			for (AppointmentBlock appointmentBlockContainsType : appointmentBlocksFilteredByType) {
-				for (AppointmentBlock appointmentBlock : appointmentBlocks) {
-					if (appointmentBlock.getId().equals(appointmentBlockContainsType.getId())) {
-						//Intersection 
-						filteredAppointmentBlocks.add(appointmentBlock);
-					}
-				}
-			}
-		} else
-			filteredAppointmentBlocks = appointmentBlocks;
 		
-		return filteredAppointmentBlocks;
+		return appointmentBlocks;
 	}
 	
 	/**

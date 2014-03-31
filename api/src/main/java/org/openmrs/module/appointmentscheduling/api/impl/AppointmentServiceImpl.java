@@ -316,7 +316,15 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Transactional(readOnly = true)
 	public List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, String locations, Provider provider,
 	        AppointmentType appointmentType) {
-		return getAppointmentBlockDAO().getAppointmentBlocks(fromDate, toDate, locations, provider, appointmentType);
+		return getAppointmentBlocksByTypes(fromDate, toDate, locations, provider,
+		    (appointmentType != null) ? Arrays.asList(appointmentType) : null);
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<AppointmentBlock> getAppointmentBlocksByTypes(Date fromDate, Date toDate, String locations,
+	        Provider provider, List<AppointmentType> appointmentTypes) {
+		return getAppointmentBlockDAO().getAppointmentBlocks(fromDate, toDate, locations, provider, appointmentTypes);
 	}
 	
 	/**

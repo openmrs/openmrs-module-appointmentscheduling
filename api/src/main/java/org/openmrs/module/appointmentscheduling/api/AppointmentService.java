@@ -220,6 +220,18 @@ public interface AppointmentService extends OpenmrsService {
 	void purgeAppointmentBlock(AppointmentBlock appointmentBlock);
 	
 	/**
+	 * Gets appointment blocks which have a given date, location, provider and list of appointment
+	 * types
+	 * 
+	 * @return a list of appointment block objects.
+	 * @should get all appointment blocks which have contains in a given date interval and
+	 *         corresponds to a given locations, provider and appointment types.
+	 * @should not return voided appointment blocks
+	 */
+	List<AppointmentBlock> getAppointmentBlocksByTypes(Date fromDate, Date toDate, String locations, Provider provider,
+	        List<AppointmentType> appointmentTypes);
+	
+	/**
 	 * Gets appointment blocks which have a given date and location.
 	 * 
 	 * @return a list of appointment block objects.
