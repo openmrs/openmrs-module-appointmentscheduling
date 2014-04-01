@@ -92,6 +92,14 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 				return ((AppointmentStatus) o).isCancelled();
 			}
 		};
+
+        public static Predicate notCancelledPredicate = new Predicate() {
+
+            @Override
+            public boolean evaluate(Object o) {
+                return !((AppointmentStatus) o).isCancelled();
+            }
+        };
 		
 		public static Predicate notCancelledPredicate = new Predicate() {
 			
