@@ -156,14 +156,14 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 	}
 	
 	@Override
-	public List<Appointment> getAppointmentsByAppointmentBlockAndAppointmentType(AppointmentBlock appointmentBlock,
-	        AppointmentType appointmentType) {
+	public List<Appointment> getAppointmentsByAppointmentBlockAndAppointmentTypes(AppointmentBlock appointmentBlock,
+	        List<AppointmentType> appointmentTypes) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mappedClass);
 		criteria.createAlias("timeSlot", "time_slot");
 		criteria.add(Restrictions.eq("time_slot.appointmentBlock", appointmentBlock));
 		
-		if (appointmentType != null)
-			criteria.add(Restrictions.eq("appointmentType", appointmentType));
+		if (appointmentTypes != null)
+			criteria.add(Restrictions.in("appointmentType", appointmentTypes));
 		// skip cancelled and missed appointment blocks
 		criteria.add(Restrictions.and(Restrictions.ne("status", CANCELLED), Restrictions.ne("status", MISSED)));
 		criteria.add(Restrictions.eq("voided", false));

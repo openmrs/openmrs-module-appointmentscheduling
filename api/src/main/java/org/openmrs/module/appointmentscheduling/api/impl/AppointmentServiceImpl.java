@@ -950,14 +950,21 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Transactional(readOnly = true)
 	public List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date,
 	        AppointmentType appointmentType) {
-		AppointmentDAO appointmentDao = getAppointmentDAO();
 		
+		return getDailyAppointmentBlocks(location, date,
+		    appointmentType != null ? Collections.singletonList(appointmentType) : null);
+	}
+	
+	@Override
+	public List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date,
+	        List<AppointmentType> appointmentTypes) {
+
 		List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = new ArrayList<ScheduledAppointmentBlock>();
 		
-		for (AppointmentBlock appointmentBlock : getAppointmentBlockList(location, date, appointmentType)) {
+		for (AppointmentBlock appointmentBlock : getAppointmentBlockList(location, date, appointmentTypes)) {
 			
 			ScheduledAppointmentBlock scheduledAppointmentBlock = createScheduledAppointmentBlock(appointmentBlock,
-			    appointmentType);
+			    appointmentTypes);
 			
 			if (!scheduledAppointmentBlock.getAppointments().isEmpty()) {
 				scheduledAppointmentBlockList.add(scheduledAppointmentBlock);
@@ -968,9 +975,9 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	private ScheduledAppointmentBlock createScheduledAppointmentBlock(AppointmentBlock appointmentBlock,
-	        AppointmentType appointmentType) {
-		List<Appointment> appointmentList = getAppointmentDAO().getAppointmentsByAppointmentBlockAndAppointmentType(
-		    appointmentBlock, appointmentType);
+	        List<AppointmentType> appointmentTypes) {
+		List<Appointment> appointmentList = getAppointmentDAO().getAppointmentsByAppointmentBlockAndAppointmentTypes(
+		    appointmentBlock, appointmentTypes);
 		return new ScheduledAppointmentBlock(appointmentList, appointmentBlock);
 	}
 	
@@ -996,9 +1003,10 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		return Context.getService(AppointmentService.class).saveAppointment(appointment);
 	}
 	
-	private List<AppointmentBlock> getAppointmentBlockList(Location location, Date date, AppointmentType appointmentType) {
-		return getAppointmentBlocks(setDateToStartOfDay(date), setDateToEndOfDay(date), location.getId().toString(), null,
-		    appointmentType);
+	private List<AppointmentBlock> getAppointmentBlockList(Location location, Date date,
+	        List<AppointmentType> appointmentTypes) {
+		return getAppointmentBlocksByTypes(setDateToStartOfDay(date), setDateToEndOfDay(date), location.getId().toString(),
+		    null, appointmentTypes);
 	}
 	
 	private Date setDateToEndOfDay(Date date) {

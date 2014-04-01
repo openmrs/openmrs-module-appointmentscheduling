@@ -13,6 +13,13 @@
  */
 package org.openmrs.module.appointmentscheduling.api;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,12 +38,6 @@ import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -493,6 +494,24 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		List<Appointment> appointmentList = scheduledAppointmentBlockList.get(0).getAppointments();
 		assertEquals(1, appointmentList.size());
 	}
+
+    @Test
+    public void shouldReturnDailyAppointmentsWhenMultipleAppointmentTypesChosen() throws Exception {
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        Date date = format.parse("2014-01-02 00:00:00.0");
+
+        Location location = Context.getLocationService().getLocation(3);
+
+        AppointmentType appointmentType2 = service.getAppointmentType(3);
+        AppointmentType appointmentType3 = service.getAppointmentType(1);
+
+        List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = service.getDailyAppointmentBlocks(location, date,
+                Arrays.asList(appointmentType2, appointmentType3));
+
+        assertEquals(1, scheduledAppointmentBlockList.size());
+        assertEquals(new Integer(5), scheduledAppointmentBlockList.get(0).getId());
+    }
 	
 	@Test
 	@Verifies(value = "retrieve all appointments scheduled in a given time slot", method = "getAppointmentsInTimeSlot(TimeSlot)")

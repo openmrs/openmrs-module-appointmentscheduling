@@ -13,6 +13,12 @@
  */
 package org.openmrs.module.appointmentscheduling.api.db.hibernate;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Disjunction;
@@ -25,8 +31,6 @@ import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentBlockDAO;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
 
 public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implements AppointmentBlockDAO {
 	
@@ -51,7 +55,7 @@ public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implem
 		List<AppointmentBlock> filteredAppointmentBlocks = null;
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(AppointmentBlock.class);
 		
-		criteria.add(Restrictions.eq("voided", false)); // we only want voided appointment blocks
+		criteria.add(Restrictions.eq("voided", false)); // we only want non-voided appointment blocks
 		
 		if (locations != null && !locations.isEmpty()) {
 			String[] locationsAsArray = locations.split(",");

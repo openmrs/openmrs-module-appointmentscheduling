@@ -718,6 +718,20 @@ public interface AppointmentService extends OpenmrsService {
 	List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date, AppointmentType appointmentType);
 	
 	/**
+	 * Gets all scheduled appointment blocks for a certain day at a certain location. Ignores any
+	 * appointments that are voided or in one of the "cancelled" state
+	 * 
+	 * @param location
+	 * @param date
+	 * @param appointmentTypes
+	 * @return
+	 */
+	
+	@Transactional(readOnly = true)
+	List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date,
+	        List<AppointmentType> appointmentTypes);
+	
+	/**
 	 * Books a new appointment
 	 * 
 	 * @param appointment
