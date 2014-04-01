@@ -13,11 +13,6 @@
  */
 package org.openmrs.module.appointmentscheduling.api;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +24,11 @@ import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -402,21 +402,10 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		List<TimeSlot> result = service.getTimeSlotsByConstraints(type, fromDate, null, null, null);
 		assertNotNull(result);
 		assertEquals(4, result.size());
-<<<<<<< HEAD
-		
-		assertEquals(5, result.get(0).getTimeSlotId().intValue());
-		assertEquals(4, result.get(1).getTimeSlotId().intValue());
-		assertEquals(8, result.get(2).getTimeSlotId().intValue());
-		assertEquals(9, result.get(3).getTimeSlotId().intValue());
-		
-=======
-
 		assertEquals(5, result.get(0).getTimeSlotId().intValue());
         assertEquals(4, result.get(1).getTimeSlotId().intValue());
         assertEquals(8, result.get(2).getTimeSlotId().intValue());
         assertEquals(9, result.get(3).getTimeSlotId().intValue());
-
->>>>>>> f97b876... fixed which AppointmentStatuses are considered "cancelled"
 	}
 	
 }
