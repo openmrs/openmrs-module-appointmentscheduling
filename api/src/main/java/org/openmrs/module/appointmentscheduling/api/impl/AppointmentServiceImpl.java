@@ -460,7 +460,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Transactional(readOnly = true)
 	public List<Appointment> getAppointmentsInTimeSlotThatAreNotCancelled(TimeSlot timeSlot) {
 		return getAppointmentDAO().getAppointmentsInTimeSlotByStatus(timeSlot,
-		    AppointmentStatus.filter(AppointmentStatus.cancelledPredicate));
+		    AppointmentStatus.filter(AppointmentStatus.notCancelledPredicate));
 	}
 	
 	@Override
@@ -473,7 +473,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Transactional(readOnly = true)
 	public Integer getCountOfAppointmentsInTimeSlotThatAreNotCancelled(TimeSlot timeSlot) {
 		return getAppointmentDAO().getCountOfAppointmentsInTimeSlotByStatus(timeSlot,
-		    AppointmentStatus.filter(AppointmentStatus.cancelledPredicate));
+		    AppointmentStatus.filter(AppointmentStatus.notCancelledPredicate));
 	}
 	
 	@Override

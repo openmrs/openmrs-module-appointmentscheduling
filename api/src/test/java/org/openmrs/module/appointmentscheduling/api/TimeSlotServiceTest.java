@@ -37,7 +37,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Tests Time Slot methods in the {@link $ AppointmentService} .
+ * Tests Time Slot methods in the {@link  AppointmentService} .
  */
 public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 	
@@ -285,8 +285,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		fromDate = format.parse("2006-01-01 00:00:00.0");
 		availableTimeSlots = service.getTimeSlotsByConstraints(appointmentType, fromDate, toDate, provider, null);
 		assertTrue(availableTimeSlots.contains(service.getTimeSlot(4)));
-		assertTrue(availableTimeSlots.contains(service.getTimeSlot(2)));
-		assertTrue(availableTimeSlots.size() == 2);
+		assertTrue(availableTimeSlots.size() == 1);
 		
 	}
 	
@@ -398,13 +397,13 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		
 		List<TimeSlot> result = service.getTimeSlotsByConstraints(type, fromDate, null, null, null);
 		assertNotNull(result);
-		assertEquals(6, result.size());
-		
-		TimeSlot firstTimeSlot = result.get(0);
-		assertEquals(5, firstTimeSlot.getTimeSlotId().intValue());
-		
-		TimeSlot lastTimeSlot = result.get(result.size() - 1);
-		assertEquals(9, lastTimeSlot.getTimeSlotId().intValue());
+		assertEquals(4, result.size());
+
+		assertEquals(5, result.get(0).getTimeSlotId().intValue());
+        assertEquals(4, result.get(1).getTimeSlotId().intValue());
+        assertEquals(8, result.get(2).getTimeSlotId().intValue());
+        assertEquals(9, result.get(3).getTimeSlotId().intValue());
+
 	}
 	
 }
