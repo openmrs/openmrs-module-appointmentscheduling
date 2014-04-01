@@ -44,15 +44,15 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 		private final String name;
 		
 		/**
-		 * Whether or not an appointment with this status should be considered "cancelled"
-		 * Cancelled statuses: CANCELLED, CANCELLED_AND_NEEDS_RESCHEDULE
+		 * Whether or not an appointment with this status should be considered "cancelled" Cancelled
+		 * statuses: CANCELLED, CANCELLED_AND_NEEDS_RESCHEDULE
 		 */
 		private Boolean cancelled;
 		
 		/**
-		 * Whether or not an appointment with this status is an "active" appointment, where active=patient
-		 * checked-in and present within the health facility
-         * Active statuses: WALKIN, WAITING, INCONSULTATION
+		 * Whether or not an appointment with this status is an "active" appointment, where
+		 * active=patient checked-in and present within the health facility Active statuses: WALKIN,
+		 * WAITING, INCONSULTATION
 		 */
 		private Boolean active;
 		
@@ -92,14 +92,14 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 				return ((AppointmentStatus) o).isCancelled();
 			}
 		};
-
-        public static Predicate notCancelledPredicate = new Predicate() {
-
-            @Override
-            public boolean evaluate(Object o) {
-                return !((AppointmentStatus) o).isCancelled();
-            }
-        };
+		
+		public static Predicate notCancelledPredicate = new Predicate() {
+			
+			@Override
+			public boolean evaluate(Object o) {
+				return !((AppointmentStatus) o).isCancelled();
+			}
+		};
 		
 	}
 	

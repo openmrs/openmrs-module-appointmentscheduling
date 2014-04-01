@@ -37,7 +37,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Tests Time Slot methods in the {@link  AppointmentService} .
+ * Tests Time Slot methods in the {@link AppointmentService} .
  */
 public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 	
@@ -398,12 +398,12 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		List<TimeSlot> result = service.getTimeSlotsByConstraints(type, fromDate, null, null, null);
 		assertNotNull(result);
 		assertEquals(4, result.size());
-
+		
 		assertEquals(5, result.get(0).getTimeSlotId().intValue());
-        assertEquals(4, result.get(1).getTimeSlotId().intValue());
-        assertEquals(8, result.get(2).getTimeSlotId().intValue());
-        assertEquals(9, result.get(3).getTimeSlotId().intValue());
-
+		assertEquals(4, result.get(1).getTimeSlotId().intValue());
+		assertEquals(8, result.get(2).getTimeSlotId().intValue());
+		assertEquals(9, result.get(3).getTimeSlotId().intValue());
+		
 	}
 	
 }

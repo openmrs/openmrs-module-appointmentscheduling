@@ -179,11 +179,10 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		handle(req);
 		
 		List<Map<String, String>> timeSlots = (List<Map<String, String>>) deserialize(handle(req)).get("results");
-		Assert.assertEquals(2, timeSlots.size());
+		Assert.assertEquals(1, timeSlots.size());
 		
-		// note that the first time slot is full, so it is not returned here
-		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183605", timeSlots.get(0).get("uuid"));
-		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183607", timeSlots.get(1).get("uuid"));
+		// note that the first two time slots are full, so it is not returned here
+		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183607", timeSlots.get(0).get("uuid"));
 		
 	}
 	
