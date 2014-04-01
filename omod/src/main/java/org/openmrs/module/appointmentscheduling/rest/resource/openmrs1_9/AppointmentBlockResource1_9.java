@@ -18,8 +18,12 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudR
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.springframework.web.util.WebUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE
         + "/appointmentblock", supportedClass = AppointmentBlock.class, supportedOpenmrsVersions = "1.9.*")
@@ -116,7 +120,7 @@ public class AppointmentBlockResource1_9 extends DataDelegatingCrudResource<Appo
 	 * @param appointmentType - Type of the appointment this block must support
 	 * @param fromDate - (optional) earliest start date.
 	 * @param toDate - (optional) latest start date.
-	 * @param provider - (optional) the appointment block's provider.
+	 * @param context - (optional) the appointment block's provider.
 	 * @param location - (optional) the appointment block's location. (or predecessor location)t
 	 * @return
 	 */
@@ -129,8 +133,16 @@ public class AppointmentBlockResource1_9 extends DataDelegatingCrudResource<Appo
 		Date endDate = context.getParameter("toDate") != null ? (Date) ConversionUtil.convert(
 		    context.getParameter("toDate"), Date.class) : null;
 		
-		AppointmentType appointmentType = context.getParameter("appointmentType") != null ? Context.getService(
-		    AppointmentService.class).getAppointmentTypeByUuid(context.getParameter("appointmentType")) : null;
+		context.getParameter("appointmentType");
+		
+		List<AppointmentType> types = null;
+		String[] appointmentTypes = context.getRequest().getParameterValues("appointmentType");
+		if (appointmentTypes != null && appointmentTypes.length > 0) {
+			types = new ArrayList<AppointmentType>();
+			for (String appointmentType : appointmentTypes) {
+				types.add(Context.getService(AppointmentService.class).getAppointmentTypeByUuid(appointmentType));
+			}
+		}
 		
 		Provider provider = context.getParameter("provider") != null ? Context.getProviderService().getProviderByUuid(
 		    context.getParameter("provider")) : null;
@@ -139,8 +151,8 @@ public class AppointmentBlockResource1_9 extends DataDelegatingCrudResource<Appo
 		String location = context.getParameter("location") != null ? Context.getLocationService()
 		        .getLocationByUuid(context.getParameter("location")).getId().toString() : null;
 		
-		return new NeedsPaging<AppointmentBlock>(Context.getService(AppointmentService.class).getAppointmentBlocks(
-		    startDate, endDate, location, provider, appointmentType), context);
+		return new NeedsPaging<AppointmentBlock>(Context.getService(AppointmentService.class).getAppointmentBlocksByTypes(
+		    startDate, endDate, location, provider, types), context);
 		
 	}
 	

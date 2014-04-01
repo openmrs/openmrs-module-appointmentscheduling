@@ -14,7 +14,6 @@
 package org.openmrs.module.appointmentscheduling.api.db.hibernate;
 
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Order;
@@ -84,6 +83,7 @@ public class HibernateAppointmentBlockDAO extends HibernateSingleClassDAO implem
 		
 		criteria.addOrder(Order.asc("startDate"));
 		criteria.addOrder(Order.asc("endDate"));
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		
 		List<AppointmentBlock> appointmentBlocks = criteria.list();
 		
