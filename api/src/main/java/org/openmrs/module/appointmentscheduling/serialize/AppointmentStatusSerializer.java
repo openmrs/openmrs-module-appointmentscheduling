@@ -22,7 +22,7 @@ public class AppointmentStatusSerializer extends JsonSerializer<Appointment.Appo
 		jsonGenerator.writeFieldName("active");
 		jsonGenerator.writeBoolean(appointmentStatus.isActive());
 		jsonGenerator.writeFieldName("cancelled");
-		jsonGenerator.writeBoolean(appointmentStatus.isCancelled());
+		jsonGenerator.writeBoolean(appointmentStatus.isActive());
 		jsonGenerator.writeEndObject();
 	}
 }

@@ -43,6 +43,7 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 		        "Cancelled", true, false), WAITING("Waiting", false, true), INCONSULTATION("In-Consultation", false, true), COMPLETED(
 		        "Completed", false, false), MISSED("Missed", false, false), CANCELLED_AND_NEEDS_RESCHEDULE(
 		        "Cancelled and Needs Reschedule", true, false);
+		
 		private final String name;
 		
 		/**
@@ -94,14 +95,6 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 				return ((AppointmentStatus) o).isCancelled();
 			}
 		};
-
-        public static Predicate notCancelledPredicate = new Predicate() {
-
-            @Override
-            public boolean evaluate(Object o) {
-                return !((AppointmentStatus) o).isCancelled();
-            }
-        };
 		
 		public static Predicate notCancelledPredicate = new Predicate() {
 			
