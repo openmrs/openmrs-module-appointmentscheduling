@@ -1,8 +1,5 @@
 package org.openmrs.module.appointmentscheduling.rest.controller;
 
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,6 +13,9 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.List;
+import java.util.Map;
 
 import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus.COMPLETED;
 
@@ -37,7 +37,7 @@ public class AppointmentResource1_9ControllerTest extends MainResourceController
 		
 		Assert.assertNotNull(result);
 		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals("SCHEDULED", PropertyUtils.getProperty(result, "status"));
+		Assert.assertEquals("SCHEDULED", PropertyUtils.getProperty(result, "status.code"));
 		Assert.assertEquals("Initial HIV Clinic Appointment : Scheduled", PropertyUtils.getProperty(result, "display"));
 		
 		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183519", Util.getByPath(result, "appointmentType/uuid"));
@@ -62,7 +62,7 @@ public class AppointmentResource1_9ControllerTest extends MainResourceController
 		    PropertyUtils.getProperty(PropertyUtils.getProperty(appt, "visit"), "uuid"));
 		Assert.assertEquals("31e09960-8f52-11e3-baa8-0800200c9a66",
 		    PropertyUtils.getProperty(PropertyUtils.getProperty(appt, "patient"), "uuid"));
-		Assert.assertEquals("SCHEDULED", PropertyUtils.getProperty(appt, "status"));
+		Assert.assertEquals("SCHEDULED", PropertyUtils.getProperty(appt, "status.code"));
 		Assert.assertEquals("Test", PropertyUtils.getProperty(appt, "reason"));
 		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183519",
 		    PropertyUtils.getProperty(PropertyUtils.getProperty(appt, "appointmentType"), "uuid"));
@@ -86,7 +86,7 @@ public class AppointmentResource1_9ControllerTest extends MainResourceController
 		    PropertyUtils.getProperty(PropertyUtils.getProperty(appt, "timeSlot"), "uuid"));
 		Assert.assertEquals("31e09960-8f52-11e3-baa8-0800200c9a66",
 		    PropertyUtils.getProperty(PropertyUtils.getProperty(appt, "patient"), "uuid"));
-		Assert.assertEquals("SCHEDULED", PropertyUtils.getProperty(appt, "status"));
+		Assert.assertEquals("SCHEDULED", PropertyUtils.getProperty(appt, "status.code"));
 		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183519",
 		    PropertyUtils.getProperty(PropertyUtils.getProperty(appt, "appointmentType"), "uuid"));
 		Assert.assertEquals(getAllCount() + 1, appointmentService.getAllAppointments().size());

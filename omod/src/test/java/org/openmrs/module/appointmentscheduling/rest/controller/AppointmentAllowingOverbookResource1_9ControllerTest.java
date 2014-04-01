@@ -36,7 +36,7 @@ public class AppointmentAllowingOverbookResource1_9ControllerTest extends MainRe
 		    PropertyUtils.getProperty(PropertyUtils.getProperty(appt, "timeSlot"), "uuid"));
 		Assert.assertEquals("31e09960-8f52-11e3-baa8-0800200c9a66",
 		    PropertyUtils.getProperty(PropertyUtils.getProperty(appt, "patient"), "uuid"));
-		Assert.assertEquals("SCHEDULED", PropertyUtils.getProperty(appt, "status"));
+		Assert.assertEquals("SCHEDULED", PropertyUtils.getProperty(appt, "status.code"));
 		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183519",
 		    PropertyUtils.getProperty(PropertyUtils.getProperty(appt, "appointmentType"), "uuid"));
 		Assert.assertEquals(getAllCount() + 1, appointmentService.getAllAppointments().size());

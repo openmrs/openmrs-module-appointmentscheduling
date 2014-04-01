@@ -37,13 +37,12 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	// TODO confirm that "WALK-IN" should be considered active
-    @JsonSerialize(using = AppointmentStatusSerializer.class)
+	@JsonSerialize(using = AppointmentStatusSerializer.class)
 	public enum AppointmentStatus {
-		SCHEDULED("Scheduled", false, false), RESCHEDULED("Rescheduled", false, false), WALKIN("Walk-In", false, true), CANCELLED(
-		        "Cancelled", true, false), WAITING("Waiting", false, true), INCONSULTATION("In-Consultation", false, true), COMPLETED(
-		        "Completed", false, false), MISSED("Missed", false, false), CANCELLED_AND_NEEDS_RESCHEDULE(
-		        "Cancelled and Needs Reschedule", true, false);
-
+		SCHEDULED("Scheduled", true, false), RESCHEDULED("Rescheduled", true, false), WALKIN("Walk-In", true, true), CANCELLED(
+		        "Cancelled", false, false), WAITING("Waiting", true, true), INCONSULTATION("In-Consultation", true, true), COMPLETED(
+		        "Completed", true, false), MISSED("Missed", false, false), CANCELLED_AND_NEEDS_RESCHEDULE(
+		        "Cancelled and Needs Reschedule", false, false);
 		private final String name;
 		
 		/**
