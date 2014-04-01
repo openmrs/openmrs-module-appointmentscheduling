@@ -494,24 +494,24 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		List<Appointment> appointmentList = scheduledAppointmentBlockList.get(0).getAppointments();
 		assertEquals(1, appointmentList.size());
 	}
-
-    @Test
-    public void shouldReturnDailyAppointmentsWhenMultipleAppointmentTypesChosen() throws Exception {
-
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-        Date date = format.parse("2014-01-02 00:00:00.0");
-
-        Location location = Context.getLocationService().getLocation(3);
-
-        AppointmentType appointmentType2 = service.getAppointmentType(3);
-        AppointmentType appointmentType3 = service.getAppointmentType(1);
-
-        List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = service.getDailyAppointmentBlocks(location, date,
-                Arrays.asList(appointmentType2, appointmentType3));
-
-        assertEquals(1, scheduledAppointmentBlockList.size());
-        assertEquals(new Integer(5), scheduledAppointmentBlockList.get(0).getId());
-    }
+	
+	@Test
+	public void shouldReturnDailyAppointmentsWhenMultipleAppointmentTypesChosen() throws Exception {
+		
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		Date date = format.parse("2014-01-02 00:00:00.0");
+		
+		Location location = Context.getLocationService().getLocation(3);
+		
+		AppointmentType appointmentType2 = service.getAppointmentType(3);
+		AppointmentType appointmentType3 = service.getAppointmentType(1);
+		
+		List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = service.getDailyAppointmentBlocks(location, date,
+		    Arrays.asList(appointmentType2, appointmentType3));
+		
+		assertEquals(1, scheduledAppointmentBlockList.size());
+		assertEquals(new Integer(5), scheduledAppointmentBlockList.get(0).getAppointmentBlock().getId());
+	}
 	
 	@Test
 	@Verifies(value = "retrieve all appointments scheduled in a given time slot", method = "getAppointmentsInTimeSlot(TimeSlot)")

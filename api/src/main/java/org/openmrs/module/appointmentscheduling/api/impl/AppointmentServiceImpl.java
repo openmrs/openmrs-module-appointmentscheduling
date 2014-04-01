@@ -958,7 +958,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	@Override
 	public List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(Location location, Date date,
 	        List<AppointmentType> appointmentTypes) {
-
+		
 		List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = new ArrayList<ScheduledAppointmentBlock>();
 		
 		for (AppointmentBlock appointmentBlock : getAppointmentBlockList(location, date, appointmentTypes)) {
