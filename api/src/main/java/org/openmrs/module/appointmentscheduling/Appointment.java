@@ -36,22 +36,23 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 	
 	// TODO confirm that "WALK-IN" should be considered active
 	public enum AppointmentStatus {
-		SCHEDULED("Scheduled", true, false), RESCHEDULED("Rescheduled", true, false), WALKIN("Walk-In", true, true), CANCELLED(
-		        "Cancelled", false, false), WAITING("Waiting", true, true), INCONSULTATION("In-Consultation", true, true), COMPLETED(
-		        "Completed", true, false), MISSED("Missed", false, false), CANCELLED_AND_NEEDS_RESCHEDULE(
-		        "Cancelled and Needs Reschedule", false, false);
+		SCHEDULED("Scheduled", false, false), RESCHEDULED("Rescheduled", false, false), WALKIN("Walk-In", false, true), CANCELLED(
+		        "Cancelled", true, false), WAITING("Waiting", false, true), INCONSULTATION("In-Consultation", false, true), COMPLETED(
+		        "Completed", false, false), MISSED("Missed", false, false), CANCELLED_AND_NEEDS_RESCHEDULE(
+		        "Cancelled and Needs Reschedule", true, false);
 		
 		private final String name;
 		
 		/**
-		 * Whether or not an appointment with this status should be considered "cancelled" Right now
-		 * we consider CANCELLED, CANCELLED_AND_NEEDS_RESCHEDULE, and MISSED appts as cancelled
+		 * Whether or not an appointment with this status should be considered "cancelled"
+		 * Cancelled statuses: CANCELLED, CANCELLED_AND_NEEDS_RESCHEDULE
 		 */
 		private Boolean cancelled;
 		
 		/**
-		 * Whether or not this appointment represents an "active" appointment, where active=patient
+		 * Whether or not an appointment with this status is an "active" appointment, where active=patient
 		 * checked-in and present within the health facility
+         * Active statuses: WALKIN, WAITING, INCONSULTATION
 		 */
 		private Boolean active;
 		
