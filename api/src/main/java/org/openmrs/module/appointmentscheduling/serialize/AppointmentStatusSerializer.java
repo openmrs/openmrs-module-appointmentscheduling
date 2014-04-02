@@ -1,12 +1,12 @@
 package org.openmrs.module.appointmentscheduling.serialize;
 
+import java.io.IOException;
+
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 import org.openmrs.module.appointmentscheduling.Appointment;
-
-import java.io.IOException;
 
 public class AppointmentStatusSerializer extends JsonSerializer<Appointment.AppointmentStatus> {
 	
@@ -19,10 +19,8 @@ public class AppointmentStatusSerializer extends JsonSerializer<Appointment.Appo
 		jsonGenerator.writeString(appointmentStatus.name());
 		jsonGenerator.writeFieldName("name");
 		jsonGenerator.writeString(appointmentStatus.getName());
-		jsonGenerator.writeFieldName("active");
-		jsonGenerator.writeBoolean(appointmentStatus.isActive());
-		jsonGenerator.writeFieldName("cancelled");
-		jsonGenerator.writeBoolean(appointmentStatus.isActive());
+		jsonGenerator.writeFieldName("type");
+		jsonGenerator.writeString(appointmentStatus.getType().toString());
 		jsonGenerator.writeEndObject();
 	}
 }

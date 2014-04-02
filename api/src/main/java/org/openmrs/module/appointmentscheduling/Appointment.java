@@ -13,6 +13,11 @@
  */
 package org.openmrs.module.appointmentscheduling;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -23,11 +28,6 @@ import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.module.appointmentscheduling.serialize.AppointmentStatusSerializer;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * It is a model class. It should extend either {@link BaseOpenmrsObject} or
  * {@link BaseOpenmrsMetadata}.
@@ -35,48 +35,42 @@ import java.util.List;
 public class Appointment extends BaseOpenmrsData implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	
-	// TODO confirm that "WALK-IN" should be considered active
+
+    public enum AppointmentStatusType {
+        SCHEDULED, ACTIVE, CANCELLED, MISSED, COMPLETED
+    }
+
+	// TODO confirm that "WALK-IN" should be considered active and "RESCHEDULED" should be scheduled
 	@JsonSerialize(using = AppointmentStatusSerializer.class)
 	public enum AppointmentStatus {
-		SCHEDULED("Scheduled", false, false), RESCHEDULED("Rescheduled", false, false), WALKIN("Walk-In", false, true), CANCELLED(
-		        "Cancelled", true, false), WAITING("Waiting", false, true), INCONSULTATION("In-Consultation", false, true), COMPLETED(
-		        "Completed", false, false), MISSED("Missed", false, false), CANCELLED_AND_NEEDS_RESCHEDULE(
-		        "Cancelled and Needs Reschedule", true, false);
-		
+
+		SCHEDULED("Scheduled", AppointmentStatusType.SCHEDULED),
+        RESCHEDULED("Rescheduled", AppointmentStatusType.SCHEDULED),
+        WALKIN("Walk-In", AppointmentStatusType.ACTIVE),
+        WAITING("Waiting", AppointmentStatusType.ACTIVE),
+        INCONSULTATION("In-Consultation", AppointmentStatusType.ACTIVE),
+        CANCELLED("Cancelled", AppointmentStatusType.CANCELLED),
+        CANCELLED_AND_NEEDS_RESCHEDULE("Cancelled and Needs Reschedule", AppointmentStatusType.CANCELLED),
+        MISSED("Missed", AppointmentStatusType.MISSED),
+        COMPLETED("Completed", AppointmentStatusType.COMPLETED);
+
 		private final String name;
+
+		private final AppointmentStatusType type;
 		
-		/**
-		 * Whether or not an appointment with this status should be considered "cancelled" Cancelled
-		 * statuses: CANCELLED, CANCELLED_AND_NEEDS_RESCHEDULE
-		 */
-		private Boolean cancelled;
-		
-		/**
-		 * Whether or not an appointment with this status is an "active" appointment, where
-		 * active=patient checked-in and present within the health facility Active statuses: WALKIN,
-		 * WAITING, INCONSULTATION
-		 */
-		private Boolean active;
-		
-		private AppointmentStatus(final String name, final Boolean cancelled, final Boolean active) {
+		private AppointmentStatus(final String name, final AppointmentStatusType type) {
 			this.name = name;
-			this.cancelled = cancelled;
-			this.active = active;
+			this.type = type;
 		}
 		
 		public String getName() {
 			return this.name;
-		}
-		
-		public Boolean isCancelled() {
-			return this.cancelled;
-		}
-		
-		public Boolean isActive() {
-			return this.active;
-		}
-		
+        }
+
+        public AppointmentStatusType getType() {
+            return this.type;
+        }
+
 		@Override
 		public String toString() {
 			return name;
@@ -92,7 +86,7 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 			
 			@Override
 			public boolean evaluate(Object o) {
-				return ((AppointmentStatus) o).isCancelled();
+				return ((AppointmentStatus) o).getType() == AppointmentStatusType.CANCELLED;
 			}
 		};
 		
@@ -100,7 +94,7 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 			
 			@Override
 			public boolean evaluate(Object o) {
-				return !((AppointmentStatus) o).isCancelled();
+				return ((AppointmentStatus) o).getType() != AppointmentStatusType.CANCELLED;
 			}
 		};
 		
