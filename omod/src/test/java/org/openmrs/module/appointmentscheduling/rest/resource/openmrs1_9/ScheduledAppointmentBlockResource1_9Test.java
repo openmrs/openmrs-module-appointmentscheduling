@@ -1,5 +1,8 @@
 package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -7,8 +10,6 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.validation.ValidationException;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
-
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -27,9 +28,13 @@ public class ScheduledAppointmentBlockResource1_9Test extends BaseModuleWebConte
 		ScheduledAppointmentBlockResource1_9 scheduledAppointmentBlockResource1_9 = new ScheduledAppointmentBlockResource1_9();
 		
 		RequestContext context = Mockito.mock(RequestContext.class);
+		HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+		
 		when(context.getParameter("date")).thenReturn("2005-01-03 00:00:00.0");
 		when(context.getParameter("location")).thenReturn("9356400c-a5a2-4532-8f2b-2361b3446eb7");
-		when(context.getParameter("appointmentType")).thenReturn("759799ab-c9a5-435e-b671-77773ada74e6");
+		when(context.getRequest()).thenReturn(request);
+		when(request.getParameterValues("appointmentType")).thenReturn(
+		    new String[] { "759799ab-c9a5-435e-b671-77773ada74e6" });
 		
 		SimpleObject search = scheduledAppointmentBlockResource1_9.search(context);
 		assertSearchResults(search);
@@ -44,6 +49,7 @@ public class ScheduledAppointmentBlockResource1_9Test extends BaseModuleWebConte
 		
 		List appointments = (List) firstResult.get("appointments");
 		assertAppointmentsResult(appointments);
+		
 	}
 	
 	private void assertAppointmentsResult(List appointments) {
@@ -103,8 +109,12 @@ public class ScheduledAppointmentBlockResource1_9Test extends BaseModuleWebConte
 		ScheduledAppointmentBlockResource1_9 scheduledAppointmentBlockResource1_9 = new ScheduledAppointmentBlockResource1_9();
 		
 		RequestContext context = Mockito.mock(RequestContext.class);
+		HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+		
 		when(context.getParameter("date")).thenReturn(null);
 		when(context.getParameter("location")).thenReturn("9356400c-a5a2-4532-8f2b-2361b3446eb7");
+		when(context.getRequest()).thenReturn(request);
+		when(request.getParameterValues("appointmentType")).thenReturn(null);
 		
 		scheduledAppointmentBlockResource1_9.search(context);
 	}
@@ -114,8 +124,12 @@ public class ScheduledAppointmentBlockResource1_9Test extends BaseModuleWebConte
 		ScheduledAppointmentBlockResource1_9 scheduledAppointmentBlockResource1_9 = new ScheduledAppointmentBlockResource1_9();
 		
 		RequestContext context = Mockito.mock(RequestContext.class);
+		HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+		
 		when(context.getParameter("date")).thenReturn("2005-01-03 00:00:00.0");
 		when(context.getParameter("location")).thenReturn(null);
+		when(context.getRequest()).thenReturn(request);
+		when(request.getParameterValues("appointmentType")).thenReturn(null);
 		
 		scheduledAppointmentBlockResource1_9.search(context);
 	}

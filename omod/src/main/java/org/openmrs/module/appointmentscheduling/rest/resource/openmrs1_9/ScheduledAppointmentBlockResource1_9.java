@@ -1,5 +1,10 @@
 package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
@@ -7,6 +12,7 @@ import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.ScheduledAppointmentBlock;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.appointmentscheduling.rest.controller.AppointmentRestController;
+import org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9.util.AppointmentRestUtils;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -18,11 +24,6 @@ import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.validation.ValidationException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
 @Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE
         + "/scheduledappointmentblocks", supportedClass = ScheduledAppointmentBlock.class, supportedOpenmrsVersions = "1.9.*")
 public class ScheduledAppointmentBlockResource1_9 implements Searchable, Retrievable {
@@ -32,14 +33,14 @@ public class ScheduledAppointmentBlockResource1_9 implements Searchable, Retriev
 		
 		Date date = getDate(context);
 		Location location = getLocation(context);
-		AppointmentType appointmentType = getAppointmentType(context);
+		List<AppointmentType> appointmentTypes = AppointmentRestUtils.getAppointmentTypes(context);
 		
 		if (date == null || location == null) {
 			throw new ValidationException("appointmentscheduling.AppointmentBlock.error.scheduledAppointmentBlocks");
 		}
 		
 		List<ScheduledAppointmentBlock> dailyAppointmentBlocks = getScheduledAppointmentBlocks(date, location,
-		    appointmentType);
+		    appointmentTypes);
 		
 		SimpleObject result = new SimpleObject();
 		result.add("results", convertToSimpleObjectList(dailyAppointmentBlocks));
@@ -48,8 +49,8 @@ public class ScheduledAppointmentBlockResource1_9 implements Searchable, Retriev
 	}
 	
 	private List<ScheduledAppointmentBlock> getScheduledAppointmentBlocks(Date startDate, Location location,
-	        AppointmentType appointmentType) {
-		return Context.getService(AppointmentService.class).getDailyAppointmentBlocks(location, startDate, appointmentType);
+	        List<AppointmentType> appointmentTypes) {
+		return Context.getService(AppointmentService.class).getDailyAppointmentBlocks(location, startDate, appointmentTypes);
 	}
 	
 	private Location getLocation(RequestContext context) {
@@ -60,11 +61,6 @@ public class ScheduledAppointmentBlockResource1_9 implements Searchable, Retriev
 	private Date getDate(RequestContext context) {
 		return context.getParameter("date") != null ? (Date) ConversionUtil
 		        .convert(context.getParameter("date"), Date.class) : null;
-	}
-	
-	private AppointmentType getAppointmentType(RequestContext context) {
-		return context.getParameter("appointmentType") != null ? Context.getService(AppointmentService.class)
-		        .getAppointmentTypeByUuid(context.getParameter("appointmentType")) : null;
 	}
 	
 	private List<SimpleObject> convertToSimpleObjectList(List<ScheduledAppointmentBlock> dailyAppointmentBlocks) {

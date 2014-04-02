@@ -1,11 +1,15 @@
 package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 
+import java.util.Date;
+import java.util.List;
+
 import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.appointmentscheduling.rest.controller.AppointmentRestController;
+import org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9.util.AppointmentRestUtils;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -18,12 +22,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudR
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.springframework.web.util.WebUtils;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE
         + "/appointmentblock", supportedClass = AppointmentBlock.class, supportedOpenmrsVersions = "1.9.*")
@@ -133,16 +131,7 @@ public class AppointmentBlockResource1_9 extends DataDelegatingCrudResource<Appo
 		Date endDate = context.getParameter("toDate") != null ? (Date) ConversionUtil.convert(
 		    context.getParameter("toDate"), Date.class) : null;
 		
-		context.getParameter("appointmentType");
-		
-		List<AppointmentType> types = null;
-		String[] appointmentTypes = context.getRequest().getParameterValues("appointmentType");
-		if (appointmentTypes != null && appointmentTypes.length > 0) {
-			types = new ArrayList<AppointmentType>();
-			for (String appointmentType : appointmentTypes) {
-				types.add(Context.getService(AppointmentService.class).getAppointmentTypeByUuid(appointmentType));
-			}
-		}
+		List<AppointmentType> types = AppointmentRestUtils.getAppointmentTypes(context);
 		
 		Provider provider = context.getParameter("provider") != null ? Context.getProviderService().getProviderByUuid(
 		    context.getParameter("provider")) : null;
