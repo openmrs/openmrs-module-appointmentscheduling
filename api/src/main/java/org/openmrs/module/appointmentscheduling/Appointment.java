@@ -13,11 +13,6 @@
  */
 package org.openmrs.module.appointmentscheduling;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -27,6 +22,11 @@ import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.module.appointmentscheduling.serialize.AppointmentStatusSerializer;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * It is a model class. It should extend either {@link BaseOpenmrsObject} or

@@ -172,8 +172,6 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 		
 		if (appointmentTypes != null)
 			criteria.add(Restrictions.in("appointmentType", appointmentTypes));
-		// skip cancelled and missed appointment blocks
-		criteria.add(Restrictions.and(Restrictions.ne("status", CANCELLED), Restrictions.ne("status", MISSED)));
 		criteria.add(Restrictions.eq("voided", false));
 		
 		return criteria.list();

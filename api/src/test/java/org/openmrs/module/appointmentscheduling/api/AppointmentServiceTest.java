@@ -466,7 +466,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		
 		ScheduledAppointmentBlock scheduledAppointmentBlock = scheduledAppointmentBlockList.get(0);
 		
-		assertEquals(scheduledAppointmentBlock.getAppointments().size(), 3);
+		assertEquals(scheduledAppointmentBlock.getAppointments().size(), 4);
 		assertEquals(format.parse("2014-01-02 00:00:00.0"), scheduledAppointmentBlock.getStartDate());
 		assertEquals(format.parse("2014-01-02 12:00:00.0"), scheduledAppointmentBlock.getEndDate());
 		assertEquals(provider, scheduledAppointmentBlock.getProvider());
@@ -477,7 +477,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals("Initial HIV Clinic Appointment", appointment.getAppointmentType().getName());
 		
 		appointment = appointmentList.get(1);
-		assertEquals(2, appointment.getPatient().getId().intValue());
+		assertEquals(1, appointment.getPatient().getId().intValue());
 		assertEquals("Initial HIV Clinic Appointment", appointment.getAppointmentType().getName());
 	}
 	
