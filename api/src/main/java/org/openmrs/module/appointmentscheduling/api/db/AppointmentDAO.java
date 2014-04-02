@@ -26,6 +26,7 @@ import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Database methods for {@link AppointmentService}.
@@ -37,6 +38,10 @@ public interface AppointmentDAO extends SingleClassDAO {
 	Appointment getAppointmentByVisit(Visit visit);
 	
 	Appointment getLastAppointment(Patient patient);
+	
+	@Transactional(readOnly = true)
+	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider,
+	        AppointmentType appointmentType, List<AppointmentStatus> statuses, Patient patient) throws APIException;
 	
 	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider, AppointmentType type,
 	        AppointmentStatus status, Patient patient) throws APIException;

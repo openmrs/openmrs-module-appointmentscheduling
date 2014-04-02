@@ -742,4 +742,19 @@ public interface AppointmentService extends OpenmrsService {
 	 */
 	Appointment bookAppointment(Appointment appointment, Boolean allowOverbook) throws TimeSlotFullException;
 	
+	/**
+	 * Retrieves Appointments that satisfy the given constraints
+	 * 
+	 * @param fromDate - The appointment start date
+	 * @param toDate - The appointment end date
+	 * @param location - The appointment location
+	 * @param provider - The appointment provider
+	 * @param type - The appointment type
+	 * @param patient - The patient
+	 * @param appointmentStatuses- The appointment status list
+	 * @return a list of appointments that satisfy the given constraints
+	 */
+	
+	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Location location, Provider provider,
+	        AppointmentType type, Patient patient, List<AppointmentStatus> appointmentStatuses);
 }

@@ -645,12 +645,11 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 	
 	@Override
-	@Transactional(readOnly = true)
 	public List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Location location, Provider provider,
-	        AppointmentType type, AppointmentStatus status, Patient patient) throws APIException {
+	        AppointmentType type, Patient patient, List<AppointmentStatus> statuses) {
 		
 		List<Appointment> appointments = appointmentDAO.getAppointmentsByConstraints(fromDate, toDate, provider, type,
-		    status, patient);
+		    statuses, patient);
 		
 		List<Appointment> appointmentsInLocation = new LinkedList<Appointment>();
 		
@@ -675,6 +674,18 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		
 		return appointmentsInLocation;
 		
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Location location, Provider provider,
+	        AppointmentType type, AppointmentStatus status, Patient patient) throws APIException {
+		
+		if (status == null) {
+			return getAppointmentsByConstraints(fromDate, toDate, location, provider, type, patient, null);
+		}
+		
+		return getAppointmentsByConstraints(fromDate, toDate, location, provider, type, patient, Arrays.asList(status));
 	}
 	
 	@Override

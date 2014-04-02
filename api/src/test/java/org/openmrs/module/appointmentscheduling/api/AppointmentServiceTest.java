@@ -13,13 +13,6 @@
  */
 package org.openmrs.module.appointmentscheduling.api;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +31,13 @@ import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -355,6 +355,24 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(2, appointments.size());
 		assertEquals(patient, appointments.get(0).getPatient());
 		assertEquals(patient, appointments.get(1).getPatient());
+	}
+	
+	@Test
+	@Verifies(value = "Should get all unvoided appointments by patient with Scheduled and Rescheduled statuses", method = "getAppointmentsByConstraints(Date, Date, Location, Provider, AppointmentType, List<AppointmentStatus>, Patient)")
+	public void shouldgetAllUnvoidedAppointmentsByPatientAndStatus_getAppointmentsByConstraints() {
+		
+		Patient patient = Context.getPatientService().getPatient(1);
+		
+		List<AppointmentStatus> appointmentStatuses = Arrays.asList(AppointmentStatus.SCHEDULED,
+		    AppointmentStatus.RESCHEDULED);
+		
+		List<Appointment> appointments = service.getAppointmentsByConstraints(null, null, null, null, null, patient,
+		    appointmentStatuses);
+		assertEquals(4, appointments.size());
+		assertEquals(patient, appointments.get(0).getPatient());
+		assertEquals(patient, appointments.get(1).getPatient());
+		assertEquals(patient, appointments.get(2).getPatient());
+		assertEquals(patient, appointments.get(3).getPatient());
 	}
 	
 	@Test

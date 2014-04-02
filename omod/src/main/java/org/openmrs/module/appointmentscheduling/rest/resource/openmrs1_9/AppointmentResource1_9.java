@@ -1,6 +1,8 @@
 package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.openmrs.Location;
 import org.openmrs.Patient;
@@ -178,12 +180,27 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 		Location location = context.getParameter("location") != null ? Context.getLocationService().getLocationByUuid(
 		    context.getParameter("location")) : null;
 		
-		Appointment.AppointmentStatus status = context.getParameter("status") != null ? Appointment.AppointmentStatus
-		        .valueOf(context.getParameter("status")) : null;
+		List<Appointment.AppointmentStatus> statuses = getAppointmentsStatuses(context);
 		
 		return new NeedsPaging<Appointment>(Context.getService(AppointmentService.class).getAppointmentsByConstraints(
-		    fromDate, toDate, location, provider, appointmentType, status, patient), context);
+		    fromDate, toDate, location, provider, appointmentType, patient, statuses), context);
 		
+	}
+	
+	private List<Appointment.AppointmentStatus> getAppointmentsStatuses(RequestContext context) {
+		String[] statuses = context.getRequest().getParameterValues("status");
+		
+		if (statuses == null) {
+			return null;
+		}
+		
+		List<Appointment.AppointmentStatus> statusList = new ArrayList<Appointment.AppointmentStatus>();
+		
+		for (String status : statuses) {
+			statusList.add(Appointment.AppointmentStatus.valueOf(status));
+		}
+		
+		return statusList;
 	}
 	
 	public String getDisplayString(Appointment appointment) {

@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.appointmentscheduling.api.db.hibernate;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -80,7 +81,7 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 	@Override
 	@Transactional(readOnly = true)
 	public List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider,
-	        AppointmentType appointmentType, AppointmentStatus status, Patient patient) throws APIException {
+	        AppointmentType appointmentType, List<AppointmentStatus> statuses, Patient patient) throws APIException {
 		if (fromDate != null && toDate != null && !fromDate.before(toDate))
 			throw new APIException("fromDate can not be later than toDate");
 		
@@ -93,8 +94,8 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 				stringQuery += " AND appointment.timeSlot.endDate <= :endDate";
 			if (provider != null)
 				stringQuery += " AND appointment.timeSlot.appointmentBlock.provider = :provider";
-			if (status != null)
-				stringQuery += " AND appointment.status=:status";
+			if (statuses != null)
+				stringQuery += " AND appointment.status IN (:statuses)";
 			if (appointmentType != null)
 				stringQuery += " AND appointment.appointmentType=:appointmentType";
 			if (patient != null) {
@@ -109,8 +110,8 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 				query.setParameter("endDate", toDate);
 			if (provider != null)
 				query.setParameter("provider", provider);
-			if (status != null)
-				query.setParameter("status", status);
+			if (statuses != null)
+				query.setParameterList("statuses", statuses);
 			if (appointmentType != null)
 				query.setParameter("appointmentType", appointmentType);
 			if (patient != null)
@@ -118,6 +119,13 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO implements 
 			
 			return query.list();
 		}
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider,
+	        AppointmentType appointmentType, AppointmentStatus status, Patient patient) throws APIException {
+		return getAppointmentsByConstraints(fromDate, toDate, provider, appointmentType, Arrays.asList(status), patient);
 	}
 	
 	@Override

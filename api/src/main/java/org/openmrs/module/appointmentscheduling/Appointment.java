@@ -35,27 +35,23 @@ import org.openmrs.module.appointmentscheduling.serialize.AppointmentStatusSeria
 public class Appointment extends BaseOpenmrsData implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-
-    public enum AppointmentStatusType {
-        SCHEDULED, ACTIVE, CANCELLED, MISSED, COMPLETED
-    }
-
+	
+	public enum AppointmentStatusType {
+		SCHEDULED, ACTIVE, CANCELLED, MISSED, COMPLETED
+	}
+	
 	// TODO confirm that "WALK-IN" should be considered active and "RESCHEDULED" should be scheduled
 	@JsonSerialize(using = AppointmentStatusSerializer.class)
 	public enum AppointmentStatus {
-
-		SCHEDULED("Scheduled", AppointmentStatusType.SCHEDULED),
-        RESCHEDULED("Rescheduled", AppointmentStatusType.SCHEDULED),
-        WALKIN("Walk-In", AppointmentStatusType.ACTIVE),
-        WAITING("Waiting", AppointmentStatusType.ACTIVE),
-        INCONSULTATION("In-Consultation", AppointmentStatusType.ACTIVE),
-        CANCELLED("Cancelled", AppointmentStatusType.CANCELLED),
-        CANCELLED_AND_NEEDS_RESCHEDULE("Cancelled and Needs Reschedule", AppointmentStatusType.CANCELLED),
-        MISSED("Missed", AppointmentStatusType.MISSED),
-        COMPLETED("Completed", AppointmentStatusType.COMPLETED);
-
+		
+		SCHEDULED("Scheduled", AppointmentStatusType.SCHEDULED), RESCHEDULED("Rescheduled", AppointmentStatusType.SCHEDULED), WALKIN(
+		        "Walk-In", AppointmentStatusType.ACTIVE), WAITING("Waiting", AppointmentStatusType.ACTIVE), INCONSULTATION(
+		        "In-Consultation", AppointmentStatusType.ACTIVE), CANCELLED("Cancelled", AppointmentStatusType.CANCELLED), CANCELLED_AND_NEEDS_RESCHEDULE(
+		        "Cancelled and Needs Reschedule", AppointmentStatusType.CANCELLED), MISSED("Missed",
+		        AppointmentStatusType.MISSED), COMPLETED("Completed", AppointmentStatusType.COMPLETED);
+		
 		private final String name;
-
+		
 		private final AppointmentStatusType type;
 		
 		private AppointmentStatus(final String name, final AppointmentStatusType type) {
@@ -65,12 +61,12 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 		
 		public String getName() {
 			return this.name;
-        }
-
-        public AppointmentStatusType getType() {
-            return this.type;
-        }
-
+		}
+		
+		public AppointmentStatusType getType() {
+			return this.type;
+		}
+		
 		@Override
 		public String toString() {
 			return name;
