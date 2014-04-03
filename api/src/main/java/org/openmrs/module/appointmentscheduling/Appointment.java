@@ -72,6 +72,18 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 			return name;
 		}
 		
+		public static List<AppointmentStatus> getAppointmentsStatusByType(AppointmentStatusType appointmentStatusType) {
+			List<AppointmentStatus> appointmentStatuses = new ArrayList<AppointmentStatus>();
+			
+			for (AppointmentStatus appointmentStatus : AppointmentStatus.values()) {
+				if (appointmentStatus.getType().equals(appointmentStatusType)) {
+					appointmentStatuses.add(appointmentStatus);
+				}
+			}
+			
+			return appointmentStatuses;
+		}
+		
 		public static List<AppointmentStatus> filter(Predicate predicate) {
 			List<AppointmentStatus> appointmentStatuses = new ArrayList(Arrays.asList(AppointmentStatus.values())); // need to assign to a new array because Arrays.asList is fixed length
 			CollectionUtils.filter(appointmentStatuses, predicate);

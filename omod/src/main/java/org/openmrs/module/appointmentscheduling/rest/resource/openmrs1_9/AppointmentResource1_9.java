@@ -1,6 +1,7 @@
 package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +29,10 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.validation.ValidationException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
+
+import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
+import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus.getAppointmentsStatusByType;
+import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatusType;
 
 @Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE + "/appointment", supportedClass = Appointment.class, supportedOpenmrsVersions = "1.9.*")
 public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointment> {
@@ -180,26 +185,55 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 		Location location = context.getParameter("location") != null ? Context.getLocationService().getLocationByUuid(
 		    context.getParameter("location")) : null;
 		
-		List<Appointment.AppointmentStatus> statuses = getAppointmentsStatuses(context);
+		List<AppointmentStatus> statuses = getAppointmentsStatuses(context);
 		
 		return new NeedsPaging<Appointment>(Context.getService(AppointmentService.class).getAppointmentsByConstraints(
 		    fromDate, toDate, location, provider, appointmentType, patient, statuses), context);
 		
 	}
 	
-	private List<Appointment.AppointmentStatus> getAppointmentsStatuses(RequestContext context) {
-		String[] statuses = context.getRequest().getParameterValues("status");
+	private List<AppointmentStatus> getAppointmentsStatuses(RequestContext context) {
 		
-		if (statuses == null) {
+		String[] statuses = context.getRequest().getParameterValues("status");
+		String[] statusTypes = context.getRequest().getParameterValues("statusType");
+		
+		if (statuses == null && statusTypes == null) {
 			return null;
 		}
 		
-		List<Appointment.AppointmentStatus> statusList = new ArrayList<Appointment.AppointmentStatus>();
+		List<AppointmentStatus> totalStatus = new ArrayList<AppointmentStatus>();
 		
-		for (String status : statuses) {
-			statusList.add(Appointment.AppointmentStatus.valueOf(status));
+		totalStatus.addAll(getStatusList(statuses));
+		totalStatus.addAll(getStatusesByType(statusTypes));
+		
+		return totalStatus;
+	}
+	
+	private List<AppointmentStatus> getStatusesByType(String[] statusTypes) {
+		if (statusTypes == null) {
+			return Collections.emptyList();
 		}
 		
+		List<AppointmentStatus> statusList = new ArrayList<AppointmentStatus>();
+		
+		for (String statusType : statusTypes) {
+			statusList.addAll(getAppointmentsStatusByType(AppointmentStatusType.valueOf(statusType)));
+		}
+		
+		return statusList;
+	}
+	
+	private List<AppointmentStatus> getStatusList(String[] statuses) {
+		
+		if (statuses == null) {
+			return Collections.emptyList();
+		}
+		
+		List<AppointmentStatus> statusList = new ArrayList<AppointmentStatus>();
+		
+		for (String status : statuses) {
+			statusList.add(AppointmentStatus.valueOf(status));
+		}
 		return statusList;
 	}
 	

@@ -228,6 +228,19 @@ public class AppointmentResource1_9ControllerTest extends MainResourceController
 		
 	}
 	
+	@Test
+	public void shouldFetchAppointmentsByStatusType() throws Exception {
+		
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("statusType", "MISSED");
+		handle(req);
+		
+		List<Map<String, String>> appointments = (List<Map<String, String>>) deserialize(handle(req)).get("results");
+		Assert.assertEquals(1, appointments.size());
+		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183602", appointments.get(0).get("uuid"));
+		
+	}
+	
 	@Override
 	public String getURI() {
 		return AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE + "/appointment";
