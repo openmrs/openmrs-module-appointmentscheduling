@@ -164,19 +164,19 @@
 					<artifactId>maven-release-plugin</artifactId>
 					<version>2.4</version>
 				</plugin>
-				<plugin>
-					<groupId>com.googlecode.maven-java-formatter-plugin</groupId>
-					<artifactId>maven-java-formatter-plugin</artifactId>
-                    <version>0.4</version>
-					<configuration>
-						<compilerSource>${javaCompilerVersion}</compilerSource>
-						<compilerCompliance>${javaCompilerVersion}</compilerCompliance>
-						<compilerTargetPlatform>${javaCompilerVersion}</compilerTargetPlatform>
-						<configFile>../OpenMRSFormatter.xml</configFile>
-						<overrideConfigCompilerVersion>true</overrideConfigCompilerVersion>
-						<lineEnding>CRLF</lineEnding>
-					</configuration>
-				</plugin>
+				<!--<plugin>-->
+					<!--<groupId>com.googlecode.maven-java-formatter-plugin</groupId>-->
+					<!--<artifactId>maven-java-formatter-plugin</artifactId>-->
+                    <!--<version>0.4</version>-->
+					<!--<configuration>-->
+						<!--<compilerSource>${javaCompilerVersion}</compilerSource>-->
+						<!--<compilerCompliance>${javaCompilerVersion}</compilerCompliance>-->
+						<!--<compilerTargetPlatform>${javaCompilerVersion}</compilerTargetPlatform>-->
+						<!--<configFile>../OpenMRSFormatter.xml</configFile>-->
+						<!--<overrideConfigCompilerVersion>true</overrideConfigCompilerVersion>-->
+						<!--<lineEnding>CRLF</lineEnding>-->
+					<!--</configuration>-->
+				<!--</plugin>-->
 			</plugins>
 		</pluginManagement>
 	</build>

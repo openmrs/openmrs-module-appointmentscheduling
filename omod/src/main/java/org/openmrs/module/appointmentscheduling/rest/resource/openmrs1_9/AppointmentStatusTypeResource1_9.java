@@ -10,25 +10,30 @@ import org.openmrs.module.webservices.rest.web.resource.api.Listable;
 import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-@Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE
-        + "/appointmentstatustype", supportedClass = AppointmentStatusTypeResource1_9.class, supportedOpenmrsVersions = "1.9.*")
+@Resource(name = RestConstants.VERSION_1
+		+ AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE
+		+ "/appointmentstatustype", supportedClass = AppointmentStatusTypeResource1_9.class, supportedOpenmrsVersions = "1.9.*")
 public class AppointmentStatusTypeResource1_9 implements Listable, Searchable {
-	
+
 	@Override
-	public SimpleObject getAll(RequestContext requestContext) throws ResponseException {
-		Appointment.AppointmentStatusType[] appointmentStatusType = Appointment.AppointmentStatusType.values();
-		SimpleObject simpleObject = new SimpleObject().add("results", appointmentStatusType);
+	public SimpleObject getAll(RequestContext requestContext)
+			throws ResponseException {
+		Appointment.AppointmentStatusType[] appointmentStatusType = Appointment.AppointmentStatusType
+				.values();
+		SimpleObject simpleObject = new SimpleObject().add("results",
+				appointmentStatusType);
 		return simpleObject;
 	}
-	
+
 	@Override
 	public String getUri(Object o) {
 		return RestConstants.URI_PREFIX + "/appointmentscheduling/appointmentstatustype/"
-		        + ((Appointment.AppointmentStatusType) o).getName();
+				+ ((Appointment.AppointmentStatusType) o).getName();
 	}
-	
+
 	@Override
-	public SimpleObject search(RequestContext requestContext) throws ResponseException {
+	public SimpleObject search(RequestContext requestContext)
+			throws ResponseException {
 		return null;
 	}
 }
