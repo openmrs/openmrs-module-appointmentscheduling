@@ -37,7 +37,18 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	public enum AppointmentStatusType {
-		SCHEDULED, ACTIVE, CANCELLED, MISSED, COMPLETED
+		SCHEDULED, ACTIVE, CANCELLED, MISSED, COMPLETED;
+		
+		private final String name = null;
+		
+		public String getName() {
+			return name;
+		}
+		
+		@Override
+		public String toString() {
+			return name;
+		}
 	}
 	
 	// TODO confirm that "WALK-IN" should be considered active and "RESCHEDULED" should be scheduled
