@@ -6,12 +6,13 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
-import org.openmrs.module.appointmentscheduling.Appointment;
 
-public class AppointmentStatusSerializer extends JsonSerializer<Appointment.AppointmentStatus> {
+import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
+
+public class AppointmentStatusSerializer extends JsonSerializer<AppointmentStatus> {
 	
 	@Override
-	public void serialize(Appointment.AppointmentStatus appointmentStatus, JsonGenerator jsonGenerator,
+	public void serialize(AppointmentStatus appointmentStatus, JsonGenerator jsonGenerator,
 	        SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
 		
 		jsonGenerator.writeStartObject();

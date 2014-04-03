@@ -81,7 +81,7 @@ public interface AppointmentDAO extends SingleClassDAO {
 	 * @return a list of the appointments in the given time slot.
 	 * @should not return voided time slots
 	 */
-	List<Appointment> getAppointmentsInTimeSlotByStatus(TimeSlot timeSlot, List<Appointment.AppointmentStatus> statuses);
+	List<Appointment> getAppointmentsInTimeSlotByStatus(TimeSlot timeSlot, List<AppointmentStatus> statuses);
 	
 	/**
 	 * Retrieve a count of all appointments in a given time slot, filtered by status
@@ -91,5 +91,5 @@ public interface AppointmentDAO extends SingleClassDAO {
 	 * @return a cont of the appointments in the given time slot.
 	 * @should not return voided time slots
 	 */
-	Integer getCountOfAppointmentsInTimeSlotByStatus(TimeSlot timeSlot, List<Appointment.AppointmentStatus> statuses);
+	Integer getCountOfAppointmentsInTimeSlotByStatus(TimeSlot timeSlot, List<AppointmentStatus> statuses);
 }

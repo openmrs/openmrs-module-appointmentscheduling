@@ -1,15 +1,15 @@
 package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 
+import java.io.IOException;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
-import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
-import java.io.IOException;
-
 import static org.junit.Assert.assertTrue;
+import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 
 public class AppointmentStatusResource1_9Test extends BaseModuleWebContextSensitiveTest {
 	
@@ -22,7 +22,7 @@ public class AppointmentStatusResource1_9Test extends BaseModuleWebContextSensit
 		
 		String appointmentStatusJson = toJson(simpleObject);
 		
-		for (Appointment.AppointmentStatus appointmentStatus : Appointment.AppointmentStatus.values()) {
+		for (AppointmentStatus appointmentStatus : AppointmentStatus.values()) {
 			assertTrue(appointmentStatusJson.contains(appointmentStatus.getName()));
 		}
 	}

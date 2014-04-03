@@ -6,60 +6,63 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
+import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatusType;
+
 public class AppointmentTest {
 
 	@Test
 	public void shouldReturnAllActiveStatuses() {
 
-		List<Appointment.AppointmentStatus> statuses = Appointment.AppointmentStatus
-				.getAppointmentsStatusByType(Appointment.AppointmentStatusType.ACTIVE);
+		List<AppointmentStatus> statuses = AppointmentStatus
+				.getAppointmentsStatusByType(AppointmentStatusType.ACTIVE);
 		Assert.assertEquals(3, statuses.size());
 		Assert.assertTrue(statuses
-				.contains(Appointment.AppointmentStatus.WAITING));
+				.contains(AppointmentStatus.WAITING));
 		Assert.assertTrue(statuses
-				.contains(Appointment.AppointmentStatus.INCONSULTATION));
+				.contains(AppointmentStatus.INCONSULTATION));
 		Assert.assertTrue(statuses
-				.contains(Appointment.AppointmentStatus.WALKIN));
+				.contains(AppointmentStatus.WALKIN));
 
 	}
 
 	@Test
 	public void shouldReturnAllCancelledAndMissedStatuses() {
 
-		List<Appointment.AppointmentStatus> statuses = Appointment.AppointmentStatus
+		List<AppointmentStatus> statuses = AppointmentStatus
 				.getAppointmentsStatusByTypes(Arrays.asList(
-						Appointment.AppointmentStatusType.CANCELLED,
-						Appointment.AppointmentStatusType.MISSED));
+						AppointmentStatusType.CANCELLED,
+						AppointmentStatusType.MISSED));
 		Assert.assertEquals(3, statuses.size());
 		Assert.assertTrue(statuses
-				.contains(Appointment.AppointmentStatus.CANCELLED));
+				.contains(AppointmentStatus.CANCELLED));
 		Assert.assertTrue(statuses
-				.contains(Appointment.AppointmentStatus.CANCELLED_AND_NEEDS_RESCHEDULE));
+				.contains(AppointmentStatus.CANCELLED_AND_NEEDS_RESCHEDULE));
 		Assert.assertTrue(statuses
-				.contains(Appointment.AppointmentStatus.MISSED));
+				.contains(AppointmentStatus.MISSED));
 
 	}
 
 	@Test
 	public void shouldReturnAllNotCancelledStatus() {
 
-		List<Appointment.AppointmentStatus> statuses = Appointment.AppointmentStatus
+		List<AppointmentStatus> statuses = AppointmentStatus
 				.getNotCancelledAppointmentStatuses();
 		Assert.assertEquals(7, statuses.size());
 		Assert.assertTrue(statuses
-				.contains(Appointment.AppointmentStatus.WAITING));
+				.contains(AppointmentStatus.WAITING));
 		Assert.assertTrue(statuses
-				.contains(Appointment.AppointmentStatus.INCONSULTATION));
+				.contains(AppointmentStatus.INCONSULTATION));
 		Assert.assertTrue(statuses
-				.contains(Appointment.AppointmentStatus.WALKIN));
+				.contains(AppointmentStatus.WALKIN));
 		Assert.assertTrue(statuses
-				.contains(Appointment.AppointmentStatus.MISSED));
+				.contains(AppointmentStatus.MISSED));
 		Assert.assertTrue(statuses
-				.contains(Appointment.AppointmentStatus.SCHEDULED));
+				.contains(AppointmentStatus.SCHEDULED));
 		Assert.assertTrue(statuses
-				.contains(Appointment.AppointmentStatus.RESCHEDULED));
+				.contains(AppointmentStatus.RESCHEDULED));
 		Assert.assertTrue(statuses
-				.contains(Appointment.AppointmentStatus.COMPLETED));
+				.contains(AppointmentStatus.COMPLETED));
 
 	}
 }
