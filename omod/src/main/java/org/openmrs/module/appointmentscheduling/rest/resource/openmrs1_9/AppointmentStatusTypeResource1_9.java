@@ -28,8 +28,7 @@ public class AppointmentStatusTypeResource1_9 implements Listable, Searchable {
 
 	@Override
 	public String getUri(Object o) {
-		return RestConstants.URI_PREFIX + "/appointmentscheduling/appointmentstatustype/"
-				+ ((AppointmentStatusType) o).getName();
+		return RestConstants.URI_PREFIX + "/appointmentscheduling/appointmentstatustype";
 	}
 
 	@Override

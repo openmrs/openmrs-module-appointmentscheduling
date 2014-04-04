@@ -13,12 +13,6 @@
  */
 package org.openmrs.module.appointmentscheduling;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.BaseOpenmrsMetadata;
@@ -26,6 +20,12 @@ import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.module.appointmentscheduling.serialize.AppointmentStatusSerializer;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * It is a model class. It should extend either {@link BaseOpenmrsObject} or
@@ -37,17 +37,6 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 
 	public enum AppointmentStatusType {
 		SCHEDULED, ACTIVE, CANCELLED, MISSED, COMPLETED;
-
-		private final String name = null;
-
-		public String getName() {
-			return name;
-		}
-
-		@Override
-		public String toString() {
-			return name;
-		}
 	}
 
 	// TODO confirm that "WALK-IN" should be considered active and "RESCHEDULED"
