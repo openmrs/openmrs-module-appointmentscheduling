@@ -236,7 +236,26 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183607", timeSlots.get(2).get("uuid"));
 		
 	}
-	
+
+    @Test
+    public void shouldExcludeTimeSlotThatPatientAlreadyHasAnAppointmentForOfSameType() throws Exception {
+
+        MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+        req.addParameter("fromDate", "2001-06-01T00:00:00.000");
+        req.addParameter("appointmentType", "759799ab-c9a5-435e-b671-77773ada74e4");
+        req.addParameter("location", "9356400c-a5a2-4532-8f2b-2361b3446eb8");
+        req.addParameter("excludeTimeSlotsPatientAlreadyBookedFor", "31e09960-8f52-11e3-baa8-0800200c9a66");
+        req.addParameter("includeFull", "true");
+
+        handle(req);
+
+        List<Map<String, String>> timeSlots = (List<Map<String, String>>) deserialize(handle(req)).get("results");
+        Assert.assertEquals(2, timeSlots.size());
+        Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183605", timeSlots.get(0).get("uuid"));
+        Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183607", timeSlots.get(1).get("uuid"));
+
+    }
+
 	@Override
 	public String getURI() {
 		return AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE + "/timeslot";

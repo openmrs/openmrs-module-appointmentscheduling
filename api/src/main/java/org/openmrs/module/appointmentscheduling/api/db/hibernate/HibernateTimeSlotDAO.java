@@ -26,31 +26,40 @@ public class HibernateTimeSlotDAO extends HibernateSingleClassDAO implements Tim
 	@Transactional(readOnly = true)
 	public List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate,
 	        Provider provider) throws APIException {
-		if (appointmentType == null)
+
+        if (appointmentType == null) {
 			throw new APIException("Appointment Type can not be null.");
-		else if (fromDate != null && toDate != null && !fromDate.before(toDate))
+        }
+        else if (fromDate != null && toDate != null && !fromDate.before(toDate)) {
 			throw new APIException("fromDate can not be later than toDate");
+        }
 		else {
 			Date startDate = (fromDate == null) ? new Date() : fromDate;
 			
 			String stringQuery = "SELECT timeSlot FROM TimeSlot AS timeSlot WHERE timeSlot.appointmentBlock IN("
 			        + " FROM AppointmentBlock WHERE :appointmentType IN elements(types)) AND voided = 0 AND endDate > :startDate";
-			
-			if (toDate != null)
+
+			if (toDate != null) {
 				stringQuery += " AND endDate <= :endDate";
-			if (provider != null)
+            }
+
+			if (provider != null) {
 				stringQuery += " AND timeSlot.appointmentBlock.provider = :provider";
-			
+            }
+
 			stringQuery += " ORDER BY startDate";
 			
 			Query query = super.sessionFactory.getCurrentSession().createQuery(stringQuery)
 			        .setParameter("appointmentType", appointmentType).setParameter("startDate", startDate);
 			
-			if (toDate != null)
+			if (toDate != null) {
 				query.setParameter("endDate", toDate);
-			if (provider != null)
+            }
+
+			if (provider != null) {
 				query.setParameter("provider", provider);
-			
+            }
+
 			return query.list();
 		}
 	}

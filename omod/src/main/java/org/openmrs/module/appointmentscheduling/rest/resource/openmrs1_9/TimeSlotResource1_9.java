@@ -3,6 +3,7 @@ package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 import java.util.Date;
 
 import org.openmrs.Location;
+import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
@@ -139,14 +140,18 @@ public class TimeSlotResource1_9 extends DataDelegatingCrudResource<TimeSlot> {
 		
 		Boolean includeFull = context.getParameter("includeFull") != null ? (Boolean) ConversionUtil.convert(
 		    context.getParameter("includeFull"), Boolean.class) : false;
-		
+
+        Patient patient = context.getParameter("excludeTimeSlotsPatientAlreadyBookedFor") != null
+                ? Context.getPatientService().getPatientByUuid(context.getParameter("excludeTimeSlotsPatientAlreadyBookedFor"))
+                : null;
+
 		if (includeFull) {
 			return new NeedsPaging<TimeSlot>(Context.getService(AppointmentService.class)
-			        .getTimeSlotsByConstraintsIncludingFull(appointmentType, startDate, endDate, provider, location),
+			        .getTimeSlotsByConstraintsIncludingFull(appointmentType, startDate, endDate, provider, location, patient),
 			        context);
 		} else {
 			return new NeedsPaging<TimeSlot>(Context.getService(AppointmentService.class).getTimeSlotsByConstraints(
-			    appointmentType, startDate, endDate, provider, location), context);
+			    appointmentType, startDate, endDate, provider, location, patient), context);
 		}
 		
 	}

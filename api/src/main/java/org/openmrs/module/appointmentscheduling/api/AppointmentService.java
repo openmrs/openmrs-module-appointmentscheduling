@@ -531,7 +531,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * Return a list of time slots that stands within the given constraints.
 	 * 
 	 * @param appointmentType - Type of the appointment
-	 * @param fromDate - (optional) earliest start date.
+	 * @param fromDate - (optional) earliest start date. (defaults to current date)
 	 * @param toDate - (optional) latest start date.
 	 * @param provider - (optional) the appointment's provider.
 	 * @param location - (optional) the appointment's location. (or predecessor location)
@@ -541,6 +541,25 @@ public interface AppointmentService extends OpenmrsService {
 	List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType,
 			Date fromDate, Date toDate, Provider provider, Location location)
 			throws APIException;
+
+    /**
+     * Return a list of time slots that stands within the given constraints.
+     *
+     * @param appointmentType - Type of the appointment
+     * @param fromDate - (optional) earliest start date. (defaults to current date)
+     * @param toDate - (optional) latest start date.
+     * @param provider - (optional) the appointment's provider.
+     * @param location - (optional) the appointment's location. (or predecessor location)
+     * @param excludeTimeSlotsWithPatient (optional) will exclude all time slots that have an existing appointment for
+     *                                    this patient for the selected service type that doesn't have a status type
+     *                                    of CANCELLED (to prevent allow duplicate patient appointments for the same service and time)
+     * @return List of TimeSlots that stands within the given constraints, null if illegal values
+     *         (fromDate>toDate or null appointmentType)
+     */
+    List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType,
+                                             Date fromDate, Date toDate, Provider provider, Location location,
+                                             Patient excludeTimeSlotsWithPatient)
+            throws APIException;
 
 	/**
 	 * Return a list of time slots that stands within the given constraints.
@@ -556,6 +575,24 @@ public interface AppointmentService extends OpenmrsService {
 	List<TimeSlot> getTimeSlotsByConstraintsIncludingFull(
 			AppointmentType appointmentType, Date fromDate, Date toDate,
 			Provider provider, Location location) throws APIException;
+
+    /**
+     * Return a list of time slots that stands within the given constraints.
+     *
+     * @param appointmentType - Type of the appointment
+     * @param fromDate - (optional) earliest start date.
+     * @param toDate - (optional) latest start date.
+     * @param provider - (optional) the appointment's provider.
+     * @param location - (optional) the appointment's location. (or predecessor location)
+     * @param excludeTimeSlotsWithPatient optional) will exclude all time slots that have an existing appointment for
+     *                                    this patient for the selected service type that doesn't have a status type
+     *                                    of CANCELLED (to prevent allow duplicate patient appointments for the same service and time)
+     * @return List of TimeSlots that stands within the given constraints, null if illegal values
+     *         (fromDate>toDate or null appointmentType)
+     */
+    List<TimeSlot> getTimeSlotsByConstraintsIncludingFull(
+            AppointmentType appointmentType, Date fromDate, Date toDate,
+            Provider provider, Location location, Patient excludeTimeSlotsWithPatient) throws APIException;
 
 	/**
 	 * Returns a list of strings, where each string represents an identifier of the given patient

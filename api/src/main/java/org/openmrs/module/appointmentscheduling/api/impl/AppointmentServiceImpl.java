@@ -61,9 +61,7 @@ import org.springframework.transaction.annotation.Transactional;
  * It is a default implementation of {@link AppointmentService}.
  */
 
-public class AppointmentServiceImpl extends BaseOpenmrsService
-		implements
-			AppointmentService {
+public class AppointmentServiceImpl extends BaseOpenmrsService implements AppointmentService {
 
 	protected final Log log = LogFactory.getLog(this.getClass());
 
@@ -550,62 +548,81 @@ public class AppointmentServiceImpl extends BaseOpenmrsService
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<TimeSlot> getTimeSlotsByConstraints(
-			AppointmentType appointmentType, Date fromDate, Date toDate,
-			Provider provider, Location location) throws APIException {
-		List<TimeSlot> suitableTimeSlots = getTimeSlotsByConstraintsIncludingFull(
-				appointmentType, fromDate, toDate, provider, location);
-
-		List<TimeSlot> availableTimeSlots = new LinkedList<TimeSlot>();
-
-		Integer duration = appointmentType.getDuration();
-		for (TimeSlot slot : suitableTimeSlots) {
-
-			// Filter by time left
-			if (getTimeLeftInTimeSlot(slot) >= duration)
-				availableTimeSlots.add(slot);
-		}
-
-		return availableTimeSlots;
-
+	public List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate,
+			    Provider provider, Location location) throws APIException {
+        return getTimeSlotsByConstraints(appointmentType, fromDate, toDate, provider, location, null);
 	}
 
-	@Override
+    @Override
+    public List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate, Provider provider, Location location, Patient excludeTimeSlotsWithPatient) throws APIException {
+
+        List<TimeSlot> suitableTimeSlots = getTimeSlotsByConstraintsIncludingFull(
+                appointmentType, fromDate, toDate, provider, location, excludeTimeSlotsWithPatient);
+
+        List<TimeSlot> availableTimeSlots = new LinkedList<TimeSlot>();
+
+        Integer duration = appointmentType.getDuration();
+        for (TimeSlot slot : suitableTimeSlots) {
+
+            // Filter by time left
+            if (getTimeLeftInTimeSlot(slot) >= duration)
+                availableTimeSlots.add(slot);
+        }
+
+        return availableTimeSlots;
+    }
+
+    @Override
 	@Transactional(readOnly = true)
-	public List<TimeSlot> getTimeSlotsByConstraintsIncludingFull(
-			AppointmentType appointmentType, Date fromDate, Date toDate,
+	public List<TimeSlot> getTimeSlotsByConstraintsIncludingFull(AppointmentType appointmentType, Date fromDate, Date toDate,
 			Provider provider, Location location) throws APIException {
-		List<TimeSlot> suitableTimeSlots = getTimeSlotDAO()
-				.getTimeSlotsByConstraints(appointmentType, fromDate, toDate,
-						provider);
-
-		List<TimeSlot> availableTimeSlots = new LinkedList<TimeSlot>();
-
-		// Used to update the session to the correct one
-		if (location != null)
-			location = Context.getLocationService().getLocation(
-					location.getId());
-
-		Set<Location> relevantLocations = getAllLocationDescendants(location,
-				null);
-		relevantLocations.add(location);
-
-		for (TimeSlot slot : suitableTimeSlots) {
-
-			// Filter by location
-			if (location != null) {
-				if (relevantLocations.contains(slot.getAppointmentBlock()
-						.getLocation()))
-					availableTimeSlots.add(slot);
-			} else
-				availableTimeSlots.add(slot);
-		}
-
-		return availableTimeSlots;
-
+            return getTimeSlotsByConstraintsIncludingFull(appointmentType, fromDate, toDate, provider, location, null);
 	}
 
-	@Override
+    @Override
+    public List<TimeSlot> getTimeSlotsByConstraintsIncludingFull(AppointmentType appointmentType, Date fromDate,
+                                                                 Date toDate, Provider provider, Location location,
+                                                                 Patient excludeTimeSlotsWithPatient) throws APIException {
+
+        List<TimeSlot> suitableTimeSlots = getTimeSlotDAO().getTimeSlotsByConstraints(appointmentType, fromDate, toDate, provider);
+
+        List<TimeSlot> availableTimeSlots = new LinkedList<TimeSlot>();
+
+        // Used to update the session to the correct one
+        if (location != null) {
+            location = Context.getLocationService().getLocation(location.getId());
+        }
+
+        // generate the set of locations to filter by
+        Set<Location> relevantLocations = getAllLocationDescendants(location,
+                null);
+        relevantLocations.add(location);
+
+        Set<TimeSlot> timeSlotsToExclude = new HashSet<TimeSlot>();
+
+        // generate the set of time slots to exclude that the specified patient already has an appointment for of the specified type
+        if (excludeTimeSlotsWithPatient != null) {
+            for (Appointment appointment: getAppointmentsOfPatient(excludeTimeSlotsWithPatient)) {
+                if (appointment.getAppointmentType() == appointmentType && appointment.getStatus().getType() != Appointment.AppointmentStatusType.CANCELLED) {
+                    timeSlotsToExclude.add(appointment.getTimeSlot());
+                }
+            }
+        }
+
+        // now do the actual filtering
+        for (TimeSlot slot : suitableTimeSlots) {
+
+            // Filter by based on the locations and excluded time slots
+            if ( (location == null || relevantLocations.contains(slot.getAppointmentBlock().getLocation()))
+                    && !timeSlotsToExclude.contains(slot) ) {
+                    availableTimeSlots.add(slot);
+            }
+        }
+
+        return availableTimeSlots;
+    }
+
+    @Override
 	@Transactional(readOnly = true)
 	public List<String> getPatientIdentifiersRepresentation(Patient patient) {
 		LinkedList<String> identifiers = new LinkedList<String>();

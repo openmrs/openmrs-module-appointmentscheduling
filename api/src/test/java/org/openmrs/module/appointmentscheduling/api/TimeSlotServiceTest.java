@@ -13,9 +13,15 @@
  */
 package org.openmrs.module.appointmentscheduling.api;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
@@ -24,11 +30,6 @@ import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -393,10 +394,12 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	@Verifies(value = "should return  a list of time slots available by appointment type and constraints ordered by the earliest start date", method = "getTimeSlotsByConstraints")
 	public void shouldGetOnlyAvailableTimeSlotsByConstraintsSortedByStartDate() throws ParseException {
-		AppointmentType type = service.getAppointmentType(1);
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+
+        AppointmentType type = service.getAppointmentType(1);
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 		Date fromDate = format.parse("2005-01-01 00:00:00.0");
-		
+
 		List<TimeSlot> result = service.getTimeSlotsByConstraints(type, fromDate, null, null, null);
 		assertNotNull(result);
 		assertEquals(4, result.size());
@@ -405,5 +408,24 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(8, result.get(2).getTimeSlotId().intValue());
 		assertEquals(9, result.get(3).getTimeSlotId().intValue());
 	}
+
+    @Test
+    @Verifies(value = "should not return a time slot if patient already has appointment during that time slot of that service type", method = "getTimeSlotsByConstraints")
+    public void shouldNotReturnTimeSlotIfPatientAlreadyHasAppointmentOfThatTypeDuringTimeSlot() throws ParseException {
+
+        AppointmentType type = service.getAppointmentType(1);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        Date fromDate = format.parse("2004-01-01 00:00:00.0");
+
+        Patient patient = Context.getPatientService().getPatient(1);
+
+        List<TimeSlot> result = service.getTimeSlotsByConstraintsIncludingFull(type, fromDate, null, null, null, patient);
+        assertNotNull(result);
+        assertEquals(6, result.size());
+
+        // make sure the result set does not include the two time slots that the patient is already booked for
+        assertTrue(!result.contains(service.getTimeSlot(1)));
+        assertTrue(!result.contains(service.getTimeSlot(8)));
+    }
 	
 }
