@@ -14,6 +14,7 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.when;
 
 public class ScheduledAppointmentBlockResource1_9Test extends BaseModuleWebContextSensitiveTest {
@@ -63,7 +64,11 @@ public class ScheduledAppointmentBlockResource1_9Test extends BaseModuleWebConte
 		assertTrue(firstAppointment.containsKey("appointmentType"));
 		assertEquals("759799ab-c9a5-435e-b671-77773ada74e6",
 		    ((SimpleObject) firstAppointment.get("appointmentType")).get("uuid").toString());
-		
+
+        // make sure we aren't sending the appointment block along
+        SimpleObject firstTimeSlot = (SimpleObject) firstAppointment.get("timeSlot");
+        assertFalse(firstTimeSlot.containsKey("appointmentBlock"));
+
 		SimpleObject secondAppointment = (SimpleObject) appointments.get(1);
 		
 		assertTrue(secondAppointment.containsKey("patient"));
@@ -72,6 +77,10 @@ public class ScheduledAppointmentBlockResource1_9Test extends BaseModuleWebConte
 		assertTrue(secondAppointment.containsKey("appointmentType"));
 		assertEquals("759799ab-c9a5-435e-b671-77773ada74e6",
 		    ((SimpleObject) secondAppointment.get("appointmentType")).get("uuid").toString());
+
+        // make sure we aren't sending the appointment block along
+        SimpleObject secondTimeSlot = (SimpleObject) firstAppointment.get("timeSlot");
+        assertFalse(secondTimeSlot.containsKey("appointmentBlock"));
 		
 	}
 	

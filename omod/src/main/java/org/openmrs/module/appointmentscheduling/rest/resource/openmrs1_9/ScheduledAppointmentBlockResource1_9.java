@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.ScheduledAppointmentBlock;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
@@ -75,14 +76,39 @@ public class ScheduledAppointmentBlockResource1_9 implements Searchable, Retriev
 	
 	private SimpleObject getSimpleObject(ScheduledAppointmentBlock dailyAppointmentBlock) {
 		SimpleObject simpleObject = new SimpleObject();
-		simpleObject.add("appointmentBlock", convertProperty(dailyAppointmentBlock, "appointmentBlock"));
-		simpleObject.add("appointments", convertProperty(dailyAppointmentBlock, "appointments"));
+		simpleObject.add("appointmentBlock", getSimpleAppointmentBlock(dailyAppointmentBlock));
+		simpleObject.add("appointments",getSimpleAppointments(dailyAppointmentBlock));
 		return simpleObject;
 	}
-	
-	private Object convertProperty(ScheduledAppointmentBlock dailyAppointmentBlock, String appointmentBlock) {
-		return ConversionUtil.getPropertyWithRepresentation(dailyAppointmentBlock, appointmentBlock, Representation.DEFAULT);
-	}
+
+    private Object getSimpleAppointmentBlock(ScheduledAppointmentBlock scheduledAppointmentBlock) {
+        return ConversionUtil.getPropertyWithRepresentation(scheduledAppointmentBlock, "appointmentBlock", Representation.DEFAULT);
+    }
+
+	private List<SimpleObject> getSimpleAppointments(ScheduledAppointmentBlock scheduledAppointmentBlock) {
+
+        List<SimpleObject> simpleAppointments = new ArrayList<SimpleObject>();
+
+        // we basically made are our custom representation here, because we want only the ref version of the time slot
+        // (because we already have the overall appointment block, which would be the save for every appointment),
+        // but we do want the default versions of the appointment type and patient
+        for (Appointment appointment : scheduledAppointmentBlock.getAppointments()) {
+            SimpleObject simpleAppointment = new SimpleObject();
+
+            simpleAppointment.add("timeSlot", ConversionUtil.getPropertyWithRepresentation(appointment, "timeSlot", Representation.REF));
+            simpleAppointment.add("appointmentType", ConversionUtil.getPropertyWithRepresentation(appointment, "appointmentType", Representation.DEFAULT));
+            simpleAppointment.add("patient", ConversionUtil.getPropertyWithRepresentation(appointment, "patient", Representation.DEFAULT));
+            simpleAppointment.add("status", ConversionUtil.getPropertyWithRepresentation(appointment, "status", Representation.DEFAULT));
+            simpleAppointment.add("reason", ConversionUtil.getPropertyWithRepresentation(appointment, "reason", Representation.DEFAULT));
+            simpleAppointment.add("cancelReason", ConversionUtil.getPropertyWithRepresentation(appointment, "cancelReason", Representation.DEFAULT));
+            // note that we don't return the visit because we don't care about it at this point
+
+            simpleAppointments.add(simpleAppointment);
+        }
+
+       return simpleAppointments;
+    }
+
 	
 	@Override
 	public String getUri(Object delegate) {
