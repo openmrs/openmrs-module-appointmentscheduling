@@ -68,4 +68,8 @@ public class AppointmentType extends BaseOpenmrsMetadata {
 	public void setDuration(Integer duration) {
 		this.duration = duration;
 	}
+	
+	public String getDisplayString() {
+		return getName();
+	}
 }

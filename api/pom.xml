@@ -61,23 +61,29 @@
 		</dependency>
 				
 		<!-- End OpenMRS core -->
-		
+
+        <!-- Other dependencies -->
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
+
 	</dependencies>
 	
 	<build>
-		<plugins>
-            <plugin>
-                <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
-                <artifactId>maven-java-formatter-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                           <goal>format</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
+		<!--<plugins>-->
+            <!--<plugin>-->
+                <!--<groupId>com.googlecode.maven-java-formatter-plugin</groupId>-->
+                <!--<artifactId>maven-java-formatter-plugin</artifactId>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<goals>-->
+                           <!--<goal>format</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
+        <!--</plugins>-->
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>

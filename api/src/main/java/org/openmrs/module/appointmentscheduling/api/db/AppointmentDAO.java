@@ -21,9 +21,12 @@ import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.api.APIException;
 import org.openmrs.module.appointmentscheduling.Appointment;
-import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
+import org.openmrs.module.appointmentscheduling.AppointmentBlock;
+import org.openmrs.module.appointmentscheduling.AppointmentType;
+import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Database methods for {@link AppointmentService}.
@@ -36,11 +39,57 @@ public interface AppointmentDAO extends SingleClassDAO {
 	
 	Appointment getLastAppointment(Patient patient);
 	
+	@Transactional(readOnly = true)
+	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider,
+	        AppointmentType appointmentType, List<AppointmentStatus> statuses, Patient patient) throws APIException;
+	
 	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider, AppointmentType type,
-	        AppointmentStatus status) throws APIException;
+	        AppointmentStatus status, Patient patient) throws APIException;
 	
 	List<Appointment> getAppointmentsByStates(List<AppointmentStatus> states);
 	
 	List<Appointment> getPastAppointmentsByStates(List<AppointmentStatus> states);
 	
+	List<Appointment> getScheduledAppointmentsForPatient(Patient patient);
+	
+	List<Appointment> getAppointmentsByAppointmentBlockAndAppointmentTypes(AppointmentBlock appointmentBlock,
+	        List<AppointmentType> appointmentTypes);
+	
+	/**
+	 * Retrieve all appointments in a given time slot.
+	 * 
+	 * @param timeSlot - The time slot to look into.
+	 * @return a list of the appointments in the given time slot.
+	 * @should not return voided time slots
+	 */
+	List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot);
+	
+	/**
+	 * Retrieve a count of appointments in a given time slot.
+	 * 
+	 * @param timeSlot - The time slot to look into.
+	 * @return a count of the appointments in the given time slot.
+	 * @should not return voided time slots
+	 */
+	Integer getCountOfAppointmentsInTimeSlot(TimeSlot timeSlot);
+	
+	/**
+	 * Retrieve all appointments in a given time slot, filtered by status
+	 * 
+	 * @param timeSlot - The time slot to look into.
+	 * @param statuses - statues to match against
+	 * @return a list of the appointments in the given time slot.
+	 * @should not return voided time slots
+	 */
+	List<Appointment> getAppointmentsInTimeSlotByStatus(TimeSlot timeSlot, List<AppointmentStatus> statuses);
+	
+	/**
+	 * Retrieve a count of all appointments in a given time slot, filtered by status
+	 * 
+	 * @param timeSlot - The time slot to look into.
+	 * @param statuses - statues to match against
+	 * @return a cont of the appointments in the given time slot.
+	 * @should not return voided time slots
+	 */
+	Integer getCountOfAppointmentsInTimeSlotByStatus(TimeSlot timeSlot, List<AppointmentStatus> statuses);
 }

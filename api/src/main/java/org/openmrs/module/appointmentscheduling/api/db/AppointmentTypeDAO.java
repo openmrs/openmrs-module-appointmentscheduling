@@ -13,9 +13,10 @@
  */
 package org.openmrs.module.appointmentscheduling.api.db;
 
-import java.util.Date;
-
 import org.openmrs.module.appointmentscheduling.AppointmentType;
+
+import java.util.Date;
+import java.util.List;
 
 public interface AppointmentTypeDAO extends SingleClassDAO {
 	
@@ -28,4 +29,8 @@ public interface AppointmentTypeDAO extends SingleClassDAO {
 	 * @return Integer count of appointments in the given interval with the given type.
 	 */
 	public Integer getAppointmentTypeCount(Date fromDate, Date toDate, AppointmentType type);
+	
+	public List<AppointmentType> getAppointmentTypes(String fuzzySearchPhrase, boolean includeRetired);
+	
+	boolean verifyDuplicatedAppointmentTypeName(AppointmentType appointmentType);
 }

@@ -47,7 +47,8 @@
 	</modules>
 	
 	<properties>
-		<openMRSVersion>1.9.0</openMRSVersion>
+		<openMRSVersion>1.9.7</openMRSVersion>
+        <webservicesRestVersion>2.5-SNAPSHOT</webservicesRestVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -111,6 +112,29 @@
 						
 			<!-- End OpenMRS core -->
 
+            <!-- REST web services -->
+
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>webservices.rest-omod</artifactId>
+                <version>2.3</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>webservices.rest-omod-common</artifactId>
+                <version>2.3</version>
+            </dependency>
+
+
+            <!-- Other dependencies -->
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>2.2</version>
+            </dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -140,18 +164,19 @@
 					<artifactId>maven-release-plugin</artifactId>
 					<version>2.4</version>
 				</plugin>
-				<plugin>
-					<groupId>com.googlecode.maven-java-formatter-plugin</groupId>
-					<artifactId>maven-java-formatter-plugin</artifactId>
-					<configuration>
-						<compilerSource>${javaCompilerVersion}</compilerSource>
-						<compilerCompliance>${javaCompilerVersion}</compilerCompliance>
-						<compilerTargetPlatform>${javaCompilerVersion}</compilerTargetPlatform>
-						<configFile>../OpenMRSFormatter.xml</configFile>
-						<overrideConfigCompilerVersion>true</overrideConfigCompilerVersion>
-						<lineEnding>CRLF</lineEnding>
-					</configuration>
-				</plugin>
+				<!--<plugin>-->
+					<!--<groupId>com.googlecode.maven-java-formatter-plugin</groupId>-->
+					<!--<artifactId>maven-java-formatter-plugin</artifactId>-->
+                    <!--<version>0.4</version>-->
+					<!--<configuration>-->
+						<!--<compilerSource>${javaCompilerVersion}</compilerSource>-->
+						<!--<compilerCompliance>${javaCompilerVersion}</compilerCompliance>-->
+						<!--<compilerTargetPlatform>${javaCompilerVersion}</compilerTargetPlatform>-->
+						<!--<configFile>../OpenMRSFormatter.xml</configFile>-->
+						<!--<overrideConfigCompilerVersion>true</overrideConfigCompilerVersion>-->
+						<!--<lineEnding>CRLF</lineEnding>-->
+					<!--</configuration>-->
+				<!--</plugin>-->
 			</plugins>
 		</pluginManagement>
 	</build>

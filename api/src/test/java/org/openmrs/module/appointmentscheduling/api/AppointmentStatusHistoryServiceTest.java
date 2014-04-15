@@ -13,9 +13,6 @@
  */
 package org.openmrs.module.appointmentscheduling.api;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Provider;
@@ -37,10 +33,15 @@ import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+
 /**
  * Tests Appointment Status History methods in the {@link $ AppointmentService} .
  */
 public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensitiveTest {
+	
+	public static final int TOTAL_APPOINTMENTS = 12;
 	
 	private AppointmentService service;
 	
@@ -151,7 +152,7 @@ public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensit
 		assertEquals(4, service.getAllAppointmentStatusHistories().size());
 		
 		//Should not add new appointment
-		assertEquals(4, service.getAllAppointments().size());
+		assertEquals(TOTAL_APPOINTMENTS, service.getAllAppointments().size());
 	}
 	
 	@Test

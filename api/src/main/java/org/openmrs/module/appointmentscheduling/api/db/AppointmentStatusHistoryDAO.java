@@ -50,4 +50,12 @@ public interface AppointmentStatusHistoryDAO extends SingleClassDAO {
 	 */
 	@Transactional(readOnly = true)
 	public List<AppointmentStatusHistory> getHistoriesByInterval(Date fromDate, Date endDate, AppointmentStatus status);
+	
+	/**
+	 * Purge all history from a specific appointment
+	 * 
+	 * @param appointment The appointment which the story should be deleted.
+	 * @return
+	 */
+	public void purgeHistoryBy(Appointment appointment);
 }

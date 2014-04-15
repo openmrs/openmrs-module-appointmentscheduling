@@ -285,4 +285,25 @@
 			baseTableName="appointmentscheduling_appointment_status_history" baseColumnNames="appointment_id"
 			referencedTableName="appointmentscheduling_appointment" referencedColumnNames="appointment_id"/>
 	</changeSet>
+    
+    <changeSet id="201402141515" author="djazayeri">
+        <!-- No precondition since there isn't one for "not null constraint exists" and this is a safe operation -->
+        <comment>
+            Allow appointment blocks with no provider specified
+        </comment>
+        <dropNotNullConstraint tableName="appointmentscheduling_appointment_block" columnName="provider_id" columnDataType="int"/>
+    </changeSet>
+
+    <changeSet id="201403171701-appointmentscheduling_appointment_cancel_reason" author="cioan">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists tableName="appointmentscheduling_appointment" columnName="cancel_reason" /></not>
+        </preConditions>
+        <comment>Adding cancel_reason column to appointmentscheduling_appointment table</comment>
+        <addColumn tableName="appointmentscheduling_appointment">
+            <column name="cancel_reason" type="varchar(1024)">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

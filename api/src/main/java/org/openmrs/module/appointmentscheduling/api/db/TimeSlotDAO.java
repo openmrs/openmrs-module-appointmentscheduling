@@ -16,23 +16,13 @@ package org.openmrs.module.appointmentscheduling.api.db;
 import java.util.Date;
 import java.util.List;
 
-import org.openmrs.Location;
 import org.openmrs.Provider;
 import org.openmrs.api.APIException;
-import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 
 public interface TimeSlotDAO extends SingleClassDAO {
-	
-	/**
-	 * Retrieve all appointments in a given time slot.
-	 * 
-	 * @param timeSlot - The time slot to look into.
-	 * @return a list of the appointments in the given time slot.
-	 */
-	List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot);
 	
 	/**
 	 * Return a list of time slots that stands within the given constraints.
@@ -53,6 +43,7 @@ public interface TimeSlotDAO extends SingleClassDAO {
 	 * @param appointmentBlock - a given appointment block.
 	 * @return List of TimeSlots that are associated with the given Appointment Block, null if
 	 *         illegal values (null appointmentBlock)
+	 * @should not return voided time slots
 	 */
 	List<TimeSlot> getTimeSlotsByAppointmentBlock(AppointmentBlock appointmentBlock);
 }

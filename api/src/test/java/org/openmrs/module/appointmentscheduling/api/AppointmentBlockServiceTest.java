@@ -13,9 +13,20 @@
  */
 package org.openmrs.module.appointmentscheduling.api;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
+import junit.framework.Assert;
+import org.apache.commons.lang3.time.DateUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.openmrs.Location;
+import org.openmrs.Provider;
+import org.openmrs.api.LocationService;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.appointmentscheduling.AppointmentBlock;
+import org.openmrs.module.appointmentscheduling.AppointmentType;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.Verifies;
+import org.openmrs.util.OpenmrsUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -23,29 +34,31 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.Assert;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.openmrs.Location;
-import org.openmrs.Provider;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.AppointmentBlock;
-import org.openmrs.module.appointmentscheduling.AppointmentType;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.openmrs.test.Verifies;
-import org.openmrs.util.OpenmrsUtil;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests Appointment Block methods in the {@link $ AppointmentService} .
  */
 public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest {
 	
+	private static final int TOTAL_APPOINTMENT_BLOCKS = 5;
+	
+	@Autowired
 	private AppointmentService service;
+	
+	@Autowired
+	LocationService locationService;
 	
 	@Before
 	public void before() throws Exception {
-		service = Context.getService(AppointmentService.class);
 		executeDataSet("standardAppointmentTestDataset.xml");
 	}
 	
@@ -53,7 +66,7 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 	@Verifies(value = "should get all appointment blocks", method = "getAllAppointmentBlocks()")
 	public void getAllAppointmentBlocks_shouldGetAllAppointmentBlocks() throws Exception {
 		List<AppointmentBlock> appointmentBlocks = service.getAllAppointmentBlocks();
-		assertEquals(3, appointmentBlocks.size());
+		assertEquals(TOTAL_APPOINTMENT_BLOCKS, appointmentBlocks.size());
 	}
 	
 	@Test
@@ -71,8 +84,8 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		assertNotNull(appointmentBlock);
 		assertEquals("2005-01-03 00:00:00.0", appointmentBlock.getStartDate().toString());
 		
-		appointmentBlock = service.getAppointmentBlock(4);
-		Assert.assertNull(appointmentBlock);
+		appointmentBlock = service.getAppointmentBlock(6);
+		assertNull(appointmentBlock);
 	}
 	
 	@Test
@@ -91,17 +104,17 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		assertEquals("2005-01-03 00:00:00.0", appointmentBlock.getStartDate().toString());
 		
 		appointmentBlock = service.getAppointmentBlockByUuid("759799ab-c9a5-435e-b671-77773ada74e1");
-		Assert.assertNull(appointmentBlock);
+		assertNull(appointmentBlock);
 	}
 	
 	@Test
 	@Verifies(value = "should save new appointment block", method = "saveAppointmentBlock(AppointmentBlock)")
 	public void saveAppointmentBlock_shouldSaveNewAppointmentBlock() throws Exception {
 		List<AppointmentBlock> appointmentBlocks = service.getAllAppointmentBlocks(true);
-		assertEquals(3, appointmentBlocks.size());
+		assertEquals(TOTAL_APPOINTMENT_BLOCKS, appointmentBlocks.size());
 		
 		appointmentBlocks = service.getAllAppointmentBlocks();
-		assertEquals(3, appointmentBlocks.size());
+		assertEquals(TOTAL_APPOINTMENT_BLOCKS, appointmentBlocks.size());
 		
 		Date started = new Date();
 		Set<AppointmentType> appointmentTypes = service.getAllAppointmentTypes();
@@ -114,7 +127,26 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		assertNotNull(appointmentBlock);
 		
 		//Should create a new appointment block row
-		assertEquals(4, service.getAllAppointmentBlocks().size());
+		assertEquals(TOTAL_APPOINTMENT_BLOCKS + 1, service.getAllAppointmentBlocks().size());
+	}
+	
+	@Test
+	@Verifies(value = "save a providerless appointment block", method = "saveAppointmentBlock(AppointmentBlock)")
+	public void saveAppointmentBlock_shouldSaveAProviderlessAppointmentBlock() throws Exception {
+		List<AppointmentBlock> appointmentBlocks = service.getAllAppointmentBlocks(true);
+		assertEquals(TOTAL_APPOINTMENT_BLOCKS, appointmentBlocks.size());
+		
+		Date started = new Date();
+		Set<AppointmentType> appointmentTypes = service.getAllAppointmentTypes();
+		AppointmentBlock appointmentBlock = new AppointmentBlock(started, OpenmrsUtil.getLastMomentOfDay(started), null,
+		        new Location(1), appointmentTypes);
+		service.saveAppointmentBlock(appointmentBlock);
+		
+		assertThat(appointmentBlock.getProvider(), is(nullValue()));
+		
+		appointmentBlocks = service.getAllAppointmentBlocks(true);
+		assertThat(appointmentBlocks, hasItem(appointmentBlock));
+		assertEquals(TOTAL_APPOINTMENT_BLOCKS + 1, appointmentBlocks.size());
 	}
 	
 	@Test
@@ -134,7 +166,7 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		assertEquals(startDate, appointmentBlock.getStartDate());
 		
 		//Should not change the number of appointment types
-		assertEquals(3, service.getAllAppointmentBlocks().size());
+		assertEquals(TOTAL_APPOINTMENT_BLOCKS, service.getAllAppointmentBlocks().size());
 		
 	}
 	
@@ -144,7 +176,7 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		AppointmentBlock appointmentBlock = service.getAppointmentBlock(1);
 		assertNotNull(appointmentBlock);
 		Assert.assertFalse(appointmentBlock.isVoided());
-		Assert.assertNull(appointmentBlock.getVoidReason());
+		assertNull(appointmentBlock.getVoidReason());
 		
 		service.voidAppointmentBlock(appointmentBlock, "void reason");
 		
@@ -153,8 +185,11 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		assertTrue(appointmentBlock.isVoided());
 		assertEquals("void reason", appointmentBlock.getVoidReason());
 		
+		// make sure all the underlying appointment blocks have been voided
+		assertEquals(0, service.getTimeSlotsInAppointmentBlock(appointmentBlock).size());
+		
 		//Should not change the number of appointment blocks.
-		assertEquals(3, service.getAllAppointmentBlocks().size());
+		assertEquals(TOTAL_APPOINTMENT_BLOCKS, service.getAllAppointmentBlocks().size());
 	}
 	
 	@Test
@@ -169,11 +204,11 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		
 		appointmentBlock = service.getAppointmentBlock(3);
 		assertNotNull(appointmentBlock);
-		Assert.assertFalse(appointmentBlock.isVoided());
-		Assert.assertNull("void reason", appointmentBlock.getVoidReason());
+		assertFalse(appointmentBlock.isVoided());
+		assertNull("void reason", appointmentBlock.getVoidReason());
 		
 		//Should not change the number of appointment blocks.
-		assertEquals(3, service.getAllAppointmentBlocks().size());
+		assertEquals(TOTAL_APPOINTMENT_BLOCKS, service.getAllAppointmentBlocks().size());
 	}
 	
 	@Test
@@ -185,10 +220,10 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		service.purgeAppointmentBlock(appointmentBlock);
 		
 		appointmentBlock = service.getAppointmentBlock(3);
-		Assert.assertNull(appointmentBlock);
+		assertNull(appointmentBlock);
 		
 		//Should decrease the number of appointment blocks by one.
-		assertEquals(2, service.getAllAppointmentBlocks().size());
+		assertEquals(TOTAL_APPOINTMENT_BLOCKS - 1, service.getAllAppointmentBlocks().size());
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -213,33 +248,61 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 		assertNotNull(appointmentBlocks);
 		assertEquals(new Integer(2), appointmentBlocks.get(0).getAppointmentBlockId());
 		
+		// should ignore voided blocks
 		appointmentBlocks = service.getAppointmentBlocks(toDate, null, "", provider, null);
 		assertNotNull(appointmentBlocks);
-		assertEquals(new Integer(3), appointmentBlocks.get(0).getAppointmentBlockId());
+		assertEquals(1, appointmentBlocks.size());
+		assertEquals(new Integer(4), appointmentBlocks.get(0).getAppointmentBlockId());
 		
 		appointmentBlocks = service.getAppointmentBlocks(null, toDate, "", provider, null);
 		assertNotNull(appointmentBlocks);
 		assertEquals(2, appointmentBlocks.size());
+		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
+		assertEquals(new Integer(2), appointmentBlocks.get(1).getAppointmentBlockId());
 		
 		appointmentBlocks = service.getAppointmentBlocks(null, null, locaitons, provider, null);
 		assertNotNull(appointmentBlocks);
 		assertEquals(1, appointmentBlocks.size());
+		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
 		
 		appointmentBlocks = service.getAppointmentBlocks(null, null, "", provider, null);
 		assertEquals(3, appointmentBlocks.size());
+		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
+		assertEquals(new Integer(2), appointmentBlocks.get(1).getAppointmentBlockId());
+		assertEquals(new Integer(4), appointmentBlocks.get(2).getAppointmentBlockId());
 		
 		//test filtering by appointment type only
 		appointmentBlocks = service.getAppointmentBlocks(null, null, "", null, appointmentType);
-		assertEquals(2, appointmentBlocks.size());
+		assertEquals(1, appointmentBlocks.size());
+		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
 		
 		//test filtering by appointment type and provider
 		appointmentBlocks = service.getAppointmentBlocks(null, null, "", provider, appointmentType);
-		assertEquals(2, appointmentBlocks.size());
+		assertEquals(1, appointmentBlocks.size());
+		assertEquals(new Integer(1), appointmentBlocks.get(0).getAppointmentBlockId());
 		
 		provider = Context.getProviderService().getProvider(2);
 		appointmentBlocks = service.getAppointmentBlocks(null, null, "", provider, null);
 		assertEquals(0, appointmentBlocks.size());
 		
+	}
+	
+	@Test
+	@Verifies(value = "allow overlapping providerless appointment blocks", method = "getOverlappingAppointmentBlocks(AppointmentBlock)")
+	public void getOverlappingAppointmentBlocks_shouldAllowOverlappingProviderlessAppointmentBlocks() throws Exception {
+		// the test dataset has a block from 2005-01-01 00:00:00.0 - 11:00:00.0 with provider 1 at location 3
+		// we will also create a providerless block at the same time; neither of these should overlap with a third block
+		// at the same time that is also providerless
+		
+		Date fromDate = DateUtils.parseDate("2005-01-01 00:00", "yyyy-MM-dd HH:mm");
+		Date toDate = DateUtils.parseDate("2005-01-01 11:00", "yyyy-MM-dd HH:mm");
+		Location atLocation = locationService.getLocation(3);
+		Set<AppointmentType> appointmentTypes = service.getAllAppointmentTypes();
+		
+		AppointmentBlock block = new AppointmentBlock(fromDate, toDate, null, atLocation, appointmentTypes);
+		service.saveAppointmentBlock(block);
+		
+		assertThat(service.getOverlappingAppointmentBlocks(block).size(), is(0));
 	}
 	
 	@SuppressWarnings("deprecation")

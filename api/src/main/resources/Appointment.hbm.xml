@@ -22,6 +22,7 @@
 		</property>
 		
 		<property name="reason" type="java.lang.String" column="reason" length="1024" not-null="false" />
+        <property name="cancelReason" type="java.lang.String" column="cancel_reason" length="1024" not-null="false" />
 		<many-to-one name="appointmentType" class="AppointmentType" column="appointment_type_id" not-null="true" />
 		
 		<property name="uuid" type="java.lang.String" column="uuid" length="38" unique="true" />

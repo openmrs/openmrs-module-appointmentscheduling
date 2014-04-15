@@ -22,19 +22,23 @@ import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
+import org.openmrs.annotation.Authorized;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
+import org.openmrs.module.appointmentscheduling.AppointmentUtils;
+import org.openmrs.module.appointmentscheduling.ScheduledAppointmentBlock;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
-import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
+import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * This service exposes module's core functionality. It is a Spring managed bean which is configured
- * in moduleApplicationContext.xml.
+ * This service exposes module's core functionality. It is a Spring managed bean
+ * which is configured in moduleApplicationContext.xml.
  * <p>
  * It can be accessed only via Context:<br>
  * <code>
@@ -43,18 +47,17 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  * @see org.openmrs.api.context.Context
  */
-@Transactional
 public interface AppointmentService extends OpenmrsService {
-	
+
 	/**
 	 * Gets all appointment types.
 	 * 
 	 * @return a list of appointment type objects.
 	 * @should get all appointment types
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_TYPES)
 	Set<AppointmentType> getAllAppointmentTypes();
-	
+
 	/**
 	 * Get all appointment types based on includeRetired flag
 	 * 
@@ -62,9 +65,9 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return List of all appointment types
 	 * @should get all appointment types based on include retired flag.
 	 */
-	@Transactional(readOnly = true)
-	public List<AppointmentType> getAllAppointmentTypes(boolean includeRetired);
-	
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_TYPES)
+	List<AppointmentType> getAllAppointmentTypes(boolean includeRetired);
+
 	/**
 	 * Gets an appointment type by its appointment type id.
 	 * 
@@ -72,9 +75,9 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the appointment type object found with the given id, else null.
 	 * @should get correct appointment type
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_TYPES)
 	AppointmentType getAppointmentType(Integer appointmentTypeId);
-	
+
 	/**
 	 * Gets an appointment type by its UUID.
 	 * 
@@ -82,19 +85,33 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the appointment type object found with the given uuid, else null.
 	 * @should get correct appointment type
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_TYPES)
 	AppointmentType getAppointmentTypeByUuid(String uuid);
-	
+
 	/**
-	 * Gets all appointment types whose names are similar to or contain the given search phrase.
+	 * Gets all appointment types (including retired) whose names are similar to or contain the
+	 * given search phrase.
 	 * 
 	 * @param fuzzySearchPhrase the search phrase to use.
 	 * @return a list of all appointment types with names similar to or containing the given phrase
 	 * @should get correct appointment types
+	 * @should include retired appointment types
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_TYPES)
 	List<AppointmentType> getAppointmentTypes(String fuzzySearchPhrase);
-	
+
+	/**
+	 * Gets all appointment types whose names are similar to or contain the given search phrase.
+	 * 
+	 * @param fuzzySearchPhrase the search phrase to use.
+	 * @param includeRetired whether or not to include retired types
+	 * @return a list of all appointment types with names similar to or containing the given phrase
+	 * @should get correct appointment types
+	 */
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_TYPES)
+	List<AppointmentType> getAppointmentTypes(String fuzzySearchPhrase,
+			boolean includeRetired);
+
 	/**
 	 * Creates or updates the given appointment type in the database.
 	 * 
@@ -105,8 +122,10 @@ public interface AppointmentService extends OpenmrsService {
 	 * @should throw error when name is null
 	 * @should throw error when name is empty string
 	 */
-	AppointmentType saveAppointmentType(AppointmentType appointmentType) throws APIException;
-	
+    @Authorized(AppointmentUtils.PRIV_MANAGE_APPOINTMENT_TYPES)
+	AppointmentType saveAppointmentType(AppointmentType appointmentType)
+			throws APIException;
+
 	/**
 	 * Retires a given appointment type.
 	 * 
@@ -115,8 +134,10 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the appointment type that has been retired.
 	 * @should retire given appointment type
 	 */
-	AppointmentType retireAppointmentType(AppointmentType appointmentType, String reason);
-	
+    @Authorized(AppointmentUtils.PRIV_MANAGE_APPOINTMENT_TYPES)
+	AppointmentType retireAppointmentType(AppointmentType appointmentType,
+			String reason);
+
 	/**
 	 * Unretires an appointment type.
 	 * 
@@ -124,26 +145,28 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the unretired appointment type
 	 * @should unretire given appointment type
 	 */
+    @Authorized(AppointmentUtils.PRIV_MANAGE_APPOINTMENT_TYPES)
 	AppointmentType unretireAppointmentType(AppointmentType appointmentType);
-	
+
 	/**
 	 * Completely removes an appointment type from the database. This is not reversible.
 	 * 
 	 * @param appointmentType the appointment type to delete from the database.
 	 * @should delete given appointment type
 	 */
+    @Authorized(AppointmentUtils.PRIV_MANAGE_APPOINTMENT_TYPES)
 	void purgeAppointmentType(AppointmentType appointmentType);
-	
-	//AppointmentBlock	
+
+	// AppointmentBlock
 	/**
 	 * Gets all appointment blocks.
 	 * 
 	 * @return a list of appointment block objects.
 	 * @should get all appointment blocks
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_BLOCKS)
 	List<AppointmentBlock> getAllAppointmentBlocks();
-	
+
 	/**
 	 * Get all appointment blocks based on includeVoided flag
 	 * 
@@ -151,9 +174,9 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return List of all appointment blocks
 	 * @should get all appointment blocks based on include voided flag.
 	 */
-	@Transactional(readOnly = true)
-	public List<AppointmentBlock> getAllAppointmentBlocks(boolean includeVoided);
-	
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_BLOCKS)
+	List<AppointmentBlock> getAllAppointmentBlocks(boolean includeVoided);
+
 	/**
 	 * Gets an appointment block by its appointment block id.
 	 * 
@@ -161,9 +184,9 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the appointment block object found with the given id, else null.
 	 * @should get correct appointment block
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_BLOCKS)
 	AppointmentBlock getAppointmentBlock(Integer appointmentBlockId);
-	
+
 	/**
 	 * Gets an appointment block by its UUID.
 	 * 
@@ -171,21 +194,24 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the appointment block object found with the given uuid, else null.
 	 * @should get correct appointment block
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_BLOCKS)
 	AppointmentBlock getAppointmentBlockByUuid(String uuid);
-	
+
 	/**
 	 * Creates or updates the given appointment block in the database.
 	 * 
 	 * @param appointmentBlock the appointment block to create or update.
 	 * @return the created or updated appointment block.
 	 * @should save new appointment block
+	 * @should save a providerless appointment block
 	 * @should save edited appointment block
 	 * @should throw error when name is null
 	 * @should throw error when name is empty string
 	 */
-	AppointmentBlock saveAppointmentBlock(AppointmentBlock appointmentBlock) throws APIException;
-	
+    @Authorized(AppointmentUtils.PRIV_MANAGE_APPOINTMENT_BLOCKS)
+	AppointmentBlock saveAppointmentBlock(AppointmentBlock appointmentBlock)
+			throws APIException;
+
 	/**
 	 * Voids a given appointment block.
 	 * 
@@ -193,9 +219,12 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param reason the reason why the appointment block is voided.
 	 * @return the appointment block that has been voided.
 	 * @should void given appointment block
+	 * @should void all associated time slots
 	 */
-	AppointmentBlock voidAppointmentBlock(AppointmentBlock appointmentBlock, String reason);
-	
+    @Authorized(AppointmentUtils.PRIV_MANAGE_APPOINTMENT_BLOCKS)
+	AppointmentBlock voidAppointmentBlock(AppointmentBlock appointmentBlock,
+			String reason);
+
 	/**
 	 * Unvoids an appointment block.
 	 * 
@@ -203,46 +232,65 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the unvoided appointment block
 	 * @should unvoided given appointment block
 	 */
+    @Authorized(AppointmentUtils.PRIV_MANAGE_APPOINTMENT_BLOCKS)
 	AppointmentBlock unvoidAppointmentBlock(AppointmentBlock appointmentBlock);
-	
+
 	/**
 	 * Completely removes an appointment block from the database. This is not reversible.
 	 * 
 	 * @param appointmentBlock the appointment block to delete from the database.
 	 * @should delete given appointment block
 	 */
+    @Authorized(AppointmentUtils.PRIV_MANAGE_APPOINTMENT_BLOCKS)
 	void purgeAppointmentBlock(AppointmentBlock appointmentBlock);
-	
+
+	/**
+	 * Gets appointment blocks which have a given date, location, provider and list of appointment
+	 * types
+	 * 
+	 * @return a list of appointment block objects.
+	 * @should get all appointment blocks which have contains in a given date interval and
+	 *         corresponds to a given locations, provider and appointment types.
+	 * @should not return voided appointment blocks
+	 */
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_BLOCKS)
+	List<AppointmentBlock> getAppointmentBlocksByTypes(Date fromDate,
+			Date toDate, String locations, Provider provider,
+			List<AppointmentType> appointmentTypes);
+
 	/**
 	 * Gets appointment blocks which have a given date and location.
 	 * 
 	 * @return a list of appointment block objects.
 	 * @should get all appointment blocks which have contains in a given date interval and
 	 *         corresponds to a given locations, provider and appointment type.
+	 * @should not return voided appointment blocks
 	 */
-	@Transactional(readOnly = true)
-	List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate, String locations, Provider provider,
-	        AppointmentType appointmentType);
-	
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_BLOCKS)
+	List<AppointmentBlock> getAppointmentBlocks(Date fromDate, Date toDate,
+			String locations, Provider provider, AppointmentType appointmentType);
+
 	/**
 	 * Gets appointment blocks which overlap to the given appointment block
 	 * 
 	 * @return a list of appointment block objects.
 	 * @should get all appointment blocks which overlap to the given appointment block
+	 * @should allow overlapping providerless appointment blocks
 	 */
-	@Transactional(readOnly = true)
-	List<AppointmentBlock> getOverlappingAppointmentBlocks(AppointmentBlock appointmentBlock);
-	
-	//Appointment
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_BLOCKS)
+	List<AppointmentBlock> getOverlappingAppointmentBlocks(
+			AppointmentBlock appointmentBlock);
+
+	// Appointment
 	/**
 	 * Gets all appointments.
 	 * 
 	 * @return a list of appointment objects.
 	 * @should get all appointment
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
 	List<Appointment> getAllAppointments();
-	
+
 	/**
 	 * Get all appointments based on includeVoided flag
 	 * 
@@ -250,9 +298,9 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return List of all appointments
 	 * @should get all appointments based on include voided flag.
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
 	public List<Appointment> getAllAppointments(boolean includeVoided);
-	
+
 	/**
 	 * Gets an appointment by its appointment id.
 	 * 
@@ -260,9 +308,9 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the appointment object found with the given id, else null.
 	 * @should get correct appointment
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
 	Appointment getAppointment(Integer appointmentId);
-	
+
 	/**
 	 * Gets an appointment by its UUID.
 	 * 
@@ -270,9 +318,9 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the appointment object found with the given uuid, else null.
 	 * @should get correct appointment
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
 	Appointment getAppointmentByUuid(String uuid);
-	
+
 	/**
 	 * Creates or updates the given appointment in the database.
 	 * 
@@ -281,8 +329,9 @@ public interface AppointmentService extends OpenmrsService {
 	 * @should save new appointment
 	 * @should save edited appointment
 	 */
+    @Authorized(AppointmentUtils.PRIV_SCHEDULE_APPOINTMENTS)
 	Appointment saveAppointment(Appointment appointment) throws APIException;
-	
+
 	/**
 	 * Voids a given appointment.
 	 * 
@@ -291,8 +340,9 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the appointment that has been voided.
 	 * @should void given appointment
 	 */
+    @Authorized(AppointmentUtils.PRIV_SCHEDULE_APPOINTMENTS)
 	Appointment voidAppointment(Appointment appointment, String reason);
-	
+
 	/**
 	 * Unvoids an appointment.
 	 * 
@@ -300,16 +350,18 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the unvoid appointment
 	 * @should unvoid given appointment
 	 */
+    @Authorized(AppointmentUtils.PRIV_SCHEDULE_APPOINTMENTS)
 	Appointment unvoidAppointment(Appointment appointment);
-	
+
 	/**
 	 * Completely removes an appointment from the database. This is not reversible.
 	 * 
 	 * @param appointment the appointment to delete from the database.
 	 * @should delete given appointment
 	 */
+    @Authorized(AppointmentUtils.PRIV_SCHEDULE_APPOINTMENTS)
 	void purgeAppointment(Appointment appointment);
-	
+
 	/**
 	 * Returns all Appointments for a given Patient
 	 * 
@@ -317,29 +369,29 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return all the appointments for the given patient id.
 	 * @should return all of the appointments for the given patient.
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
 	List<Appointment> getAppointmentsOfPatient(Patient patient);
-	
+
 	/**
 	 * Returns the appointment corresponding to the given visit.
 	 * 
 	 * @param visitId the visit id to search by.
 	 * @return the appointment that is related to this visit, null if there isnt any.
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
 	Appointment getAppointmentByVisit(Visit visit);
-	
-	//TimeSlot
-	
+
+	// TimeSlot
+
 	/**
 	 * Gets all time slots.
 	 * 
 	 * @return a list of time slot objects.
 	 * @should get all time slots
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_BLOCKS)
 	List<TimeSlot> getAllTimeSlots();
-	
+
 	/**
 	 * Get all time slots based on includeVoided flag
 	 * 
@@ -347,9 +399,9 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return List of all time slots
 	 * @should get all time slots based on include voided flag.
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_BLOCKS)
 	public List<TimeSlot> getAllTimeSlots(boolean includeVoided);
-	
+
 	/**
 	 * Creates or updates the given time slot in the database.
 	 * 
@@ -358,8 +410,9 @@ public interface AppointmentService extends OpenmrsService {
 	 * @should save new time slot
 	 * @should save edited time slot
 	 */
+    @Authorized(AppointmentUtils.PRIV_MANAGE_APPOINTMENT_BLOCKS)
 	TimeSlot saveTimeSlot(TimeSlot timeSlot) throws APIException;
-	
+
 	/**
 	 * Gets a a time slot by its id.
 	 * 
@@ -367,9 +420,9 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the time slot object found with the given id, else null.
 	 * @should get correct time slot
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_BLOCKS)
 	TimeSlot getTimeSlot(Integer timeSlotId);
-	
+
 	/**
 	 * Gets a time slot by its UUID.
 	 * 
@@ -377,9 +430,9 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the time slot object found with the given uuid, else null.
 	 * @should get correct time slot
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_BLOCKS)
 	TimeSlot getTimeSlotByUuid(String uuid);
-	
+
 	/**
 	 * Voids a given time slot.
 	 * 
@@ -388,8 +441,9 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the time slot that has been voided.
 	 * @should void given time slot
 	 */
+    @Authorized(AppointmentUtils.PRIV_MANAGE_APPOINTMENT_BLOCKS)
 	TimeSlot voidTimeSlot(TimeSlot timeSlot, String reason);
-	
+
 	/**
 	 * Unvoids a time slot.
 	 * 
@@ -397,44 +451,85 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the unvoided time slot
 	 * @should unvoid given time slot
 	 */
+    @Authorized(AppointmentUtils.PRIV_MANAGE_APPOINTMENT_BLOCKS)
 	TimeSlot unvoidTimeSlot(TimeSlot timeSlot);
-	
+
 	/**
 	 * Completely removes a time slot from the database. This is not reversible.
 	 * 
 	 * @param timeSlot the time slot to delete from the database.
 	 * @should delete given time slot
 	 */
+    @Authorized(AppointmentUtils.PRIV_MANAGE_APPOINTMENT_BLOCKS)
 	void purgeTimeSlot(TimeSlot timeSlot);
-	
+
 	/**
 	 * Should retrieve all appointments in the given time slot.
 	 * 
 	 * @param timeSlot the time slot to search by.
 	 * @return the appointments in the given time slot.
+	 * @should not return voided appointments
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
 	List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot);
-	
+
+	/**
+	 * Should retrieve all appointments in the given time slot that do not have a status that means
+	 * the appointment has been cancelled (ie status=CANCELLED, CANCELLED_AND_NEEDS_RESCHEDULE)
+	 * 
+	 * @param timeSlot the time slot to search by.
+	 * @return the appointments in the given time slo
+	 * @should not return missed, cancelled, and needs_reschedule appointments.
+	 * @should not return voided appointments
+	 */
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+	List<Appointment> getAppointmentsInTimeSlotThatAreNotCancelled(
+			TimeSlot timeSlot);
+
+	/**
+	 * Gets a count of the number of appointments in a time slot
+	 * 
+	 * @param timeSlot the time slot to search by.
+	 * @return the count of appointments in the given time slot
+	 * @should not count voided appointments
+	 */
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+	Integer getCountOfAppointmentsInTimeSlot(TimeSlot timeSlot);
+
+	/**
+	 * Gets a count of all appointments in the given time slot that do not have a status that means
+	 * the appointment has been cancelled (ie status=CANCELLED, CANCELLED_AND_NEEDS_RESCHEDULE)
+	 * 
+	 * @param timeSlot the time slot to search by.
+	 * @return the count of appointments in the given time slot
+	 * @should not count missed, cancelled and needs rescheduled appointments.
+	 * @should not count voided appointments
+	 */
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+	Integer getCountOfAppointmentsInTimeSlotThatAreNotCancelled(
+			TimeSlot timeSlot);
+
 	/**
 	 * Should retrieve all time slots in the given appointment block.
 	 * 
 	 * @param appointmentBlock - the appointment block to search by.
 	 * @return the time slots in the given appointment block.
+	 * @should not return voided time slots
 	 */
-	@Transactional(readOnly = true)
-	List<TimeSlot> getTimeSlotsInAppointmentBlock(AppointmentBlock appointmentBlock);
-	
-	//Appointment Status History
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_BLOCKS)
+	List<TimeSlot> getTimeSlotsInAppointmentBlock(
+			AppointmentBlock appointmentBlock);
+
+	// Appointment Status History
 	/**
 	 * Gets all appointment status histories.
 	 * 
 	 * @return a list of appointment status history objects.
 	 * @should get all appointment status histories
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
 	List<AppointmentStatusHistory> getAllAppointmentStatusHistories();
-	
+
 	/**
 	 * Gets an appointment status by its appointment status history id.
 	 * 
@@ -442,9 +537,10 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the appointment status history object found with the given id, else null.
 	 * @should get correct appointment status history
 	 */
-	@Transactional(readOnly = true)
-	AppointmentStatusHistory getAppointmentStatusHistory(Integer appointmentStatusHistoryId);
-	
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+	AppointmentStatusHistory getAppointmentStatusHistory(
+			Integer appointmentStatusHistoryId);
+
 	/**
 	 * Gets all appointment status histories whose statuses are similar to or contain the given
 	 * status.
@@ -454,9 +550,10 @@ public interface AppointmentService extends OpenmrsService {
 	 *         given status
 	 * @should get correct appointment status histories
 	 */
-	@Transactional(readOnly = true)
-	List<AppointmentStatusHistory> getAppointmentStatusHistories(AppointmentStatus status);
-	
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+	List<AppointmentStatusHistory> getAppointmentStatusHistories(
+			AppointmentStatus status);
+
 	/**
 	 * Creates or updates the given appointment status history in the database.
 	 * 
@@ -465,18 +562,56 @@ public interface AppointmentService extends OpenmrsService {
 	 * @should save new appointment status history
 	 * @should save edited appointment status history
 	 */
-	AppointmentStatusHistory saveAppointmentStatusHistory(AppointmentStatusHistory appointmentStatusHistory)
-	        throws APIException;
-	
+    @Authorized(AppointmentUtils.PRIV_SCHEDULE_APPOINTMENTS)
+	AppointmentStatusHistory saveAppointmentStatusHistory(
+			AppointmentStatusHistory appointmentStatusHistory)
+			throws APIException;
+
 	/**
 	 * Retrieves the most recent appointment for a given patient.
 	 * 
 	 * @param patient the patient for which we are retrieving.
 	 * @return The most recent appointment for the given patient, null if no appointments were set.
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
 	Appointment getLastAppointment(Patient patient);
-	
+
+	/**
+	 * Return a list of time slots that stands within the given constraints.
+	 * 
+	 * @param appointmentType - Type of the appointment
+	 * @param fromDate - (optional) earliest start date. (defaults to current date)
+	 * @param toDate - (optional) latest start date.
+	 * @param provider - (optional) the appointment's provider.
+	 * @param location - (optional) the appointment's location. (or predecessor location)
+	 * @return List of TimeSlots that stands within the given constraints, null if illegal values
+	 *         (fromDate>toDate or null appointmentType)
+	 */
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_BLOCKS)
+	List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType,
+			Date fromDate, Date toDate, Provider provider, Location location)
+			throws APIException;
+
+    /**
+     * Return a list of time slots that stands within the given constraints.
+     *
+     * @param appointmentType - Type of the appointment
+     * @param fromDate - (optional) earliest start date. (defaults to current date)
+     * @param toDate - (optional) latest start date.
+     * @param provider - (optional) the appointment's provider.
+     * @param location - (optional) the appointment's location. (or predecessor location)
+     * @param excludeTimeSlotsWithPatient (optional) will exclude all time slots that have an existing appointment for
+     *                                    this patient for the selected service type that doesn't have a status type
+     *                                    of CANCELLED (to prevent allow duplicate patient appointments for the same service and time)
+     * @return List of TimeSlots that stands within the given constraints, null if illegal values
+     *         (fromDate>toDate or null appointmentType)
+     */
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_BLOCKS)
+    List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType,
+                                             Date fromDate, Date toDate, Provider provider, Location location,
+                                             Patient excludeTimeSlotsWithPatient)
+            throws APIException;
+
 	/**
 	 * Return a list of time slots that stands within the given constraints.
 	 * 
@@ -488,25 +623,30 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return List of TimeSlots that stands within the given constraints, null if illegal values
 	 *         (fromDate>toDate or null appointmentType)
 	 */
-	@Transactional(readOnly = true)
-	List<TimeSlot> getTimeSlotsByConstraints(AppointmentType appointmentType, Date fromDate, Date toDate, Provider provider,
-	        Location location) throws APIException;
-	
-	/**
-	 * Return a list of time slots that stands within the given constraints.
-	 * 
-	 * @param appointmentType - Type of the appointment
-	 * @param fromDate - (optional) earliest start date.
-	 * @param toDate - (optional) latest start date.
-	 * @param provider - (optional) the appointment's provider.
-	 * @param location - (optional) the appointment's location. (or predecessor location)
-	 * @return List of TimeSlots that stands within the given constraints, null if illegal values
-	 *         (fromDate>toDate or null appointmentType)
-	 */
-	@Transactional(readOnly = true)
-	List<TimeSlot> getTimeSlotsByConstraintsIncludingFull(AppointmentType appointmentType, Date fromDate, Date toDate,
-	        Provider provider, Location location) throws APIException;
-	
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_BLOCKS)
+	List<TimeSlot> getTimeSlotsByConstraintsIncludingFull(
+			AppointmentType appointmentType, Date fromDate, Date toDate,
+			Provider provider, Location location) throws APIException;
+
+    /**
+     * Return a list of time slots that stands within the given constraints.
+     *
+     * @param appointmentType - Type of the appointment
+     * @param fromDate - (optional) earliest start date.
+     * @param toDate - (optional) latest start date.
+     * @param provider - (optional) the appointment's provider.
+     * @param location - (optional) the appointment's location. (or predecessor location)
+     * @param excludeTimeSlotsWithPatient optional) will exclude all time slots that have an existing appointment for
+     *                                    this patient for the selected service type that doesn't have a status type
+     *                                    of CANCELLED (to prevent allow duplicate patient appointments for the same service and time)
+     * @return List of TimeSlots that stands within the given constraints, null if illegal values
+     *         (fromDate>toDate or null appointmentType)
+     */
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_BLOCKS)
+    List<TimeSlot> getTimeSlotsByConstraintsIncludingFull(
+            AppointmentType appointmentType, Date fromDate, Date toDate,
+            Provider provider, Location location, Patient excludeTimeSlotsWithPatient) throws APIException;
+
 	/**
 	 * Returns a list of strings, where each string represents an identifier of the given patient
 	 * and its value. The preferred identifier will be the first in the list. The format of each
@@ -516,19 +656,20 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param patient the patient.
 	 * @return a list of strings where each string represents an identifier of the patient.
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
 	List<String> getPatientIdentifiersRepresentation(Patient patient);
-	
+
 	/**
 	 * Returns the amount of minutes left in a given time slot.
 	 * 
 	 * @param timeSlot the given time slot.
 	 * @return The amount of minutes left in the given time slot. Returns null if the given time
 	 *         slot was null;
+	 * @should ignore appointments with statuses that reflect a "cancelled" appointment
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_BLOCKS)
 	Integer getTimeLeftInTimeSlot(TimeSlot timeSlot);
-	
+
 	/**
 	 * [Utility Method] Returns all the descendants of a given location recursively. Call with null
 	 * descendants.
@@ -537,9 +678,10 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param descendants the result set which is being built recursively.
 	 * @return A set that contains all of the descendants of the given location.
 	 */
-	@Transactional(readOnly = true)
-	Set<Location> getAllLocationDescendants(Location location, Set<Location> descendants);
-	
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+	Set<Location> getAllLocationDescendants(Location location,
+			Set<Location> descendants);
+
 	/**
 	 * Retrieves Appointments that satisfy the given constraints
 	 * 
@@ -551,27 +693,64 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param status - The appointment status
 	 * @return a list of appointments that satisfy the given constraints
 	 */
-	@Transactional(readOnly = true)
-	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Location location, Provider provider,
-	        AppointmentType type, AppointmentStatus status) throws APIException;
-	
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate,
+			Location location, Provider provider, AppointmentType type,
+			AppointmentStatus status) throws APIException;
+
+	/**
+	 * Retrieves Appointments that satisfy the given constraints
+	 * 
+	 * @param fromDate - The appointment start date
+	 * @param toDate - The appointment end date
+	 * @param location - The appointment location
+	 * @param provider - The appointment provider
+	 * @param type - The appointment type
+	 * @param status - The appointment status
+	 * @param patient - The patient
+	 * @return a list of appointments that satisfy the given constraints
+	 */
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate,
+			Location location, Provider provider, AppointmentType type,
+			Patient patient, AppointmentStatus status) throws APIException;
+
+	/**
+	 * Retrieves Appointments that satisfy the given constraints
+	 * 
+	 * @param fromDate - The appointment start date
+	 * @param toDate - The appointment end date
+	 * @param location - The appointment location
+	 * @param provider - The appointment provider
+	 * @param type - The appointment type
+	 * @param patient - The patient
+	 * @param appointmentStatuses - The appointment status list
+	 * @return a list of appointments that satisfy the given constraints
+	 */
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate,
+			Location location, Provider provider, AppointmentType type,
+			Patient patient, List<AppointmentStatus> appointmentStatuses);
+
 	/**
 	 * Retrives the start date of the current status of a given appointment.
 	 * 
 	 * @param appointment - The appointment.
 	 * @return the start date of the current status of a given appointment.
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
 	Date getAppointmentCurrentStatusStartDate(Appointment appointment);
-	
+
 	/**
 	 * Changes the given appointment status.
 	 * 
 	 * @param appointment - The appointment
 	 * @param newStatus - The new status
 	 */
-	void changeAppointmentStatus(Appointment appointment, AppointmentStatus newStatus);
-	
+    @Authorized(AppointmentUtils.PRIV_SCHEDULE_APPOINTMENTS)
+	void changeAppointmentStatus(Appointment appointment,
+			AppointmentStatus newStatus);
+
 	/**
 	 * Computes the average duration (in Minutes) of a status history by appointment type
 	 * 
@@ -580,9 +759,10 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param status The AppointmentStatus status to filter histories by.
 	 * @return A map of AppointmentType,Average duration pairs.
 	 */
-	@Transactional(readOnly = true)
-	Map<AppointmentType, Double> getAverageHistoryDurationByConditions(Date fromDate, Date endDate, AppointmentStatus status);
-	
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS_STATISTICS)
+	Map<AppointmentType, Double> getAverageHistoryDurationByConditions(
+			Date fromDate, Date endDate, AppointmentStatus status);
+
 	/**
 	 * Computes the average duration (in Minutes) of a status history by provider
 	 * 
@@ -591,10 +771,10 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param status The AppointmentStatus status to filter histories by.
 	 * @return A map of Provider,Average duration pairs.
 	 */
-	@Transactional(readOnly = true)
-	public Map<Provider, Double> getAverageHistoryDurationByConditionsPerProvider(Date fromDate, Date endDate,
-	        AppointmentStatus status);
-	
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS_STATISTICS)
+	public Map<Provider, Double> getAverageHistoryDurationByConditionsPerProvider(
+			Date fromDate, Date endDate, AppointmentStatus status);
+
 	/**
 	 * Retrieves the amount of status history objects in the given criteria
 	 * 
@@ -603,9 +783,10 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param status The AppointmentStatus status to filter histories by.
 	 * @return The amount of status history objects in the given criteria
 	 */
-	@Transactional(readOnly = true)
-	Integer getHistoryCountByConditions(Date fromDate, Date endDate, AppointmentStatus status);
-	
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS_STATISTICS)
+	Integer getHistoryCountByConditions(Date fromDate, Date endDate,
+			AppointmentStatus status);
+
 	/**
 	 * Retrieves the distribution of appointment types in the given appointments dates range.
 	 * 
@@ -614,38 +795,39 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return Map of <AppointmentType,Integer> that reflects the appointment types distribution in
 	 *         the given range.
 	 */
-	@Transactional(readOnly = true)
-	public Map<AppointmentType, Integer> getAppointmentTypeDistribution(Date fromDate, Date toDate);
-	
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS_STATISTICS)
+	public Map<AppointmentType, Integer> getAppointmentTypeDistribution(
+			Date fromDate, Date toDate);
+
 	// Utility Methods
-	
+
 	/**
 	 * [Utility Method] Retrieves all providers sorted ascending alphabetically
 	 * 
 	 * @param includeRetired whether to include retired providers
 	 * @return sorted list of providers
-	 */
-	@Transactional(readOnly = true)
+    */
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
 	List<Provider> getAllProvidersSorted(boolean includeRetired);
-	
+
 	/**
 	 * [Utility Method] Retrieves all appointment types sorted ascending alphabetically
 	 * 
 	 * @param includeRetired whether to include retired appointment types
 	 * @return sorted list of appointment types
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_TYPES)
 	List<AppointmentType> getAllAppointmentTypesSorted(boolean includeRetired);
-	
+
 	/**
 	 * Retrieves list of unvoided appointments that their current status is one of the given states.
 	 * 
 	 * @param states List of states to retrieve by.
 	 * @return list of unvoided appointments that their current status is one of the given states.
 	 */
-	@Transactional(readOnly = true)
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
 	List<Appointment> getAppointmentsByStatus(List<AppointmentStatus> states);
-	
+
 	/**
 	 * Update the status of PAST appointments according to the following conditions: "SCHEDULED"
 	 * will be updated to "MISSED" "WAITING" or "WALKIN" will be updated to "MISSED"
@@ -653,6 +835,60 @@ public interface AppointmentService extends OpenmrsService {
 	 * 
 	 * @return List of the updated appointments
 	 */
-	@Transactional(readOnly = false)
+    @Authorized(AppointmentUtils.PRIV_SCHEDULE_APPOINTMENTS)
 	List<Appointment> cleanOpenAppointments();
+
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+	boolean verifyDuplicatedAppointmentTypeName(AppointmentType appointmentType);
+
+	/**
+	 * Retrieves the list of scheduled (appts in states SCHEDULED or RESCHEDULED for a patient)
+	 * 
+	 * @param patient
+	 * @return
+	 */
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+	List<Appointment> getScheduledAppointmentsForPatient(Patient patient);
+
+	/**
+	 * Gets all scheduled appointment blocks for a certain day at a certain location. Ignores any
+	 * appointments that are voided or in one of the "cancelled" state
+	 * 
+	 * @param location
+	 * @param date
+	 * @param appointmentType
+	 * @return
+	 */
+
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+	List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(
+			Location location, Date date, AppointmentType appointmentType);
+
+	/**
+	 * Gets all scheduled appointment blocks for a certain day at a certain location. Ignores any
+	 * appointments that are voided or in one of the "cancelled" state
+	 * 
+	 * @param location
+	 * @param date
+	 * @param appointmentTypes
+	 * @return
+	 */
+
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+	List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(
+			Location location, Date date, List<AppointmentType> appointmentTypes);
+
+	/**
+	 * Books a new appointment
+	 * 
+	 * @param appointment
+	 * @param allowOverbook
+	 * @return The newly-created appointment
+	 * @should throw exception if this appointment has already been persisted
+	 * @should throw exception if not enough available time in time slot and
+	 *         allowOverbook = false
+*/
+    @Authorized(AppointmentUtils.PRIV_SCHEDULE_APPOINTMENTS)
+	Appointment bookAppointment(Appointment appointment, Boolean allowOverbook)
+			throws TimeSlotFullException;
 }
