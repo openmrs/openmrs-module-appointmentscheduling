@@ -13,14 +13,6 @@
  */
 package org.openmrs.module.appointmentscheduling.api;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,6 +31,14 @@ import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -299,7 +299,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		Date toDate = format.parse("2006-01-01 01:00:00.3");
 		appointments = service.getAppointmentsByConstraints(null, toDate, null,
 				null, null, null);
-		assertEquals(4, appointments.size());
+		assertEquals(3, appointments.size());
 
 		fromDate = format.parse("2007-01-01 00:00:00.0");
 		toDate = format.parse("2007-01-01 01:00:00.1");

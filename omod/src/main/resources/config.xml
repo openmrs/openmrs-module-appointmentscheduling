@@ -19,6 +19,7 @@
 
     <require_modules>
         <require_module version="${webservicesRestVersion}">org.openmrs.module.webservices.rest</require_module>
+        <require_module version="${reportingModuleVersion}">org.openmrs.module.reporting</require_module>
     </require_modules>
 
 	<!-- / Module Properties -->
