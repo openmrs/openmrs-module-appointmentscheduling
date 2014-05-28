@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class AppointmentDataUtil {
 
-    public static Set<Integer> getAppointmentIdsForContext(EvaluationContext context, boolean returnNullForAllVisitIds) {
+    public static Set<Integer> getAppointmentIdsForContext(EvaluationContext context, boolean returnNullForAllAppointmentIds) {
 
         Cohort patIds = context.getBaseCohort();
         AppointmentIdSet appointmentIds = (context instanceof AppointmentEvaluationContext ? ((AppointmentEvaluationContext) context).getBaseAppointments() : null);
@@ -42,7 +42,7 @@ public class AppointmentDataUtil {
         }
 
         // Otherwise, all visit are needed, so return appropriate value
-        if (returnNullForAllVisitIds) {
+        if (returnNullForAllAppointmentIds) {
             return null;
         }
         return getAppointmentIdsForPatients(null);

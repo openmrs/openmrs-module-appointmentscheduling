@@ -63,7 +63,7 @@ public class AppointmentDataSetEvaluator implements DataSetEvaluator {
             r = Context.getService(AppointmentQueryService.class).evaluate(new BasicAppointmentQuery(), context);
         }
         AppointmentEvaluationContext aec = new AppointmentEvaluationContext(context, r);
-        aec.setBaseCohort(null); // We can do this because the visitIdSet is already limited by these
+        aec.setBaseCohort(null); // We can do this because the appointmentIdSet is already limited by these
 
         // Evaluate each specified ColumnDefinition for all of the included rows and add these to the dataset
         for (RowPerObjectColumnDefinition cd : dsd.getColumnDefinitions()) {

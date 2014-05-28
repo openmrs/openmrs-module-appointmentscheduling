@@ -23,10 +23,6 @@ public abstract class AppointmentPropertyDataEvaluator implements AppointmentDat
 
     public abstract String getPropertyName();
 
-    /**
-     * @see org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator#evaluate(org.openmrs.module.reporting.data.person.definition.PersonDataDefinition, org.openmrs.module.reporting.evaluation.EvaluationContext)
-     * @should return all person property values given the passed context
-     */
     @Override
     public EvaluatedAppointmentData evaluate(AppointmentDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedAppointmentData appointmentData = new EvaluatedAppointmentData(definition, context);

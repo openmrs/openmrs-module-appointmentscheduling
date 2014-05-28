@@ -2,12 +2,14 @@ package org.openmrs.module.appointmentscheduling.reporting.dataset.definition;
 
 import org.openmrs.module.appointmentscheduling.reporting.data.definition.AppointmentDataDefinition;
 import org.openmrs.module.appointmentscheduling.reporting.data.definition.PatientToAppointmentDataDefinition;
+import org.openmrs.module.appointmentscheduling.reporting.data.definition.PersonToAppointmentDataDefinition;
 import org.openmrs.module.appointmentscheduling.reporting.query.definition.AppointmentQuery;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.dataset.column.definition.RowPerObjectColumnDefinition;
 import org.openmrs.module.reporting.dataset.definition.RowPerObjectDataSetDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
@@ -56,8 +58,8 @@ public class AppointmentDataSetDefinition extends RowPerObjectDataSetDefinition 
     public List<Class<? extends DataDefinition>> getSupportedDataDefinitionTypes() {
         List<Class<? extends DataDefinition>> l = new ArrayList<Class<? extends DataDefinition>>();
         l.add(AppointmentDataDefinition.class);
-       // l.add(PatientDataDefinition.class);
-        //l.add(PersonDataDefinition.class);
+        l.add(PatientDataDefinition.class);
+        l.add(PersonDataDefinition.class);
         return l;
     }
 
@@ -72,9 +74,9 @@ public class AppointmentDataSetDefinition extends RowPerObjectDataSetDefinition 
         } else if (dataDefinition instanceof PatientDataDefinition) {
             AppointmentDataDefinition edd = new PatientToAppointmentDataDefinition((PatientDataDefinition) dataDefinition);
             getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, edd, mappings, converters));
-//        } else if (dataDefinition instanceof PersonDataDefinition) {
-//            EncounterDataDefinition edd = new PersonToEncounterDataDefinition((PersonDataDefinition) dataDefinition);
-//            getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, edd, mappings, converters));
+        } else if (dataDefinition instanceof PersonDataDefinition) {
+            AppointmentDataDefinition edd = new PersonToAppointmentDataDefinition((PersonDataDefinition) dataDefinition);
+            getColumnDefinitions().add(new RowPerObjectColumnDefinition(name, edd, mappings, converters));
         } else {
             throw new IllegalArgumentException("Unable to add data definition of type " + dataDefinition.getClass().getSimpleName());
         }
