@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
+import org.openmrs.api.LocationService;
 import org.openmrs.module.appointmentscheduling.reporting.context.AppointmentEvaluationContext;
 import org.openmrs.module.appointmentscheduling.reporting.query.AppointmentIdSet;
 import org.openmrs.module.appointmentscheduling.reporting.query.AppointmentQueryResult;
@@ -23,6 +24,9 @@ public class BasicAppointmentQueryEvaluatorTest extends BaseModuleContextSensiti
 
     @Autowired
     private AppointmentQueryService appointmentQueryService;
+
+    @Autowired
+    private LocationService locationService;
 
     @Before
     public void setup() throws Exception {
@@ -91,5 +95,20 @@ public class BasicAppointmentQueryEvaluatorTest extends BaseModuleContextSensiti
         assertTrue(result.getMemberIds().contains(1));
     }
 
+
+    @Test
+    public void shouldRestrictAppointmentReturnedByLocation() throws Exception {
+
+        BasicAppointmentQuery query = new BasicAppointmentQuery();
+        query.setLocation(locationService.getLocation(2));
+
+        AppointmentQueryResult result = appointmentQueryService.evaluate(query, null);
+        assertThat(result.getMemberIds().size(), is(4));
+        assertTrue(result.getMemberIds().contains(7));
+        assertTrue(result.getMemberIds().contains(8));
+        assertTrue(result.getMemberIds().contains(9));
+        assertTrue(result.getMemberIds().contains(11));
+
+    }
 
 }

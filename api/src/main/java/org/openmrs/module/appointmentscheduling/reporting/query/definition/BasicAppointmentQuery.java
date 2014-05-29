@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.appointmentscheduling.reporting.query.definition;
 
+import org.openmrs.Location;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
@@ -29,11 +30,14 @@ public class BasicAppointmentQuery extends BaseQuery<Appointment> implements App
 
     public static final long serialVersionUID = 1L;
 
-    @ConfigurationProperty
-    public Date onOrAfter;
+    @ConfigurationProperty(required = false)
+    private Date onOrAfter;
 
-    @ConfigurationProperty
-    public Date onOrBefore;
+    @ConfigurationProperty(required = false)
+    private Date onOrBefore;
+
+    @ConfigurationProperty(required = false)
+    private Location location;
 
     public Date getOnOrAfter() {
         return onOrAfter;
@@ -51,4 +55,11 @@ public class BasicAppointmentQuery extends BaseQuery<Appointment> implements App
         this.onOrBefore = onOrBefore;
     }
 
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 }

@@ -29,9 +29,10 @@ public class BasicAppointmentQueryEvaluator implements AppointmentQueryEvaluator
 
         // query builder excludes voided by default
         query.select("appointment.appointmentId").from(Appointment.class, "appointment")
-                .innerJoin("appointment.timeSlot", "timeSlot")
-                .whereLessOrEqualTo("timeSlot.startDate", q.getOnOrBefore())
-                .whereGreaterOrEqualTo("timeSlot.endDate", q.getOnOrAfter());
+                .whereLessOrEqualTo("appointment.timeSlot.startDate", q.getOnOrBefore())
+                .whereGreaterOrEqualTo("appointment.timeSlot.endDate", q.getOnOrAfter())
+                .whereEqual("appointment.timeSlot.appointmentBlock.location", q.getLocation());
+
 
         if (evaluationContext != null) {
             Set<Integer> appointmentIds = AppointmentDataUtil.getAppointmentIdsForContext(evaluationContext, true);
