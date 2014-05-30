@@ -13,20 +13,6 @@
  */
 package org.openmrs.module.appointmentscheduling.api.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
@@ -44,7 +30,6 @@ import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
-import org.openmrs.module.appointmentscheduling.ScheduledAppointmentBlock;
 import org.openmrs.module.appointmentscheduling.StudentT;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
@@ -56,6 +41,20 @@ import org.openmrs.module.appointmentscheduling.api.db.TimeSlotDAO;
 import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
 import org.openmrs.validator.ValidateUtil;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * It is a default implementation of {@link AppointmentService}.
@@ -1043,47 +1042,6 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 
 		return distribution;
 
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(
-			Location location, Date date, AppointmentType appointmentType) {
-
-		return getDailyAppointmentBlocks(
-				location,
-				date,
-				appointmentType != null ? Collections
-						.singletonList(appointmentType) : null);
-	}
-
-	@Override
-	public List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(
-			Location location, Date date, List<AppointmentType> appointmentTypes) {
-
-		List<ScheduledAppointmentBlock> scheduledAppointmentBlockList = new ArrayList<ScheduledAppointmentBlock>();
-
-		for (AppointmentBlock appointmentBlock : getAppointmentBlockList(
-				location, date, appointmentTypes)) {
-
-			ScheduledAppointmentBlock scheduledAppointmentBlock = createScheduledAppointmentBlock(
-					appointmentBlock, appointmentTypes);
-
-			if (!scheduledAppointmentBlock.getAppointments().isEmpty()) {
-				scheduledAppointmentBlockList.add(scheduledAppointmentBlock);
-			}
-		}
-
-		return scheduledAppointmentBlockList;
-	}
-
-	private ScheduledAppointmentBlock createScheduledAppointmentBlock(
-			AppointmentBlock appointmentBlock,
-			List<AppointmentType> appointmentTypes) {
-		List<Appointment> appointmentList = getAppointmentDAO()
-				.getAppointmentsByAppointmentBlockAndAppointmentTypes(
-						appointmentBlock, appointmentTypes);
-		return new ScheduledAppointmentBlock(appointmentList, appointmentBlock);
 	}
 
 	@Override

@@ -31,10 +31,8 @@ import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.AppointmentUtils;
-import org.openmrs.module.appointmentscheduling.ScheduledAppointmentBlock;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * This service exposes module's core functionality. It is a Spring managed bean
@@ -849,34 +847,6 @@ public interface AppointmentService extends OpenmrsService {
 	 */
     @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
 	List<Appointment> getScheduledAppointmentsForPatient(Patient patient);
-
-	/**
-	 * Gets all scheduled appointment blocks for a certain day at a certain location. Ignores any
-	 * appointments that are voided or in one of the "cancelled" state
-	 * 
-	 * @param location
-	 * @param date
-	 * @param appointmentType
-	 * @return
-	 */
-
-    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
-	List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(
-			Location location, Date date, AppointmentType appointmentType);
-
-	/**
-	 * Gets all scheduled appointment blocks for a certain day at a certain location. Ignores any
-	 * appointments that are voided or in one of the "cancelled" state
-	 * 
-	 * @param location
-	 * @param date
-	 * @param appointmentTypes
-	 * @return
-	 */
-
-    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
-	List<ScheduledAppointmentBlock> getDailyAppointmentBlocks(
-			Location location, Date date, List<AppointmentType> appointmentTypes);
 
 	/**
 	 * Books a new appointment
