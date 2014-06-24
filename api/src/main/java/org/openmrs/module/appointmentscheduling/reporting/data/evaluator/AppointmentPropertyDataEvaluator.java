@@ -35,7 +35,7 @@ public abstract class AppointmentPropertyDataEvaluator implements AppointmentDat
             q.whereIn("a.appointmentId", appointmentIds);
         }
 
-        Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class);
+        Map<Integer, Object> data = evaluationService.evaluateToMap(q, Integer.class, Object.class, context);
         appointmentData.setData(data);
         return appointmentData;
     }

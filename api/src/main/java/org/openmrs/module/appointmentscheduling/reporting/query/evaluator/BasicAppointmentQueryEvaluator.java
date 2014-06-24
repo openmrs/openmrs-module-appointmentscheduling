@@ -40,7 +40,7 @@ public class BasicAppointmentQueryEvaluator implements AppointmentQueryEvaluator
         }
 
         AppointmentQueryResult result = new AppointmentQueryResult(appointmentQuery, evaluationContext);
-        List<Integer> results = evaluationService.evaluateToList(query, Integer.class);
+        List<Integer> results = evaluationService.evaluateToList(query, Integer.class, evaluationContext);
         result.add(results.toArray(new Integer[results.size()]));
         return result;
 

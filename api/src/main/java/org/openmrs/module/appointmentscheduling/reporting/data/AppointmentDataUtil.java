@@ -55,7 +55,7 @@ public class AppointmentDataUtil {
         }
         HqlQueryBuilder qb = new HqlQueryBuilder();
         qb.select("a.appointmentId").from(Appointment.class, "a").wherePatientIn("a.patient.patientId", context);
-        List<Integer> ids = Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class);
+        List<Integer> ids = Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class, context);
         return new HashSet<Integer>(ids);
     }
 }

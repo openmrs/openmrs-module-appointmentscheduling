@@ -40,7 +40,7 @@ public class PatientToAppointmentDataEvaluator implements AppointmentDataEvaluat
             q.whereIn("a.appointmentId", appointmentIds);
         }
 
-        Map<Integer, Integer> convertedIds = evaluationService.evaluateToMap(q, Integer.class, Integer.class);
+        Map<Integer, Integer> convertedIds = evaluationService.evaluateToMap(q, Integer.class, Integer.class, context);
 
         if (!convertedIds.keySet().isEmpty()) {
             // create a new patient evaluation context using the retrieved ids
