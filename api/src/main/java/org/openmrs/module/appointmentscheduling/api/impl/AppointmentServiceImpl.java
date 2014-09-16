@@ -28,6 +28,7 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
+import org.openmrs.module.appointmentscheduling.AppointmentRequest;
 import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.StudentT;
@@ -35,6 +36,7 @@ import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentBlockDAO;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentDAO;
+import org.openmrs.module.appointmentscheduling.api.db.AppointmentRequestDAO;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentStatusHistoryDAO;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentTypeDAO;
 import org.openmrs.module.appointmentscheduling.api.db.TimeSlotDAO;
@@ -73,6 +75,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	private TimeSlotDAO timeSlotDAO;
 
 	private AppointmentStatusHistoryDAO appointmentStatusHistoryDAO;
+
+    private AppointmentRequestDAO appointmentRequestDAO;
 
 	/**
 	 * Getters and Setters
@@ -119,7 +123,15 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		return appointmentStatusHistoryDAO;
 	}
 
-	/**
+    public AppointmentRequestDAO getAppointmentRequestDAO() {
+        return appointmentRequestDAO;
+    }
+
+    public void setAppointmentRequestDAO(AppointmentRequestDAO appointmentRequestDAO) {
+        this.appointmentRequestDAO = appointmentRequestDAO;
+    }
+
+    /**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#getAllAppointmentTypes()
 	 */
 	@Override
@@ -539,7 +551,56 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 				.saveOrUpdate(appointmentStatusHistory);
 	}
 
-	@Override
+    @Override
+    @Transactional(readOnly = true)
+    public List<AppointmentRequest> getAllAppointmentRequests() {
+        return appointmentRequestDAO.getAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<AppointmentRequest> getAllAppointmentRequests(boolean includeVoided) {
+        return appointmentRequestDAO.getAllData(includeVoided);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public AppointmentRequest getAppointmentRequest(Integer appointmentRequestId) {
+        return appointmentRequestDAO.getById(appointmentRequestId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public AppointmentRequest getAppointmentRequestByUuid(String uuid) {
+        return appointmentRequestDAO.getByUuid(uuid);
+    }
+
+    @Override
+    @Transactional
+    public AppointmentRequest saveAppointmentRequest(AppointmentRequest appointmentRequest) throws APIException {
+        ValidateUtil.validate(appointmentRequest);
+        return appointmentRequestDAO.saveOrUpdate(appointmentRequest);
+    }
+
+    @Override
+    @Transactional
+    public AppointmentRequest voidAppointmentRequest(AppointmentRequest appointmentRequest, String reason) {
+        return appointmentRequestDAO.saveOrUpdate(appointmentRequest);
+    }
+
+    @Override
+    @Transactional
+    public AppointmentRequest unvoidAppointmentRequest(AppointmentRequest appointmentRequest) {
+        return appointmentRequestDAO.saveOrUpdate(appointmentRequest);
+    }
+
+    @Override
+    @Transactional
+    public void purgeAppointmentRequest(AppointmentRequest appointmentRequest) {
+        appointmentRequestDAO.delete(appointmentRequest);
+    }
+
+    @Override
 	@Transactional(readOnly = true)
 	public Appointment getLastAppointment(Patient patient) {
 		return getAppointmentDAO().getLastAppointment(patient);

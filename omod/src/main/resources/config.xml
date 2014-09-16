@@ -151,6 +151,7 @@
 		AppointmentBlock.hbm.xml
 		TimeSlot.hbm.xml
 		AppointmentStatusHistory.hbm.xml
+        AppointmentRequest.hbm.xml
 	</mappingFiles>
 
 	<!-- Internationalization -->
@@ -209,6 +210,10 @@
     <privilege>
         <name>View Appointments Blocks</name>
         <description>Ability to view the appointment blocks</description>
+    </privilege>
+    <privilege>
+        <name>Request Appointments</name>
+        <description>Ability to request new appointments</description>
     </privilege>
 	<!-- /Privileges -->
 

@@ -28,6 +28,7 @@ import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
+import org.openmrs.module.appointmentscheduling.AppointmentRequest;
 import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.AppointmentUtils;
@@ -564,6 +565,86 @@ public interface AppointmentService extends OpenmrsService {
 	AppointmentStatusHistory saveAppointmentStatusHistory(
 			AppointmentStatusHistory appointmentStatusHistory)
 			throws APIException;
+
+    /**
+     * Gets all appointments requests
+     *
+     * @return a list of appointment requests objects.
+     * @should get all appointment requests
+     */
+    @Authorized(AppointmentUtils.PRIV_REQUEST_APPOINTMENTS)
+    List<AppointmentRequest> getAllAppointmentRequests();
+
+    /**
+     * Get all appointments requests based on includeVoided flag
+     *
+     * @param includeVoided
+     * @return List of all appointment requests
+     * @should get all appointment request based on include voided flag.
+     */
+    @Authorized(AppointmentUtils.PRIV_REQUEST_APPOINTMENTS)
+    public List<AppointmentRequest> getAllAppointmentRequests(boolean includeVoided);
+
+    /**
+     * Gets an appointment requests by its id.
+     *
+     * @param appointmentRequestId the appointment request id.
+     * @return the appointment request object found with the given id, else null.
+     * @should get correct appointment request
+     */
+    @Authorized(AppointmentUtils.PRIV_REQUEST_APPOINTMENTS)
+    AppointmentRequest getAppointmentRequest(Integer appointmentRequestId);
+
+    /**
+     * Gets an appointment request by its UUID.
+     *
+     * @param uuid the appointment request UUID.
+     * @return the appointment request object found with the given uuid, else null.
+     * @should get correct appointment request
+     */
+    @Authorized(AppointmentUtils.PRIV_REQUEST_APPOINTMENTS)
+    AppointmentRequest getAppointmentRequestByUuid(String uuid);
+
+    /**
+     * Creates or updates the given appointment requests in the database.
+     *
+     * @param appointmentRequest the appointment request to create or update.
+     * @return the created or updated appointment request.
+     * @should save new appointment request
+     * @should save edited appointment request
+     */
+    @Authorized(AppointmentUtils.PRIV_REQUEST_APPOINTMENTS)
+    AppointmentRequest saveAppointmentRequest(AppointmentRequest appointmentRequest) throws APIException;
+
+    /**
+     * Voids a given appointment request
+     *
+     * @param appointmentRequest the appointment request to void.
+     * @param reason the reason why the appointment request is voided.
+     * @return the appointment request that has been voided.
+     * @should void given appointment request
+     */
+    @Authorized(AppointmentUtils.PRIV_REQUEST_APPOINTMENTS)
+    AppointmentRequest voidAppointmentRequest(AppointmentRequest appointmentRequest, String reason);
+
+    /**
+     * Unvoids an appointment request
+     *
+     * @param appointmentRequest the appointment request to unvoid.
+     * @return the unvoid appointment request
+     * @should unvoid given appointment request
+     */
+    @Authorized(AppointmentUtils.PRIV_REQUEST_APPOINTMENTS)
+    AppointmentRequest unvoidAppointmentRequest(AppointmentRequest appointmentRequest);
+
+    /**
+     * Completely removes an appointment request from the database. This is not reversible.
+     *
+     * @param appointmentRequest the appointment request to delete from the database.
+     * @should delete given appointment request
+     */
+    @Authorized(AppointmentUtils.PRIV_REQUEST_APPOINTMENTS)
+    void purgeAppointmentRequest(AppointmentRequest appointmentRequest);
 
 	/**
 	 * Retrieves the most recent appointment for a given patient.

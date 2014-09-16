@@ -23,6 +23,8 @@ public class AppointmentUtils {
 	public static final String PRIV_MANAGE_APPOINTMENTS_SETTINGS = "Manage Appointments Settings";
 	
 	public static final String PRIV_VIEW_APPOINTMENTS_STATISTICS = "View Appointments Statistics";
+
+    public static final String PRIV_REQUEST_APPOINTMENTS = "Request Appointments";
 	
 	//Global Properties
 	

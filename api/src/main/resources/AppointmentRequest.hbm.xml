@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="org.openmrs.module.appointmentscheduling">
+
+    <class name="AppointmentRequest" table="appointmentscheduling_appointment_request">
+        <id name="appointmentRequestId" type="int" column="appointment_request_id" unsaved-value="0">
+            <generator class="native" />
+        </id>
+
+        <discriminator column="appointment_request_id" insert="false" />
+
+        <many-to-one name="appointmentType" column="appointment_type_id" class="org.openmrs.module.appointmentscheduling.AppointmentType" not-null="true" />
+        <many-to-one name="patient" column="patient_id" class="org.openmrs.Patient" not-null="true" />
+        <many-to-one name="provider" column="provider_id" class="org.openmrs.Provider" />
+
+        <many-to-one name="requestedBy" column="requested_by" class="org.openmrs.Provider" />
+        <property name="requestedOn" type="java.util.Date" column="requested_on" length="19" not-null="true" />
+
+        <property name="status" column="status" length="255" not-null="true">
+            <type name="org.openmrs.util.HibernateEnumType">
+                <param name="enumClassName">org.openmrs.module.appointmentscheduling.AppointmentRequest$AppointmentRequestStatus</param>
+            </type>
+        </property>
+
+        <property name="notes" type="java.lang.String" column="notes" length="1024" />
+
+        <property name="uuid" type="java.lang.String" column="uuid" length="38" unique="true" />
+        <property name="dateCreated" type="java.util.Date" column="date_created" not-null="true" length="19" />
+        <property name="dateChanged" type="java.util.Date" column="date_changed" length="19"/>
+        <property name="dateVoided" type="java.util.Date" column="date_voided" length="19" />
+
+        <property name="voided" type="boolean" length="1" not-null="true" />
+        <property name="voidReason" type="java.lang.String" column="void_reason" length="255" />
+
+        <many-to-one name="creator" class="org.openmrs.User" not-null="true" />
+        <many-to-one name="changedBy" class="org.openmrs.User" column="changed_by"/>
+        <many-to-one name="voidedBy" class="org.openmrs.User" column="voided_by" />
+    </class>
+
+</hibernate-mapping>
