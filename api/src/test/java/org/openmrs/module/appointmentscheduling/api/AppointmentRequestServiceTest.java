@@ -2,6 +2,7 @@ package org.openmrs.module.appointmentscheduling.api;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.api.APIException;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProviderService;
@@ -126,6 +127,18 @@ public class AppointmentRequestServiceTest extends BaseModuleContextSensitiveTes
         assertEquals(TOTAL_APPOINTMENT_REQUESTS + 1, service.getAllAppointmentRequests().size());
     }
 
+    @Test(expected = APIException.class)
+    @Verifies(value = "should fail with validation exception", method = "saveAppointmentRequest(AppointmentRequest)")
+    public void saveAppointmentRequest_shouldFailWithValidationException() throws Exception {
+
+        List<AppointmentRequest> appointmentRequests = service.getAllAppointmentRequests(true);
+        assertEquals(TOTAL_APPOINTMENT_REQUESTS, appointmentRequests.size());
+
+        AppointmentRequest appointmentRequest = new AppointmentRequest();
+        appointmentRequest.setPatient(patientService.getPatient(2));
+        service.saveAppointmentRequest(appointmentRequest);
+
+    }
 
     @Test
     @Verifies(value = "should save edited appointment request", method = "saveAppointmentRequest(AppointmentRequest)")
