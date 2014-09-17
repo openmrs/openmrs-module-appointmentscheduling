@@ -1,10 +1,5 @@
 package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
@@ -29,6 +24,11 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.validation.ValidationException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus.getAppointmentsStatusByType;
@@ -149,7 +149,7 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 	@Override
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
 		AppointmentService service = Context.getService(AppointmentService.class);
-		return new NeedsPaging<Appointment>(service.getAllAppointments(), context);
+		return new NeedsPaging<Appointment>(service.getAllAppointments(context.getIncludeAll()), context);
 	}
 	
 	/**

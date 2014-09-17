@@ -8,9 +8,9 @@ import java.util.Date;
 
 public class AppointmentRequest extends BaseOpenmrsData {
 
-    public enum TimeFrameUnits { DAYS, MONTHS, YEARS }
+    public enum TimeFrameUnits { DAYS, WEEKS, MONTHS, YEARS };
 
-    public enum AppointmentRequestStatus { PENDING, FULFILLED, CANCELLED }
+    public enum AppointmentRequestStatus { PENDING, FULFILLED, CANCELLED };
 
     private Integer appointmentRequestId;
 
@@ -28,8 +28,15 @@ public class AppointmentRequest extends BaseOpenmrsData {
 
     private Date requestedOn;
 
-    // TODO
-    // TODO link to the existing appointment somehow?
+    private Integer minTimeFrameValue;
+
+    private TimeFrameUnits minTimeFrameUnits;
+
+    private Integer maxTimeFrameValue;
+
+    private TimeFrameUnits maxTimeFrameUnits;
+
+    // TODO Do we want tio link to the created appointment somehow?
 
     @Override
     public Integer getId() {
@@ -103,5 +110,37 @@ public class AppointmentRequest extends BaseOpenmrsData {
 
     public void setRequestedOn(Date requestedOn) {
         this.requestedOn = requestedOn;
+    }
+
+    public Integer getMinTimeFrameValue() {
+        return minTimeFrameValue;
+    }
+
+    public void setMinTimeFrameValue(Integer minTimeFrameValue) {
+        this.minTimeFrameValue = minTimeFrameValue;
+    }
+
+    public TimeFrameUnits getMinTimeFrameUnits() {
+        return minTimeFrameUnits;
+    }
+
+    public void setMinTimeFrameUnits(TimeFrameUnits minTimeFrameUnits) {
+        this.minTimeFrameUnits = minTimeFrameUnits;
+    }
+
+    public Integer getMaxTimeFrameValue() {
+        return maxTimeFrameValue;
+    }
+
+    public void setMaxTimeFrameValue(Integer maxTimeFrameValue) {
+        this.maxTimeFrameValue = maxTimeFrameValue;
+    }
+
+    public TimeFrameUnits getMaxTimeFrameUnits() {
+        return maxTimeFrameUnits;
+    }
+
+    public void setMaxTimeFrameUnits(TimeFrameUnits maxTimeFrameUnits) {
+        this.maxTimeFrameUnits = maxTimeFrameUnits;
     }
 }

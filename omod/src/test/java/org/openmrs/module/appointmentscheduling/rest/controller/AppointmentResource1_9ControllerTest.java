@@ -1,8 +1,5 @@
 package org.openmrs.module.appointmentscheduling.rest.controller;
 
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,6 +13,9 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.List;
+import java.util.Map;
 
 import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus.COMPLETED;
 
@@ -83,7 +83,7 @@ public class AppointmentResource1_9ControllerTest
 						PropertyUtils.getProperty(appt, "appointmentType"),
 						"uuid"));
 		Assert.assertEquals(getAllCount() + 1, appointmentService
-				.getAllAppointments().size());
+				.getAllAppointments(false).size());
 
 	}
 
@@ -115,7 +115,7 @@ public class AppointmentResource1_9ControllerTest
 						PropertyUtils.getProperty(appt, "appointmentType"),
 						"uuid"));
 		Assert.assertEquals(getAllCount() + 1, appointmentService
-				.getAllAppointments().size());
+				.getAllAppointments(false).size());
 
 	}
 
@@ -174,7 +174,7 @@ public class AppointmentResource1_9ControllerTest
 
 		Assert.assertNull(appointmentService.getTimeSlotByUuid(getUuid()));
 		Assert.assertEquals(getAllCount() - 1, appointmentService
-				.getAllAppointments().size());
+				.getAllAppointments(false).size());
 
 	}
 
@@ -308,6 +308,6 @@ public class AppointmentResource1_9ControllerTest
 
 	@Override
 	public long getAllCount() {
-		return 7;
+		return 6;
 	}
 }

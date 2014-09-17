@@ -39,7 +39,7 @@ public class AppointmentAllowingOverbookResource1_9ControllerTest extends MainRe
 		Assert.assertEquals("SCHEDULED", PropertyUtils.getProperty(appt, "status.code"));
 		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183519",
 		    PropertyUtils.getProperty(PropertyUtils.getProperty(appt, "appointmentType"), "uuid"));
-		Assert.assertEquals(getAllCount() + 1, appointmentService.getAllAppointments().size());
+		Assert.assertEquals(getAllCount() + 1, appointmentService.getAllAppointments(false).size());
 		
 	}
 	
@@ -55,6 +55,6 @@ public class AppointmentAllowingOverbookResource1_9ControllerTest extends MainRe
 	
 	@Override
 	public long getAllCount() {
-		return 7;
+		return 6;
 	}
 }

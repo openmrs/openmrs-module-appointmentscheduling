@@ -10,5 +10,6 @@
        <mapping resource="Appointment.hbm.xml"/>
        <mapping resource="TimeSlot.hbm.xml"/>
        <mapping resource="AppointmentStatusHistory.hbm.xml"/>
+       <mapping resource="AppointmentRequest.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>

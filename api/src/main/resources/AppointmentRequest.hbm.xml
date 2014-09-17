@@ -25,6 +25,20 @@
             </type>
         </property>
 
+        <property name="minTimeFrameValue" type="int" column="min_time_frame_value" length="11"/>
+        <property name="minTimeFrameUnits" column="min_time_frame_units" length="255">
+            <type name="org.openmrs.util.HibernateEnumType">
+                <param name="enumClassName">org.openmrs.module.appointmentscheduling.AppointmentRequest$TimeFrameUnits</param>
+            </type>
+        </property>
+
+        <property name="maxTimeFrameValue" type="int" column="max_time_frame_value" length="11"/>
+        <property name="maxTimeFrameUnits" column="max_time_frame_units" length="255">
+            <type name="org.openmrs.util.HibernateEnumType">
+                <param name="enumClassName">org.openmrs.module.appointmentscheduling.AppointmentRequest$TimeFrameUnits</param>
+            </type>
+        </property>
+
         <property name="notes" type="java.lang.String" column="notes" length="1024" />
 
         <property name="uuid" type="java.lang.String" column="uuid" length="38" unique="true" />
