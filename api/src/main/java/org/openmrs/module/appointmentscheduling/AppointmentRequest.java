@@ -8,8 +8,6 @@ import java.util.Date;
 
 public class AppointmentRequest extends BaseOpenmrsData {
 
-    public enum TimeFrameUnits { DAYS, WEEKS, MONTHS, YEARS };
-
     public enum AppointmentRequestStatus { PENDING, FULFILLED, CANCELLED };
 
     private Integer appointmentRequestId;

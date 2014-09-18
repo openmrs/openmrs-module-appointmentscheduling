@@ -7,6 +7,7 @@ import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.module.appointmentscheduling.AppointmentRequest;
+import org.openmrs.module.appointmentscheduling.TimeFrameUnits;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,9 +65,9 @@ public class AppointmentRequestServiceTest extends BaseModuleContextSensitiveTes
         assertEquals(providerService.getProvider(1), appointmentRequest.getRequestedBy());
         assertEquals("ASAP", appointmentRequest.getNotes());
         assertEquals(new Integer(0), appointmentRequest.getMinTimeFrameValue());
-        assertEquals(AppointmentRequest.TimeFrameUnits.DAYS, appointmentRequest.getMinTimeFrameUnits());
+        assertEquals(TimeFrameUnits.DAYS, appointmentRequest.getMinTimeFrameUnits());
         assertEquals(new Integer(7), appointmentRequest.getMaxTimeFrameValue());
-        assertEquals(AppointmentRequest.TimeFrameUnits.DAYS, appointmentRequest.getMaxTimeFrameUnits());
+        assertEquals(TimeFrameUnits.DAYS, appointmentRequest.getMaxTimeFrameUnits());
 
         appointmentRequest = service.getAppointmentRequest(2);
         assertNotNull(appointmentRequest);
@@ -77,9 +78,9 @@ public class AppointmentRequestServiceTest extends BaseModuleContextSensitiveTes
         assertEquals(AppointmentRequest.AppointmentRequestStatus.FULFILLED, appointmentRequest.getStatus());
         assertEquals(providerService.getProvider(2), appointmentRequest.getRequestedBy());
         assertEquals(new Integer(6), appointmentRequest.getMinTimeFrameValue());
-        assertEquals(AppointmentRequest.TimeFrameUnits.WEEKS, appointmentRequest.getMinTimeFrameUnits());
+        assertEquals(TimeFrameUnits.WEEKS, appointmentRequest.getMinTimeFrameUnits());
         assertEquals(new Integer(2), appointmentRequest.getMaxTimeFrameValue());
-        assertEquals(AppointmentRequest.TimeFrameUnits.MONTHS, appointmentRequest.getMaxTimeFrameUnits());
+        assertEquals(TimeFrameUnits.MONTHS, appointmentRequest.getMaxTimeFrameUnits());
         assertNull(appointmentRequest.getNotes());
 
     }
@@ -107,9 +108,9 @@ public class AppointmentRequestServiceTest extends BaseModuleContextSensitiveTes
         appointmentRequest.setRequestedBy(providerService.getProvider(1));
         appointmentRequest.setRequestedOn(new Date());
         appointmentRequest.setMinTimeFrameValue(1);
-        appointmentRequest.setMinTimeFrameUnits(AppointmentRequest.TimeFrameUnits.MONTHS);
+        appointmentRequest.setMinTimeFrameUnits(TimeFrameUnits.MONTHS);
         appointmentRequest.setMaxTimeFrameValue(6);
-        appointmentRequest.setMaxTimeFrameUnits(AppointmentRequest.TimeFrameUnits.MONTHS);
+        appointmentRequest.setMaxTimeFrameUnits(TimeFrameUnits.MONTHS);
 
         appointmentRequest.setNotes("test");
         appointmentRequest.setStatus(AppointmentRequest.AppointmentRequestStatus.PENDING);
@@ -134,6 +135,7 @@ public class AppointmentRequestServiceTest extends BaseModuleContextSensitiveTes
         service.saveAppointmentRequest(appointmentRequest);
 
         appointmentRequest = service.getAppointmentRequest(4);
+        assertEquals(AppointmentRequest.AppointmentRequestStatus.PENDING, appointmentRequest.getStatus());
         assertNotNull(appointmentRequest);
 
         //Should create a new appointment request row

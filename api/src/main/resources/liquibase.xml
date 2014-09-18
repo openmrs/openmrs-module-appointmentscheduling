@@ -306,4 +306,98 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="20140917-1-appointmentmentscheduling_appointment_request" author="mogoodrich">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="appointmentscheduling_appointment_request"/></not>
+        </preConditions>
+        <comment>
+            Create the appointment request table
+        </comment>
+
+        <createTable tableName="appointmentscheduling_appointment_request">
+            <column name="appointment_request_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="patient_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="appointment_type_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="provider_id" type="int" />
+            <column name="requested_by" type="int" />
+
+            <column name="requested_on" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="min_time_frame_value" type="int" />
+            <column name="min_time_frame_units" type="varchar(255)" />
+
+            <column name="max_time_frame_value" type="int" />
+            <column name="max_time_frame_units" type="varchar(255)" />
+
+            <column name="notes" type="varchar(1024)" />
+
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="creator" type="int" >
+                <constraints nullable="false" />
+            </column>
+
+            <column name="date_created" type="datetime" >
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+
+            <column name="voided" type="tinyint" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="voided_by" type="int" />
+            <column name="date_voided" type="datetime" />
+            <column name="void_reason" type="varchar(255)" defaultValue="null"/>
+
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="appointment_request_creator"
+                                 baseTableName="appointmentscheduling_appointment_request" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+
+        <addForeignKeyConstraint constraintName="appointment_request_changed_by"
+                                 baseTableName="appointmentscheduling_appointment_request" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+
+        <addForeignKeyConstraint constraintName="appointment_request_voided_by"
+                                 baseTableName="appointmentscheduling_appointment_request" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id"/>
+
+        <addForeignKeyConstraint constraintName="appointment_request_appointment_type_id"
+                                 baseTableName="appointmentscheduling_appointment_request" baseColumnNames="appointment_type_id"
+                                 referencedTableName="appointmentscheduling_appointment_type" referencedColumnNames="appointment_type_id"/>
+
+        <addForeignKeyConstraint constraintName="appointment_request_patient_id"
+                                 baseTableName="appointmentscheduling_appointment_request" baseColumnNames="patient_id"
+                                 referencedTableName="patient" referencedColumnNames="patient_id"/>
+
+        <addForeignKeyConstraint constraintName="appointment_request_provider_id"
+                                 baseTableName="appointmentscheduling_appointment_request" baseColumnNames="provider_id"
+                                 referencedTableName="provider" referencedColumnNames="provider_id"/>
+
+        <addForeignKeyConstraint constraintName="appointment_request_requested_by"
+                                 baseTableName="appointmentscheduling_appointment_request" baseColumnNames="requested_by"
+                                 referencedTableName="provider" referencedColumnNames="provider_id"/>
+    </changeSet>
+
 </databaseChangeLog>

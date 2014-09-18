@@ -578,7 +578,6 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
     @Override
     @Transactional
     public AppointmentRequest saveAppointmentRequest(AppointmentRequest appointmentRequest) throws APIException {
-        ValidateUtil.validate(appointmentRequest);
         return appointmentRequestDAO.saveOrUpdate(appointmentRequest);
     }
 
