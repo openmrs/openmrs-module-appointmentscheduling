@@ -576,6 +576,12 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
     }
 
     @Override
+    public List<AppointmentRequest> getAppointmentRequestsByConstraints(Patient patient, AppointmentType type, Provider provider,
+                                                                        AppointmentRequest.AppointmentRequestStatus status) throws APIException {
+        return appointmentRequestDAO.getAppointmentRequestsByConstraints(patient, type, provider, status);
+    }
+
+    @Override
     @Transactional
     public AppointmentRequest saveAppointmentRequest(AppointmentRequest appointmentRequest) throws APIException {
         return appointmentRequestDAO.saveOrUpdate(appointmentRequest);

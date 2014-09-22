@@ -13,6 +13,9 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.Assert.assertThat;
 import static org.openmrs.module.appointmentscheduling.rest.test.SameDatetimeMatcher.sameDatetime;
 
@@ -144,122 +147,61 @@ public class AppointmentRequestResource1_9ControllerTest extends MainResourceCon
 
     }
 
-/*    @Test
-    public void shouldFetchAppointmentsByDate() throws Exception {
+    @Test
+    public void shouldFetchAppointmentRequestsByAppointmentType() throws Exception {
 
         MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-        req.addParameter("fromDate", "2005-12-02T00:00:00.000");
-        req.addParameter("toDate", "2006-12-02T00:00:00.000");
+        req.addParameter("appointmentType", "759799ab-c9a5-435e-b671-77773ada74e4");
         handle(req);
 
-        List<Map<String, String>> appointments = (List<Map<String, String>>) deserialize(
-                handle(req)).get("results");
-        Assert.assertEquals(2, appointments.size());
-        Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183601",
-                appointments.get(0).get("uuid"));
-        Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183602",
-                appointments.get(1).get("uuid"));
+        List<Map<String, String>> appointmentRequests = (List<Map<String, String>>) deserialize(handle(req)).get("results");
+        Assert.assertEquals(1, appointmentRequests.size());
+        Assert.assertEquals("862c94f1-3dae-11e4-916c-0800200c9a66", appointmentRequests.get(0).get("uuid"));
+
     }
 
     @Test
-    public void shouldFetchAppointmentsByAppointmentType() throws Exception {
-
-        MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-        req.addParameter("appointmentType",
-                "c0c579b0-8e59-401d-8a4a-976a0b183519");
-        handle(req);
-
-        List<Map<String, String>> appointments = (List<Map<String, String>>) deserialize(
-                handle(req)).get("results");
-        Assert.assertEquals(2, appointments.size());
-        Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183601",
-                appointments.get(0).get("uuid"));
-        Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183602",
-                appointments.get(1).get("uuid"));
-    }
-
-    @Test
-    public void shouldFetchAppointmentsByProvider() throws Exception {
-
-        MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-        req.addParameter("provider", "c0c54sd0-8e59-401d-8a4a-976a0b183599");
-        handle(req);
-
-        List<Map<String, String>> appointments = (List<Map<String, String>>) deserialize(
-                handle(req)).get("results");
-        Assert.assertEquals(3, appointments.size());
-        Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183607",
-                appointments.get(0).get("uuid"));
-        Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183605",
-                appointments.get(1).get("uuid"));
-        Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183606",
-                appointments.get(2).get("uuid"));
-    }
-
-    @Test
-    public void shouldFetchAppointmentsByPatient() throws Exception {
+    public void shouldFetchAppointmentRequestsByPatient() throws Exception {
 
         MockHttpServletRequest req = request(RequestMethod.GET, getURI());
         req.addParameter("patient", "31e09960-8f52-11e3-baa8-0800200c9a66");
         handle(req);
 
-        List<Map<String, String>> appointments = (List<Map<String, String>>) deserialize(
-                handle(req)).get("results");
-        Assert.assertEquals(2, appointments.size());
-        Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183602",
-                appointments.get(0).get("uuid"));
-        Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183606",
-                appointments.get(1).get("uuid"));
-    }
-
-    @Test
-    public void shouldFetchAppointmentsByLocation() throws Exception {
-
-        MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-        req.addParameter("location", "9356400c-a5a2-4532-8f2b-2361b3446eb8");
-        handle(req);
-
-        List<Map<String, String>> appointments = (List<Map<String, String>>) deserialize(
-                handle(req)).get("results");
-        Assert.assertEquals(3, appointments.size());
-        Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183601",
-                appointments.get(0).get("uuid"));
-        Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183602",
-                appointments.get(1).get("uuid"));
-        Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183604",
-                appointments.get(2).get("uuid"));
+        List<Map<String, String>> appointmentRequests = (List<Map<String, String>>) deserialize(handle(req)).get("results");
+        Assert.assertEquals(1, appointmentRequests.size());
+        Assert.assertEquals("862c94f0-3dae-11e4-916c-0800200c9a66", appointmentRequests.get(0).get("uuid"));
 
     }
 
     @Test
-    public void shouldFetchAppointmentsByStatus() throws Exception {
+    public void shouldFetchAppointmentRequestsByProvider() throws Exception {
 
         MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-        req.addParameter("status", "MISSED");
+        req.addParameter("provider", "c0c549b0-8e59-401d-8a4a-976a0b183599");
         handle(req);
 
-        List<Map<String, String>> appointments = (List<Map<String, String>>) deserialize(
-                handle(req)).get("results");
-        Assert.assertEquals(1, appointments.size());
-        Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183602",
-                appointments.get(0).get("uuid"));
+        List<Map<String, String>> appointmentRequests = (List<Map<String, String>>) deserialize(handle(req)).get("results");
+        Assert.assertEquals(2, appointmentRequests.size());
+        Assert.assertTrue( (appointmentRequests.get(0).get("uuid").equals("862c94f0-3dae-11e4-916c-0800200c9a66")
+                                && appointmentRequests.get(1).get("uuid").equals("862c94f1-3dae-11e4-916c-0800200c9a66")
+                            || (appointmentRequests.get(1).get("uuid").equals("862c94f0-3dae-11e4-916c-0800200c9a66")
+                                && appointmentRequests.get(0).get("uuid").equals("862c94f1-3dae-11e4-916c-0800200c9a66"))) );
 
     }
 
     @Test
-    public void shouldFetchAppointmentsByStatusType() throws Exception {
+    public void shouldFetchAppointmentRequestsByStatus() throws Exception {
 
         MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-        req.addParameter("statusType", "MISSED");
+        req.addParameter("status", "PENDING");
         handle(req);
 
-        List<Map<String, String>> appointments = (List<Map<String, String>>) deserialize(
-                handle(req)).get("results");
-        Assert.assertEquals(1, appointments.size());
-        Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183602",
-                appointments.get(0).get("uuid"));
+        List<Map<String, String>> appointmentRequests = (List<Map<String, String>>) deserialize(handle(req)).get("results");
+        Assert.assertEquals(1, appointmentRequests.size());
+        Assert.assertEquals("862c94f0-3dae-11e4-916c-0800200c9a66", appointmentRequests.get(0).get("uuid"));
 
-    }*/
+    }
+
 
     @Override
     public String getURI() {

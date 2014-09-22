@@ -606,6 +606,19 @@ public interface AppointmentService extends OpenmrsService {
     AppointmentRequest getAppointmentRequestByUuid(String uuid);
 
     /**
+     * Retrieves Appointments Requests that satisfy the given constraints
+     *
+     * @param patient - The patient
+     * @param type - The appointment type
+     * @param provider - The requested provider
+     * @param status - The appointment request status
+     * @return a list of appointment requests that satisfy the given constraints
+     */
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+    List<AppointmentRequest> getAppointmentRequestsByConstraints(Patient patient, AppointmentType type, Provider provider,
+                                                    AppointmentRequest.AppointmentRequestStatus status) throws APIException;
+
+    /**
      * Creates or updates the given appointment requests in the database.
      *
      * @param appointmentRequest the appointment request to create or update.

@@ -2,11 +2,14 @@ package org.openmrs.module.appointmentscheduling.api;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Patient;
+import org.openmrs.Provider;
 import org.openmrs.api.APIException;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.module.appointmentscheduling.AppointmentRequest;
+import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.TimeFrameUnits;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
@@ -227,6 +230,69 @@ public class AppointmentRequestServiceTest extends BaseModuleContextSensitiveTes
 
         //Should decrease the number of appointment requestss by one.
         assertEquals(TOTAL_APPOINTMENT_REQUESTS - 1, service.getAllAppointmentRequests().size());
+    }
+
+    @Test
+    public void getAppointmentRequestsByConstraints_shouldFetchAppointmentsByPatient() throws Exception {
+
+        // this patient has two requests, but one is voided, should be skipped
+        Patient patient = patientService.getPatient(6);
+
+        List<AppointmentRequest> requests = service.getAppointmentRequestsByConstraints(patient, null, null, null);
+
+        assertEquals(1, requests.size());
+        assertEquals(new Integer(2), requests.get(0).getId());
+
+    }
+
+    @Test
+    public void getAppointmentRequestsByConstraints_shouldFetchAppointmentsByType() throws Exception {
+
+        AppointmentType type = service.getAppointmentType(1);
+
+        List<AppointmentRequest> requests = service.getAppointmentRequestsByConstraints(null, type, null, null);
+
+        assertEquals(1, requests.size());
+        assertEquals(new Integer(1), requests.get(0).getId());
+
+    }
+
+    @Test
+    public void getAppointmentRequestsByConstraints_shouldFetchAppointmentsByProvider() throws Exception {
+
+        Provider provider = providerService.getProvider(1);
+
+        List<AppointmentRequest> requests = service.getAppointmentRequestsByConstraints(null, null, provider, null);
+
+        assertEquals(2, requests.size());
+        assertTrue((requests.get(0).getId() == 1 && requests.get(1).getId() == 2)
+                || (requests.get(0).getId() == 2 && requests.get(1).getId() == 1));
+
+    }
+
+    @Test
+    public void getAppointmentRequestsByConstraints_shouldFetchAppointmentsByStatus() throws Exception {
+
+        List<AppointmentRequest> requests = service.getAppointmentRequestsByConstraints(null, null, null, AppointmentRequest.AppointmentRequestStatus.PENDING);
+
+        assertEquals(1, requests.size());
+        assertEquals(new Integer(1), requests.get(0).getId());
+
+    }
+
+    @Test
+    public void getAppointmentRequestsByConstraints_shouldFetchAppointmentsByMultipleConstraints() throws Exception {
+
+        Patient patient = patientService.getPatient(2);
+        Provider provider = providerService.getProvider(1);
+        AppointmentType appointmentType = service.getAppointmentType(1);
+
+        List<AppointmentRequest> requests = service.getAppointmentRequestsByConstraints(patient, appointmentType, provider,
+                AppointmentRequest.AppointmentRequestStatus.PENDING);
+
+        assertEquals(1, requests.size());
+        assertEquals(new Integer(1), requests.get(0).getId());
+
     }
 
 }

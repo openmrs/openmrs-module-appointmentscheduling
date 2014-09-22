@@ -1,7 +1,10 @@
 package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 
+import org.openmrs.Patient;
+import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.AppointmentRequest;
+import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.appointmentscheduling.rest.controller.AppointmentRestController;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -10,6 +13,7 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
@@ -126,6 +130,27 @@ public class AppointmentRequestResource1_9 extends DataDelegatingCrudResource<Ap
             return;
         }
         Context.getService(AppointmentService.class).purgeAppointmentRequest(appointmentRequest);
+    }
+
+    @Override
+    protected PageableResult doSearch(RequestContext context) {
+
+        AppointmentType appointmentType = context.getParameter("appointmentType") != null ? Context.getService(
+                AppointmentService.class).getAppointmentTypeByUuid(context.getParameter("appointmentType")) : null;
+
+        Provider provider = context.getParameter("provider") != null ? Context.getProviderService().getProviderByUuid(
+                context.getParameter("provider")) : null;
+
+        Patient patient = context.getParameter("patient") != null ? Context.getPatientService().getPatientByUuid(
+                context.getParameter("patient")) : null;
+
+        AppointmentRequest.AppointmentRequestStatus status =  context.getParameter("status") != null  ?
+                AppointmentRequest.AppointmentRequestStatus.valueOf(context.getParameter("status").toUpperCase())
+                : null;
+
+        return new NeedsPaging<AppointmentRequest>(Context.getService(AppointmentService.class).getAppointmentRequestsByConstraints(
+                patient, appointmentType, provider, status), context);
+
     }
 
     @Override
