@@ -13,11 +13,6 @@
  */
 package org.openmrs.module.appointmentscheduling.api;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
@@ -34,6 +29,11 @@ import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.AppointmentUtils;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This service exposes module's core functionality. It is a Spring managed bean
@@ -118,6 +118,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return the created or updated appointment type.
 	 * @should save new appointment type
 	 * @should save edited appointment type
+     * @should save confidential appointment type
 	 * @should throw error when name is null
 	 * @should throw error when name is empty string
 	 */

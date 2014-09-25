@@ -37,6 +37,7 @@ public class AppointmentTypeResource1_9ControllerTest extends MainResourceContro
 		Assert.assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(result, "display"));
 		Assert.assertEquals("Initial HIV Clinic Appointment Description", PropertyUtils.getProperty(result, "description"));
 		Assert.assertEquals(45, PropertyUtils.getProperty(result, "duration"));
+		Assert.assertEquals(true, PropertyUtils.getProperty(result, "confidential"));
 		Assert.assertEquals(false, PropertyUtils.getProperty(result, "retired"));
 	}
 	
@@ -54,6 +55,7 @@ public class AppointmentTypeResource1_9ControllerTest extends MainResourceContro
 		Assert.assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(result, "display"));
 		Assert.assertEquals("Initial HIV Clinic Appointment Description", PropertyUtils.getProperty(result, "description"));
 		Assert.assertEquals(45, PropertyUtils.getProperty(result, "duration"));
+        Assert.assertEquals(true, PropertyUtils.getProperty(result, "confidential"));
 		Assert.assertEquals(false, PropertyUtils.getProperty(result, "retired"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}

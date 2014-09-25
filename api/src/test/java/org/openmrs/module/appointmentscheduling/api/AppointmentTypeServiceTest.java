@@ -181,8 +181,18 @@ public class AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest {
 		//Should not change the number of appointment types.
 		assertEquals(4, service.getAllAppointmentTypes().size());
 	}
-	
-	@Test
+
+    @Test
+    @Verifies(value = "should save confidential appointment type", method = "saveAppointmentType(AppointmentType)")
+    public void saveAppointmentType_shouldSaveConfidentialAppointmentType() throws Exception {
+        AppointmentType appointmentType = new AppointmentType("HIV Followup", "Scheduled followup", 30);
+        appointmentType.setConfidential(true);
+
+        appointmentType = service.saveAppointmentType(appointmentType);
+        assertTrue(appointmentType.isConfidential());
+    }
+
+    @Test
 	@Verifies(value = "should retire given appointment type", method = "retireAppointmentType(AppointmentType, String)")
 	public void retireAppointmentType_shouldRetireGivenAppointmentType() throws Exception {
 		AppointmentType appointmentType = service.getAppointmentType(1);

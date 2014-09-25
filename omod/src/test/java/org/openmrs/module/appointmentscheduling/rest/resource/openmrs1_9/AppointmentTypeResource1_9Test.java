@@ -30,6 +30,7 @@ public class AppointmentTypeResource1_9Test extends BaseDelegatingResourceTest<A
 		assertPropEquals("name", getObject().getName());
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("duration", getObject().getDuration());
+		assertPropEquals("confidential", getObject().isConfidential());
 		assertPropEquals("retired", getObject().isRetired());
 	}
 	
@@ -39,6 +40,7 @@ public class AppointmentTypeResource1_9Test extends BaseDelegatingResourceTest<A
 		assertPropEquals("name", getObject().getName());
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("duration", getObject().getDuration());
+        assertPropEquals("confidential", getObject().isConfidential());
 		assertPropEquals("retired", getObject().isRetired());
 		assertPropPresent("auditInfo");
 	}

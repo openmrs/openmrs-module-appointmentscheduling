@@ -22,8 +22,10 @@ public class AppointmentType extends BaseOpenmrsMetadata {
 	private Integer appointmentTypeId;
 	
 	private Integer duration;
-	
-	public AppointmentType() {
+
+    private boolean confidential = false;
+
+    public AppointmentType() {
 		
 	}
 	
@@ -72,4 +74,13 @@ public class AppointmentType extends BaseOpenmrsMetadata {
 	public String getDisplayString() {
 		return getName();
 	}
+
+    public void setConfidential(boolean confidential) {
+        this.confidential = confidential;
+    }
+
+    public boolean isConfidential() {
+        return confidential;
+    }
+
 }

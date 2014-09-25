@@ -29,6 +29,7 @@ public class AppointmentTypeResource1_9 extends MetadataDelegatingCrudResource<A
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("duration");
+			description.addProperty("confidential");
 			description.addProperty("retired");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -40,6 +41,7 @@ public class AppointmentTypeResource1_9 extends MetadataDelegatingCrudResource<A
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("duration");
+            description.addProperty("confidential");
 			description.addProperty("retired");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
@@ -54,6 +56,7 @@ public class AppointmentTypeResource1_9 extends MetadataDelegatingCrudResource<A
 		description.addRequiredProperty("name");
 		description.addRequiredProperty("description");
 		description.addRequiredProperty("duration");
+        description.addProperty("confidential");
 		return description;
 	}
 	

@@ -400,4 +400,16 @@
                                  referencedTableName="provider" referencedColumnNames="provider_id"/>
     </changeSet>
 
+    <changeSet id="201409251456-appointmentscheduling-confidential" author="djazayeri">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists tableName="appointmentscheduling_appointment_type" columnName="confidential" /></not>
+        </preConditions>
+        <comment>Adding confidential column to appointmentscheduling_appointment_type table</comment>
+        <addColumn tableName="appointmentscheduling_appointment_type">
+            <column name="confidential" type="tinyint" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
