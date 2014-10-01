@@ -4,6 +4,7 @@ import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.AppointmentSchedulingConstants;
 import org.openmrs.module.appointmentscheduling.reporting.data.AppointmentDataUtil;
 import org.openmrs.module.appointmentscheduling.reporting.data.EvaluatedAppointmentData;
 import org.openmrs.module.appointmentscheduling.reporting.data.definition.AppointmentDataDefinition;
@@ -19,6 +20,7 @@ import org.openmrs.module.reporting.query.person.PersonIdSet;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,6 +46,28 @@ public class PersonToAppointmentDataEvaluator implements AppointmentDataEvaluato
         }
 
         Map<Integer, Integer> convertedIds = evaluationService.evaluateToMap(q, Integer.class, Integer.class, context);
+
+        if (!Context.hasPrivilege(AppointmentSchedulingConstants.PRIVILEGE_VIEW_CONFIDENTIAL_APPOINTMENT_DETAILS)) {
+            // build a map of appointment ids to whether it is confidential
+            HqlQueryBuilder confidentialQuery = new HqlQueryBuilder();
+            confidentialQuery.select("a.appointmentId", "case a.appointmentType.confidential when 0 then false else true end");
+            confidentialQuery.from(Appointment.class, "a");
+
+            if (context != null) {
+                Set<Integer> appointmentIds = AppointmentDataUtil.getAppointmentIdsForContext(context, true);
+                confidentialQuery.whereIn("a.appointmentId", appointmentIds);
+            }
+
+            // remove confidential ones
+            Map<Integer, Boolean> confidentialMap = evaluationService.evaluateToMap(confidentialQuery, Integer.class, Boolean.class, context);
+            for (Iterator<Map.Entry<Integer, Integer>> iterator = convertedIds.entrySet().iterator(); iterator.hasNext(); ) {
+                Map.Entry<Integer, Integer> entry = iterator.next();
+                Integer appointmentId = entry.getKey();
+                if (confidentialMap.get(appointmentId)) {
+                    iterator.remove();
+                }
+            }
+        }
 
         if (!convertedIds.keySet().isEmpty()) {
             // create a new Person evaluation context using the retrieved ids

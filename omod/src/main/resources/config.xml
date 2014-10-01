@@ -215,6 +215,10 @@
         <name>Request Appointments</name>
         <description>Ability to request new appointments</description>
     </privilege>
+    <privilege>
+        <name>Task: appointmentschedulingui.viewConfidential</name>
+        <description>Ability to see details of confidential appointments (you also need View Appointments privileges)</description>
+    </privilege>
 	<!-- /Privileges -->
 
 </module>

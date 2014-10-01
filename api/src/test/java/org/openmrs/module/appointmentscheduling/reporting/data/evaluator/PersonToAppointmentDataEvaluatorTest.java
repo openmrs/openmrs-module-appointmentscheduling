@@ -13,6 +13,7 @@ import org.openmrs.module.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 
 public class PersonToAppointmentDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 
@@ -36,6 +37,24 @@ public class PersonToAppointmentDataEvaluatorTest extends BaseModuleContextSensi
         BirthdateConverter c = new BirthdateConverter("yyyy-MM-dd");
         Assert.assertEquals("1948-01-01", c.convert(ed.getData().get(1)));
         Assert.assertEquals("1975-04-08", c.convert(ed.getData().get(2)));
+
+    }
+
+    @Test
+    @DirtiesContext
+    public void evaluate_shouldReturnPersonDataForNonConfidentialAppointments() throws Exception {
+        Context.becomeUser("butch");
+
+        PersonToAppointmentDataDefinition d = new PersonToAppointmentDataDefinition(new BirthdateDataDefinition());
+
+        AppointmentEvaluationContext context = new AppointmentEvaluationContext();
+        context.setBaseAppointments(new AppointmentIdSet(2, 4));
+        EvaluatedAppointmentData ed = Context.getService(AppointmentDataService.class).evaluate(d, context);
+
+        Assert.assertEquals(1, ed.getData().size());
+        BirthdateConverter c = new BirthdateConverter("yyyy-MM-dd");
+        Assert.assertEquals("1948-01-01", c.convert(ed.getData().get(4)));
+//        Assert.assertEquals("1975-04-08", c.convert(ed.getData().get(2)));
 
     }
 
