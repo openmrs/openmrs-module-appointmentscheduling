@@ -111,6 +111,8 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO
 				stringQuery += " AND appointment.patient=:patient";
 			}
 
+            stringQuery += " ORDER BY appointment.timeSlot.startDate";
+
 			Query query = super.sessionFactory.getCurrentSession().createQuery(
 					stringQuery);
 

@@ -329,9 +329,9 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(7, appointments.size());
 
 		type = service.getAppointmentType(3);
-		Appointment specificAppointment = service.getAppointment(4);
+		Appointment specificAppointment = service.getAppointment(5);
 		appointments = service.getAppointmentsByConstraints(null, null, null,
-				null, type, null);
+				null, type, null);   // apt #5 should be first because we are sorting by time slot
 		assertEquals(specificAppointment, appointments.iterator().next());
 		assertEquals(3, appointments.size());
 	}
@@ -401,6 +401,27 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(patient, appointments.get(2).getPatient());
 		assertEquals(patient, appointments.get(3).getPatient());
 	}
+
+    @Test
+    public void shouldProperlySortAppointmentsByTimeSlotDate_getAppointmentsByConstraints() {
+
+        Patient patient = Context.getPatientService().getPatient(1);
+
+        List<AppointmentStatus> appointmentStatuses = Arrays.asList(
+                AppointmentStatus.SCHEDULED, AppointmentStatus.RESCHEDULED);
+
+        List<Appointment> appointments = service.getAppointmentsByConstraints(
+                null, null, null, null, null, patient, appointmentStatuses);
+
+        assertNotNull(appointments);
+        assertEquals(4, appointments.size());
+
+        // verify they are in order
+        assertEquals(new Integer(6), appointments.get(0).getId());
+        assertEquals(new Integer(1), appointments.get(1).getId());
+        assertEquals(new Integer(4), appointments.get(2).getId());
+        assertEquals(new Integer(7), appointments.get(3).getId());
+    }
 
 	@Test
 	@Verifies(value = "Should get correct appointments", method = "getAppointmentsByStatus(List<AppointmentStatus>)")

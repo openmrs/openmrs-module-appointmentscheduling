@@ -240,10 +240,11 @@ public class AppointmentResource1_9ControllerTest
 		List<Map<String, String>> appointments = (List<Map<String, String>>) deserialize(
 				handle(req)).get("results");
 		Assert.assertEquals(2, appointments.size());
+        Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183606",
+                appointments.get(0).get("uuid"));
 		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183602",
-				appointments.get(0).get("uuid"));
-		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183606",
 				appointments.get(1).get("uuid"));
+
 	}
 
 	@Test

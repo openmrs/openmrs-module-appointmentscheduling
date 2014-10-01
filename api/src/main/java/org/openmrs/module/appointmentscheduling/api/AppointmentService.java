@@ -785,6 +785,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param type - The appointment type
 	 * @param status - The appointment status
 	 * @return a list of appointments that satisfy the given constraints
+     * @should sort by associated time slot
 	 */
     @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
 	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate,
@@ -802,6 +803,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param status - The appointment status
 	 * @param patient - The patient
 	 * @return a list of appointments that satisfy the given constraints
+     * @should sort by associated time slot
 	 */
     @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
 	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate,
@@ -819,6 +821,7 @@ public interface AppointmentService extends OpenmrsService {
 	 * @param patient - The patient
 	 * @param appointmentStatuses - The appointment status list
 	 * @return a list of appointments that satisfy the given constraints
+     * @should sort by associated time slot
 	 */
     @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
 	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate,
