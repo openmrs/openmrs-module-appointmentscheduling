@@ -1,6 +1,71 @@
-.classpath
+### OS generated files ###
+.DS_Store
+Thumbs.db
+._*
+.Spotlight-V100
+.Trashes
+
+### IntelliJ Idea ###
+*.iml
+*.ipr
+*.iws
+.idea/
+
+### Maven ###
+target/
+#############
+
+### Eclipse ###
+*.pydevproject
 .project
-.settings/*
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+
+# PDT-specific
+.buildpath
+###############
+
+### Java ###
+*.class
+
+# Java Package Files #
+*.jar
+*.war
+*.ear
+############
+
+### Netbeans ###
+nbproject/private/
+build/
+bin/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+################
+
+
+### Project specific files ###
 api/.classpath
 api/.project
 api/.settings/*
@@ -9,6 +74,4 @@ omod/.classpath
 omod/.project
 omod/.settings/*
 omod/target/*
-/.settings
-*.iml
-.idea/
+
