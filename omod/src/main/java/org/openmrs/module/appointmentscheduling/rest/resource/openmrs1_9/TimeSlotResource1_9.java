@@ -23,7 +23,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-@Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE + "/timeslot", supportedClass = TimeSlot.class, supportedOpenmrsVersions = "1.9.*")
+@Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE + "/timeslot", supportedClass = TimeSlot.class, supportedOpenmrsVersions = {
+        "1.9.*", "1.10.*", "1.11.*" })
 public class TimeSlotResource1_9 extends DataDelegatingCrudResource<TimeSlot> {
 	
 	@Override
@@ -140,15 +141,15 @@ public class TimeSlotResource1_9 extends DataDelegatingCrudResource<TimeSlot> {
 		
 		Boolean includeFull = context.getParameter("includeFull") != null ? (Boolean) ConversionUtil.convert(
 		    context.getParameter("includeFull"), Boolean.class) : false;
-
-        Patient patient = context.getParameter("excludeTimeSlotsPatientAlreadyBookedFor") != null
-                ? Context.getPatientService().getPatientByUuid(context.getParameter("excludeTimeSlotsPatientAlreadyBookedFor"))
-                : null;
-
+		
+		Patient patient = context.getParameter("excludeTimeSlotsPatientAlreadyBookedFor") != null ? Context
+		        .getPatientService().getPatientByUuid(context.getParameter("excludeTimeSlotsPatientAlreadyBookedFor"))
+		        : null;
+		
 		if (includeFull) {
-			return new NeedsPaging<TimeSlot>(Context.getService(AppointmentService.class)
-			        .getTimeSlotsByConstraintsIncludingFull(appointmentType, startDate, endDate, provider, location, patient),
-			        context);
+			return new NeedsPaging<TimeSlot>(
+			        Context.getService(AppointmentService.class).getTimeSlotsByConstraintsIncludingFull(appointmentType,
+                            startDate, endDate, provider, location, patient), context);
 		} else {
 			return new NeedsPaging<TimeSlot>(Context.getService(AppointmentService.class).getTimeSlotsByConstraints(
 			    appointmentType, startDate, endDate, provider, location, patient), context);

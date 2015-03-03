@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 
 @Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE
-        + "/appointmentblockwithtimeslot", supportedClass = AppointmentBlock.class, supportedOpenmrsVersions = "1.9.*")
+        + "/appointmentblockwithtimeslot", supportedClass = AppointmentBlock.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*"})
 public class AppointmentBlockWithTimeSlotResource1_9 extends AppointmentBlockResource1_9 {
 	
 	@Override

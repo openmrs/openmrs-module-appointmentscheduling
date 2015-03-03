@@ -13,7 +13,7 @@ import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentSt
 
 @Resource(name = RestConstants.VERSION_1
 		+ AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE
-		+ "/appointmentstatus", supportedClass = AppointmentStatusResource1_9.class, supportedOpenmrsVersions = "1.9.*")
+		+ "/appointmentstatus", supportedClass = AppointmentStatusResource1_9.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*"})
 public class AppointmentStatusResource1_9 implements Listable, Searchable {
 
 	@Override
