@@ -17,11 +17,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
+import org.openmrs.module.appointmentscheduling.AppointmentType;
+import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
+
+import java.util.Set;
 
 /**
  * Validates attributes on the {@link AppointmentBlock} object.
@@ -59,12 +64,25 @@ public class AppointmentBlockValidator implements Validator {
 			ValidationUtils.rejectIfEmpty(errors, "startDate", "appointmentscheduling.AppointmentBlock.emptyStartDate");
 			ValidationUtils.rejectIfEmpty(errors, "endDate", "appointmentscheduling.AppointmentBlock.emptyEndDate");
 			ValidationUtils.rejectIfEmpty(errors, "location", "appointmentscheduling.AppointmentBlock.emptyLocation");
-			if (appointmentBlock.getTypes() == null) {
-				ValidationUtils.rejectIfEmpty(errors, "types", "appointmentscheduling.AppointmentBlock.emptyTypes");
-			}
-			if (Context.getService(AppointmentService.class).getOverlappingAppointmentBlocks(appointmentBlock).size() > 0) {
+
+            if (Context.getService(AppointmentService.class).getOverlappingAppointmentBlocks(appointmentBlock).size() > 0) {
 				errors.rejectValue("provider", "appointmentscheduling.AppointmentBlock.error.appointmentBlockOverlap");
 			}
+
+            Set<AppointmentType> types = appointmentBlock.getTypes();
+            if (types == null) {
+                ValidationUtils.rejectIfEmpty(errors, "types", "appointmentscheduling.AppointmentBlock.emptyTypes");
+            }
+
+            if (appointmentBlock.getId() != null) {   // only test this on appointment blocks that have previously been saved (otherwise will get transient exception)
+                for (TimeSlot timeSlot : Context.getService(AppointmentService.class).getTimeSlotsInAppointmentBlock(appointmentBlock)) {
+                    for (Appointment appointment : Context.getService(AppointmentService.class).getAppointmentsInTimeSlotThatAreNotCancelled(timeSlot)) {
+                        if (!types.contains(appointment.getAppointmentType())) {
+                            errors.rejectValue("types", "appointmentscheduling.AppointmentBlock.error.cannotRemoveTypeFromBlockIfAppointmentScheduled");
+                        }
+                    }
+                }
+            }
 		}
 	}
 }
