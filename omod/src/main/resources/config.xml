@@ -15,7 +15,7 @@
 	<updateURL>https://dev.openmrs.org/modules/download/${project.parent.artifactId}/update.rdf
 
     </updateURL>
-	<require_version>${openMRSVersion}</require_version>
+	<require_version>1.11.3, 1.10.2 - 1.10.*, 1.9.9 - 1.9.*</require_version>
 
     <require_modules>
         <require_module version="${webservicesRestVersion}">org.openmrs.module.webservices.rest</require_module>

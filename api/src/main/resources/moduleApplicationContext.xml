@@ -40,42 +40,42 @@
                 <property name="appointmentTypeDAO">
                     <bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateAppointmentTypeDAO">
                         <property name="sessionFactory">
-                            <ref bean="sessionFactory" />
+                            <ref bean="dbSessionFactory" />
                         </property>
                     </bean>
                 </property>
                 <property name="appointmentBlockDAO">
                     <bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateAppointmentBlockDAO">
                         <property name="sessionFactory">
-                            <ref bean="sessionFactory" />
+                            <ref bean="dbSessionFactory" />
                         </property>
                     </bean>
                 </property>
                 <property name="appointmentDAO">
                     <bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateAppointmentDAO">
                         <property name="sessionFactory">
-                            <ref bean="sessionFactory" />
+                            <ref bean="dbSessionFactory" />
                         </property>
                     </bean>
                 </property>
                 <property name="timeSlotDAO">
                     <bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateTimeSlotDAO">
                         <property name="sessionFactory">
-                            <ref bean="sessionFactory" />
+                            <ref bean="dbSessionFactory" />
                         </property>
                     </bean>
                 </property>
                 <property name="appointmentStatusHistoryDAO">
                     <bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateAppointmentStatusHistoryDAO">
                         <property name="sessionFactory">
-                            <ref bean="sessionFactory" />
+                            <ref bean="dbSessionFactory" />
                         </property>
                     </bean>
                 </property>
                 <property name="appointmentRequestDAO">
                     <bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateAppointmentRequestDAO">
                         <property name="sessionFactory">
-                            <ref bean="sessionFactory" />
+                            <ref bean="dbSessionFactory" />
                         </property>
                     </bean>
                 </property>
