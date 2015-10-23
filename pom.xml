@@ -41,17 +41,17 @@
         </snapshotRepository>
     </distributionManagement>
 
-    <modules>
+	<modules>
 		<module>api</module>
 		<module>omod</module>
 	</modules>
 	
 	<properties>
-		<openMRSVersion>1.10.2</openMRSVersion>
-        <webservicesRestVersion>2.5</webservicesRestVersion>
-        <serializationXstreamModuleVersion>0.2.7</serializationXstreamModuleVersion>
-        <calculationModuleVersion>1.0</calculationModuleVersion>
-        <reportingModuleVersion>0.9.2</reportingModuleVersion>
+		<openMRSVersion>1.9.9</openMRSVersion>
+		<webservicesRestVersion>2.5</webservicesRestVersion>
+		<serializationXstreamModuleVersion>0.2.7</serializationXstreamModuleVersion>
+		<calculationModuleVersion>1.0</calculationModuleVersion>
+		<reportingModuleVersion>0.9.2</reportingModuleVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
