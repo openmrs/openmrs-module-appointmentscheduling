@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.classic.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.module.appointmentscheduling.Appointment;
@@ -74,8 +73,7 @@ public class HibernateAppointmentStatusHistoryDAO extends HibernateSingleClassDA
 	@Override
 	public void purgeHistoryBy(Appointment appointment) {
 		String hql = "delete from AppointmentStatusHistory where appointment= :appointment";
-		Session currentSession = sessionFactory.getCurrentSession();
-		Query query = currentSession.createQuery(hql);
+		Query query = super.sessionFactory.getCurrentSession().createQuery(hql);
 		query.setParameter("appointment", appointment).executeUpdate();
 	}
 }
