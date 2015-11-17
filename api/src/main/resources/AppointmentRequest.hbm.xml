@@ -20,22 +20,25 @@
         <property name="requestedOn" type="java.util.Date" column="requested_on" length="19" not-null="true" />
 
         <property name="status" column="status" length="255" not-null="true">
-            <type name="org.openmrs.util.HibernateEnumType">
-                <param name="enumClassName">org.openmrs.module.appointmentscheduling.AppointmentRequest$AppointmentRequestStatus</param>
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.openmrs.module.appointmentscheduling.AppointmentRequest$AppointmentRequestStatus</param>
+            	<param name="type">12</param>
             </type>
         </property>
 
         <property name="minTimeFrameValue" type="int" column="min_time_frame_value" length="11"/>
         <property name="minTimeFrameUnits" column="min_time_frame_units" length="255">
-            <type name="org.openmrs.util.HibernateEnumType">
-                <param name="enumClassName">org.openmrs.module.appointmentscheduling.TimeFrameUnits</param>
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.openmrs.module.appointmentscheduling.TimeFrameUnits</param>
+            	<param name="type">12</param>
             </type>
         </property>
 
         <property name="maxTimeFrameValue" type="int" column="max_time_frame_value" length="11"/>
         <property name="maxTimeFrameUnits" column="max_time_frame_units" length="255">
-            <type name="org.openmrs.util.HibernateEnumType">
-                <param name="enumClassName">org.openmrs.module.appointmentscheduling.TimeFrameUnits</param>
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.openmrs.module.appointmentscheduling.TimeFrameUnits</param>
+           		<param name="type">12</param>
             </type>
         </property>
 

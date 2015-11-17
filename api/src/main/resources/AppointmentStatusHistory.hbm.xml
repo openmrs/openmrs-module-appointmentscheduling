@@ -12,8 +12,9 @@
 		
 		<discriminator column="appointment_status_history_id" insert="false" />
 		<property name="status" column="status" not-null="true" length="255" >
-			<type name="org.openmrs.util.HibernateEnumType">
-				<param name="enumClassName">org.openmrs.module.appointmentscheduling.Appointment$AppointmentStatus</param>
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">org.openmrs.module.appointmentscheduling.Appointment$AppointmentStatus</param>
+				<param name="type">12</param>
 			</type>
 		</property>
 		<property name="startDate" column="start_date" type="java.util.Date" not-null="true" length="255" />

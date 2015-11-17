@@ -16,8 +16,9 @@
 		<many-to-one name="patient" column="patient_id" class="org.openmrs.Patient" not-null="true" />
 		
 		<property name="status" column="status" length="255" not-null="true">
-			<type name="org.openmrs.util.HibernateEnumType">
-				<param name="enumClassName">org.openmrs.module.appointmentscheduling.Appointment$AppointmentStatus</param>
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">org.openmrs.module.appointmentscheduling.Appointment$AppointmentStatus</param>
+				<param name="type">12</param>
 			</type>
 		</property>
 		
