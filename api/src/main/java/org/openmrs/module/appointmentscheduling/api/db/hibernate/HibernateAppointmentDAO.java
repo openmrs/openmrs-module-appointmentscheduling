@@ -72,8 +72,8 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO
 	public Appointment getLastAppointment(Patient patient) {
 		String query = "select appointment from Appointment as appointment"
 				+ " where appointment.patient = :patient and appointment.timeSlot.startDate ="
-				+ " (select max(timeSlot.startDate) from Appointment as appointment inner join appointment.timeSlot"
-				+ " where appointment.patient = :patient)";
+				+ " (select max(ap.timeSlot.startDate) from Appointment as ap inner join ap.timeSlot"
+				+ " where ap.patient = :patient)";
 
 		List<Appointment> appointment = super.sessionFactory
 				.getCurrentSession().createQuery(query)
