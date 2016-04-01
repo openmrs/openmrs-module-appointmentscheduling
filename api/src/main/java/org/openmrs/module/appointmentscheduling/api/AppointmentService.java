@@ -344,11 +344,11 @@ public interface AppointmentService extends OpenmrsService {
 	Appointment voidAppointment(Appointment appointment, String reason);
 
 	/**
-	 * Unvoids an appointment.
+	 * Unvoids(Restore) an appointment.
 	 * 
-	 * @param appointment the appointment to unvoid.
-	 * @return the unvoid appointment
-	 * @should unvoid given appointment
+	 * @param appointment the appointment to unvoid (restore).
+	 * @return the unvoid(restored) appointment
+	 * @should unvoid(restore) given appointment
 	 */
     @Authorized(AppointmentUtils.PRIV_SCHEDULE_APPOINTMENTS)
 	Appointment unvoidAppointment(Appointment appointment);
@@ -916,10 +916,10 @@ public interface AppointmentService extends OpenmrsService {
 	List<AppointmentType> getAllAppointmentTypesSorted(boolean includeRetired);
 
 	/**
-	 * Retrieves list of unvoided appointments that their current status is one of the given states.
+	 * Retrieves list of unvoided(restored) appointments that their current status is one of the given states.
 	 * 
 	 * @param states List of states to retrieve by.
-	 * @return list of unvoided appointments that their current status is one of the given states.
+	 * @return list of unvoided(restored) appointments that their current status is one of the given states.
 	 */
     @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
 	List<Appointment> getAppointmentsByStatus(List<AppointmentStatus> states);

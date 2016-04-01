@@ -95,7 +95,7 @@
 							document.getElementById('action').value = "void";
 						}
 						else{
-							//update the aciton to "purge" because there are no appointments assiciated with the selected appointment block.
+							//update the aciton to "purge" because there are no appointments associated with the selected appointment block.
 							document.getElementById('action').value = "purge";
 						}
 						$j('#deleteDialog').dialog('open');

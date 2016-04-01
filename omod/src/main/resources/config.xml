@@ -169,7 +169,7 @@
 	<!--  Privileges -->
 	<privilege>
 		<name>Manage Appointment Types</name>
-		<description>Ability to add/edit/purge appointment types</description>
+		<description>Ability to add/edit/delete forever appointment types</description>
 	</privilege>
 	<privilege>
 		<name>View Appointment Types</name>
@@ -177,7 +177,7 @@
 	</privilege>
 	<privilege>
 		<name>Manage Provider Schedules</name>
-		<description>Ability to add/edit/purge appointment blocks</description>
+		<description>Ability to add/edit/delete forever appointment blocks</description>
 	</privilege>
 	<privilege>
 		<name>View Provider Schedules</name>

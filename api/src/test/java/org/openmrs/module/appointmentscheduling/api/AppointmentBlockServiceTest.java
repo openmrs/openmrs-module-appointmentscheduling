@@ -171,7 +171,7 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 	}
 	
 	@Test
-	@Verifies(value = "should void given appointment block", method = "voidAppointmentBlock(AppointmentBlock, String)")
+	@Verifies(value = "should delete given appointment block", method = "voidAppointmentBlock(AppointmentBlock, String)")
 	public void voidAppointmentBlock_shouldVoidGivenAppointmentBlock() throws Exception {
 		AppointmentBlock appointmentBlock = service.getAppointmentBlock(1);
 		assertNotNull(appointmentBlock);
@@ -193,7 +193,7 @@ public class AppointmentBlockServiceTest extends BaseModuleContextSensitiveTest 
 	}
 	
 	@Test
-	@Verifies(value = "should unvoid given appointment block", method = "unvoidAppointmentBlock(AppointmentBlock)")
+	@Verifies(value = "should restore given appointment block", method = "unvoidAppointmentBlock(AppointmentBlock)")
 	public void unvoidAppointmentBlock_shouldUnvoidGivenAppointmentBlock() throws Exception {
 		AppointmentBlock appointmentBlock = service.getAppointmentBlock(3);
 		assertNotNull(appointmentBlock);
