@@ -398,7 +398,7 @@
 					</option>
 					<c:forEach var="provider" items="${providerList}">
 						<option value="${provider.providerId}"
-							${provider.providerId==providerSelect.providerId ? 'selected' : ''}>${provider.name}</option>
+							${provider.providerId==providerSelect.providerId ? 'selected' : ''}><c:out value="${provider.name}"/></option>
 					</c:forEach>
 			</select></td>
 		</tr>
@@ -413,7 +413,7 @@
 							code="appointmentscheduling.AppointmentBlock.filters.typeNotSpecified" />)
 					</option>
 					<c:forEach var="appointmentType" items="${appointmentTypeList}" >
-						<option value="${appointmentType.appointmentTypeId}" ${appointmentType.appointmentTypeId==param.appointmentTypeSelect ? 'selected' : ''}>${appointmentType.name}</option>
+						<option value="${appointmentType.appointmentTypeId}" ${appointmentType.appointmentTypeId==param.appointmentTypeSelect ? 'selected' : ''}><c:out value="${appointmentType.name}"/></option>
 					</c:forEach>
 				</select>
 		</td>
@@ -427,7 +427,7 @@
 						code="appointmentscheduling.AppointmentBlock.filters.statusNotSpecified" />)
 				</option>
 				<c:forEach var="status" items="${appointmentStatusList}" >
-					<option value="${status}" ${status==param.appointmentStatusSelect ? 'selected' : ''}>${status.name}</option>
+					<option value="${status}" ${status==param.appointmentStatusSelect ? 'selected' : ''}><c:out value="${status.name}"/></option>
 				</c:forEach>
 		</select></td>
 	</tr>
@@ -471,7 +471,7 @@
 	     						<c:out value="${name}" />
 							</c:forEach> 
 							<c:forEach var="identifier" items="${appointment.patient.identifiers}" >
-								<c:if test="${identifier.preferred}">(${identifier})</c:if>
+								<c:if test="${identifier.preferred}">(<c:out value="${identifier}"/>)</c:if>
 							</c:forEach>
 						</a>
 						<input type="hidden" id="patientId${appointment.appointmentId}" value="${appointment.patient.patientId}" />
@@ -480,10 +480,10 @@
 					<td><fmt:formatDate type="time" pattern="HH:mm"
 										value="${appointment.timeSlot.startDate}" /> - <fmt:formatDate type="time"
 										pattern="HH:mm" value="${appointment.timeSlot.endDate}" /></td>
-					<td>${appointment.timeSlot.appointmentBlock.provider.name}</td>
-					<td>${appointment.timeSlot.appointmentBlock.location.name}</td>
-					<td>${appointment.appointmentType.name}</td>
-					<td>${appointment.status.name}</td>
+					<td><c:out value="${appointment.timeSlot.appointmentBlock.provider.name}"/></td>
+					<td><c:out value="${appointment.timeSlot.appointmentBlock.location.name}"/></td>
+					<td><c:out value="${appointment.appointmentType.name}"/></td>
+					<td><c:out value="${appointment.status.name}"/></td>
 					<td>${waitingTimes[appointment.appointmentId]}</td>
 					<td><fmt:formatDate type="date" value="${appointment.timeSlot.startDate}"
 										pattern="yyyyMMddHHmm" /></td>

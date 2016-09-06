@@ -248,7 +248,7 @@
 									</option>
 									<c:forEach var="provider" items="${providerList}">
 										<option value="${provider.providerId}"
-											${provider.providerId==chosenProvider ? 'selected' : ''}>${provider.name}</option>
+											${provider.providerId==chosenProvider ? 'selected' : ''}><c:out value="${provider.name}"/></option>
 									</c:forEach>
 								</select>
 							</td>
@@ -263,7 +263,7 @@
 									</option>
 									<c:forEach var="type" items="${appointmentTypeList}">
 										<option value="${type.appointmentTypeId}"
-											${type.appointmentTypeId==chosenType ? 'selected' : ''}>${type.name}</option>
+											${type.appointmentTypeId==chosenType ? 'selected' : ''}><c:out value="${type.name}"/></option>
 									</c:forEach>
 								</select>
 							</td>
@@ -287,9 +287,9 @@
 	<input type="hidden" name="fromDate" id="fromDate" value="${fromDate}" />
 	<input type="hidden" name="toDate" id="toDate" value="${toDate}" />
 	<input type="hidden" name="appointmentBlockId" id="appointmentBlockId" value="${appointmentBlockId}" />
-	<input type="hidden" name="action" id="action" value="${action}" />
-	<input type="hidden" name="chosenProvider" id="chosenProvider" value="${chosenProvider}" />
-	<input type="hidden" name="chosenType" id="chosenType" value="${chosenType}" />
+	<input type="hidden" name="action" id="action" value="<c:out value="${action}"/>" />
+	<input type="hidden" name="chosenProvider" id="chosenProvider" value="<c:out value="${chosenProvider}"/>" />
+	<input type="hidden" name="chosenType" id="chosenType" value="<c:out value="${chosenType}"/>" />
  </form>
 <div id='calendarBlocks'></div>
  <div id="notifyDialog" title='<spring:message code="appointmentscheduling.AppointmentBlock.deleteDialog.title"/>'>

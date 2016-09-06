@@ -79,14 +79,14 @@
 						href="appointmentTypeForm.form?appointmentTypeId=${appointmentType.appointmentTypeId}"></openmrs:hasPrivilege>
 							<c:choose>
 								<c:when test="${appointmentType.retired == true}">
-									<del>${appointmentType.name}</del>
+									<del><c:out value="${appointmentType.name}"/></del>
 								</c:when>
 								<c:otherwise>
-								${appointmentType.name}
+								<c:out value="${appointmentType.name}"/>
 							</c:otherwise>
 							</c:choose>
 					<openmrs:hasPrivilege privilege='Manage Appointment Types'></a></openmrs:hasPrivilege></td>
-					<td valign="top">${appointmentType.description}</td>
+					<td valign="top"><c:out value="${appointmentType.description}"/></td>
 					<td valign="top">${appointmentType.duration}</td>
 				</tr>
 			</c:forEach>
