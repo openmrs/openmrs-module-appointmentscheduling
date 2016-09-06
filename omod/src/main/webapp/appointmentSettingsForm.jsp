@@ -93,7 +93,7 @@
 
 						<c:forEach var="visitType" items="${visitTypeList}">
 							<option value="${visitType.visitTypeId}"
-								${visitType.visitTypeId==selectedVisitType.visitTypeId ? 'selected' : ''}>${visitType.name}</option>
+								${visitType.visitTypeId==selectedVisitType.visitTypeId ? 'selected' : ''}><c:out value="${visitType.name}"/></option>
 						</c:forEach>
 				</select></td>
 			</tr>
@@ -126,7 +126,7 @@
 						<c:forEach var="personAttributeType"
 							items="${personAttributeList}">
 							<option value="${personAttributeType.personAttributeTypeId}"
-								${personAttributeType.personAttributeTypeId==selectedPersonAttributeType.personAttributeTypeId ? 'selected' : ''}>${personAttributeType.name}</option>
+								${personAttributeType.personAttributeTypeId==selectedPersonAttributeType.personAttributeTypeId ? 'selected' : ''}><c:out value="${personAttributeType.name}"/></option>
 						</c:forEach>
 				</select></td>
 			</tr>

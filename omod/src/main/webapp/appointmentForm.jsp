@@ -344,7 +344,7 @@
 						<select name="${status.expression}" id="appointmentTypeSelect">
 							<c:forEach var="appointmentType" items="${appointmentTypeList}">
 								<option value="${appointmentType.appointmentTypeId}"
-									${appointment.appointmentType.appointmentTypeId==appointmentType.appointmentTypeId ? 'selected' : ''}>${appointmentType.name}</option>
+									${appointment.appointmentType.appointmentTypeId==appointmentType.appointmentTypeId ? 'selected' : ''}><c:out value="${appointmentType.name}"/></option>
 							</c:forEach>
 						</select>
 						<c:if test="${status.errorMessage != ''}">
@@ -368,7 +368,7 @@
 						</option>
 						<c:forEach var="provider" items="${providerList}">
 							<option value="${provider.providerId}"
-								${provider.providerId==param.providerSelect ? 'selected' : ''}>${provider.name}</option>
+								${provider.providerId==param.providerSelect ? 'selected' : ''}><c:out value="${provider.name}"/></option>
 						</c:forEach>
 				</select></td>
 			</tr>
@@ -437,17 +437,17 @@
 											${slot.timeSlotId==appointment.timeSlot.timeSlotId ? 'checked' : ''} />
 									</spring:bind></td>
 
-								<td>${slot.appointmentBlock.provider.name}</td>
+								<td><c:out value="${slot.appointmentBlock.provider.name}"/></td>
 								<td><c:forEach var="appointmentType"
 										items="${slot.appointmentBlock.types}" varStatus="status">
-                                                                ${appointmentType.name}<c:if
+                                                                <c:out value="${appointmentType.name}"/><c:if
 											test="${status.index != fn:length(slot.appointmentBlock.types)-1}">, </c:if>
 									</c:forEach></td>
 								<td><fmt:formatDate type="date" value="${slot.startDate}" /></td>
 								<td><fmt:formatDate type="time" pattern="HH:mm"
 										value="${slot.startDate}" /> - <fmt:formatDate type="time"
 										pattern="HH:mm" value="${slot.endDate}" /></td>
-								<td>${slot.appointmentBlock.location.name}</td>
+								<td><c:out value="${slot.appointmentBlock.location.name}"/></td>
 								<td><fmt:formatDate type="date" value="${slot.startDate}"
 										pattern="yyyyMMddHHmm" /></td>
 								<td style="display:none;"></td>
@@ -462,17 +462,17 @@
 											${slot.timeSlotId==appointment.timeSlot.timeSlotId ? 'checked' : ''} />
 									</spring:bind></td>
 
-								<td>${slot.appointmentBlock.provider.name}</td>
+								<td><c:out value="${slot.appointmentBlock.provider.name}"/></td>
 								<td><c:forEach var="appointmentType"
 										items="${slot.appointmentBlock.types}" varStatus="status">
-                                                                ${appointmentType.name}<c:if
+                                                                <c:out value="${appointmentType.name}"/><c:if
 											test="${status.index != fn:length(slot.appointmentBlock.types)-1}">, </c:if>
 									</c:forEach></td>
 								<td><fmt:formatDate type="date" value="${slot.startDate}" /></td>
 								<td><fmt:formatDate type="time" pattern="HH:mm"
 										value="${slot.startDate}" /> - <fmt:formatDate type="time"
 										pattern="HH:mm" value="${slot.endDate}" /></td>
-								<td>${slot.appointmentBlock.location.name}</td>
+								<td><c:out value="${slot.appointmentBlock.location.name}"/></td>
 								<td><fmt:formatDate type="date" value="${slot.startDate}"
 										pattern="yyyyMMddHHmm" /></td>
 								<td style="display:none;">${overdueTimes[slot.timeSlotId]}</td>
@@ -515,11 +515,11 @@
 		<table id='appointmentInformationFields' class="dialogTable" style="padding:8x;" border="1" cellpadding="5">
 			<tr><td><b><spring:message code="appointmentscheduling.Appointment.list.column.patient"/></b></td><td>
 			<c:forEach var="name" items="${appointment.patient.names}" end="0">
-				<c:out value="${name}" />
+				<c:out value="<c:out value="${name}"/>" />
 			</c:forEach> 
 			<br/>
 			<c:forEach var="identifier" items="${appointment.patient.identifiers}" >
-				<c:if test="${identifier.preferred}">(${identifier})</c:if>
+				<c:if test="${identifier.preferred}">(<c:out value="${identifier}"/>)</c:if>
 			</c:forEach>
 			</td></tr>
 			<tr><td><b><spring:message code="appointmentscheduling.Appointment.create.header.appointmentType"/></b></td><td>

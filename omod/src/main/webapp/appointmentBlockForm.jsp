@@ -296,7 +296,7 @@
 				<td><spring:bind path="appointmentBlock.provider">
 					<select name="${status.expression}" id="providerSelect">
 					<c:forEach items="${providerList}" var="provider">
-						<option value="${provider.providerId}" <c:if test="${provider.providerId == status.value}">selected="selected"</c:if>>${provider.name}</option>
+						<option value="${provider.providerId}" <c:if test="${provider.providerId == status.value}">selected="selected"</c:if>><c:out value="${provider.name}"/></option>
 					</c:forEach>
 					</select>
 				</td>
@@ -324,7 +324,7 @@
 					<select multiple name="appointmentTypeSelect" ondblclick="updateAppointmentTypes(true)"
 						id="appointmentTypeSelect">
 							<c:forEach var="appointmentType" items="${appointmentTypeList}">
-							<option value="${appointmentType.appointmentTypeId}">${appointmentType.name}</option>
+							<option value="${appointmentType.appointmentTypeId}"><c:out value="${appointmentType.name}"/></option>
 							</c:forEach>
 
 						</select></fieldset>
@@ -342,7 +342,7 @@
 				<select multiple name="${status.expression}" ondblclick="updateAppointmentTypes(false)" id="currentAppointmentTypes">
 						<c:forEach var="appointmentType" items="${appointmentBlock.types}">
 							<option value="${appointmentType.appointmentTypeId}"
-								${param.appointmentTypeSelect==appointmentType.appointmentTypeId ? 'selected' : ''}>${appointmentType.name}</option>
+								${param.appointmentTypeSelect==appointmentType.appointmentTypeId ? 'selected' : ''}><c:out value="${appointmentType.name}"/></option>
 						</c:forEach>
 				</select>
 				</fieldset>
@@ -397,8 +397,8 @@
 		</table>
 	</fieldset>
 		<input type="hidden" name="emptyTypes" id="emptyTypes" value="no" />
-		<input type="hidden" name="action" id="action" value="${action}" />
-		<input type="hidden" name="appointmentBlockObject" id="appointmentBlockObject" value="${appointmentBlock}" />
+		<input type="hidden" name="action" id="action" value="<c:out value="${action}"/>" />
+		<input type="hidden" name="appointmentBlockObject" id="appointmentBlockObject" value="<c:out value="${appointmentBlock}"/>" />
 </form>
 <br />
  <div id="deleteDialog" title='<spring:message code="appointmentscheduling.AppointmentBlock.deleteDialog.title"/>'>

@@ -44,7 +44,7 @@
 		<td><spring:message code="general.name"/></td>
 		<td>
 			<spring:bind path="appointmentType.name">
-				<input type="text" name="name" value="${status.value}" size="35" />
+				<input type="text" name="name" value="<c:out value="${status.value}"/>" size="35" />
 				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
 			</spring:bind>
 		</td>
@@ -53,7 +53,7 @@
 		<td valign="top"><spring:message code="general.description"/></td>
 		<td valign="top">
 			<spring:bind path="appointmentType.description">
-				<textarea name="description" rows="3" cols="40" onkeypress="return forceMaxLength(this, 1024);" >${status.value}</textarea>
+				<textarea name="description" rows="3" cols="40" onkeypress="return forceMaxLength(this, 1024);" ><c:out value="${status.value}"/></textarea>
 				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
 			</spring:bind>
 		</td>
@@ -62,7 +62,7 @@
 		<td valign="top"><spring:message code="appointmentscheduling.AppointmentType.enterDuration"/></td>
 		<td valign="top">
 			<spring:bind path="appointmentType.duration">
-				<input type="text" name="duration" value="${status.value}" size="35" />
+				<input type="text" name="duration" value="<c:out value="${status.value}"/>" size="35" />
 				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
 			</spring:bind>
 		</td>
