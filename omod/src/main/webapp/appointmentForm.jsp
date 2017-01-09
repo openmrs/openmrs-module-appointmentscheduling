@@ -515,7 +515,7 @@
 		<table id='appointmentInformationFields' class="dialogTable" style="padding:8x;" border="1" cellpadding="5">
 			<tr><td><b><spring:message code="appointmentscheduling.Appointment.list.column.patient"/></b></td><td>
 			<c:forEach var="name" items="${appointment.patient.names}" end="0">
-				<c:out value="<c:out value="${name}"/>" />
+				<c:out value="${name}" />
 			</c:forEach> 
 			<br/>
 			<c:forEach var="identifier" items="${appointment.patient.identifiers}" >
