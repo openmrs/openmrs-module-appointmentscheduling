@@ -64,7 +64,7 @@ function updateStatusButtonsAvailabilty(appointmentStatus){
 		if(!statusButtons[buttonName][appointmentStatus])
 			$j('#'+buttonName).attr("disabled", "disabled");
 		else
-			$j('#'+buttonName).attr("disabled", "");
+			$j('#'+buttonName).attr("disabled", false);
 	}
 }
 
