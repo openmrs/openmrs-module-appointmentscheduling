@@ -175,7 +175,7 @@ public class AppointmentRequestServiceTest extends BaseModuleContextSensitiveTes
     }
 
     @Test
-    @Verifies(value = "should void given appointment request", method = "voidAppointmentRequest(AppointmentRequest, String)")
+    @Verifies(value = "should delete given appointment request", method = "voidAppointmentRequest(AppointmentRequest, String)")
     public void voidAppointmentRequest_shouldVoidGivenAppointmentRequest() throws Exception {
 
         // sanity check
@@ -196,7 +196,7 @@ public class AppointmentRequestServiceTest extends BaseModuleContextSensitiveTes
     }
 
     @Test
-    @Verifies(value = "should unvoid given appointment request", method = "unvoidAppointmentRequest(AppointmentRequest)")
+    @Verifies(value = "should restore given appointment request", method = "unvoidAppointmentRequest(AppointmentRequest)")
     public void unvoidAppointmentRequest_shouldUnvoidGivenAppointmentRequest() throws Exception {
 
         // sanity check

@@ -52,7 +52,7 @@ public interface AppointmentStatusHistoryDAO extends SingleClassDAO {
 	public List<AppointmentStatusHistory> getHistoriesByInterval(Date fromDate, Date endDate, AppointmentStatus status);
 	
 	/**
-	 * Purge all history from a specific appointment
+	 * Delete all history from a specific appointment forever
 	 * 
 	 * @param appointment The appointment which the story should be deleted.
 	 * @return

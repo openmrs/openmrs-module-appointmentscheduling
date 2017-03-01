@@ -62,14 +62,14 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	@Test
-	@Verifies(value = "should get all time slots by a given bool whether to include voided", method = "getAllTimeSlots(boolean)")
+	@Verifies(value = "should get all time slots by a given bool whether to include deleted", method = "getAllTimeSlots(boolean)")
 	public void getAllTimeSlots_shouldGetAllUnvoidedTimeSlots() {
 		List<TimeSlot> timeSlots = service.getAllTimeSlots(false);
 		assertEquals(8, timeSlots.size());
 	}
 	
 	@Test
-	@Verifies(value = "should get all time slots including voided", method = "getAllTimeSlots(boolean)")
+	@Verifies(value = "should get all time slots including deleted", method = "getAllTimeSlots(boolean)")
 	public void getAllTimeSlots_shouldGetAllIncludingVoidedTimeSlots() {
 		List<TimeSlot> timeSlots = service.getAllTimeSlots(true);
 		assertEquals(TOTAL_TIME_SLOTS, timeSlots.size());
@@ -146,7 +146,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	@Test
-	@Verifies(value = "should void a time slot", method = "voidTimeSlot(TimeSlot, String)")
+	@Verifies(value = "should delete a time slot", method = "voidTimeSlot(TimeSlot, String)")
 	public void voidTimeSlot_shouldVoidTimeSlot() {
 		TimeSlot timeSlot = service.getTimeSlot(1);
 		assertNotNull(timeSlot);
@@ -162,7 +162,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	@Test
-	@Verifies(value = "should unvoid a time slot", method = "unvoidTimeSlot(TimeSlot)")
+	@Verifies(value = "should restore a time slot", method = "unvoidTimeSlot(TimeSlot)")
 	public void unvoidTimeSlot_shouldUnvoidTimeSlot() {
 		TimeSlot timeSlot = service.getTimeSlot(3);
 		assertNotNull(timeSlot);
@@ -194,7 +194,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	@Test
-	@Verifies(value = "should not include voided time slots", method = "getTimeSlotsByConstraintsIncludingFull(AppointmentType, Date, Date, Provider)")
+	@Verifies(value = "should not include deleted time slots", method = "getTimeSlotsByConstraintsIncludingFull(AppointmentType, Date, Date, Provider)")
 	public void getTimeSlotsByConstraintsIncludingFull_shouldNotIncludeVoidedTimeSlots() throws ParseException {
 		AppointmentType appointmentType = service.getAppointmentType(1);
 		assertNotNull(appointmentType);
