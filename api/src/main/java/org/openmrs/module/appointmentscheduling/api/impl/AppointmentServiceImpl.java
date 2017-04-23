@@ -295,7 +295,9 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 			Context.getService(AppointmentService.class).voidTimeSlot(timeSlot,
 					reason);
 		}
-
+                //Set Appointment location to Unknown Location
+                Location location=new Location(1);
+                appointmentBlock.setLocation(location);
 		return saveAppointmentBlock(appointmentBlock);
 	}
 
