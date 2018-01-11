@@ -1,7 +1,5 @@
 package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 
-import java.util.List;
-
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
@@ -10,6 +8,8 @@ import org.openmrs.module.appointmentscheduling.rest.controller.AppointmentRestC
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * This is a special resource for interacting with AppointmentBlocks in the use case where we want a
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 
 @Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE
-        + "/appointmentblockwithtimeslot", supportedClass = AppointmentBlock.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"})
+        + "/appointmentblockwithtimeslot", supportedClass = AppointmentBlock.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"})
 public class AppointmentBlockWithTimeSlotResource1_9 extends AppointmentBlockResource1_9 {
 	
 	@Override
