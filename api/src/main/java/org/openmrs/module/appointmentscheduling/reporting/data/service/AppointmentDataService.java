@@ -8,6 +8,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.springframework.transaction.annotation.Transactional;
+import org.openmrs.annotation.Authorized;
 
 public interface AppointmentDataService extends DefinitionService<AppointmentDataDefinition> {
 
@@ -15,12 +16,14 @@ public interface AppointmentDataService extends DefinitionService<AppointmentDat
      * @see DefinitionService#evaluate(org.openmrs.module.reporting.evaluation.Definition, org.openmrs.module.reporting.evaluation.EvaluationContext)
      */
     @Transactional(readOnly = true)
+    @Authorized()
     public EvaluatedAppointmentData evaluate(AppointmentDataDefinition definition, EvaluationContext context) throws EvaluationException;
 
     /**
      * @see DefinitionService#evaluate(org.openmrs.module.reporting.evaluation.parameter.Mapped < org.openmrs.module.reporting.evaluation.Definition >, EvaluationContext)
      */
     @Transactional(readOnly = true)
+    @Authorized()
     public EvaluatedAppointmentData evaluate(Mapped<? extends AppointmentDataDefinition> mappedDefinition, EvaluationContext context) throws EvaluationException;
 
 }
