@@ -34,7 +34,8 @@ import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentSt
 import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus.getAppointmentsStatusByType;
 import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatusType;
 
-@Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE + "/appointment", supportedClass = Appointment.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"})
+@Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE + "/appointment",
+    supportedClass = Appointment.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*"})
 public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointment> {
 	
 	@Override

@@ -11,7 +11,8 @@ import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 @Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE
-        + "/appointmenttrequeststatus", supportedClass = AppointmentRequest.AppointmentRequestStatus.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"})
+        + "/appointmenttrequeststatus", supportedClass = AppointmentRequest.AppointmentRequestStatus.class,
+        supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*"})
 public class AppointmentRequestStatusResource1_9  implements Listable, Searchable {
 
     @Override
