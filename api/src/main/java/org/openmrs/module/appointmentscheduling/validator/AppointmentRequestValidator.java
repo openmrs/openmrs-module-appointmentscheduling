@@ -41,7 +41,18 @@ public class AppointmentRequestValidator implements Validator {
             ValidationUtils.rejectIfEmpty(errors, "appointmentType", "appointmentscheduling.AppointmentRequest.emptyType");
             ValidationUtils.rejectIfEmpty(errors, "requestedOn", "appointmentscheduling.AppointmentRequest.emptyRequestedOn");
             ValidationUtils.rejectIfEmpty(errors, "status", "appointmentscheduling.AppointmentRequest.emptyStatus");
+            validateTimeFrame(appointmentRequest, errors);
+        }
+    }
 
+    private void validateTimeFrame(AppointmentRequest appointmentRequest, Errors errors) {
+        if (appointmentRequest.getMinTimeFrameValue() != null && appointmentRequest.getMaxTimeFrameValue() != null) {
+            if (appointmentRequest.getMinTimeFrameValue() <= 0
+                    || appointmentRequest.getMaxTimeFrameValue() <= 0
+                    || appointmentRequest.getMinTimeFrameValue() > Integer.MAX_VALUE
+                    || appointmentRequest.getMinTimeFrameValue() > Integer.MAX_VALUE) {
+                errors.rejectValue("appointmentRequest", "error.general");
+            }
         }
     }
 
