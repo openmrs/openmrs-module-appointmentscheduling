@@ -1,8 +1,6 @@
 package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 
-import org.openmrs.Location;
-import org.openmrs.Patient;
-import org.openmrs.Provider;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
@@ -185,11 +183,17 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 		
 		Location location = context.getParameter("location") != null ? Context.getLocationService().getLocationByUuid(
 		    context.getParameter("location")) : null;
+
+		VisitType visitType = context.getParameter("visitType") != null ? Context.getVisitService().getVisitTypeByUuid(
+				context.getParameter("visitType")) : null;
+
+		Visit visit = context.getParameter("visit") != null ? Context.getVisitService().getVisitByUuid(
+				context.getParameter("visit")) : null;
 		
 		List<AppointmentStatus> statuses = getAppointmentsStatuses(context);
 		
 		return new NeedsPaging<Appointment>(Context.getService(AppointmentService.class).getAppointmentsByConstraints(
-		    fromDate, toDate, location, provider, appointmentType, patient, statuses), context);
+		    fromDate, toDate, location, provider, appointmentType, patient, statuses, visitType, visit), context);
 		
 	}
 	

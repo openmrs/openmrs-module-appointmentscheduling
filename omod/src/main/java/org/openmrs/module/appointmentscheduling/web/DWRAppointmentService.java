@@ -231,7 +231,7 @@ public class DWRAppointmentService {
 			Provider provider = appointment.getTimeSlot().getAppointmentBlock().getProvider();
 			
 			List<Appointment> inconsultationAppointments = Context.getService(AppointmentService.class)
-			        .getAppointmentsByConstraints(null, null, null, provider, null, AppointmentStatus.INCONSULTATION);
+			        .getAppointmentsByConstraints(null, null, null, provider, null, AppointmentStatus.INCONSULTATION, null, null);
 			
 			return (inconsultationAppointments.size() != 0);
 		}
@@ -253,7 +253,7 @@ public class DWRAppointmentService {
 			Provider provider = appointment.getTimeSlot().getAppointmentBlock().getProvider();
 			
 			List<Appointment> inconsultationAppointments = Context.getService(AppointmentService.class)
-			        .getAppointmentsByConstraints(null, null, null, provider, null, AppointmentStatus.INCONSULTATION);
+			        .getAppointmentsByConstraints(null, null, null, provider, null, AppointmentStatus.INCONSULTATION, null, null);
 			
 			return (inconsultationAppointments.size() != 0);
 		}

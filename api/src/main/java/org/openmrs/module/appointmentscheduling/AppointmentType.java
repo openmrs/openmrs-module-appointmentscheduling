@@ -14,12 +14,15 @@
 package org.openmrs.module.appointmentscheduling;
 
 import org.openmrs.BaseOpenmrsMetadata;
+import org.openmrs.VisitType;
 
 public class AppointmentType extends BaseOpenmrsMetadata {
 	
 	private static final long serialVersionUID = 1L;
 	
 	private Integer appointmentTypeId;
+
+	private VisitType visitType;
 	
 	private Integer duration;
 
@@ -83,4 +86,11 @@ public class AppointmentType extends BaseOpenmrsMetadata {
         return confidential;
     }
 
+	public VisitType getVisitType() {
+		return visitType;
+	}
+
+	public void setVisitType(VisitType visitType) {
+		this.visitType = visitType;
+	}
 }

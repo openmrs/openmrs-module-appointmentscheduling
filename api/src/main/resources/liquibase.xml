@@ -412,4 +412,19 @@
         </addColumn>
     </changeSet>
 
+	<changeSet id="2014092514689-appointmentscheduling-visittype" author="jecihjoy">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists tableName="appointmentscheduling_appointment_type" columnName="visitType" /></not>
+        </preConditions>
+        <comment>Adding visitType column to appointmentscheduling_appointment_type table</comment>
+        <addColumn tableName="appointmentscheduling_appointment_type">
+            <column name="visit_type_id" type="int">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+		<addForeignKeyConstraint constraintName="appointment_type_visit_type_id"
+								 baseTableName="appointmentscheduling_appointment_type" baseColumnNames="visit_type_id"
+								 referencedTableName="visit_type" referencedColumnNames="visit_type_id"/>
+    </changeSet>
+
 </databaseChangeLog>

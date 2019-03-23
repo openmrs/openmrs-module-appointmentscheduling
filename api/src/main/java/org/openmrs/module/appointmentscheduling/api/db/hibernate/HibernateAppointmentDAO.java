@@ -3,20 +3,15 @@
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://license.openmrs.org
- *
+ * <p>
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  * License for the specific language governing rights and limitations
  * under the License.
- *
+ * <p>
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 package org.openmrs.module.appointmentscheduling.api.db.hibernate;
-
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -26,6 +21,7 @@ import org.hibernate.criterion.Restrictions;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
+import org.openmrs.VisitType;
 import org.openmrs.api.APIException;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
@@ -33,213 +29,228 @@ import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus.CANCELLED;
-import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus.MISSED;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus.RESCHEDULED;
 import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus.SCHEDULED;
 
 public class HibernateAppointmentDAO extends HibernateSingleClassDAO
-		implements
-			AppointmentDAO {
+        implements
+        AppointmentDAO {
+    private static final Logger log = LoggerFactory.getLogger(HibernateAppointmentDAO.class);
 
-	public HibernateAppointmentDAO() {
-		super(Appointment.class);
-	}
+    public HibernateAppointmentDAO() {
+        super(Appointment.class);
+    }
 
-	@Override
-	@Transactional(readOnly = true)
-	public List<Appointment> getAppointmentsByPatient(Patient patient) {
-		return super.sessionFactory.getCurrentSession()
-				.createCriteria(Appointment.class)
-				.add(Restrictions.eq("patient", patient)).list();
-	}
+    @Override
+    @Transactional(readOnly = true)
+    public List<Appointment> getAppointmentsByPatient(Patient patient) {
+        return super.sessionFactory.getCurrentSession()
+                .createCriteria(Appointment.class)
+                .add(Restrictions.eq("patient", patient)).list();
+    }
 
-	@Override
-	@Transactional(readOnly = true)
-	public Appointment getAppointmentByVisit(Visit visit) {
-		return (Appointment) super.sessionFactory
-				.getCurrentSession()
-				.createQuery(
-						"from " + mappedClass.getSimpleName()
-								+ " at where at.visit = :visit")
-				.setParameter("visit", visit).uniqueResult();
-	}
+    @Override
+    @Transactional(readOnly = true)
+    public Appointment getAppointmentByVisit(Visit visit) {
+        return (Appointment) super.sessionFactory
+                .getCurrentSession()
+                .createQuery(
+                        "from " + mappedClass.getSimpleName()
+                                + " at where at.visit = :visit")
+                .setParameter("visit", visit).uniqueResult();
+    }
 
-	@Override
-	@Transactional(readOnly = true)
-	public Appointment getLastAppointment(Patient patient) {
-		String query = "select appointment from Appointment as appointment"
-				+ " where appointment.patient = :patient and appointment.timeSlot.startDate ="
-				+ " (select max(ap.timeSlot.startDate) from Appointment as ap inner join ap.timeSlot"
-				+ " where ap.patient = :patient)";
+    @Override
+    @Transactional(readOnly = true)
+    public Appointment getLastAppointment(Patient patient) {
+        String query = "select appointment from Appointment as appointment"
+                + " where appointment.patient = :patient and appointment.timeSlot.startDate ="
+                + " (select max(ap.timeSlot.startDate) from Appointment as ap inner join ap.timeSlot"
+                + " where ap.patient = :patient)";
 
-		List<Appointment> appointment = super.sessionFactory
-				.getCurrentSession().createQuery(query)
-				.setParameter("patient", patient).list();
+        List<Appointment> appointment = super.sessionFactory
+                .getCurrentSession().createQuery(query)
+                .setParameter("patient", patient).list();
 
-		if (appointment.size() > 0)
-			return (Appointment) appointment.get(0);
-		else
-			return null;
-	}
+        if (appointment.size() > 0)
+            return appointment.get(0);
+        else
+            return null;
+    }
 
-	@Override
-	@Transactional(readOnly = true)
-	public List<Appointment> getAppointmentsByConstraints(Date fromDate,
-			Date toDate, Provider provider, AppointmentType appointmentType,
-			List<AppointmentStatus> statuses, Patient patient)
-			throws APIException {
-		if (fromDate != null && toDate != null && !fromDate.before(toDate))
-			throw new APIException("fromDate can not be later than toDate");
+    @Override
+    @Transactional(readOnly = true)
+    public List<Appointment> getAppointmentsByConstraints(Date fromDate,
+                                                          Date toDate, Provider provider, AppointmentType appointmentType,
+                                                          List<AppointmentStatus> statuses, Patient patient, VisitType visitType, Visit visit)
+            throws APIException {
+        if (fromDate != null && toDate != null && !fromDate.before(toDate))
+            throw new APIException("fromDate can not be later than toDate");
 
-		else {
-			String stringQuery = "SELECT appointment FROM Appointment AS appointment WHERE appointment.voided = 0";
+        else {
+            String stringQuery = "SELECT appointment FROM Appointment AS appointment WHERE appointment.voided = 0";
 
-			if (fromDate != null)
-				stringQuery += " AND appointment.timeSlot.startDate >= :fromDate";
-			if (toDate != null)
-				stringQuery += " AND appointment.timeSlot.endDate <= :endDate";
-			if (provider != null)
-				stringQuery += " AND appointment.timeSlot.appointmentBlock.provider = :provider";
-			if (statuses != null && statuses.size() > 0)
-				stringQuery += " AND appointment.status IN (:statuses)";
-			if (appointmentType != null)
-				stringQuery += " AND appointment.appointmentType=:appointmentType";
-			if (patient != null) {
-				stringQuery += " AND appointment.patient=:patient";
-			}
+            if (fromDate != null)
+                stringQuery += " AND appointment.timeSlot.startDate >= :fromDate";
+            if (toDate != null)
+                stringQuery += " AND appointment.timeSlot.endDate <= :endDate";
+            if (provider != null)
+                stringQuery += " AND appointment.timeSlot.appointmentBlock.provider = :provider";
+            if (statuses != null && statuses.size() > 0)
+                stringQuery += " AND appointment.status IN (:statuses)";
+            if (appointmentType != null)
+                stringQuery += " AND appointment.appointmentType=:appointmentType";
+            if (visitType != null)
+                stringQuery += " AND appointment.appointmentType.visitType = :visitType";
+            if (visit != null)
+                stringQuery += " AND appointment.visit = :visit";
+            if (patient != null) {
+                stringQuery += " AND appointment.patient = :patient";
+            }
 
             stringQuery += " ORDER BY appointment.timeSlot.startDate";
 
-			Query query = super.sessionFactory.getCurrentSession().createQuery(
-					stringQuery);
+            Query query = super.sessionFactory.getCurrentSession().createQuery(
+                    stringQuery);
 
-			if (fromDate != null)
-				query.setParameter("fromDate", fromDate);
-			if (toDate != null)
-				query.setParameter("endDate", toDate);
-			if (provider != null)
-				query.setParameter("provider", provider);
-			if (statuses != null && statuses.size() > 0)
-				query.setParameterList("statuses", statuses);
-			if (appointmentType != null)
-				query.setParameter("appointmentType", appointmentType);
-			if (patient != null)
-				query.setParameter("patient", patient);
+            if (fromDate != null)
+                query.setParameter("fromDate", fromDate);
+            if (toDate != null)
+                query.setParameter("endDate", toDate);
+            if (provider != null)
+                query.setParameter("provider", provider);
+            if (statuses != null && statuses.size() > 0)
+                query.setParameterList("statuses", statuses);
+            if (appointmentType != null)
+                query.setParameter("appointmentType", appointmentType);
+            if (visitType != null)
+                query.setParameter("visitType", visitType);
+            if (visit != null)
+                query.setParameter("visit", visit);
+            if (patient != null)
+                query.setParameter("patient", patient);
 
-			return query.list();
-		}
-	}
 
-	@Override
-	@Transactional(readOnly = true)
-	public List<Appointment> getAppointmentsByConstraints(Date fromDate,
-			Date toDate, Provider provider, AppointmentType appointmentType,
-			AppointmentStatus status, Patient patient) throws APIException {
-		return getAppointmentsByConstraints(fromDate, toDate, provider,
-				appointmentType, Arrays.asList(status), patient);
-	}
+            return query.list();
+        }
+    }
 
-	@Override
-	@Transactional(readOnly = true)
-	public List<Appointment> getAppointmentsByStates(
-			List<AppointmentStatus> states) {
-		String sQuery = "from Appointment as appointment where appointment.voided = 0 and appointment.status in (:states)";
+    @Override
+    @Transactional(readOnly = true)
+    public List<Appointment> getAppointmentsByConstraints(Date fromDate,
+                                                          Date toDate, Provider provider, AppointmentType appointmentType,
+                                                          AppointmentStatus status, Patient patient, VisitType visitType, Visit visit) throws APIException {
+        return getAppointmentsByConstraints(fromDate, toDate, provider,
+                appointmentType, Arrays.asList(status), patient, visitType, visit);
+    }
 
-		Query query = super.sessionFactory.getCurrentSession().createQuery(
-				sQuery);
-		query.setParameterList("states", states);
+    @Override
+    @Transactional(readOnly = true)
+    public List<Appointment> getAppointmentsByStates(
+            List<AppointmentStatus> states) {
+        String sQuery = "from Appointment as appointment where appointment.voided = 0 and appointment.status in (:states)";
 
-		return query.list();
-	}
+        Query query = super.sessionFactory.getCurrentSession().createQuery(
+                sQuery);
+        query.setParameterList("states", states);
 
-	@Override
-	@Transactional(readOnly = true)
-	public List<Appointment> getPastAppointmentsByStates(
-			List<AppointmentStatus> states) {
-		String sQuery = "from Appointment as appointment where appointment.timeSlot.endDate <= :endDate and appointment.voided = 0 and appointment.status in (:states)";
+        return query.list();
+    }
 
-		Query query = super.sessionFactory.getCurrentSession().createQuery(
-				sQuery);
-		query.setParameterList("states", states);
-		query.setParameter("endDate", Calendar.getInstance().getTime());
+    @Override
+    @Transactional(readOnly = true)
+    public List<Appointment> getPastAppointmentsByStates(
+            List<AppointmentStatus> states) {
+        String sQuery = "from Appointment as appointment where appointment.timeSlot.endDate <= :endDate and appointment.voided = 0 and appointment.status in (:states)";
 
-		return query.list();
-	}
+        Query query = super.sessionFactory.getCurrentSession().createQuery(
+                sQuery);
+        query.setParameterList("states", states);
+        query.setParameter("endDate", Calendar.getInstance().getTime());
 
-	@Override
-	public List<Appointment> getScheduledAppointmentsForPatient(Patient patient) {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
-				mappedClass);
-		criteria.add(Restrictions.eq("patient", patient));
-		criteria.add(Restrictions.or(Restrictions.eq("status", SCHEDULED),
-				Restrictions.eq("status", RESCHEDULED)));
-		criteria.add(Restrictions.eq("voided", false));
-		criteria.createAlias("timeSlot", "timeSlot");
-		criteria.addOrder(Order.asc("timeSlot.startDate"));
+        return query.list();
+    }
 
-		return criteria.list();
-	}
+    @Override
+    public List<Appointment> getScheduledAppointmentsForPatient(Patient patient) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
+                mappedClass);
+        criteria.add(Restrictions.eq("patient", patient));
+        criteria.add(Restrictions.or(Restrictions.eq("status", SCHEDULED),
+                Restrictions.eq("status", RESCHEDULED)));
+        criteria.add(Restrictions.eq("voided", false));
+        criteria.createAlias("timeSlot", "timeSlot");
+        criteria.addOrder(Order.asc("timeSlot.startDate"));
 
-	@Override
-	public List<Appointment> getAppointmentsByAppointmentBlockAndAppointmentTypes(
-			AppointmentBlock appointmentBlock,
-			List<AppointmentType> appointmentTypes) {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
-				mappedClass);
-		criteria.createAlias("timeSlot", "time_slot");
-		criteria.add(Restrictions.eq("time_slot.appointmentBlock",
-				appointmentBlock));
+        return criteria.list();
+    }
 
-		if (appointmentTypes != null)
-			criteria.add(Restrictions.in("appointmentType", appointmentTypes));
-		criteria.add(Restrictions.eq("voided", false));
+    @Override
+    public List<Appointment> getAppointmentsByAppointmentBlockAndAppointmentTypes(
+            AppointmentBlock appointmentBlock,
+            List<AppointmentType> appointmentTypes) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
+                mappedClass);
+        criteria.createAlias("timeSlot", "time_slot");
+        criteria.add(Restrictions.eq("time_slot.appointmentBlock",
+                appointmentBlock));
 
-		return criteria.list();
-	}
+        if (appointmentTypes != null)
+            criteria.add(Restrictions.in("appointmentType", appointmentTypes));
+        criteria.add(Restrictions.eq("voided", false));
 
-	@Override
-	public List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot) {
-		return createAppointmentsInTimeSlotCriteria(timeSlot).list();
-	}
+        return criteria.list();
+    }
 
-	@Override
-	public List<Appointment> getAppointmentsInTimeSlotByStatus(
-			TimeSlot timeSlot, List<AppointmentStatus> statuses) {
-		return createAppointmentsInTimeSlotByStatusCriteria(timeSlot, statuses)
-				.list();
+    @Override
+    public List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot) {
+        return createAppointmentsInTimeSlotCriteria(timeSlot).list();
+    }
 
-	}
+    @Override
+    public List<Appointment> getAppointmentsInTimeSlotByStatus(
+            TimeSlot timeSlot, List<AppointmentStatus> statuses) {
+        return createAppointmentsInTimeSlotByStatusCriteria(timeSlot, statuses)
+                .list();
 
-	@Override
-	public Integer getCountOfAppointmentsInTimeSlot(TimeSlot timeSlot) {
-		return ((Number) createAppointmentsInTimeSlotCriteria(timeSlot)
-				.setProjection(Projections.rowCount()).uniqueResult())
-				.intValue();
-	}
+    }
 
-	@Override
-	public Integer getCountOfAppointmentsInTimeSlotByStatus(TimeSlot timeSlot,
-			List<AppointmentStatus> statuses) {
-		return ((Number) createAppointmentsInTimeSlotByStatusCriteria(timeSlot,
-				statuses).setProjection(Projections.rowCount()).uniqueResult())
-				.intValue();
-	}
+    @Override
+    public Integer getCountOfAppointmentsInTimeSlot(TimeSlot timeSlot) {
+        return ((Number) createAppointmentsInTimeSlotCriteria(timeSlot)
+                .setProjection(Projections.rowCount()).uniqueResult())
+                .intValue();
+    }
 
-	private Criteria createAppointmentsInTimeSlotCriteria(TimeSlot timeSlot) {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
-				Appointment.class);
-		criteria.add(Restrictions.eq("timeSlot", timeSlot));
-		criteria.add(Restrictions.eq("voided", false));
-		return criteria;
-	}
+    @Override
+    public Integer getCountOfAppointmentsInTimeSlotByStatus(TimeSlot timeSlot,
+                                                            List<AppointmentStatus> statuses) {
+        return ((Number) createAppointmentsInTimeSlotByStatusCriteria(timeSlot,
+                statuses).setProjection(Projections.rowCount()).uniqueResult())
+                .intValue();
+    }
 
-	private Criteria createAppointmentsInTimeSlotByStatusCriteria(
-			TimeSlot timeSlot, List<AppointmentStatus> statuses) {
-		Criteria criteria = createAppointmentsInTimeSlotCriteria(timeSlot);
-		criteria.add(Restrictions.in("status", statuses));
-		return criteria;
-	}
+    private Criteria createAppointmentsInTimeSlotCriteria(TimeSlot timeSlot) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
+                Appointment.class);
+        criteria.add(Restrictions.eq("timeSlot", timeSlot));
+        criteria.add(Restrictions.eq("voided", false));
+        return criteria;
+    }
+
+    private Criteria createAppointmentsInTimeSlotByStatusCriteria(
+            TimeSlot timeSlot, List<AppointmentStatus> statuses) {
+        Criteria criteria = createAppointmentsInTimeSlotCriteria(timeSlot);
+        criteria.add(Restrictions.in("status", statuses));
+        return criteria;
+    }
 }

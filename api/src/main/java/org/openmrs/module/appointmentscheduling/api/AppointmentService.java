@@ -13,10 +13,7 @@
  */
 package org.openmrs.module.appointmentscheduling.api;
 
-import org.openmrs.Location;
-import org.openmrs.Patient;
-import org.openmrs.Provider;
-import org.openmrs.Visit;
+import org.openmrs.*;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
@@ -789,8 +786,8 @@ public interface AppointmentService extends OpenmrsService {
 	 */
     @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
 	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate,
-			Location location, Provider provider, AppointmentType type,
-			AppointmentStatus status) throws APIException;
+												   Location location, Provider provider, AppointmentType type,
+												   AppointmentStatus status, VisitType visitType, Visit visit) throws APIException;
 
 	/**
 	 * Retrieves Appointments that satisfy the given constraints
@@ -808,7 +805,7 @@ public interface AppointmentService extends OpenmrsService {
     @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
 	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate,
 			Location location, Provider provider, AppointmentType type,
-			Patient patient, AppointmentStatus status) throws APIException;
+			Patient patient, AppointmentStatus status, VisitType visitType, Visit visit) throws APIException;
 
 	/**
 	 * Retrieves Appointments that satisfy the given constraints
@@ -826,7 +823,8 @@ public interface AppointmentService extends OpenmrsService {
     @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
 	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate,
 			Location location, Provider provider, AppointmentType type,
-			Patient patient, List<AppointmentStatus> appointmentStatuses);
+			Patient patient, List<AppointmentStatus> appointmentStatuses,
+		   VisitType visitType, Visit visit);
 
 	/**
 	 * Retrives the start date of the current status of a given appointment.
