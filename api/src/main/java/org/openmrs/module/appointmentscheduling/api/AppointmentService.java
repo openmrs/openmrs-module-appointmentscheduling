@@ -17,6 +17,7 @@ import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
+import org.openmrs.VisitType;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.APIException;
 import org.openmrs.api.OpenmrsService;
@@ -828,6 +829,26 @@ public interface AppointmentService extends OpenmrsService {
 			Location location, Provider provider, AppointmentType type,
 			Patient patient, List<AppointmentStatus> appointmentStatuses);
 
+	/**
+	 * Retrieves Appointments that satisfy the given constraints
+	 *
+	 * @param fromDate - The appointment start date
+	 * @param toDate - The appointment end date
+	 * @param location - The appointment location
+	 * @param provider - The appointment provider
+	 * @param type - The appointment type
+	 * @param patient - The patient
+	 * @param appointmentStatuses - The appointment status list
+	 * @param visitType - The visit type of the appointment
+	 * @param visit - The appointment visit
+	 * @return a list of appointments that satisfy the given constraints
+	 * @should sort by associated time slot
+	 */
+	@Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate,
+		   Location location, Provider provider, AppointmentType type,
+		   Patient patient, List<AppointmentStatus> appointmentStatuses,
+		   VisitType visitType, Visit visit) throws APIException;
 	/**
 	 * Retrives the start date of the current status of a given appointment.
 	 * 

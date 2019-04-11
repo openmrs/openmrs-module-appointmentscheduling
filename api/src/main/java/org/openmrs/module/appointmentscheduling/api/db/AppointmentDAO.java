@@ -19,6 +19,7 @@ import java.util.List;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
+import org.openmrs.VisitType;
 import org.openmrs.api.APIException;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
@@ -41,10 +42,11 @@ public interface AppointmentDAO extends SingleClassDAO {
 	
 	@Transactional(readOnly = true)
 	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider,
-	        AppointmentType appointmentType, List<AppointmentStatus> statuses, Patient patient) throws APIException;
+	        AppointmentType appointmentType, List<AppointmentStatus> statuses, Patient patient,
+		    VisitType visitType, Visit visit) throws APIException;
 	
 	List<Appointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider, AppointmentType type,
-	        AppointmentStatus status, Patient patient) throws APIException;
+		   AppointmentStatus status, Patient patient) throws APIException;
 	
 	List<Appointment> getAppointmentsByStates(List<AppointmentStatus> states);
 	

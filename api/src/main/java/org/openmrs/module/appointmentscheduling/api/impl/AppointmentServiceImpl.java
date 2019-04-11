@@ -22,6 +22,7 @@ import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
+import org.openmrs.VisitType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
@@ -761,13 +762,29 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 
 	@Override
 	public List<Appointment> getAppointmentsByConstraints(Date fromDate,
-			Date toDate, Location location, Provider provider,
-			AppointmentType type, Patient patient,
-			List<AppointmentStatus> statuses) {
+			  Date toDate, Location location, Provider provider,
+			  AppointmentType type, Patient patient,
+			  List<AppointmentStatus> statuses) {
+
+		if (statuses == null) {
+			return getAppointmentsByConstraints(fromDate, toDate, location,
+					provider, type, patient, new ArrayList<AppointmentStatus>(), null, null);
+		}
+
+		return getAppointmentsByConstraints(fromDate, toDate, location,
+				provider, type, patient, statuses, null, null);
+
+	}
+	
+	@Override
+	public List<Appointment> getAppointmentsByConstraints(Date fromDate,
+			  Date toDate, Location location, Provider provider,
+			  AppointmentType type, Patient patient, List<AppointmentStatus> statuses,
+			  VisitType visitType, Visit visit) throws APIException{
 
 		List<Appointment> appointments = appointmentDAO
 				.getAppointmentsByConstraints(fromDate, toDate, provider, type,
-						statuses, patient);
+						statuses, patient, visitType, visit);
 
 		List<Appointment> appointmentsInLocation = new LinkedList<Appointment>();
 

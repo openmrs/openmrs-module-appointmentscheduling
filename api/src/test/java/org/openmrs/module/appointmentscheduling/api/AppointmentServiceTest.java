@@ -424,6 +424,25 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
     }
 
 	@Test
+	public void shouldProperlySortAppointmentsByVisit_getAppointmentsByConstraints() {
+
+		Visit visit = Context.getVisitService().getVisit(1);
+
+		List<Appointment> appointments = service.getAppointmentsByConstraints(
+				null, null, null, null, null, null, null, null, visit);
+
+		assertNotNull(appointments);
+		assertEquals(1, appointments.size());
+
+		visit = Context.getVisitService().getVisit(2);
+		assertNotNull(visit);
+		appointments = service.getAppointmentsByConstraints(null, null,
+				null, null, null, null, null, null, visit);
+		assertTrue(appointments.isEmpty());
+	}
+
+
+	@Test
 	@Verifies(value = "Should get correct appointments", method = "getAppointmentsByStatus(List<AppointmentStatus>)")
 	public void shouldGetCorrectAppointments_getAppointmentsByStatus() {
 		List<AppointmentStatus> states = new LinkedList<AppointmentStatus>();
