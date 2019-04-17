@@ -1,5 +1,8 @@
 package org.openmrs.module.appointmentscheduling.api.db.hibernate;
 
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -7,8 +10,10 @@ import java.util.Vector;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
+import org.openmrs.Location;
 import org.openmrs.Provider;
 import org.openmrs.api.APIException;
+import org.openmrs.api.db.DAOException;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
@@ -71,6 +76,56 @@ public class HibernateTimeSlotDAO extends HibernateSingleClassDAO implements Tim
 			return new Vector<TimeSlot>();
 		return super.sessionFactory.getCurrentSession().createCriteria(TimeSlot.class)
 		        .add(Restrictions.eq("appointmentBlock", appointmentBlock)).add(Restrictions.eq("voided", false)).list();
+	}
+
+	@Override
+	public TimeSlot getResourceTimeslot(Date date, Location location) throws DAOException {
+		String stringQuery = "SELECT timeslot FROM TimeSlot AS timeslot WHERE timeslot.voided = 0";
+
+		if (location != null)
+			stringQuery += " AND timeslot.appointmentBlock.location=:location";
+
+		if (date != null) {
+			if (!getStringTime(date).equals("00:00:00")) {
+				stringQuery += " AND :appointmentTime >= TIME(timeslot.startDate) AND :appointmentTime <=  TIME(timeslot.endDate)  ";
+			}
+		}
+		if (date != null) {
+			stringQuery += " AND DATE_FORMAT(timeslot.startDate,'%Y-%m-%d') = :startDate";
+		}
+
+		Query query = super.sessionFactory.getCurrentSession().createQuery(
+				stringQuery);
+
+		if (location != null)
+			query.setParameter("location", location);
+
+		if (date != null) {
+			if (!getStringTime(date).equals("00:00:00"))
+				query.setParameter("appointmentTime", getTimeFromDate(date));
+		}
+
+		if (date != null)
+			query.setParameter("startDate", new SimpleDateFormat("yyyy-MM-dd").format(date));
+
+		if (query.list().size() > 1) {
+			throw new DAOException("Multiple timeslots have been set for that day. Specify appointment time.");
+		} else {
+			return (TimeSlot) query.uniqueResult();
+		}
+	}
+
+	private Time getTimeFromDate(Date date) {
+		try {
+			return new Time(new SimpleDateFormat("HH:mm:ss").parse(getStringTime(date)).getTime());
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private String getStringTime(Date date) {
+		return new SimpleDateFormat("HH:mm:ss").format(date);
 	}
 	
 }

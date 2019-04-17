@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="org.openmrs.module.appointmentscheduling">
+
+    <class name="BlockExcludedDays" table="${project.parent.artifactId}_block_excluded_days">
+        <id name="excludedDateId" type="int" column="excluded_date_id" unsaved-value="0">
+            <generator class="native">
+                <param name="sequence">excluded_date_excluded_date_id_seq</param>
+            </generator>
+        </id>
+
+        <discriminator column="excluded_date_id" insert="false"/>
+        <many-to-one name="appointmentResource" class="AppointmentResource" insert="false" update="false">
+            <column name="appointment_resource_id"/>
+        </many-to-one>
+        <property name="excludedDate" type="java.util.Date" column="excluded_date" not-null="true" length="19"/>
+
+        <!-- bi-directional many-to-one association to User -->
+        <many-to-one name="creator" class="org.openmrs.User" not-null="true">
+            <column name="creator"/>
+        </many-to-one>
+        <property name="dateCreated" type="java.util.Date"
+                  column="date_created" not-null="true" length="19"/>
+        <property name="voided" type="java.lang.Boolean"
+                  column="voided" length="1" not-null="true"/>
+        <!-- bi-directional many-to-one association to User -->
+        <many-to-one name="voidedBy" class="org.openmrs.User">
+            <column name="voided_by"/>
+        </many-to-one>
+        <property name="voidReason" type="java.lang.String"
+                  column="void_reason" length="255"/>
+        <property name="dateVoided" type="java.util.Date"
+                  column="date_voided" length="19"/>
+        <!-- bi-directional many-to-one association to User -->
+        <many-to-one name="changedBy" class="org.openmrs.User">
+            <column name="changed_by"/>
+        </many-to-one>
+        <property name="dateChanged" type="java.util.Date"
+                  column="date_changed" length="19"/>
+        <property name="uuid" type="java.lang.String"
+                  column="uuid" length="38" unique="true" not-null="true"/>
+    </class>
+
+</hibernate-mapping>

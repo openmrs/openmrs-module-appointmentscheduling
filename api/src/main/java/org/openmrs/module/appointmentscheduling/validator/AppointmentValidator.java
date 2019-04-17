@@ -54,18 +54,18 @@ public class AppointmentValidator implements Validator {
 		if (appointment == null) {
 			errors.rejectValue("appointment", "error.general");
 		} else {
-			ValidationUtils.rejectIfEmpty(errors, "timeSlot", "appointmentscheduling.Appointment.emptyTimeSlot");
+//			ValidationUtils.rejectIfEmpty(errors, "timeSlot", "appointmentscheduling.Appointment.emptyTimeSlot");
 			ValidationUtils.rejectIfEmpty(errors, "patient", "appointmentscheduling.Appointment.emptyPatient");
 			ValidationUtils.rejectIfEmpty(errors, "appointmentType", "appointmentscheduling.Appointment.emptyType");
 			
 			//Check whether the slot supports this appointment type
-			AppointmentType type = appointment.getAppointmentType();
+			/*AppointmentType type = appointment.getAppointmentType();
 			if (type == null)
 				errors.rejectValue("appointmentType", "appointmentscheduling.Appointment.emptyType");
 			if (appointment.getTimeSlot() == null)
 				errors.rejectValue("timeSlot", "appointmentscheduling.Appointment.emptyTimeSlot");
 			else if (type != null && !appointment.getTimeSlot().getAppointmentBlock().getTypes().contains(type))
-				errors.rejectValue("appointmentType", "appointmentscheduling.Appointment.notSupportedType");
+				errors.rejectValue("appointmentType", "appointmentscheduling.Appointment.notSupportedType");*/
 		}
 	}
 }

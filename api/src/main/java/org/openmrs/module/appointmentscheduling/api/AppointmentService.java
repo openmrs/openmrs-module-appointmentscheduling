@@ -25,9 +25,11 @@ import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentRequest;
+import org.openmrs.module.appointmentscheduling.AppointmentResource;
 import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.AppointmentUtils;
+import org.openmrs.module.appointmentscheduling.BlockExcludedDays;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
 
@@ -980,4 +982,94 @@ public interface AppointmentService extends OpenmrsService {
     @Authorized(AppointmentUtils.PRIV_SCHEDULE_APPOINTMENTS)
 	Appointment bookAppointment(Appointment appointment, Boolean allowOverbook)
 			throws TimeSlotFullException;
+
+	// AppointmentResource
+
+	/**
+	 * Gets all appointment Resource.
+	 *
+	 * @return a list of appointment Resource objects.
+	 * @should get all appointment Resource
+	 */
+	@Authorized()
+	List<AppointmentResource> getAllAppointmentResources();
+
+	/**
+	 * Get all appointment Resource based on includeVoided flag
+	 *
+	 * @param includeVoided
+	 * @return List of all appointment Resource
+	 * @should get all appointment Resource based on include voided flag.
+	 */
+	@Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_RESOURCES)
+	List<AppointmentResource> getAllAppointmentResources(boolean includeVoided);
+
+	/**
+	 * Gets an appointment Resource by its appointment Resource id.
+	 *
+	 * @param appointmentResourceId the appointment Resource id.
+	 * @return the appointment Resource object found with the given id, else null.
+	 * @should get correct appointment Resource
+	 */
+	@Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_RESOURCES)
+	AppointmentResource getAppointmentResource(Integer appointmentResourceId);
+
+	/**
+	 * Gets an appointment Resource by its UUID.
+	 *
+	 * @param uuid the appointment Resource UUID.
+	 * @return the appointment Resource object found with the given uuid, else null.
+	 * @should get correct appointment Resource
+	 */
+	@Authorized()
+	AppointmentResource getAppointmentResourceByUuid(String uuid);
+
+	/**
+	 * Creates or updates the given appointment Resource in the database.
+	 *
+	 * @param appointmentResource the appointment Resource to create or update.
+	 * @return the created or updated appointment Resource.
+	 * @should save new appointment Resource
+	 * @should save a providerless appointment Resource
+	 * @should save edited appointment Resource
+	 * @should throw error when name is null
+	 * @should throw error when name is empty string
+	 */
+	@Authorized(AppointmentUtils.PRIV_MANAGE_APPOINTMENT_RESOURCES)
+	AppointmentResource saveAppointmentResource(AppointmentResource appointmentResource)
+			throws APIException;
+
+	/**
+	 * Voids a given appointment Resource.
+	 *
+	 * @param appointmentResource the appointment Resource to void.
+	 * @param reason              the reason why the appointment Resource is voided.
+	 * @return the appointment Resource that has been voided.
+	 * @should void given appointment Resource
+	 * @should void all associated time slots
+	 */
+	@Authorized(AppointmentUtils.PRIV_MANAGE_APPOINTMENT_RESOURCES)
+	AppointmentResource voidAppointmentResource(AppointmentResource appointmentResource,
+												String reason);
+
+	/**
+	 * Completely removes an appointment Resource from the database. This is not reversible.
+	 *
+	 * @param appointmentResource the appointment Resource to delete from the database.
+	 * @should delete given appointment Resource
+	 */
+	@Authorized(AppointmentUtils.PRIV_MANAGE_APPOINTMENT_RESOURCES)
+	void purgeAppointmentResource(AppointmentResource appointmentResource);
+
+	/**
+	 * Gets appointment Resource which have a given date, location, provider and list of appointment
+	 * types
+	 *
+	 * @return a list of appointment Resource objects.
+	 */
+	@Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENT_RESOURCES)
+	List<AppointmentResource> getAppointmentResourcesByConstraints(Location locations, Provider provider, List<AppointmentType> appointmentTypes);
+
+	@Authorized
+	BlockExcludedDays geyExcludedDayByUuid(String uuid) throws APIException;
 }

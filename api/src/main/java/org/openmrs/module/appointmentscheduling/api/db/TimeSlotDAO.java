@@ -16,8 +16,10 @@ package org.openmrs.module.appointmentscheduling.api.db;
 import java.util.Date;
 import java.util.List;
 
+import org.openmrs.Location;
 import org.openmrs.Provider;
 import org.openmrs.api.APIException;
+import org.openmrs.api.db.DAOException;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
@@ -46,4 +48,6 @@ public interface TimeSlotDAO extends SingleClassDAO {
 	 * @should not return voided time slots
 	 */
 	List<TimeSlot> getTimeSlotsByAppointmentBlock(AppointmentBlock appointmentBlock);
+
+	TimeSlot getResourceTimeslot(Date date, Location location) throws DAOException;
 }

@@ -156,6 +156,8 @@
 		TimeSlot.hbm.xml
 		AppointmentStatusHistory.hbm.xml
         AppointmentRequest.hbm.xml
+		BlockExcludedDays.hbm.xml
+		AppointmentResource.hbm.xml
 	</mappingFiles>
 
 	<!-- Internationalization -->
