@@ -15,7 +15,9 @@ package org.openmrs.module.appointmentscheduling;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleActivator;
+import org.openmrs.module.appointmentscheduling.task.AppointmentSchedulerSetup;
 
 /**
  * This class contains the logic that is run every time this module is either started or stopped.
@@ -50,6 +52,12 @@ public class AppointmentActivator implements ModuleActivator {
 	 */
 	public void started() {
 		log.info("Appointment Module started");
+
+		Boolean markAppointmentAsMissedTask = Boolean.parseBoolean(Context.getAdministrationService().getGlobalProperty(
+				AppointmentUtils.GP_MARK_APPOINTMENT_AS_MISSED));
+		if(markAppointmentAsMissedTask == true) {
+			AppointmentSchedulerSetup.setupMarkAppointmentAsMissedTask();
+		}
 	}
 	
 	/**

@@ -62,6 +62,13 @@
 		<description>Hide "End Visit" buttons on the patient dashboard.
 		</description>
 	</globalProperty>
+	<globalProperty>
+		<property>${project.parent.artifactId}.missedAppointmentScheduler
+		</property>
+		<defaultValue>false</defaultValue>
+		<description>Mark Appointment as MISSED at end of the day.
+		</description>
+	</globalProperty>
 
 	<!-- Module Activator -->
 	<activator>${project.parent.groupId}.${project.parent.artifactId}.AppointmentActivator

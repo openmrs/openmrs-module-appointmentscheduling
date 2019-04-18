@@ -238,6 +238,40 @@
 				</td>
 			</tr>
 
+            <!--Hide Mark Appointment as MISSED Buttons GP -->
+            <tr>
+                <td>
+                    <div
+                        onmouseover="document.getElementById('tt6').style.display='block'"
+                        onmouseout="document.getElementById('tt6').style.display='none'"
+                        class="questionMark">
+                        <img
+                            src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/qMark_normal.png'
+                            onmouseover="this.src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/qMark_hover.png'"
+                            onmouseout="this.src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/qMark_normal.png'"
+                            alt='' />
+                        <div id="tt6" class="toolTip">
+                            <spring:message
+                                code="appointmentscheduling.Appointment.gp.desc.missedAppointmentScheduler" />
+                        </div>
+                    </div>
+                </td>
+
+                 <td>
+                    <spring:message code="appointmentscheduling.Appointment.settings.label.missedAppointmentScheduler" />
+                </td>
+
+                 <td>
+                    <input type="radio" name="missedAppointmentScheduler" value="false" ${(param.missedAppointmentScheduler==null && missedAppointmentScheduler=='false') || param.missedAppointmentScheduler=='false' ? 'checked' : ''}>
+                        <spring:message code="appointmentscheduling.Appointment.settings.label.disable" />
+                    </input>
+                    <br/>
+                    <input type="radio" name="missedAppointmentScheduler" value="true" ${(param.missedAppointmentScheduler==null && missedAppointmentScheduler=='true') || param.missedAppointmentScheduler=='true' ? 'checked' : ''}>
+                        <spring:message code="appointmentscheduling.Appointment.settings.label.enable" />
+                    </input>
+                </td>
+            </tr>
+
 			<tr>
 				<td><br /></td>
 			</tr>

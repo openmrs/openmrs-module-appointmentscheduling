@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <appointmentscheduling_appointment_type appointment_type_id="1" name="Dermatology Appointment" duration="30" description="Dermatology Appointment Description" creator="1" date_created="2019-01-01 00:00:00.0" retired="false" uuid="c0c579b0-8e59-401d-8a4a-976a0b183519" confidential="true"/>
+
+    <appointmentscheduling_appointment_block appointment_block_id="1" start_date="2019-01-01 00:00:00.0" end_date="2019-01-01 11:00:00.0" provider_id="1" location_id="3"  uuid="c0c579b0-8e59-401d-8a4a-976a0b183599" date_created="2019-01-01 00:00:00.0" date_changed="2019-01-01 00:00:00.0" date_voided="2019-01-01 00:00:00.0" voided="false" creator="1" changed_by="1"/>
+    <appointmentscheduling_appointment_block appointment_block_id="2" start_date="2099-01-02 00:00:00.0" end_date="2099-01-02 11:00:00.0" provider_id="1" location_id="1"  uuid="759799ab-c9a5-435e-b671-77773ada99e9" date_created="2019-01-01 00:00:00.0" date_changed="2019-01-01 00:00:00.0" date_voided="2019-01-01 00:00:00.0" voided="false" void_reason="void reason" creator="1" voided_by="1"/>
+
+    <appointmentscheduling_block_type_map appointment_block_id="1" appointment_type_id="1"/>
+    <appointmentscheduling_block_type_map appointment_block_id="2" appointment_type_id="1"/>
+
+    <appointmentscheduling_time_slot time_slot_id="1" appointment_block_id="1" start_date="2019-01-01 00:00:00.0" end_date="2019-01-01 11:00:00.0" uuid="c0c579b0-8e59-401d-8a4a-976a0b183604" date_created="2019-01-01 00:00:00.0" voided="false" creator="1" />
+    <appointmentscheduling_time_slot time_slot_id="2" appointment_block_id="1" start_date="2099-01-01 00:00:00.1" end_date="2099-01-01 11:00:00.1" uuid="c0c579b0-8e59-401d-8a4a-976a0b183605" date_created="2019-01-01 00:00:00.0" voided="false" creator="1" />
+
+    <appointmentscheduling_appointment appointment_id="1" time_slot_id="1" appointment_type_id="1" patient_id="2" status="SCHEDULED" uuid="c0c579b0-8e59-401d-8a4a-976a0b183601" date_created="2019-01-01 00:00:00.0" voided="false" creator="1"/>
+    <appointmentscheduling_appointment appointment_id="2" time_slot_id="1" appointment_type_id="1" patient_id="2" status="MISSED" visit_id="1" uuid="c0c579b0-8e59-401d-8a4a-976a0b183602" date_created="2019-01-01 00:00:00.0" voided="false" creator="1"/>
+    <appointmentscheduling_appointment appointment_id="3" time_slot_id="1" appointment_type_id="1" patient_id="2" status="COMPLETED" uuid="c0c579b0-8e59-401d-8a4a-976a0b183603" date_created="2019-01-01 00:00:00.0" voided="true" creator="1" void_reason="void reason"/>
+    <appointmentscheduling_appointment appointment_id="4" time_slot_id="1" appointment_type_id="1" patient_id="2" status="INCONSULTATION" uuid="c0c579b0-8e59-401d-8a4a-976a0b183604" date_created="2019-01-01 00:00:00.0" voided="false" creator="1"/>
+    <appointmentscheduling_appointment appointment_id="5" time_slot_id="1" appointment_type_id="1" patient_id="2" status="CANCELLED" uuid="c0c579b0-8e59-401d-8a4a-976a0b183605" date_created="2019-01-01 00:00:00.0" voided="false" creator="1"/>
+    <appointmentscheduling_appointment appointment_id="6" time_slot_id="1" appointment_type_id="1" patient_id="2" status="CANCELLED_AND_NEEDS_RESCHEDULE" uuid="c0c579b0-8e59-401d-8a4a-976a0b183606" date_created="2019-01-01 00:00:00.0" voided="false" creator="1"/>
+    <appointmentscheduling_appointment appointment_id="7" time_slot_id="1" appointment_type_id="1" patient_id="2" status="WALKIN" uuid="c0c579b0-8e59-401d-8a4a-976a0b183607" date_created="2019-01-01 00:00:00.0" voided="false" creator="1"/>
+    <appointmentscheduling_appointment appointment_id="8" time_slot_id="1" appointment_type_id="1" patient_id="2" status="WAITING" uuid="c0c579b0-8e59-401d-8a4a-976a0b183608" date_created="2019-01-01 00:00:00.0" voided="false" creator="1"/>
+
+    <appointmentscheduling_appointment appointment_id="9" time_slot_id="2" appointment_type_id="1" patient_id="2" status="SCHEDULED" uuid="c0c579b0-8e59-401d-8a4a-976a0b183609" date_created="2019-01-01 00:00:00.0" voided="false" creator="1"/>
+    <appointmentscheduling_appointment appointment_id="10" time_slot_id="2" appointment_type_id="1" patient_id="2" status="WAITING" uuid="c0c579b0-8e59-401d-8a4a-976a0b183610" date_created="2019-01-01 00:00:00.0" voided="false" creator="1"/>
+
+</dataset>
