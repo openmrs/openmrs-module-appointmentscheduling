@@ -33,6 +33,8 @@ import java.util.Date;
 import java.util.List;
 
 import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
+import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus.EARLY;
+import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus.LATE;
 import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus.getAppointmentsStatusByType;
 import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatusType;
 
@@ -196,6 +198,22 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 
 		Visit visit = context.getParameter("visit") != null ? Context.getVisitService().getVisitByUuid(
 				context.getParameter("visit")) : null;
+
+		Integer minDays = context.getParameter("minDefaultPeriod") != null ? (Integer) ConversionUtil.convert(
+				context.getParameter("minDefaultPeriod"), Integer.class) : 0;
+
+		Integer maxDays = context.getParameter("maxDefaultPeriod") != null ? (Integer) ConversionUtil.convert(
+				context.getParameter("maxDefaultPeriod"), Integer.class) : 0;
+
+		if (statuses != null && (statuses.get(0).equals(LATE) || statuses.get(0).equals(EARLY))) {
+			return new NeedsPaging<Appointment>(Context.getService(AppointmentService.class).getLateAndEarlyVisits(
+					fromDate, toDate, location, provider, appointmentType, statuses.get(0), visitType), context);
+		}
+
+		if(minDays != 0 && maxDays != 0 ){
+			return new NeedsPaging<Appointment>(Context.getService(AppointmentService.class).getDefaultersList(
+					minDays, maxDays, provider, appointmentType, visitType, location), context);
+		}
 
 		return new NeedsPaging<Appointment>(Context.getService(AppointmentService.class).getAppointmentsByConstraints(
 		    fromDate, toDate, location, provider, appointmentType, patient, statuses, visitType, visit), context);

@@ -58,6 +58,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * It is a default implementation of {@link AppointmentService}.
@@ -78,6 +82,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	private AppointmentStatusHistoryDAO appointmentStatusHistoryDAO;
 
     private AppointmentRequestDAO appointmentRequestDAO;
+
+    private List<Appointment> appointments;
 
 	/**
 	 * Getters and Setters
@@ -1155,8 +1161,86 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 				appointment);
 	}
 
+	@Override
+	public List<Appointment> getDistinctDailyAppointment(Date fromDate, Date toDate, Location location, Provider provider,
+			   AppointmentType appointmentType, AppointmentStatus status, VisitType visitType) throws APIException {
+		appointments = getAppointmentsByConstraints(fromDate,
+				toDate, location, provider, appointmentType, null, Collections.singletonList(status),
+				visitType, null);
+		return distinctAppointmentsByDate(appointments);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Integer getDailyAppointmentsCount(Appointment appointment){
+		int count = 0;
+		for (Appointment app : appointments){
+			if(app.getTimeSlot().getStartDate() == appointment.getTimeSlot().getStartDate()){
+				count ++;
+			}
+		}
+		return count;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Appointment> getLateAndEarlyVisits(Date fromDate,
+												   Date toDate, Location location, Provider provider, AppointmentType appointmentType,
+												   AppointmentStatus status, VisitType visitType) throws APIException {
+		List<Appointment> allCompletedAppnts = getAppointmentsByConstraints(fromDate,
+				toDate, location, provider, appointmentType, null, AppointmentStatus.COMPLETED);
+
+		List<Appointment> earlyAppnts = new ArrayList<>();
+		List<Appointment> lateAppnts = new ArrayList<>();
+		for (Appointment ap : allCompletedAppnts) {
+			if (ap.getVisit().getStartDatetime().before(ap.getTimeSlot().getEndDate())) {
+				earlyAppnts.add(ap);
+			} else if (ap.getVisit().getStartDatetime().after(ap.getTimeSlot().getEndDate())) {
+				lateAppnts.add(ap);
+			}
+		}
+
+		if (status == AppointmentStatus.EARLY) {
+			return earlyAppnts;
+		} else {
+			return lateAppnts;
+		}
+	}
+
+	@Override
+	public List<Appointment> getDefaultersList(int minDays, int maxDays, Provider provider, AppointmentType type,
+											   VisitType visitType, Location location) throws APIException {
+		List<Appointment> appointments = getAppointmentDAO().getDefaultersList(minDays, maxDays, provider, type, visitType);
+
+		List<Appointment> defaultedAppointmentsInLocation = new LinkedList<Appointment>();
+
+		// Used to update the session to the correct one
+		if (location != null)
+			location = Context.getLocationService().getLocation(
+					location.getId());
+
+		Set<Location> relevantLocations = getAllLocationDescendants(location,
+				null);
+		relevantLocations.add(location);
+
+		for (Appointment appointment : appointments) {
+
+			// Filter by location
+			if (location != null) {
+				if (relevantLocations.contains(appointment.getTimeSlot()
+						.getAppointmentBlock().getLocation()))
+					defaultedAppointmentsInLocation.add(appointment);
+			} else
+				defaultedAppointmentsInLocation.add(appointment);
+
+		}
+
+		return defaultedAppointmentsInLocation;
+
+    }
+
 	private List<AppointmentBlock> getAppointmentBlockList(Location location,
-			Date date, List<AppointmentType> appointmentTypes) {
+														   Date date, List<AppointmentType> appointmentTypes) {
 		return getAppointmentBlocksByTypes(setDateToStartOfDay(date),
 				setDateToEndOfDay(date), location.getId().toString(), null,
 				appointmentTypes);
@@ -1217,5 +1301,21 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		boundaries[1] = mean + factor;
 
 		return boundaries;
+	}
+
+
+	public List<Appointment> distinctAppointmentsByDate(List<Appointment> appointments) {
+
+		List<Appointment> appointmentList = appointments.stream()
+				.filter(filterAppointmentsByDate( e -> e.getTimeSlot().getStartDate()))
+				.collect(Collectors.toList());
+		return appointmentList;
+	}
+
+	public static <T> Predicate<T> filterAppointmentsByDate(
+			Function<? super T, ?> ke) {
+
+		Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+		return t -> seen.putIfAbsent(ke.apply(t), Boolean.TRUE) == null;
 	}
 }

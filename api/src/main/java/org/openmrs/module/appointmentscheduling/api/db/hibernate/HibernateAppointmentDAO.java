@@ -23,11 +23,9 @@ import org.hibernate.Query;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.openmrs.Patient;
-import org.openmrs.Provider;
-import org.openmrs.Visit;
-import org.openmrs.VisitType;
+import org.openmrs.*;
 import org.openmrs.api.APIException;
+import org.openmrs.api.db.DAOException;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
@@ -235,6 +233,45 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO
 		return ((Number) createAppointmentsInTimeSlotByStatusCriteria(timeSlot,
 				statuses).setProjection(Projections.rowCount()).uniqueResult())
 				.intValue();
+	}
+
+	@Override
+	public List<Appointment> getDefaultersList(int minDays, int maxDays, Provider provider, AppointmentType appointmentType, VisitType visitType) throws DAOException {
+		String stringQuery = null;
+
+		if (minDays >= 0 || maxDays <= 0) {
+			stringQuery = "SELECT  appointment FROM Appointment AS appointment WHERE appointment.status = :status AND appointment.voided = 0" +
+
+					"   AND datediff(curdate(), date_format(appointment.timeSlot.endDate, '%Y-%m-%d')) >= :mindays" +
+					"   AND datediff(curdate(), date_format(appointment.timeSlot.endDate, '%Y-%m-%d')) <= :maxdays";
+
+			if (provider != null)
+				stringQuery += " AND appointment.timeSlot.appointmentBlock.provider = :provider";
+			if (appointmentType != null)
+				stringQuery += " AND appointment.appointmentType=:appointmentType";
+            if (visitType != null)
+                stringQuery += " AND appointment.appointmentType.visitType=:visitType";
+
+			stringQuery += " ORDER BY appointment.timeSlot.startDate";
+
+			Query query = super.sessionFactory.getCurrentSession().createQuery(
+					stringQuery);
+
+			query.setParameter("mindays", minDays);
+			query.setParameter("maxdays", maxDays);
+			query.setParameter("status", MISSED);
+
+			if (provider != null)
+				query.setParameter("provider", provider);
+			if (appointmentType != null)
+				query.setParameter("appointmentType", appointmentType);
+			if (visitType != null)
+				query.setParameter("visitType", visitType);
+
+			return query.list();
+		} else {
+			return null;
+		}
 	}
 
 	private Criteria createAppointmentsInTimeSlotCriteria(TimeSlot timeSlot) {

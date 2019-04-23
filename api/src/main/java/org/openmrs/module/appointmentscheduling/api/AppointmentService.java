@@ -980,4 +980,38 @@ public interface AppointmentService extends OpenmrsService {
     @Authorized(AppointmentUtils.PRIV_SCHEDULE_APPOINTMENTS)
 	Appointment bookAppointment(Appointment appointment, Boolean allowOverbook)
 			throws TimeSlotFullException;
+
+	/**
+	 * returns daily count for the statuses
+	 * scheduled
+	 * missed
+	 * completed
+	 */
+	@Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+    List<Appointment> getDistinctDailyAppointment(Date fromDate,
+			Date toDate, Location location, Provider provider, AppointmentType appointmentType,
+			AppointmentStatus status, VisitType visitType) throws APIException;
+
+	/**
+	 * helper method that counts number of appointments per day
+	 */
+	@Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+	Integer getDailyAppointmentsCount(Appointment appointment) throws APIException;
+
+	/**
+	 * returns list of patients and their appointments
+	 * who came late/early for their visits
+	 */
+	@Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+	List<Appointment> getLateAndEarlyVisits(Date fromDate,
+								  Date toDate,  Location location, Provider provider, AppointmentType appointmentType,
+								  AppointmentStatus status, VisitType visitType) throws APIException;
+
+	/**
+	 * returns list of patient who have not come for the visits using
+	 * minDays and maxDays range provided
+	 */
+    @Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+    List<Appointment> getDefaultersList(int minDays, int maxDays, Provider provider, AppointmentType type, VisitType visitType,
+                                        Location location) throws APIException;
 }

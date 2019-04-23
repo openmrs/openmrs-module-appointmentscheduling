@@ -52,7 +52,9 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
         CANCELLED("Cancelled", AppointmentStatusType.CANCELLED),
         CANCELLED_AND_NEEDS_RESCHEDULE("Cancelled and Needs Reschedule", AppointmentStatusType.CANCELLED),
         MISSED("Missed", AppointmentStatusType.MISSED),
-        COMPLETED("Completed", AppointmentStatusType.COMPLETED);
+        COMPLETED("Completed", AppointmentStatusType.COMPLETED),
+		EARLY("Early", AppointmentStatusType.COMPLETED),
+		LATE("Late", AppointmentStatusType.COMPLETED);
 
 		private final String name;
 

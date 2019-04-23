@@ -21,6 +21,7 @@ import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.APIException;
+import org.openmrs.api.db.DAOException;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
@@ -94,4 +95,12 @@ public interface AppointmentDAO extends SingleClassDAO {
 	 * @should not return voided time slots
 	 */
 	Integer getCountOfAppointmentsInTimeSlotByStatus(TimeSlot timeSlot, List<AppointmentStatus> statuses);
+
+	/**
+	 * returns list of patient who have not come for the visits using
+	 * minDays and maxDays range provided
+	 */
+	@Transactional(readOnly = true)
+	List<Appointment> getDefaultersList(int minDays, int maxDays, Provider provider, AppointmentType type,
+										VisitType visitType) throws DAOException;
 }
