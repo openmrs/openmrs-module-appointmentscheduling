@@ -79,6 +79,13 @@
                         </property>
                     </bean>
                 </property>
+                <property name="providerScheduleDAO">
+                    <bean class="${project.parent.groupId}.${project.parent.artifactId}.api.db.hibernate.HibernateProviderScheduleDAO">
+                        <property name="sessionFactory">
+                            <ref bean="dbSessionFactory" />
+                        </property>
+                    </bean>
+                </property>
             </bean>
         </property>
         <property name="preInterceptors">

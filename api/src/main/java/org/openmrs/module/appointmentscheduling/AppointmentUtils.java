@@ -25,7 +25,11 @@ public class AppointmentUtils {
 	public static final String PRIV_VIEW_APPOINTMENTS_STATISTICS = "View Appointments Statistics";
 
     public static final String PRIV_REQUEST_APPOINTMENTS = "Request Appointments";
-	
+
+	public static final String PRIV_VIEW_PROVIDER_SCHEDULES = "View Provider Scedules";
+
+	public static final String PRIV_MANAGE_PROVIDER_SCHEDULES = "Manage Provider Scedules";
+
 	//Global Properties
 	
 	public static final String GP_PATIENT_PHONE_NUMBER = "appointmentscheduling.phoneNumberPersonAttributeTypeId";
