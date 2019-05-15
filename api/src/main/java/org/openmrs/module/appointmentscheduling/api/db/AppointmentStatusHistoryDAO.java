@@ -58,4 +58,14 @@ public interface AppointmentStatusHistoryDAO extends SingleClassDAO {
 	 * @return
 	 */
 	public void purgeHistoryBy(Appointment appointment);
+
+	/**
+	 * Returns previous status of a given appointment
+	 */
+	@Transactional(readOnly = true)
+	AppointmentStatusHistory getPreviousAppointmentStatus(Appointment appointment);
+
+	@Transactional(readOnly = true)
+	List<AppointmentStatusHistory> getAppointmentStatusHistories(Appointment appointment);
+
 }

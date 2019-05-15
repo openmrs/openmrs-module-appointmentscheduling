@@ -163,6 +163,7 @@
 		TimeSlot.hbm.xml
 		AppointmentStatusHistory.hbm.xml
         AppointmentRequest.hbm.xml
+		AppointmentResource.hbm.xml
 	</mappingFiles>
 
 	<!-- Internationalization -->

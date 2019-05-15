@@ -127,7 +127,11 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 	protected Appointment save(Appointment appointment, Boolean allowOverbook) {
 		if (appointment.getId() != null) {
 			// existing appointments get updated
-			return Context.getService(AppointmentService.class).saveAppointment(appointment);
+			AppointmentService service = Context.getService(AppointmentService.class);
+			Appointment savedAppnt = service.saveAppointment(appointment);
+			service.addNewStatusToHistory(savedAppnt);
+			return savedAppnt;
+
 		} else {
 			// new appointments get booked
 			try {
@@ -196,6 +200,16 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 
 		Visit visit = context.getParameter("visit") != null ? Context.getVisitService().getVisitByUuid(
 				context.getParameter("visit")) : null;
+
+		if (statuses != null && (statuses.get(0).equals(AppointmentStatus.EARLY))) {
+			return new NeedsPaging<Appointment>(Context.getService(AppointmentService.class).getEarlyAppointments(
+					fromDate, toDate, location, provider, appointmentType, statuses.get(0), visitType), context);
+		}
+
+		if (statuses != null && (statuses.get(0).equals(AppointmentStatus.LATE))) {
+			return new NeedsPaging<Appointment>(Context.getService(AppointmentService.class).getLateAppointments(
+					fromDate, toDate, location, provider, appointmentType, statuses.get(0), visitType), context);
+		}
 
 		return new NeedsPaging<Appointment>(Context.getService(AppointmentService.class).getAppointmentsByConstraints(
 		    fromDate, toDate, location, provider, appointmentType, patient, statuses, visitType, visit), context);

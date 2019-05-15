@@ -230,4 +230,35 @@ public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensit
 		assertEquals(averages.size(), 0);
 		
 	}
+
+	@Test
+	@Verifies(value = "should get previous appointment status of a given appointment", method = "getPreviousAppointmentStatus()")
+	public void getPreviousAppointmentStatus_shouldGetPreviousAppointmentStatus() throws Exception {
+		AppointmentStatusHistory appointmentStatusHistory = service.getPreviousAppointmentStatus(
+				service.getAppointment(1));
+		assertEquals(service.getAppointmentStatusHistory(2), appointmentStatusHistory);
+	}
+
+	@Test
+	@Verifies(value = "should get all status histories of a given appointment", method = "getAppointmentStatusHistories()")
+	public void getAppointmentStatusHistories_shouldGetAllAppointmentStatusHistories() throws Exception {
+		List<AppointmentStatusHistory> appointmentStatusHistories = service.getAppointmentStatusHistories(
+				service.getAppointment(1)		);
+		assertEquals(2, appointmentStatusHistories.size());
+	}
+
+	@Test
+	@Verifies(value = "Should add new status", method = "addNewStatusToHistory(Appointment)")
+	public void addNewStatusToHistory_shouldAddNewStatusToHistory() {
+		Appointment appointment = service.getAppointment(1);
+		assertNotNull(appointment);
+
+		appointment.setStatus(AppointmentStatus.COMPLETED);
+		service.addNewStatusToHistory(appointment);
+		//Should add new history
+		assertEquals(4, service.getAllAppointmentStatusHistories().size());
+
+		//Should not add new appointment
+		assertEquals(TOTAL_APPOINTMENTS, service.getAllAppointments().size());
+	}
 }
