@@ -29,7 +29,9 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
+import org.openmrs.module.appointmentscheduling.AppointmentDailyCount;
 import org.openmrs.module.appointmentscheduling.AppointmentRequest;
+import org.openmrs.module.appointmentscheduling.AppointmentResource;
 import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.StudentT;
@@ -38,6 +40,7 @@ import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentBlockDAO;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentDAO;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentRequestDAO;
+import org.openmrs.module.appointmentscheduling.api.db.AppointmentResourceDAO;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentStatusHistoryDAO;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentTypeDAO;
 import org.openmrs.module.appointmentscheduling.api.db.TimeSlotDAO;
@@ -78,6 +81,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	private AppointmentStatusHistoryDAO appointmentStatusHistoryDAO;
 
     private AppointmentRequestDAO appointmentRequestDAO;
+
+	private AppointmentResourceDAO appointmentResourceDAO;
 
 	/**
 	 * Getters and Setters
@@ -131,6 +136,14 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
     public void setAppointmentRequestDAO(AppointmentRequestDAO appointmentRequestDAO) {
         this.appointmentRequestDAO = appointmentRequestDAO;
     }
+
+	public AppointmentResourceDAO getAppointmentResourceDAO() {
+		return appointmentResourceDAO;
+	}
+
+	public void setAppointmentResourceDAO(AppointmentResourceDAO appointmentResourceDAO) {
+		this.appointmentResourceDAO = appointmentResourceDAO;
+	}
 
     /**
 	 * @see org.openmrs.module.appointmentscheduling.api.AppointmentService#getAllAppointmentTypes()
@@ -1150,13 +1163,208 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 			}
 		}
 
-		appointment.setStatus(AppointmentStatus.SCHEDULED);
-		return Context.getService(AppointmentService.class).saveAppointment(
+		Appointment savedAppnt = Context.getService(AppointmentService.class).saveAppointment(
 				appointment);
+		addNewStatusToHistory(savedAppnt);
+		return savedAppnt;
 	}
 
-	private List<AppointmentBlock> getAppointmentBlockList(Location location,
-			Date date, List<AppointmentType> appointmentTypes) {
+	@Override
+	public AppointmentStatusHistory getPreviousAppointmentStatus(Appointment appointment) {
+		return appointmentStatusHistoryDAO.getPreviousAppointmentStatus(appointment);
+	}
+
+	@Override
+	@Transactional
+	public List<AppointmentStatusHistory> getAppointmentStatusHistories(Appointment appointment) {
+		return getAppointmentStatusHistoryDAO().getAppointmentStatusHistories(appointment);
+	}
+
+	@Override
+	public void addNewStatusToHistory(Appointment appointment) {
+		AppointmentStatusHistory previousStatus = getPreviousAppointmentStatus(appointment);
+		if (previousStatus != null) {
+			previousStatus.setEndDate(new Date());
+			saveAppointmentStatusHistory(previousStatus);
+		}
+
+		AppointmentStatusHistory currentStatus = new AppointmentStatusHistory();
+		currentStatus.setAppointment(appointment);
+		currentStatus.setStartDate(getAppointmentCurrentStatusStartDate(appointment));
+		currentStatus.setEndDate(new DateTime().plusDays(10).toDate());
+		currentStatus.setStatus(appointment.getStatus());
+
+		saveAppointmentStatusHistory(currentStatus);
+
+		if (appointment.getStatus() == AppointmentStatus.COMPLETED
+				|| appointment.getStatus() == AppointmentStatus.CANCELLED
+				|| appointment.getStatus() == AppointmentStatus.MISSED) {
+			Visit visit = appointment.getVisit();
+			if (visit != null && visit.getStopDatetime() == null) {
+				visit.setStopDatetime(new Date());
+				Context.getVisitService().saveVisit(visit);
+			}
+		}
+	}
+
+
+	//appointment resource
+
+	@Override
+	public List<AppointmentResource> getAllAppointmentResources() {
+		return getAppointmentResourceDAO().getAll();
+	}
+
+	@Override
+	public List<AppointmentResource> getAllAppointmentResources(boolean includeVoided) {
+		return getAppointmentResourceDAO().getAllData(includeVoided);
+	}
+
+	@Override
+	public AppointmentResource getAppointmentResource(Integer appointmentResourceId) {
+		return (AppointmentResource) getAppointmentResourceDAO().getById(appointmentResourceId);
+	}
+
+	@Override
+	public AppointmentResource getAppointmentResourceByUuid(String uuid) {
+		return (AppointmentResource) getAppointmentResourceDAO().getByUuid(uuid);
+	}
+
+	@Override
+	public AppointmentResource saveAppointmentResource(AppointmentResource appointmentResource) throws APIException {
+		ValidateUtil.validate(appointmentResource);
+		return (AppointmentResource) getAppointmentResourceDAO().saveOrUpdate(appointmentResource);
+	}
+
+	@Override
+	public AppointmentResource voidAppointmentResource(AppointmentResource appointmentResource, String reason) {
+		appointmentResource.setVoided(true);
+		appointmentResource.setVoidReason(reason);
+		return (AppointmentResource) getAppointmentResourceDAO().saveOrUpdate(appointmentResource);
+	}
+
+	@Override
+	public void purgeAppointmentResource(AppointmentResource appointmentResource) {
+		getAppointmentResourceDAO().delete(appointmentResource);
+	}
+
+	@Override
+	public List<AppointmentResource> getAppointmentResourcesByConstraints(Location location, Provider provider, List<AppointmentType> appointmentTypes) {
+		return getAppointmentResourceDAO().getResourceByConstraints(location, provider,null);
+	}
+
+	@Override
+	public TimeSlot getRequiredTimeslot(Location location, Provider provider, AppointmentType type, Date appointmentDate){
+		TimeSlot requiredTimeslot = null;
+
+		Calendar dayBeforeAppointmentDate = Calendar.getInstance();
+		dayBeforeAppointmentDate.setTime(appointmentDate);
+		dayBeforeAppointmentDate.add(Calendar.DATE, -1);
+
+		Calendar dayAfterAppointmentDate = Calendar.getInstance();
+		dayAfterAppointmentDate.setTime(appointmentDate);
+		dayAfterAppointmentDate.add(Calendar.DATE, 1);
+
+		List<TimeSlot> timeSlots = getTimeSlotsByConstraintsIncludingFull(type, dayBeforeAppointmentDate.getTime(), dayAfterAppointmentDate.getTime(), provider, location);
+
+		for (TimeSlot timeSlot : timeSlots){
+			if ((appointmentDate.equals(timeSlot.getStartDate()) || appointmentDate.equals(timeSlot.getEndDate())) ||
+					appointmentDate.after(timeSlot.getStartDate()) && appointmentDate.before(timeSlot.getEndDate())){
+				requiredTimeslot = timeSlot;
+			}
+		}
+		log.info("TIMESLOT EXISTS " +requiredTimeslot);
+		if (requiredTimeslot == null){
+			requiredTimeslot = createTimeSlot(appointmentDate, provider, location);
+			log.info("NEW TIMESLOT CREATED " +requiredTimeslot);
+		}
+
+		return requiredTimeslot;
+
+	}
+
+
+	public TimeSlot createTimeSlot(Date appointmentDate, Provider provider, Location location) {
+
+		List<AppointmentResource> ar = getAppointmentResourceDAO().getResourceByConstraints(location, provider, appointmentDate);
+		if (ar != null) {
+			TimeSlot timeSlot = new TimeSlot();
+			for (AppointmentResource appointmentResource : ar) {
+				Date startDate = getDateAndTime(appointmentDate, appointmentResource.getStartTime());
+				Date endDate = getDateAndTime(appointmentDate, appointmentResource.getEndTime());
+
+				Set<AppointmentType> types = new HashSet<AppointmentType>();
+
+				for (AppointmentType type : appointmentResource.getTypes()) {
+					types.add(type);
+				}
+
+				AppointmentBlock appointmentBlock = new AppointmentBlock(startDate, endDate, appointmentResource.getProvider(), appointmentResource.getLocation(), types);
+				AppointmentBlock block = (AppointmentBlock) getAppointmentBlockDAO().saveOrUpdate(appointmentBlock);
+				log.info("APPOINTMENT BLOCK CREATED");
+
+				timeSlot.setAppointmentBlock(block);
+				timeSlot.setStartDate(block.getStartDate());
+				timeSlot.setEndDate(block.getEndDate());
+				log.info("APPOINTMENT TIMESLOT CREATED");
+
+			}
+			return (TimeSlot) getTimeSlotDAO().saveOrUpdate(timeSlot);
+		} else {
+			throw new APIException("Appointment cannot be booked, Resource does not exist");
+		}
+
+
+	}
+
+	public Date getDateAndTime(Date date, Date time) {
+		return new Date(
+				date.getYear(), date.getMonth(), date.getDate(),
+				time.getHours(), time.getMinutes(), time.getSeconds()
+		);
+	}
+
+    @Override
+    public List<Appointment> getEarlyAppointments(Date fromDate,
+                                            Date toDate, Location location, Provider provider, AppointmentType appointmentType,
+                                            AppointmentStatus status, VisitType visitType) throws APIException {
+        List<Appointment> allCompletedAppnts = getAppointmentsByConstraints(fromDate,
+                toDate, location, provider, appointmentType, null, AppointmentStatus.COMPLETED);
+
+        List<Appointment> earlyAppnts = new ArrayList<Appointment>();
+        for (Appointment ap : allCompletedAppnts) {
+            if (ap.getVisit().getStartDatetime().before(ap.getTimeSlot().getEndDate())) {
+                earlyAppnts.add(ap);
+            }
+        }
+        return earlyAppnts;
+    }
+
+    @Override
+    public List<Appointment> getLateAppointments(Date fromDate,
+                                           Date toDate, Location location, Provider provider, AppointmentType appointmentType,
+                                           AppointmentStatus status, VisitType visitType) throws APIException {
+        List<Appointment> allCompletedAppnts = getAppointmentsByConstraints(fromDate,
+                toDate, location, provider, appointmentType, null, AppointmentStatus.COMPLETED);
+
+        List<Appointment> lateAppnts = new ArrayList<Appointment>();
+        for (Appointment ap : allCompletedAppnts) {
+            if (ap.getVisit().getStartDatetime().after(ap.getTimeSlot().getEndDate())) {
+                lateAppnts.add(ap);
+            }
+        }
+
+        return lateAppnts;
+    }
+
+    @Override
+    public List<AppointmentDailyCount> getAppointmentDailyCount(String fromDate, String toDate, Location location,
+                        Provider provider, AppointmentStatus status) throws APIException {
+        return appointmentDAO.getAppointmentDailyCount(fromDate, toDate, location, provider, status);
+    }
+
+    private List<AppointmentBlock> getAppointmentBlockList(Location location,
+                                                           Date date, List<AppointmentType> appointmentTypes) {
 		return getAppointmentBlocksByTypes(setDateToStartOfDay(date),
 				setDateToEndOfDay(date), location.getId().toString(), null,
 				appointmentTypes);

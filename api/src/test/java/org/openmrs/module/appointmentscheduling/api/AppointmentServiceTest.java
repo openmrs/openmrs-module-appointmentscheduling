@@ -42,6 +42,8 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
+import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus.EARLY;
+import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus.LATE;
 
 /**
  * Tests Appointment methods in the {@link$ AppointmentService} .
@@ -634,6 +636,35 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(appointmentType, appointment.getAppointmentType());
 		assertEquals(AppointmentStatus.SCHEDULED, appointment.getStatus());
 		assertNull(appointment.getVisit());
+
+	}
+
+
+	@Test
+	@Verifies(value = "should get all Early Appointments", method = "getEarlyAppointments(Date fromDate,Date toDate, Location location, Provider provider," +
+			" AppointmentType appointmentType, AppointmentStatus status, VisitType visitType")
+	public void getEarlyAppointments_shouldGetEarlyAppointments()
+			throws Exception {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Date fromDate = format.parse("2005-01-01");
+		Date toDate = format.parse("2006-02-02");
+		List<Appointment> appointments = service
+				.getEarlyAppointments(fromDate, toDate, null, null, null, EARLY, null);
+		assertEquals(0, appointments.size());
+
+	}
+
+	@Test
+	@Verifies(value = "should get all Late Appointments", method = "getLateAppointments(Date fromDate,Date toDate, Location location, Provider provider," +
+			" AppointmentType appointmentType, AppointmentStatus status, VisitType visitType")
+	public void getLateAppointments_shoulGetLateAppointments()
+			throws Exception {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Date fromDate = format.parse("2005-01-01");
+		Date toDate = format.parse("2006-02-02");
+		List<Appointment> appointments = service
+				.getLateAppointments(fromDate, toDate, null, null, null, LATE, null);
+		assertEquals(0, appointments.size());
 
 	}
 }

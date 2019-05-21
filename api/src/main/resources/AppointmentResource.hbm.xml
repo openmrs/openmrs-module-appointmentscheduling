@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="org.openmrs.module.appointmentscheduling">
+
+    <class name="AppointmentResource" table="${project.parent.artifactId}_appointment_resource">
+        <id name="appointmentResourceId" type="int" column="appointment_resource_id" unsaved-value="0">
+            <generator class="native">
+                <param name="sequence">appointment_resource_appointment_resource_id_seq</param>
+            </generator>
+        </id>
+
+        <discriminator column="appointment_resource_id" insert="false"/>
+        <property name="startDate" type="java.util.Date" column="start_date" length="19"/>
+        <property name="endDate" type="java.util.Date" column="end_date" length="19"/>
+        <property name="startTime" type="java.sql.Time" column="start_time" not-null="true" length="19"/>
+        <property name="endTime" type="java.sql.Time" column="end_time" not-null="true" length="19"/>
+        <many-to-one name="provider" column="provider_id" class="org.openmrs.Provider" not-null="false"/>
+        <many-to-one name="location" column="location_id" class="org.openmrs.Location" not-null="true"/>
+        <set name="types" table="appointmentscheduling_resource_type_map" cascade="save-update">
+            <key column="appointment_resource_id"/>
+            <many-to-many class="AppointmentType" column="appointment_type_id"/>
+        </set>
+
+        <!-- bi-directional many-to-one association to User -->
+        <many-to-one name="creator" class="org.openmrs.User" not-null="true">
+            <column name="creator"/>
+        </many-to-one>
+        <property name="dateCreated" type="java.util.Date"
+                  column="date_created" not-null="true" length="19"/>
+        <property name="voided" type="java.lang.Boolean"
+                  column="voided" length="1" not-null="true"/>
+        <!-- bi-directional many-to-one association to User -->
+        <many-to-one name="voidedBy" class="org.openmrs.User">
+            <column name="voided_by"/>
+        </many-to-one>
+        <property name="voidReason" type="java.lang.String"
+                  column="void_reason" length="255"/>
+        <property name="dateVoided" type="java.util.Date"
+                  column="date_voided" length="19"/>
+        <!-- bi-directional many-to-one association to User -->
+        <many-to-one name="changedBy" class="org.openmrs.User">
+            <column name="changed_by"/>
+        </many-to-one>
+        <property name="dateChanged" type="java.util.Date"
+                  column="date_changed" length="19"/>
+        <property name="uuid" type="java.lang.String"/>
+    </class>
+
+</hibernate-mapping>

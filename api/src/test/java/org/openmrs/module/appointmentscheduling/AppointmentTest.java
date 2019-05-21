@@ -48,7 +48,7 @@ public class AppointmentTest {
 
 		List<AppointmentStatus> statuses = AppointmentStatus
 				.getNotCancelledAppointmentStatuses();
-		Assert.assertEquals(7, statuses.size());
+		Assert.assertEquals(9, statuses.size());
 		Assert.assertTrue(statuses
 				.contains(AppointmentStatus.WAITING));
 		Assert.assertTrue(statuses
@@ -63,6 +63,12 @@ public class AppointmentTest {
 				.contains(AppointmentStatus.RESCHEDULED));
 		Assert.assertTrue(statuses
 				.contains(AppointmentStatus.COMPLETED));
+		Assert.assertTrue(statuses
+				.contains(AppointmentStatus.LATE));
+		Assert.assertTrue(statuses
+				.contains(AppointmentStatus.EARLY));
+
+
 
 	}
 }
