@@ -7,6 +7,7 @@ import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
@@ -127,6 +128,11 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 	protected Appointment save(Appointment appointment, Boolean allowOverbook) {
 		if (appointment.getId() != null) {
 			// existing appointments get updated
+			AppointmentStatusHistory statusHistory = Context.getService(AppointmentService.class).getMostRecentAppointmentStatusHistory(appointment);
+			if (appointment.getStatus() != statusHistory.getStatus()) {
+				Context.getService(AppointmentService.class).changeAppointmentStatus(appointment, appointment.getStatus());
+				return appointment;
+			}
 			return Context.getService(AppointmentService.class).saveAppointment(appointment);
 		} else {
 			// new appointments get booked
