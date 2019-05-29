@@ -29,6 +29,7 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
+import org.openmrs.module.appointmentscheduling.AppointmentDailyCount;
 import org.openmrs.module.appointmentscheduling.AppointmentRequest;
 import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
@@ -1307,6 +1308,51 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 				date.getYear(), date.getMonth(), date.getDate(),
 				time.getHours(), time.getMinutes(), time.getSeconds()
 		);
+	}
+
+	@Override
+	public List<Appointment> getEarlyAppointments(Date fromDate, Date toDate, Location location,
+												  Provider provider, AppointmentType appointmentType) throws APIException {
+		List<AppointmentStatus> statuses = new ArrayList<AppointmentStatus>();
+		statuses.add(AppointmentStatus.COMPLETED);
+		statuses.add(AppointmentStatus.INCONSULTATION);
+
+		List<Appointment> allCompletedAppointments = getAppointmentsByConstraints(fromDate,
+				toDate, location, provider, appointmentType, null, statuses);
+
+		List<Appointment> earlyAppointments = new ArrayList<Appointment>();
+		for (Appointment ap : allCompletedAppointments) {
+			if (ap.getVisit().getStartDatetime().before(ap.getTimeSlot().getEndDate())) {
+				earlyAppointments.add(ap);
+			}
+		}
+		return earlyAppointments;
+	}
+
+	@Override
+	public List<Appointment> getLateAppointments(Date fromDate, Date toDate, Location location,
+												 Provider provider, AppointmentType appointmentType) throws APIException {
+		List<AppointmentStatus> statuses = new ArrayList<AppointmentStatus>();
+		statuses.add(AppointmentStatus.COMPLETED);
+		statuses.add(AppointmentStatus.INCONSULTATION);
+
+		List<Appointment> allCompletedAppointments = getAppointmentsByConstraints(fromDate,
+				toDate, location, provider, appointmentType, null, statuses);
+
+		List<Appointment> lateAppointments = new ArrayList<Appointment>();
+		for (Appointment ap : allCompletedAppointments) {
+			if (ap.getVisit().getStartDatetime().after(ap.getTimeSlot().getEndDate())) {
+				lateAppointments.add(ap);
+			}
+		}
+
+		return lateAppointments;
+	}
+
+	@Override
+	public List<AppointmentDailyCount> getAppointmentDailyCount(String fromDate, String toDate, Location location,
+																Provider provider, AppointmentStatus status) throws APIException {
+		return appointmentDAO.getAppointmentDailyCount(fromDate, toDate, location, provider, status);
 	}
 
 	private List<AppointmentBlock> getAppointmentBlockList(Location location,
