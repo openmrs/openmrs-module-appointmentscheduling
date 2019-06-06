@@ -1150,7 +1150,9 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 			}
 		}
 
-		appointment.setStatus(AppointmentStatus.SCHEDULED);
+		if (appointment.getStatus() == null){
+			appointment.setStatus(AppointmentStatus.SCHEDULED);
+		}
 		return Context.getService(AppointmentService.class).saveAppointment(
 				appointment);
 	}
