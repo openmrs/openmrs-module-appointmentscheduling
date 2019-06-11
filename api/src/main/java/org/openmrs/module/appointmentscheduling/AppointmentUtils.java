@@ -38,5 +38,5 @@ public class AppointmentUtils {
 	
 	public static final String GP_HIDE_END_VISITS_BUTTONS = "appointmentscheduling.hideEndVisitButtons";
 
-	public static final String GP_MARK_APPOINTMENT_AS_MISSED = "appointmentscheduling.missedAppointmentScheduler";
+	public static final String GP_CLEAN_OPEN_APPOINTMENTS = "appointmentscheduling.cleanOpenAppointmentScheduler";
 }
