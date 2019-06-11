@@ -20,8 +20,7 @@ public class MarkAppointmentsAsMissedTask extends AbstractTask {
 
         for (Appointment appointment : appointmentService.getAppointmentsByConstraints(null, endOfYesterday, null, null, null, null,
                 Appointment.AppointmentStatus.getAppointmentsStatusByTypes(Arrays.asList(Appointment.AppointmentStatusType.SCHEDULED)))) {
-            appointment.setStatus(Appointment.AppointmentStatus.MISSED);
-            appointmentService.saveAppointment(appointment);
+            appointmentService.changeAppointmentStatus(appointment, Appointment.AppointmentStatus.MISSED);
         }
     }
 }

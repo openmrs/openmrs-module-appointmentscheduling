@@ -230,4 +230,12 @@ public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensit
 		assertEquals(averages.size(), 0);
 		
 	}
+
+	@Test
+	@Verifies(value = "should get all status histories of a given appointment", method = "getAppointmentStatusHistories()")
+	public void getAppointmentStatusHistories_shouldGetAllAppointmentStatusHistories() throws Exception {
+		List<AppointmentStatusHistory> appointmentStatusHistories = service.getAppointmentStatusHistories(
+				service.getAppointment(1)		);
+		assertEquals(2, appointmentStatusHistories.size());
+	}
 }

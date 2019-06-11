@@ -1153,12 +1153,29 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		if (appointment.getStatus() == null){
 			appointment.setStatus(AppointmentStatus.SCHEDULED);
 		}
-		return Context.getService(AppointmentService.class).saveAppointment(
-				appointment);
+		
+		Context.getService(AppointmentService.class).saveAppointment(appointment);
+
+		Date oneSecondAfterNow=new Date((Calendar.getInstance().getTimeInMillis()) + 1000);
+
+		AppointmentStatusHistory history = new AppointmentStatusHistory(appointment, appointment.getStatus(), getAppointmentCurrentStatusStartDate(appointment), oneSecondAfterNow);
+		Context.getService(AppointmentService.class).saveAppointmentStatusHistory(history);
+		return appointment;
 	}
 
-	private List<AppointmentBlock> getAppointmentBlockList(Location location,
-			Date date, List<AppointmentType> appointmentTypes) {
+	@Override
+	@Transactional
+	public List<AppointmentStatusHistory> getAppointmentStatusHistories(Appointment appointment) {
+		return getAppointmentStatusHistoryDAO().getAppointmentStatusHistories(appointment);
+	}
+
+    @Override
+    public AppointmentStatusHistory getMostRecentAppointmentStatusHistory(Appointment appointment) {
+        return getAppointmentStatusHistoryDAO().getMostRecentAppointmentStatusHistory(appointment);
+    }
+
+    private List<AppointmentBlock> getAppointmentBlockList(Location location,
+                                                           Date date, List<AppointmentType> appointmentTypes) {
 		return getAppointmentBlocksByTypes(setDateToStartOfDay(date),
 				setDateToEndOfDay(date), location.getId().toString(), null,
 				appointmentTypes);
