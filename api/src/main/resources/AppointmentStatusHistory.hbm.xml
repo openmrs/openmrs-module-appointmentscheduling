@@ -18,7 +18,7 @@
 			</type>
 		</property>
 		<property name="startDate" column="start_date" type="java.util.Date" not-null="true" length="255" />
-		<property name="endDate" column="end_date" type="java.util.Date" not-null="true" length="255" />
+		<property name="endDate" column="end_date" type="java.util.Date" not-null="false" length="255" />
 		
 		<many-to-one name="appointment" column="appointment_id" class="Appointment" not-null="true" />	
 	</class> 
