@@ -63,10 +63,10 @@
 		</description>
 	</globalProperty>
 	<globalProperty>
-		<property>${project.parent.artifactId}.missedAppointmentScheduler
+		<property>${project.parent.artifactId}.cleanOpenAppointmentScheduler
 		</property>
 		<defaultValue>false</defaultValue>
-		<description>Mark Appointment as MISSED at end of the day.
+		<description>Clean open appointments at end of the day.
 		</description>
 	</globalProperty>
 

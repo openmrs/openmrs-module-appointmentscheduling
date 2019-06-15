@@ -139,12 +139,12 @@ public class AppointmentSettingsFormController {
 		return duration.toString();
 	}
 
-	@ModelAttribute("missedAppointmentScheduler")
-	public String getDefaultMarkAppointmentAsMissedValue(@RequestParam(value = "missedAppointmentScheduler", required = false) String missedAppointmentScheduler) {
-		missedAppointmentScheduler = (missedAppointmentScheduler != null) ? missedAppointmentScheduler : Context.getAdministrationService().getGlobalProperty(
-				AppointmentUtils.GP_MARK_APPOINTMENT_AS_MISSED);
+	@ModelAttribute("cleanOpenAppointmentScheduler")
+	public String getDefaultCleanOpenAppointmentsValue(@RequestParam(value = "cleanOpenAppointmentScheduler", required = false) String cleanOpenAppointmentScheduler) {
+		cleanOpenAppointmentScheduler = (cleanOpenAppointmentScheduler != null) ? cleanOpenAppointmentScheduler : Context.getAdministrationService().getGlobalProperty(
+				AppointmentUtils.GP_CLEAN_OPEN_APPOINTMENTS);
 
-		return missedAppointmentScheduler;
+		return cleanOpenAppointmentScheduler;
 	}
 
 	//
@@ -157,7 +157,7 @@ public class AppointmentSettingsFormController {
 	        @RequestParam(value = "refreshDelayInput", required = false) String delay,
 	        @RequestParam(value = "refreshRadio", required = true) String radio,
 	        @RequestParam(value = "hideEndVisit", required = true) String hide,
-		    @RequestParam(value = "missedAppointmentScheduler", required = true) String missedAppointmentValue) throws Exception {
+		    @RequestParam(value = "cleanOpenAppointmentScheduler", required = true) String cleanOpenAppointmentScheduler) throws Exception {
 		
 		Integer slotDuration = null;
 		Integer refreshDelay = null;
@@ -192,22 +192,22 @@ public class AppointmentSettingsFormController {
 			    AppointmentUtils.GP_DEFAULT_TIME_SLOT_DURATION);
 			GlobalProperty hideEndVisitGP = Context.getAdministrationService().getGlobalPropertyObject(
 			    AppointmentUtils.GP_HIDE_END_VISITS_BUTTONS);
-			GlobalProperty missedAppointmentValueGP = Context.getAdministrationService().getGlobalPropertyObject(
-					AppointmentUtils.GP_MARK_APPOINTMENT_AS_MISSED);
+			GlobalProperty cleanOpenAppointmentsValueGP = Context.getAdministrationService().getGlobalPropertyObject(
+					AppointmentUtils.GP_CLEAN_OPEN_APPOINTMENTS);
 			
 			visitTypeGP.setPropertyValue(visitType.getId().toString());
 			phoneAttributeGP.setPropertyValue(attributeType.getId().toString());
 			refreshIntervalGP.setPropertyValue(refreshDelay.toString());
 			slotDurationGP.setPropertyValue(slotDuration.toString());
 			hideEndVisitGP.setPropertyValue(hide);
-			missedAppointmentValueGP.setPropertyValue(missedAppointmentValue);
+			cleanOpenAppointmentsValueGP.setPropertyValue(cleanOpenAppointmentScheduler);
 
 			Context.getAdministrationService().saveGlobalProperty(visitTypeGP);
 			Context.getAdministrationService().saveGlobalProperty(phoneAttributeGP);
 			Context.getAdministrationService().saveGlobalProperty(refreshIntervalGP);
 			Context.getAdministrationService().saveGlobalProperty(slotDurationGP);
 			Context.getAdministrationService().saveGlobalProperty(hideEndVisitGP);
-			Context.getAdministrationService().saveGlobalProperty(missedAppointmentValueGP);
+			Context.getAdministrationService().saveGlobalProperty(cleanOpenAppointmentsValueGP);
 
 			request.getSession().setAttribute(WebConstants.OPENMRS_MSG_ATTR,
 			    "appointmentscheduling.Appointment.settings.notification.saved");

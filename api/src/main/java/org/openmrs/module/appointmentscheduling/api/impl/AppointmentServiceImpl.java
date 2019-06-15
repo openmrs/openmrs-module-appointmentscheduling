@@ -939,16 +939,17 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		states.add(AppointmentStatus.WALKIN);
 		states.add(AppointmentStatus.INCONSULTATION);
 
+		Date endOfYesterday = new DateTime().withTime(23, 59, 59, 999).minusDays(1).toDate();
+
 		List<Appointment> appointmentsInStates = appointmentDAO
 				.getPastAppointmentsByStates(states);
 		if (appointmentsInStates == null)
 			return new LinkedList<Appointment>();
 		Iterator<Appointment> iter = appointmentsInStates.iterator();
-		Date now = Calendar.getInstance().getTime();
 		while (iter.hasNext()) {
 			Appointment appointment = iter.next();
 			// Check if past appointment
-			if (now.after(appointment.getTimeSlot().getEndDate())) {
+			if (appointment.getTimeSlot().getEndDate().before(endOfYesterday)) {
 				AppointmentStatus status = appointment.getStatus();
 				switch (status) {
 					case SCHEDULED :

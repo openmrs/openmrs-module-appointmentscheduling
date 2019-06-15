@@ -9,11 +9,11 @@ import org.openmrs.scheduler.TaskDefinition;
 import java.util.Date;
 
 public class AppointmentSchedulerSetup {
-    public static void setupMarkAppointmentAsMissedTask() {
+    public static void setupCleanOpenAppointmentsTask() {
 
         SchedulerService schedulerService = Context.getSchedulerService();
 
-        TaskDefinition task = schedulerService.getTaskByName("Mark Appointments Missed");
+        TaskDefinition task = schedulerService.getTaskByName("Clean Open Appointments Task");
 
         if (task != null) {
             task.setStarted(false);
@@ -23,16 +23,16 @@ public class AppointmentSchedulerSetup {
 
         if (task == null) {
             task = new TaskDefinition();
-            task.setName("Mark Appointments Missed");
-            task.setDescription("Mark Appointments Missed");
-            task.setTaskClass(MarkAppointmentsAsMissedTask.class.getName());
+            task.setName("Clean Open Appointments Task");
+            task.setDescription("Clean Open Appointments Task");
+            task.setTaskClass(CleanOpenAppointmentsTask.class.getName());
             task.setStartTime(DateUtils.addMinutes(new Date(), 5));
             task.setRepeatInterval(new Long(14400));
             task.setStartOnStartup(true);
             try {
                 schedulerService.scheduleTask(task);
             } catch (SchedulerException e) {
-                throw new RuntimeException("Failed to schedule mark appointments as missed or completed task", e);
+                throw new RuntimeException("Failed to schedule Clean Open Appointments Task", e);
             }
         } else {
             if (!task.getStarted()) {
@@ -40,7 +40,7 @@ public class AppointmentSchedulerSetup {
                 try {
                     schedulerService.scheduleTask(task);
                 } catch (SchedulerException e) {
-                    throw new RuntimeException("Failed to schedule mark appointments as missed or completed task", e);
+                    throw new RuntimeException("Failed to schedule Clean Open Appointments Task", e);
                 }
             }
         }

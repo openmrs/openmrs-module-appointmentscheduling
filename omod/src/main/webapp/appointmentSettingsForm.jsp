@@ -31,22 +31,6 @@
 			document.getElementById('refreshDelayInput').disabled = false;
 	}
 
-	function promptClean() {
-		var allow = null;
-
-		allow = confirm("<spring:message code='appointmentscheduling.Appointment.settings.prompt' />");
-
-		if (allow) {
-			document.getElementById('loader').style.display = 'block';
-			DWRAppointmentService
-					.cleanOpenAppointments(function(count) {
-						document.getElementById("appointmentsChanged").innerHTML = "<spring:message arguments='"+count+"' code='appointmentscheduling.Appointment.settings.label.appointmentChanged' />";
-						document.getElementById('loader').style.display = 'none';
-					});
-
-		}
-
-	}
 </script>
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
@@ -238,40 +222,6 @@
 				</td>
 			</tr>
 
-            <!--Hide Mark Appointment as MISSED Buttons GP -->
-            <tr>
-                <td>
-                    <div
-                        onmouseover="document.getElementById('tt6').style.display='block'"
-                        onmouseout="document.getElementById('tt6').style.display='none'"
-                        class="questionMark">
-                        <img
-                            src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/qMark_normal.png'
-                            onmouseover="this.src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/qMark_hover.png'"
-                            onmouseout="this.src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/qMark_normal.png'"
-                            alt='' />
-                        <div id="tt6" class="toolTip">
-                            <spring:message
-                                code="appointmentscheduling.Appointment.gp.desc.missedAppointmentScheduler" />
-                        </div>
-                    </div>
-                </td>
-
-                 <td>
-                    <spring:message code="appointmentscheduling.Appointment.settings.label.missedAppointmentScheduler" />
-                </td>
-
-                 <td>
-                    <input type="radio" name="missedAppointmentScheduler" value="false" ${(param.missedAppointmentScheduler==null && missedAppointmentScheduler=='false') || param.missedAppointmentScheduler=='false' ? 'checked' : ''}>
-                        <spring:message code="appointmentscheduling.Appointment.settings.label.disable" />
-                    </input>
-                    <br/>
-                    <input type="radio" name="missedAppointmentScheduler" value="true" ${(param.missedAppointmentScheduler==null && missedAppointmentScheduler=='true') || param.missedAppointmentScheduler=='true' ? 'checked' : ''}>
-                        <spring:message code="appointmentscheduling.Appointment.settings.label.enable" />
-                    </input>
-                </td>
-            </tr>
-
 			<tr>
 				<td><br /></td>
 			</tr>
@@ -290,37 +240,49 @@
 			code="appointmentscheduling.Appointment.settings.fieldset.additionalSettings" /></b>
 	<fieldset>
 		<table>
+
+            <!--Clean Open Appointments Buttons GP -->
+            <tr>
+                <td>
+                    <div
+                        onmouseover="document.getElementById('tt6').style.display='block'"
+                        onmouseout="document.getElementById('tt6').style.display='none'"
+                        class="questionMark">
+                        <img
+                            src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/qMark_normal.png'
+                            onmouseover="this.src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/qMark_hover.png'"
+                            onmouseout="this.src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/qMark_normal.png'"
+                            alt='' />
+                        <div id="tt6" class="toolTip">
+                            <spring:message
+                                code="appointmentscheduling.Appointment.gp.desc.cleanOpenAppointmentScheduler" />
+                        </div>
+                    </div>
+                </td>
+
+                 <td>
+                    <spring:message code="appointmentscheduling.Appointment.settings.label.cleanOpenAppointmentScheduler" />
+                </td>
+
+                 <td>
+                    <input type="radio" name="cleanOpenAppointmentScheduler" value="false" ${(param.cleanOpenAppointmentScheduler==null && cleanOpenAppointmentScheduler=='false') || param.cleanOpenAppointmentScheduler=='false' ? 'checked' : ''}>
+                        <spring:message code="appointmentscheduling.Appointment.settings.label.disable" />
+                    </input>
+                    <br/>
+                    <input type="radio" name="cleanOpenAppointmentScheduler" value="true" ${(param.cleanOpenAppointmentScheduler==null && cleanOpenAppointmentScheduler=='true') || param.cleanOpenAppointmentScheduler=='true' ? 'checked' : ''}>
+                        <spring:message code="appointmentscheduling.Appointment.settings.label.enable" />
+                    </input>
+                </td>
+			</tr>
+			
 			<tr>
-				<td>
-					<div
-						onmouseover="document.getElementById('cleanTT').style.display='block'"
-						onmouseout="document.getElementById('cleanTT').style.display='none'"
-						class="questionMark">
-						<img
-							src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/qMark_normal.png'
-							onmouseover="this.src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/qMark_hover.png'"
-							onmouseout="this.src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/qMark_normal.png'"
-							alt='' />
-						<div id="cleanTT" class="toolTip">
-							<spring:message
-								code="appointmentscheduling.Appointment.settings.label.cleanTooltip" />
-						</div>
-				</td>
-				<td><spring:message
-						code="appointmentscheduling.Appointment.settings.label.clean" /></td>
-				<td><input type='button' name="clean"
-					value='<spring:message code="appointmentscheduling.Appointment.settings.button.clean"/>'
-					onclick="promptClean();" /></td>
-				<td><div id='loader' style="display: none;">
-						<img
-							src='${pageContext.request.contextPath}/moduleResources/appointmentscheduling/Images/loader.gif'
-							alt='' />&nbsp;&nbsp;
-						<spring:message
-							code='appointmentscheduling.Appointment.settings.label.loading' />
-					</div></td>
+				<td><br /></td>
 			</tr>
 			<tr>
-				<td colspan="3" id="appointmentsChanged"></td>
+				<td></td>
+				<td></td>
+				<td><input type='submit' name='save'
+					value='<spring:message code="general.save"/>' /></td>
 			</tr>
 		</table>
 	</fieldset>

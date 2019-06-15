@@ -53,10 +53,10 @@ public class AppointmentActivator implements ModuleActivator {
 	public void started() {
 		log.info("Appointment Module started");
 
-		Boolean markAppointmentAsMissedTask = Boolean.parseBoolean(Context.getAdministrationService().getGlobalProperty(
-				AppointmentUtils.GP_MARK_APPOINTMENT_AS_MISSED));
-		if(markAppointmentAsMissedTask == true) {
-			AppointmentSchedulerSetup.setupMarkAppointmentAsMissedTask();
+		Boolean cleanOpenAppointmentsTask = Boolean.parseBoolean(Context.getAdministrationService().getGlobalProperty(
+				AppointmentUtils.GP_CLEAN_OPEN_APPOINTMENTS));
+		if(cleanOpenAppointmentsTask == true) {
+			AppointmentSchedulerSetup.setupCleanOpenAppointmentsTask();
 		}
 	}
 	

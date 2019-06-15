@@ -259,12 +259,6 @@ public class DWRAppointmentService {
 		}
 	}
 	
-	public Integer cleanOpenAppointments() {
-		List<Appointment> appointments = Context.getService(AppointmentService.class).cleanOpenAppointments();
-		
-		return appointments.size();
-	}
-	
 	/**
 	 * Computes the average duration (in Minutes) of a status history by appointment type
 	 * 
