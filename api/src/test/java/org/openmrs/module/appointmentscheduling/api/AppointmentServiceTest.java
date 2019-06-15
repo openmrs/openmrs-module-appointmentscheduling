@@ -50,9 +50,9 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 
 	private AppointmentService service;
 
-	private static int TOTAL_APPOINTMENTS = 12;
+	private static int TOTAL_APPOINTMENTS = 14;
 
-	private static int TOTAL_APPOINTMENTS_EXCLUDING_VOIDED = 10;
+	private static int TOTAL_APPOINTMENTS_EXCLUDING_VOIDED = 12;
 
 	@Before
 	public void before() throws Exception {
@@ -297,7 +297,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		Date toDate = format.parse("2006-01-01 01:00:00.3");
 		appointments = service.getAppointmentsByConstraints(null, toDate, null,
 				null, null, null);
-		assertEquals(3, appointments.size());
+		assertEquals(5, appointments.size());
 
 		fromDate = format.parse("2007-01-01 00:00:00.0");
 		toDate = format.parse("2007-01-01 01:00:00.1");
@@ -316,7 +316,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(provider);
 		List<Appointment> appointments = service.getAppointmentsByConstraints(
 				null, null, null, provider, null, null);
-		assertEquals((Integer) (9), (Integer) appointments.size());
+		assertEquals((Integer) (11), (Integer) appointments.size());
 	}
 
 	@Test
@@ -333,7 +333,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		appointments = service.getAppointmentsByConstraints(null, null, null,
 				null, type, null);   // apt #5 should be first because we are sorting by time slot
 		assertEquals(specificAppointment, appointments.iterator().next());
-		assertEquals(3, appointments.size());
+		assertEquals(5, appointments.size());
 	}
 
 	@Test
@@ -343,13 +343,13 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(location);
 		List<Appointment> appointments = service.getAppointmentsByConstraints(
 				null, null, location, null, null, null);
-		assertEquals(6, appointments.size());
+		assertEquals(8, appointments.size());
 
 		location = Context.getLocationService().getLocation(2);
 		assertNotNull(location);
 		appointments = service.getAppointmentsByConstraints(null, null,
 				location, null, null, null);
-		assertEquals(10, appointments.size());
+		assertEquals(12, appointments.size());
 
 		location = Context.getLocationService().getLocation(4);
 		assertNotNull(location);
@@ -379,7 +379,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 
 		List<Appointment> appointments = service.getAppointmentsByConstraints(
 				null, null, null, null, null, patient, new ArrayList<AppointmentStatus>());
-		assertEquals(2, appointments.size());
+		assertEquals(4, appointments.size());
 		assertEquals(patient, appointments.get(0).getPatient());
 		assertEquals(patient, appointments.get(1).getPatient());
 	}
@@ -438,7 +438,7 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertNotNull(visit);
 		appointments = service.getAppointmentsByConstraints(null, null,
 				null, null, null, null, null, null, visit);
-		assertTrue(appointments.isEmpty());
+		assertTrue(!appointments.isEmpty());
 	}
 
 
@@ -634,6 +634,34 @@ public class AppointmentServiceTest extends BaseModuleContextSensitiveTest {
 		assertEquals(appointmentType, appointment.getAppointmentType());
 		assertEquals(AppointmentStatus.SCHEDULED, appointment.getStatus());
 		assertNull(appointment.getVisit());
+
+	}
+
+	@Test
+	@Verifies(value = "should get all Early Appointments", method = "getEarlyAppointments(Date fromDate,Date toDate, Location location, Provider provider," +
+			" AppointmentType appointmentType, AppointmentStatus status, VisitType visitType")
+	public void getEarlyAppointments_shouldGetEarlyAppointments()
+			throws Exception {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Date fromDate = format.parse("2005-01-01");
+		Date toDate = format.parse("2006-02-02");
+		List<Appointment> appointments = service
+				.getEarlyAppointments(fromDate, toDate, null, null, null);
+		assertEquals(1, appointments.size());
+
+	}
+
+	@Test
+	@Verifies(value = "should get all Late Appointments", method = "getLateAppointments(Date fromDate,Date toDate, Location location, Provider provider," +
+			" AppointmentType appointmentType, AppointmentStatus status, VisitType visitType")
+	public void getLateAppointments_shoulGetLateAppointments()
+			throws Exception {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Date fromDate = format.parse("2005-01-01");
+		Date toDate = format.parse("2006-02-02");
+		List<Appointment> appointments = service
+				.getLateAppointments(fromDate, toDate, null, null, null);
+		assertEquals(1, appointments.size());
 
 	}
 }

@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.appointmentscheduling.api.db.hibernate;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -23,14 +25,17 @@ import org.hibernate.Query;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.APIException;
+import org.openmrs.api.db.DAOException;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
+import org.openmrs.module.appointmentscheduling.AppointmentDailyCount;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentDAO;
@@ -250,5 +255,56 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO
 		Criteria criteria = createAppointmentsInTimeSlotCriteria(timeSlot);
 		criteria.add(Restrictions.in("status", statuses));
 		return criteria;
+	}
+
+	@Override
+	public List<AppointmentDailyCount> getAppointmentDailyCount(String fromDate, String toDate, Location location,
+																Provider provider, AppointmentStatus status) throws DAOException {
+		String stringQuery = "SELECT count(appointment_id), date_format(ts.start_date,'%Y-%m-%d') as monthDate   "
+				+ "FROM appointmentscheduling_appointment `ap`   "
+				+ "LEFT JOIN  appointmentscheduling_time_slot `ts` ON (ap.time_slot_id = ts.time_slot_id)  "
+				+ "LEFT JOIN  appointmentscheduling_appointment_block `bl` ON (ts.appointment_block_id = bl.appointment_block_id)  "
+				+ "LEFT JOIN  location `loc` ON (bl.location_id = loc.location_id)   "
+				+ "LEFT JOIN  provider `pr` ON (bl.provider_id = pr.provider_id)   ";
+
+		if (fromDate != null && toDate != null)
+			stringQuery += "WHERE date_format(ts.start_date,'%Y-%m-%d') between ? AND ?  ";
+		if (status != null)
+			stringQuery += "AND ap.status = ?   ";
+		if (location != null)
+			stringQuery += "AND loc.location_id = ?  ";
+		if (provider != null) {
+			stringQuery += "AND pr.provider_id = ?   ";
+		}
+
+		stringQuery += "GROUP BY monthDate ";
+
+		Query query = super.sessionFactory.getCurrentSession().createSQLQuery(stringQuery);
+
+		if (fromDate != null)
+			query.setParameter(0, fromDate);
+		if (toDate != null)
+			query.setParameter(1, toDate);
+		if (status != null)
+			query.setParameter(2, String.valueOf(status));
+		if (location != null)
+			query.setParameter(3, location.getId());
+		if (provider != null) {
+			if (location != null) {
+				query.setParameter(4, provider.getId());
+			} else {
+				query.setParameter(3, provider.getId());
+			}
+		}
+		List<AppointmentDailyCount> dailyCounts = new ArrayList<AppointmentDailyCount>();
+		List<Object[]> values = query.list();
+		for (Object[] obj : values) {
+			AppointmentDailyCount val = new AppointmentDailyCount();
+			val.setDailyCount(((BigInteger) obj[0]).intValue());
+			val.setDate(obj[1].toString());
+			dailyCounts.add(val);
+		}
+		return dailyCounts;
+
 	}
 }

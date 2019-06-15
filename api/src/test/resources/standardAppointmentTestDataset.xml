@@ -41,6 +41,7 @@
 
     <visit visit_id="1" patient_id="2" date_started="2005-01-01 00:00:00.0" uuid="c0c579b0-8e59-401d-8a4a-976a0b183600" date_created="2005-01-01 00:00:00.0" voided="false" creator="1" />
 	<visit visit_id="2" patient_id="2" date_started="2005-01-08 00:00:00.0" uuid="c0c579b0-8e59-401d-8a4a-000a0b183600" date_created="2005-01-08 00:00:00.0" voided="false" creator="1" />
+	<visit visit_id="3" patient_id="2" date_started="2005-01-01 00:00:00.0" uuid="c0c579b0-8e59-401d-8a4a-976ahhhhh600" date_created="2005-01-01 00:00:00.0" voided="false" creator="1" />
 	<patient patient_id="1" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"/>
 	<patient patient_id="2" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"/>
 	
@@ -56,6 +57,8 @@
     <appointmentscheduling_appointment appointment_id="10" time_slot_id="8" appointment_type_id="1" patient_id="3" status="SCHEDULED" uuid="cccc79b0-8e59-401d-8a4a-976a0b183607" date_created="2005-01-01 00:00:00.0" voided="true" creator="1"/>
     <appointmentscheduling_appointment appointment_id="11" time_slot_id="8" appointment_type_id="1" patient_id="6" status="WALKIN" uuid="dddd79b0-8e59-401d-8a4a-976a0b183607" date_created="2005-01-01 00:00:00.0" voided="false" creator="1"/>
     <appointmentscheduling_appointment appointment_id="12" time_slot_id="9" appointment_type_id="1" patient_id="6" status="WALKIN" uuid="dddd79b0-8e59-401d-8a4a-976a0b183608" date_created="2005-01-01 00:00:00.0" voided="false" creator="1"/>
+	<appointmentscheduling_appointment appointment_id="13" time_slot_id="6" appointment_type_id="3" visit_id="2" patient_id="2" status="COMPLETED" uuid="c0c57900-8e59-401d-8a4a-976a0b183605" date_created="2005-01-01 00:00:00.0" voided="false" creator="1"/>
+	<appointmentscheduling_appointment appointment_id="14" time_slot_id="6" appointment_type_id="3" visit_id="3" patient_id="2" status="COMPLETED" uuid="90909090-8e59-401d-8a4a-976a0b183605" date_created="2005-01-01 00:00:00.0" voided="false" creator="1"/>
 
     <appointmentscheduling_appointment_status_history appointment_status_history_id="1" appointment_id="1" status="WAITING" start_date="2005-01-01 00:00:00.0" end_date="2005-01-01 01:00:00.0"/>
 	<appointmentscheduling_appointment_status_history appointment_status_history_id="2" appointment_id="1" status="INCONSULTATION" start_date="2005-01-01 00:30:00.0" end_date="2005-01-01 02:00:00.0"/>

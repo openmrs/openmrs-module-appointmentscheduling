@@ -24,6 +24,7 @@ import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
+import org.openmrs.module.appointmentscheduling.AppointmentDailyCount;
 import org.openmrs.module.appointmentscheduling.AppointmentRequest;
 import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
@@ -997,6 +998,30 @@ public interface AppointmentService extends OpenmrsService {
 	 */
 	@Authorized()
 	AppointmentStatusHistory getMostRecentAppointmentStatusHistory(Appointment appointment);
+	/**
+	 * returns list of early appointments
+	 */
+	@Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+	List<Appointment> getEarlyAppointments(Date fromDate, Date toDate,  Location location,
+										   Provider provider, AppointmentType appointmentType) throws APIException;
+
+	/**
+	 * returns list of late appointments
+	 */
+	@Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+	List<Appointment> getLateAppointments(Date fromDate, Date toDate,  Location location,
+										  Provider provider, AppointmentType appointmentType) throws APIException;
+	 /** returns list of appointments aggregated by date
+	 * @param fromDate
+	 * @param toDate
+	 * @param location
+	 * @param provider
+	 * @param status
+	 * @return
+	  */
+	@Authorized(AppointmentUtils.PRIV_VIEW_APPOINTMENTS)
+	List<AppointmentDailyCount> getAppointmentDailyCount(String fromDate, String toDate, Location location,
+														 Provider provider, AppointmentStatus status) throws APIException;
 
 	// ProviderSchedule
 

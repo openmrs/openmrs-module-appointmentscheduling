@@ -40,7 +40,7 @@ public class BasicAppointmentQueryEvaluatorTest extends BaseModuleContextSensiti
         BasicAppointmentQuery query = new BasicAppointmentQuery();
         AppointmentQueryResult result = appointmentQueryService.evaluate(query, null);
 
-        assertThat(result.getMemberIds().size(), is(10));
+        assertThat(result.getMemberIds().size(), is(12));
         assertTrue(result.getMemberIds().contains(1));
         assertTrue(result.getMemberIds().contains(2));
         assertTrue(result.getMemberIds().contains(4));

@@ -263,7 +263,7 @@ public class AppointmentTypeServiceTest extends BaseModuleContextSensitiveTest {
 		Map<AppointmentType, Integer> distribution = Context.getService(AppointmentService.class)
 		        .getAppointmentTypeDistribution(fromDate, toDate);
 		
-		assertEquals((Integer) 3, (Integer) distribution.get(type3));
+		assertEquals((Integer) 5, (Integer) distribution.get(type3));
 		Assert.assertFalse(distribution.containsKey(type2));
 		assertEquals((Integer) 2, (Integer) distribution.get(type1));
 		assertEquals(2, distribution.size());
