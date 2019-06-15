@@ -842,9 +842,13 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	public void changeAppointmentStatus(Appointment appointment,
 			AppointmentStatus newStatus) {
 		if (appointment != null) {
+			//update previous appointment status end date
+			AppointmentStatusHistory appointmentStatusHistory =getMostRecentAppointmentStatusHistory(appointment);
+			appointmentStatusHistory.setEndDate(new Date());
+			saveAppointmentStatusHistory(appointmentStatusHistory);
+			
 			AppointmentStatusHistory history = new AppointmentStatusHistory();
 			history.setAppointment(appointment);
-			history.setEndDate(new Date());
 			history.setStartDate(getAppointmentCurrentStatusStartDate(appointment));
 			history.setStatus(appointment.getStatus());
 
@@ -1156,9 +1160,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		
 		Context.getService(AppointmentService.class).saveAppointment(appointment);
 
-		Date oneSecondAfterNow=new Date((Calendar.getInstance().getTimeInMillis()) + 1000);
-
-		AppointmentStatusHistory history = new AppointmentStatusHistory(appointment, appointment.getStatus(), getAppointmentCurrentStatusStartDate(appointment), oneSecondAfterNow);
+		AppointmentStatusHistory history = new AppointmentStatusHistory(appointment, appointment.getStatus(), getAppointmentCurrentStatusStartDate(appointment), null);
 		Context.getService(AppointmentService.class).saveAppointmentStatusHistory(history);
 		return appointment;
 	}
