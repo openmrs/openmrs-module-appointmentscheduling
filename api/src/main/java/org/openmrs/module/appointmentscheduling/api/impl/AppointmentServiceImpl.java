@@ -842,20 +842,41 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	public void changeAppointmentStatus(Appointment appointment,
 			AppointmentStatus newStatus) {
 		if (appointment != null) {
-			//update previous appointment status end date
-			AppointmentStatusHistory appointmentStatusHistory =getMostRecentAppointmentStatusHistory(appointment);
-			appointmentStatusHistory.setEndDate(new Date());
-			saveAppointmentStatusHistory(appointmentStatusHistory);
-			
+
+			Date currentDate = new Date();
+
+			// get any previous status
+			AppointmentStatusHistory appointmentStatusHistory = getMostRecentAppointmentStatusHistory(appointment);
+
+			if (appointmentStatusHistory != null) {
+				// prior to the implement of AM-196 we storing the "current" status of an appointment in the history table
+				// we need to still handle legacy code that may not have been migrated, and create an entry in the history table
+				if (appointmentStatusHistory.getEndDate() != null) {
+					AppointmentStatusHistory history = new AppointmentStatusHistory();
+					history.setAppointment(appointment);
+					history.setEndDate(currentDate);
+					history.setStartDate(getAppointmentCurrentStatusStartDate(appointment));
+					history.setStatus(appointment.getStatus());
+					saveAppointmentStatusHistory(appointmentStatusHistory);
+				}
+				// otherwise, just update the end date of the most recent status
+				else {
+					appointmentStatusHistory.setEndDate(currentDate);
+					saveAppointmentStatusHistory(appointmentStatusHistory);
+				}
+			}
+
+			// now update the appointment itself
+			appointment.setStatus(newStatus);
+			saveAppointment(appointment);
+
+			// create an entry for the new status
 			AppointmentStatusHistory history = new AppointmentStatusHistory();
 			history.setAppointment(appointment);
-			history.setStartDate(getAppointmentCurrentStatusStartDate(appointment));
+			history.setStartDate(currentDate);
 			history.setStatus(appointment.getStatus());
 
 			saveAppointmentStatusHistory(history);
-
-			appointment.setStatus(newStatus);
-			saveAppointment(appointment);
 
 			if (newStatus == AppointmentStatus.COMPLETED
 					|| newStatus == AppointmentStatus.CANCELLED
