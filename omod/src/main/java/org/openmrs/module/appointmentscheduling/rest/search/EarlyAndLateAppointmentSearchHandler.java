@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 @Component
-public class AppointmentSearchHandler  implements SearchHandler {
+public class EarlyAndLateAppointmentSearchHandler  implements SearchHandler {
     protected final Log log = LogFactory.getLog(this.getClass());
 
 

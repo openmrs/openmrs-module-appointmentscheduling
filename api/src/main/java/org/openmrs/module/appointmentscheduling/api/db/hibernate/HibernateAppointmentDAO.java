@@ -265,10 +265,10 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO
 				+ "LEFT JOIN  appointmentscheduling_time_slot `ts` ON (ap.time_slot_id = ts.time_slot_id)  "
 				+ "LEFT JOIN  appointmentscheduling_appointment_block `bl` ON (ts.appointment_block_id = bl.appointment_block_id)  "
 				+ "LEFT JOIN  location `loc` ON (bl.location_id = loc.location_id)   "
-				+ "LEFT JOIN  provider `pr` ON (bl.provider_id = pr.provider_id)   ";
+				+ "LEFT JOIN  provider `pr` ON (bl.provider_id = pr.provider_id)  WHERE ap.voided = 0  ";
 
 		if (fromDate != null && toDate != null)
-			stringQuery += "WHERE date_format(ts.start_date,'%Y-%m-%d') between ? AND ?  ";
+			stringQuery += "AND date_format(ts.start_date,'%Y-%m-%d') between ? AND ?  ";
 		if (status != null)
 			stringQuery += "AND ap.status = ?   ";
 		if (location != null)
