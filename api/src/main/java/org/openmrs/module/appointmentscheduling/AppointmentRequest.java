@@ -6,6 +6,10 @@ import org.openmrs.Provider;
 
 import java.util.Date;
 
+/**
+ * persisted object that reflects a request by a provider (or other user) for a scheduler to schedule a patient for a future appointment;
+ * has an associated status of pending, fulfilled, or cancelled
+ */
 public class AppointmentRequest extends BaseOpenmrsData {
 
     public enum AppointmentRequestStatus { PENDING, FULFILLED, CANCELLED };

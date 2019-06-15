@@ -427,4 +427,102 @@
 								 referencedTableName="visit_type" referencedColumnNames="visit_type_id"/>
 	</changeSet>
 
+	<changeSet id="2019_appointmentscheduling_provider_schedule" author="jecihjoy">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="appointmentscheduling_provider_schedule"/>
+			</not>
+		</preConditions>
+		<comment>
+			Create the provider_schedule table
+		</comment>
+		<createTable tableName="appointmentscheduling_provider_schedule">
+			<column name="provider_schedule_id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="location_id" type="int">
+				<constraints nullable="false"/>
+			</column>
+			<column name="provider_id" type="int">
+				<constraints nullable="true"/>
+			</column>
+			<column name="start_date" type="datetime"/>
+			<column name="end_date" type="datetime"/>
+			<column name="start_time" type="time">
+				<constraints nullable="false"/>
+			</column>
+			<column name="end_time" type="time">
+				<constraints nullable="false"/>
+			</column>
+
+			<column name="uuid" type="char(38)">
+				<constraints nullable="false" unique="true"/>
+			</column>
+			<column name="creator" type="int">
+				<constraints nullable="false"/>
+			</column>
+			<column name="date_created" type="datetime">
+				<constraints nullable="false"/>
+			</column>
+			<column name="changed_by" type="int"/>
+			<column name="date_changed" type="datetime"/>
+			<column name="voided" type="tinyint" defaultValueNumeric="0">
+				<constraints nullable="false"/>
+			</column>
+			<column name="voided_by" type="int"/>
+			<column name="date_voided" type="datetime"/>
+			<column name="void_reason" type="varchar(255)" defaultValue="null"/>
+		</createTable>
+		<addForeignKeyConstraint constraintName="provider_schedule_creator"
+								 baseTableName="appointmentscheduling_provider_schedule" baseColumnNames="creator"
+								 referencedTableName="users" referencedColumnNames="user_id"/>
+		<addForeignKeyConstraint constraintName="provider_schedule_changed_by"
+								 baseTableName="appointmentscheduling_provider_schedule" baseColumnNames="changed_by"
+								 referencedTableName="users" referencedColumnNames="user_id"/>
+		<addForeignKeyConstraint constraintName="provider_schedule_voided_by"
+								 baseTableName="appointmentscheduling_provider_schedule" baseColumnNames="voided_by"
+								 referencedTableName="users" referencedColumnNames="user_id"/>
+
+		<addForeignKeyConstraint constraintName="provider_schedule_location_id"
+								 baseTableName="appointmentscheduling_provider_schedule"
+								 baseColumnNames="location_id"
+								 referencedTableName="location" referencedColumnNames="location_id"/>
+		<addForeignKeyConstraint constraintName="provider_schedule_provider_id"
+								 baseTableName="appointmentscheduling_provider_schedule"
+								 baseColumnNames="provider_id"
+								 referencedTableName="provider" referencedColumnNames="provider_id"/>
+	</changeSet>
+
+
+	<changeSet id="2019_appointmentscheduling_provider_type_map" author="jecihjoy">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="appointmentscheduling_provider_type_map"/>
+			</not>
+		</preConditions>
+		<comment>
+			Create the link table "appointmentscheduling_provider_type_map" that links
+			appointmentscheduling_provider_schedule table and appointmentscheduling_appointment_type table
+		</comment>
+		<createTable tableName="appointmentscheduling_provider_type_map">
+			<column name="appointment_type_id" type="int">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="provider_schedule_id" type="int">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+		</createTable>
+		<addForeignKeyConstraint constraintName="appointmentscheduling_provider_type_map_appointment_type_id"
+								 baseTableName="appointmentscheduling_provider_type_map"
+								 baseColumnNames="appointment_type_id"
+								 referencedTableName="appointmentscheduling_appointment_type"
+								 referencedColumnNames="appointment_type_id"/>
+		<addForeignKeyConstraint constraintName="appointmentscheduling_provider_type_map_provider_schedule_id"
+								 baseTableName="appointmentscheduling_provider_type_map"
+								 baseColumnNames="provider_schedule_id"
+								 referencedTableName="appointmentscheduling_provider_schedule"
+								 referencedColumnNames="provider_schedule_id"/>
+	</changeSet>
+
+
 </databaseChangeLog>

@@ -11,6 +11,7 @@
        <mapping resource="TimeSlot.hbm.xml"/>
        <mapping resource="AppointmentStatusHistory.hbm.xml"/>
        <mapping resource="AppointmentRequest.hbm.xml"/>
+        <mapping resource="ProviderSchedule.hbm.xml"/>
 
         <mapping resource="ReportDesign.hbm.xml" />
     </session-factory>

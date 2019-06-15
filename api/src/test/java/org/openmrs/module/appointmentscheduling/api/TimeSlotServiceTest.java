@@ -19,8 +19,10 @@ import java.util.Date;
 import java.util.List;
 
 import junit.framework.Assert;
+import net.sf.cglib.core.Local;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.api.APIException;
@@ -33,6 +35,7 @@ import org.openmrs.test.Verifies;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -427,5 +430,42 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
         assertTrue(!result.contains(service.getTimeSlot(1)));
         assertTrue(!result.contains(service.getTimeSlot(8)));
     }
-	
+
+	@Test
+	@Verifies(value = "should get correct time slot for appointment", method = "getTimeslotForAppointment(Location, Provider, AppointmentType, Date)")
+	public void getTimeslotForAppointment_shouldGetTimeslotForAppointment() throws ParseException {
+		AppointmentType appointmentType = service.getAppointmentType(1);
+		assertNotNull(appointmentType);
+		Provider provider = Context.getProviderService().getProvider(1);
+		assertNotNull(provider);
+		Location location = Context.getLocationService().getLocation(2);
+		assertNotNull(location);
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		Date appointmentDate = format.parse("2014-01-02 11:00:00.0");
+
+		TimeSlot timeSlot = service.getTimeslotForAppointment(location, provider, appointmentType, appointmentDate);
+		assertNotNull(timeSlot);
+		assertNotEquals(appointmentDate, timeSlot.getStartDate());
+	}
+
+
+	@Test
+	@Verifies(value = "should create a new timeslot using provider schedule", method = "createTimeSlotUsindProviderSchedule(Date, Provider, Location)")
+	public void createTimeSlotUsindProviderSchedule_shouldcreateTimeSlotUsindProviderSchedule() throws ParseException {
+
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		Date appointmentDate = format.parse("2020-01-02 08:00:00.0");
+
+		Provider provider = Context.getProviderService().getProvider(1);
+		assertNotNull(provider);
+
+		Location location = Context.getLocationService().getLocation(2);
+		assertNotNull(location);
+
+		TimeSlot timeSlot = service.createTimeSlotUsingProviderSchedule(appointmentDate, provider, location);
+		List<TimeSlot> timeSlots = service.getAllTimeSlots();
+
+		assertNotNull(timeSlot);
+		assertEquals(TOTAL_TIME_SLOTS + 1, timeSlots.size());
+	}
 }

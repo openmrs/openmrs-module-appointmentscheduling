@@ -28,6 +28,7 @@ import org.openmrs.module.appointmentscheduling.AppointmentRequest;
 import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.AppointmentUtils;
+import org.openmrs.module.appointmentscheduling.ProviderSchedule;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.exception.TimeSlotFullException;
 
@@ -996,5 +997,98 @@ public interface AppointmentService extends OpenmrsService {
 	 */
 	@Authorized()
 	AppointmentStatusHistory getMostRecentAppointmentStatusHistory(Appointment appointment);
+
+	// ProviderSchedule
+
+	/**
+	 * Gets all provider schedule.
+	 *
+	 * @return a list of provider schedule objects.
+	 * @should get all provider schedule
+	 */
+	@Authorized()
+	List<ProviderSchedule> getAllProviderSchedules();
+
+	/**
+	 * Get all provider schedule based on includeVoided flag
+	 *
+	 * @param includeVoided
+	 * @return List of all provider schedule
+	 * @should get all provider schedule based on include voided flag.
+	 */
+	@Authorized(AppointmentUtils.PRIV_VIEW_PROVIDER_SCHEDULES)
+	List<ProviderSchedule> getAllProviderSchedules(boolean includeVoided);
+
+	/**
+	 * Gets an provider schedule by its provider schedule id.
+	 *
+	 * @param ProviderScheduleId the provider schedule id.
+	 * @return the provider schedule object found with the given id, else null.
+	 * @should get correct provider schedule
+	 */
+	@Authorized(AppointmentUtils.PRIV_VIEW_PROVIDER_SCHEDULES)
+	ProviderSchedule getProviderSchedule(Integer ProviderScheduleId);
+
+	/**
+	 * Gets an provider schedule by its UUID.
+	 *
+	 * @param uuid the provider schedule UUID.
+	 * @return the provider schedule object found with the given uuid, else null.
+	 * @should get correct provider schedule
+	 */
+	@Authorized()
+	ProviderSchedule getProviderScheduleByUuid(String uuid);
+
+	/**
+	 * Creates or updates the given provider schedule in the database.
+	 *
+	 * @param providerSchedule the provider schedule to create or update.
+	 * @return the created or updated provider schedule.
+	 * @should save new provider schedule
+	 * @should save a providerless provider schedule
+	 * @should save edited provider schedule
+	 * @should throw error when name is null
+	 * @should throw error when name is empty string
+	 */
+	@Authorized(AppointmentUtils.PRIV_MANAGE_PROVIDER_SCHEDULES)
+	ProviderSchedule saveProviderSchedule(ProviderSchedule providerSchedule)
+			throws APIException;
+
+	/**
+	 * Voids a given provider schedule.
+	 *
+	 * @param providerSchedule the provider schedule to void.
+	 * @param reason              the reason why the provider schedule is voided.
+	 * @return the provider schedule that has been voided.
+	 * @should void given provider schedule
+	 * @should void all associated time slots
+	 */
+	@Authorized(AppointmentUtils.PRIV_MANAGE_PROVIDER_SCHEDULES)
+	ProviderSchedule voidProviderSchedule(ProviderSchedule providerSchedule,
+											 String reason);
+
+	/**
+	 * Completely removes an provider schedule from the database. This is not reversible.
+	 *
+	 * @param providerSchedule the provider schedule to delete from the database.
+	 * @should delete given provider schedule
+	 */
+	@Authorized(AppointmentUtils.PRIV_MANAGE_PROVIDER_SCHEDULES)
+	void purgeProviderSchedule(ProviderSchedule providerSchedule);
+
+	/**
+	 * Gets provider schedule which have a given date, location, provider and list of appointment
+	 * types
+	 *
+	 * @return a list of provider schedule objects.
+	 */
+	@Authorized(AppointmentUtils.PRIV_VIEW_PROVIDER_SCHEDULES)
+	List<ProviderSchedule> getProviderSchedulesByConstraints(Location locations, Provider provider, List<AppointmentType> appointmentTypes);
+
+	@Authorized
+	TimeSlot getTimeslotForAppointment(Location location, Provider provider, AppointmentType type, Date appointmentDate);
+
+	@Authorized
+	TimeSlot createTimeSlotUsingProviderSchedule(Date appointmentDate, Provider provider, Location location);
 
 }
