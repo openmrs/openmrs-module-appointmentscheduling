@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.ProviderSchedule;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -16,6 +17,7 @@ import org.openmrs.util.OpenmrsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -170,12 +172,12 @@ public class ProviderScheduleServiceTest extends BaseModuleContextSensitiveTest 
     @Verifies(value = "should get all provider schedules with given conditions", method = "getProviderSchedulesByConstraints(Provider, Location, null)")
     public void getProviderSchedulesByConstraints_shouldGetProviderSchedulesByConstraints() throws Exception {
         Provider provider = Context.getProviderService().getProvider(1);
-        Location location = Context.getLocationService().getLocation(2);
         Location location1 = Context.getLocationService().getLocation(3);
-        List<ProviderSchedule> schedules = service.getProviderSchedulesByConstraints(location, provider, null);
-        assertEquals(2, schedules.size());
+        List<ProviderSchedule> schedules = service.getProviderSchedulesByConstraints(location1, provider, Context.getService(AppointmentService.class).getAppointmentType(1));
+        assertEquals(1, schedules.size());
 
-        List<ProviderSchedule> providerSchedules = service.getProviderSchedulesByConstraints(location1, null, null);
-        assertEquals(2, providerSchedules.size());
+        Location location = Context.getLocationService().getLocation(2);
+        List<ProviderSchedule> providerSchedules = service.getProviderSchedulesByConstraints(location, null, Context.getService(AppointmentService.class).getAppointmentType(3));
+        assertEquals(1, providerSchedules.size());
     }
 }

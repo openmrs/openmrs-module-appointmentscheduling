@@ -1252,8 +1252,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 
 	@Override
-	public List<ProviderSchedule> getProviderSchedulesByConstraints(Location location, Provider provider, List<AppointmentType> appointmentTypes) {
-		return getProviderScheduleDAO().getProviderScheduleByConstraints(location, provider,null);
+	public List<ProviderSchedule> getProviderSchedulesByConstraints(Location location, Provider provider, AppointmentType appointmentType) {
+		return getProviderScheduleDAO().getProviderScheduleByConstraints(location, appointmentType, provider,null);
 	}
 
 	@Override
@@ -1273,9 +1273,9 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 
 	@Override
-	public TimeSlot createTimeSlotUsingProviderSchedule(Date appointmentDate, Provider provider, Location location) {
+	public TimeSlot createTimeSlotUsingProviderSchedule(Date appointmentDate, AppointmentType appointmentType, Provider provider, Location location) {
 
-		List<ProviderSchedule> ar = getProviderScheduleDAO().getProviderScheduleByConstraints(location, provider, appointmentDate);
+		List<ProviderSchedule> ar = getProviderScheduleDAO().getProviderScheduleByConstraints(location, appointmentType, provider, appointmentDate);
 		if (ar.size() > 0) {
 			TimeSlot timeSlot = new TimeSlot();
 			ProviderSchedule providerSchedule = ar.get(0);

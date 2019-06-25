@@ -1108,12 +1108,29 @@ public interface AppointmentService extends OpenmrsService {
 	 * @return a list of provider schedule objects.
 	 */
 	@Authorized(AppointmentUtils.PRIV_VIEW_PROVIDER_SCHEDULES)
-	List<ProviderSchedule> getProviderSchedulesByConstraints(Location locations, Provider provider, List<AppointmentType> appointmentTypes);
+	List<ProviderSchedule> getProviderSchedulesByConstraints(Location locations, Provider provider, AppointmentType appointmentType);
 
+	/**
+	 *checks against location, providers, appointment type and appointment date to retrieve timeslot that fits the checks
+	 * @param location
+	 * @param provider
+	 * @param type
+	 * @param appointmentDate
+	 * @return
+	 */
 	@Authorized
 	TimeSlot getTimeslotForAppointment(Location location, Provider provider, AppointmentType type, Date appointmentDate);
 
+	/**
+	 * If getTimeslotForAppointment() returns not timelots,  createTimeSlotUsingProviderSchedule() is called to create the timeslot
+	 * It first retrieves the appropriate provider schedule, then uses it to create appointment block and timeslost sequentially
+	 * @param appointmentDate
+	 * @param type
+	 * @param provider
+	 * @param location
+	 * @return
+	 */
 	@Authorized
-	TimeSlot createTimeSlotUsingProviderSchedule(Date appointmentDate, Provider provider, Location location);
+	TimeSlot createTimeSlotUsingProviderSchedule(Date appointmentDate, AppointmentType type, Provider provider, Location location);
 
 }

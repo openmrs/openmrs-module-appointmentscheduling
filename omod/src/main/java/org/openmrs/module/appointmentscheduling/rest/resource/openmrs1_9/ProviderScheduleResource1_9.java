@@ -124,10 +124,11 @@ public class ProviderScheduleResource1_9 extends DataDelegatingCrudResource<Prov
                 context.getParameter("location")) : null;
         Provider provider = context.getParameter("provider") != null ? Context.getProviderService().getProviderByUuid(
                 context.getParameter("provider")) : null;
-        List<AppointmentType> types = AppointmentRestUtils.getAppointmentTypes(context);
+        AppointmentType appointmentType = context.getParameter("appointmentType") != null ? Context.getService(AppointmentService.class).getAppointmentTypeByUuid(
+                context.getParameter("appointmentType")) : null;
 
         return new NeedsPaging<ProviderSchedule>(Context.getService(AppointmentService.class).getProviderSchedulesByConstraints(
-                location, provider, types), context);
+                location, provider, appointmentType), context);
 
     }
 

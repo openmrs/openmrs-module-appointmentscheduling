@@ -78,4 +78,8 @@
 	<appointmentscheduling_provider_schedule provider_schedule_id="4" start_date="2019-05-05 00:00:00.0" end_date="2119-05-05 00:00:00.0" start_time = "07:00:00" end_time="18:00:00" provider_id="1" location_id="2"  uuid="759799ab-oooo-435e-b671-77773ada7490" date_created="2019-05-05 00:00:00.0" date_changed="2019-05-05 00:00:00.0" date_voided="2019-05-05 00:00:00.0" voided="false" creator="1" changed_by="1"/>
 	<appointmentscheduling_provider_schedule provider_schedule_id="5" start_date="2019-05-05 00:00:00.0" end_date="2119-05-05 00:00:00.0" start_time = "07:00:00" end_time="18:00:00" location_id="3"  uuid="759799ab-qqqq-435e-b671-77773ada7491" date_created="2019-05-05 00:00:00.0" date_changed="2019-05-05 00:00:00.0" date_voided="2019-05-05 00:00:00.0" voided="false" creator="1" changed_by="1"/>
 
+
+	<appointmentscheduling_provider_type_map provider_schedule_id="1" appointment_type_id="1"/>
+
+	<appointmentscheduling_provider_type_map provider_schedule_id="2" appointment_type_id="3"/>
 </dataset>

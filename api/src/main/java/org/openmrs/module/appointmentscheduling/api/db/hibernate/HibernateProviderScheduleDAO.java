@@ -4,6 +4,7 @@ import org.hibernate.Query;
 import org.openmrs.Location;
 import org.openmrs.Provider;
 import org.openmrs.api.db.DAOException;
+import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.ProviderSchedule;
 import org.openmrs.module.appointmentscheduling.api.db.ProviderScheduleDAO;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +30,7 @@ public class HibernateProviderScheduleDAO extends HibernateSingleClassDAO
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProviderSchedule> getProviderScheduleByConstraints(Location location, Provider provider, Date appointmentDate) throws DAOException {
+    public List<ProviderSchedule> getProviderScheduleByConstraints(Location location, AppointmentType type, Provider provider, Date appointmentDate) throws DAOException {
 
         if (location != null) {
             String stringQuery = "SELECT providerSchedule FROM ProviderSchedule AS providerSchedule WHERE providerSchedule.voided = 0";
@@ -38,6 +39,8 @@ public class HibernateProviderScheduleDAO extends HibernateSingleClassDAO
                 stringQuery += " AND providerSchedule.location=:location";
             if (provider != null)
                 stringQuery += " AND providerSchedule.provider=:provider";
+            if (type != null)
+                stringQuery += " AND :type IN elements(providerSchedule.types)";
             if (appointmentDate != null) {
                 if (!new SimpleDateFormat("HH:mm:ss").format(appointmentDate).equals("00:00:00")) {
                     stringQuery += " AND :appointmentTime >= providerSchedule.startTime AND :appointmentTime <= providerSchedule.endTime";
@@ -50,6 +53,8 @@ public class HibernateProviderScheduleDAO extends HibernateSingleClassDAO
                 query.setParameter("location", location);
             if (provider != null)
                 query.setParameter("provider", provider);
+            if (type != null)
+                query.setParameter("type", type);
             if (appointmentDate != null) {
                 if (!new SimpleDateFormat("HH:mm:ss").format(appointmentDate).equals("00:00:00")) {
                     query.setParameter("appointmentTime", getTimeFromDate(appointmentDate));

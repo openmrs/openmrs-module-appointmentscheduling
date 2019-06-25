@@ -462,7 +462,7 @@ public class TimeSlotServiceTest extends BaseModuleContextSensitiveTest {
 		Location location = Context.getLocationService().getLocation(2);
 		assertNotNull(location);
 
-		TimeSlot timeSlot = service.createTimeSlotUsingProviderSchedule(appointmentDate, provider, location);
+		TimeSlot timeSlot = service.createTimeSlotUsingProviderSchedule(appointmentDate, null, provider, location);
 		List<TimeSlot> timeSlots = service.getAllTimeSlots();
 
 		assertNotNull(timeSlot);

@@ -44,7 +44,9 @@ public class AppointmentRequisitionController {
         TimeSlot timeSlot = service.getTimeslotForAppointment(Context.getLocationService().getLocationByUuid(appointmentRequisition.getLocation()),
                 Context.getProviderService().getProviderByUuid(appointmentRequisition.getProvider()), appointment.getAppointmentType(), appointmentDate);
         if (timeSlot == null) {
-            timeSlot = service.createTimeSlotUsingProviderSchedule(appointmentDate, Context.getProviderService().getProviderByUuid(appointmentRequisition.getProvider()),
+            timeSlot = service.createTimeSlotUsingProviderSchedule(appointmentDate,
+                    Context.getService(AppointmentService.class).getAppointmentTypeByUuid(appointmentRequisition.getAppointmentType()),
+                    Context.getProviderService().getProviderByUuid(appointmentRequisition.getProvider()),
                     Context.getLocationService().getLocationByUuid(appointmentRequisition.getLocation()));
         }
         appointment.setTimeSlot(timeSlot);
