@@ -20,19 +20,19 @@ import java.util.List;
  */
 
 @Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE + "/appointmentblockwithtimeslot",
-    supportedClass = AppointmentBlock.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*"})
+    supportedClass = AppointmentBlock.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*"})
 public class AppointmentBlockWithTimeSlotResource1_9 extends AppointmentBlockResource1_9 {
-	
+
 	@Override
 	@Transactional
 	// TODO does this actually make this transactional? probably not?
 	public AppointmentBlock save(AppointmentBlock appointmentBlock) {
-		
+
 		appointmentBlock = Context.getService(AppointmentService.class).saveAppointmentBlock(appointmentBlock);
-		
+
 		List<TimeSlot> timeSlots = Context.getService(AppointmentService.class).getTimeSlotsInAppointmentBlock(
 		    appointmentBlock);
-		
+
 		if (timeSlots == null || timeSlots.isEmpty()) {
 			createTimeSlotInAppointmentBlock(appointmentBlock);
 		} else {
@@ -41,35 +41,35 @@ public class AppointmentBlockWithTimeSlotResource1_9 extends AppointmentBlockRes
 				voidTimeSlots(timeSlots.subList(1, timeSlots.size()));
 			}
 		}
-		
+
 		return appointmentBlock;
 	}
-	
+
 	private TimeSlot createTimeSlotInAppointmentBlock(AppointmentBlock appointmentBlock) {
-		
+
 		TimeSlot timeSlot = new TimeSlot();
 		timeSlot.setAppointmentBlock(appointmentBlock);
 		timeSlot.setStartDate(appointmentBlock.getStartDate());
 		timeSlot.setEndDate(appointmentBlock.getEndDate());
-		
+
 		return Context.getService(AppointmentService.class).saveTimeSlot(timeSlot);
 	}
-	
+
 	private TimeSlot updateTimeSlotInAppointmentBlock(AppointmentBlock appointmentBlock, TimeSlot timeSlot) {
-		
+
 		timeSlot.setStartDate(appointmentBlock.getStartDate());
 		timeSlot.setEndDate(appointmentBlock.getEndDate());
-		
+
 		return Context.getService(AppointmentService.class).saveTimeSlot(timeSlot);
 	}
-	
+
 	private void voidTimeSlots(List<TimeSlot> timeSlots) {
-		
+
 		for (TimeSlot timeSlot : timeSlots) {
 			Context.getService(AppointmentService.class).voidTimeSlot(timeSlot,
 			    "appointment block has more than one time slot");
 		}
-		
+
 	}
-	
+
 }

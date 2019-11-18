@@ -38,9 +38,9 @@ import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentSt
 import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatusType;
 
 @Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE + "/appointment",
-    supportedClass = Appointment.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*"})
+    supportedClass = Appointment.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*"})
 public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointment> {
-	
+
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation representation) {
 		if (representation instanceof DefaultRepresentation) {
@@ -74,10 +74,10 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 			description.addSelfLink();
 			return description;
 		}
-		
+
 		return null;
 	}
-	
+
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -90,7 +90,7 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 		description.addRequiredProperty("appointmentType");
 		return description;
 	}
-	
+
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() {
 		// note that time slot and appointment type are not updateable
@@ -101,12 +101,12 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 		description.addProperty("cancelReason");
 		return description;
 	}
-	
+
 	@Override
 	public Appointment getByUniqueId(String uuid) {
 		return Context.getService(AppointmentService.class).getAppointmentByUuid(uuid);
 	}
-	
+
 	@Override
 	protected void delete(Appointment appointment, String reason, RequestContext requestContext) throws ResponseException {
 		if (appointment.isVoided()) {
@@ -114,17 +114,17 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 		}
 		Context.getService(AppointmentService.class).voidAppointment(appointment, reason);
 	}
-	
+
 	@Override
 	public Appointment newDelegate() {
 		return new Appointment();
 	}
-	
+
 	@Override
 	public Appointment save(Appointment appointment) {
 		return save(appointment, false);
 	}
-	
+
 	protected Appointment save(Appointment appointment, Boolean allowOverbook) {
 		if (appointment.getId() != null) {
 			// existing appointments get updated
@@ -146,7 +146,7 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 			}
 		}
 	}
-	
+
 	@Override
 	public void purge(Appointment appointment, RequestContext requestContext) throws ResponseException {
 		if (appointment == null) {
@@ -154,16 +154,16 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 		}
 		Context.getService(AppointmentService.class).purgeAppointment(appointment);
 	}
-	
+
 	@Override
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
 		AppointmentService service = Context.getService(AppointmentService.class);
 		return new NeedsPaging<Appointment>(service.getAllAppointments(context.getIncludeAll()), context);
 	}
-	
+
 	/**
 	 * Retrieves Appointments that satisfy the given constraints
-	 * 
+	 *
 	 * @param fromDate (optional) - The appointment start date
 	 * @param toDate (optional) - The appointment end date
 	 * @param location (optional) - The appointment location
@@ -175,25 +175,25 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 	 */
 	@Override
 	protected PageableResult doSearch(RequestContext context) {
-		
+
 		Date fromDate = context.getParameter("fromDate") != null ? (Date) ConversionUtil.convert(
 		    context.getParameter("fromDate"), Date.class) : null;
-		
+
 		Date toDate = context.getParameter("toDate") != null ? (Date) ConversionUtil.convert(context.getParameter("toDate"),
 		    Date.class) : null;
-		
+
 		AppointmentType appointmentType = context.getParameter("appointmentType") != null ? Context.getService(
 		    AppointmentService.class).getAppointmentTypeByUuid(context.getParameter("appointmentType")) : null;
-		
+
 		Provider provider = context.getParameter("provider") != null ? Context.getProviderService().getProviderByUuid(
 		    context.getParameter("provider")) : null;
-		
+
 		Patient patient = context.getParameter("patient") != null ? Context.getPatientService().getPatientByUuid(
 		    context.getParameter("patient")) : null;
-		
+
 		Location location = context.getParameter("location") != null ? Context.getLocationService().getLocationByUuid(
 		    context.getParameter("location")) : null;
-		
+
 		List<AppointmentStatus> statuses = getAppointmentsStatuses(context);
 
 		VisitType visitType = context.getParameter("visitType") != null ? Context.getVisitService().getVisitTypeByUuid(
@@ -205,54 +205,54 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 
 		return new NeedsPaging<Appointment>(Context.getService(AppointmentService.class).getAppointmentsByConstraints(
 		    fromDate, toDate, location, provider, appointmentType, patient, statuses, visitType, visit), context);
-		
+
 	}
-	
+
 	private List<AppointmentStatus> getAppointmentsStatuses(RequestContext context) {
-		
+
 		String[] statuses = context.getRequest().getParameterValues("status");
 		String[] statusTypes = context.getRequest().getParameterValues("statusType");
-		
+
 		if (statuses == null && statusTypes == null) {
 			return null;
 		}
-		
+
 		List<AppointmentStatus> totalStatus = new ArrayList<AppointmentStatus>();
-		
+
 		totalStatus.addAll(getStatusList(statuses));
 		totalStatus.addAll(getStatusesByType(statusTypes));
-		
+
 		return totalStatus;
 	}
-	
+
 	private List<AppointmentStatus> getStatusesByType(String[] statusTypes) {
 		if (statusTypes == null) {
 			return Collections.emptyList();
 		}
-		
+
 		List<AppointmentStatus> statusList = new ArrayList<AppointmentStatus>();
-		
+
 		for (String statusType : statusTypes) {
 			statusList.addAll(getAppointmentsStatusByType(AppointmentStatusType.valueOf(statusType)));
 		}
-		
+
 		return statusList;
 	}
-	
+
 	private List<AppointmentStatus> getStatusList(String[] statuses) {
-		
+
 		if (statuses == null) {
 			return Collections.emptyList();
 		}
-		
+
 		List<AppointmentStatus> statusList = new ArrayList<AppointmentStatus>();
-		
+
 		for (String status : statuses) {
 			statusList.add(AppointmentStatus.valueOf(status));
 		}
 		return statusList;
 	}
-	
+
 	public String getDisplayString(Appointment appointment) {
 		return appointment.getAppointmentType().getName() + " : " + appointment.getStatus();
 	}

@@ -17,9 +17,9 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 @Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE + "/appointmenttype", supportedClass = AppointmentType.class,
-    supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*"})
+    supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*"})
 public class AppointmentTypeResource1_9 extends MetadataDelegatingCrudResource<AppointmentType> {
-	
+
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
@@ -51,7 +51,7 @@ public class AppointmentTypeResource1_9 extends MetadataDelegatingCrudResource<A
 		}
 		return null;
 	}
-	
+
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -62,27 +62,27 @@ public class AppointmentTypeResource1_9 extends MetadataDelegatingCrudResource<A
         description.addProperty("visitType");
 		return description;
 	}
-	
+
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
-	
+
 	@Override
 	public AppointmentType newDelegate() {
 		return new AppointmentType();
 	}
-	
+
 	@Override
 	public AppointmentType save(AppointmentType appointmentType) {
 		return Context.getService(AppointmentService.class).saveAppointmentType(appointmentType);
 	}
-	
+
 	@Override
 	public AppointmentType getByUniqueId(String uuid) {
 		return Context.getService(AppointmentService.class).getAppointmentTypeByUuid(uuid);
 	}
-	
+
 	@Override
 	public void purge(AppointmentType appointmentType, RequestContext requestContext) throws ResponseException {
 		if (appointmentType == null) {
@@ -90,17 +90,17 @@ public class AppointmentTypeResource1_9 extends MetadataDelegatingCrudResource<A
 		}
 		Context.getService(AppointmentService.class).purgeAppointmentType(appointmentType);
 	}
-	
+
 	@Override
 	protected NeedsPaging<AppointmentType> doGetAll(RequestContext context) {
 		return new NeedsPaging<AppointmentType>(Context.getService(AppointmentService.class).getAllAppointmentTypesSorted(
 		    context.getIncludeAll()), context);
 	}
-	
+
 	@Override
 	protected PageableResult doSearch(RequestContext context) {
 		return new NeedsPaging<AppointmentType>(Context.getService(AppointmentService.class).getAppointmentTypes(
 		    context.getParameter("q"), context.getIncludeAll()), context);
 	}
-	
+
 }
