@@ -46,7 +46,7 @@
 		<addForeignKeyConstraint constraintName="appointment_type_creator"
 			baseTableName="appointmentscheduling_appointment_type" baseColumnNames="creator"
 			referencedTableName="users" referencedColumnNames="user_id"/>
-		<addForeignKeyConstraint constraintName="appointment_type_changed_by" 
+		<addForeignKeyConstraint constraintName="appointment_type_changed_by"
 			baseTableName="appointmentscheduling_appointment_type" baseColumnNames="changed_by"
 			referencedTableName="users" referencedColumnNames="user_id"/>
 		<addForeignKeyConstraint constraintName="appointment_type_retired_by"
@@ -98,7 +98,7 @@
 		<addForeignKeyConstraint constraintName="appointment_block_creator"
 			baseTableName="appointmentscheduling_appointment_block" baseColumnNames="creator"
 			referencedTableName="users" referencedColumnNames="user_id"/>
-		<addForeignKeyConstraint constraintName="appointment_block_changed_by" 
+		<addForeignKeyConstraint constraintName="appointment_block_changed_by"
 			baseTableName="appointmentscheduling_appointment_block" baseColumnNames="changed_by"
 			referencedTableName="users" referencedColumnNames="user_id"/>
 		<addForeignKeyConstraint constraintName="appointment_block_voided_by"
@@ -154,7 +154,7 @@
 		<addForeignKeyConstraint constraintName="appointment_slot_creator"
 			baseTableName="appointmentscheduling_time_slot" baseColumnNames="creator"
 			referencedTableName="users" referencedColumnNames="user_id"/>
-		<addForeignKeyConstraint constraintName="appointment_slot__changed_by" 
+		<addForeignKeyConstraint constraintName="appointment_slot__changed_by"
 			baseTableName="appointmentscheduling_time_slot" baseColumnNames="changed_by"
 			referencedTableName="users" referencedColumnNames="user_id"/>
 		<addForeignKeyConstraint constraintName="appointment_slot_voided_by"
@@ -163,7 +163,7 @@
 
 		<addForeignKeyConstraint constraintName="appointment_slot_appointment_block_id"
 			baseTableName="appointmentscheduling_time_slot" baseColumnNames="appointment_block_id"
-			referencedTableName="appointmentscheduling_appointment_block" referencedColumnNames="appointment_block_id"/>		
+			referencedTableName="appointmentscheduling_appointment_block" referencedColumnNames="appointment_block_id"/>
 	</changeSet>
 	<changeSet id="10000000-1000-appointment-block-type-map" author="dkayiwa">
 		<preConditions onFail="MARK_RAN">
@@ -180,7 +180,7 @@
 				<constraints primaryKey="true" nullable="false"/>
 			</column>
 		</createTable>
-		<addForeignKeyConstraint constraintName="appointment_block_type_map_appointment_type_id" 
+		<addForeignKeyConstraint constraintName="appointment_block_type_map_appointment_type_id"
 			baseTableName="appointmentscheduling_block_type_map" baseColumnNames="appointment_type_id"
 			referencedTableName="appointmentscheduling_appointment_type" referencedColumnNames="appointment_type_id"/>
 		<addForeignKeyConstraint constraintName="appointment_block_type_map_appointment_block_id"
@@ -237,7 +237,7 @@
 		<addForeignKeyConstraint constraintName="appointment_creator"
 			baseTableName="appointmentscheduling_appointment" baseColumnNames="creator"
 			referencedTableName="users" referencedColumnNames="user_id"/>
-		<addForeignKeyConstraint constraintName="appointment_changed_by" 
+		<addForeignKeyConstraint constraintName="appointment_changed_by"
 			baseTableName="appointmentscheduling_appointment" baseColumnNames="changed_by"
 			referencedTableName="users" referencedColumnNames="user_id"/>
 		<addForeignKeyConstraint constraintName="appointment_voided_by"
@@ -255,8 +255,8 @@
 			referencedTableName="visit" referencedColumnNames="visit_id"/>
 		<addForeignKeyConstraint constraintName="appointment_patient_id"
 			baseTableName="appointmentscheduling_appointment" baseColumnNames="patient_id"
-			referencedTableName="patient" referencedColumnNames="patient_id"/>		
-	</changeSet>	
+			referencedTableName="patient" referencedColumnNames="patient_id"/>
+	</changeSet>
     	<changeSet id="10000000-2019-appointment-status" author="yony258">
 		<preConditions onFail="MARK_RAN">
 			<not><tableExists tableName="appointmentscheduling_appointment_status_history"/></not>
@@ -285,7 +285,7 @@
 			baseTableName="appointmentscheduling_appointment_status_history" baseColumnNames="appointment_id"
 			referencedTableName="appointmentscheduling_appointment" referencedColumnNames="appointment_id"/>
 	</changeSet>
-    
+
     <changeSet id="201402141515" author="djazayeri">
         <!-- No precondition since there isn't one for "not null constraint exists" and this is a safe operation -->
         <comment>
@@ -523,6 +523,19 @@
 								 referencedTableName="appointmentscheduling_provider_schedule"
 								 referencedColumnNames="provider_schedule_id"/>
 	</changeSet>
+
+    <changeSet id="20191126-make-appointment-status-history-end-date-nullable" author="jecihjoy">
+        <comment>
+            After AM-196, we need to make sure that for existing implementations the end date of appointment_status_history is nullable
+        </comment>
+        <modifyColumn tableName="appointmentscheduling_appointment_status_history">
+            <column name="end_date" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+        </modifyColumn>
+    </changeSet>
+
+
 
 
 </databaseChangeLog>

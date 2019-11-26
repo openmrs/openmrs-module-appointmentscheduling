@@ -788,7 +788,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 				provider, type, patient, statuses, null, null);
 
 	}
-	
+
 	@Override
 	public List<Appointment> getAppointmentsByConstraints(Date fromDate,
 			  Date toDate, Location location, Provider provider,
@@ -862,7 +862,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 			AppointmentStatusHistory appointmentStatusHistory = getMostRecentAppointmentStatusHistory(appointment);
 
 			if (appointmentStatusHistory != null) {
-				// prior to the implement of AM-196 we storing the "current" status of an appointment in the history table
+				// prior to the implement of AM-196 we were *not* storing the "current" status of an appointment in the history table
 				// we need to still handle legacy code that may not have been migrated, and create an entry in the history table
 				if (appointmentStatusHistory.getEndDate() != null) {
 					AppointmentStatusHistory history = new AppointmentStatusHistory();
@@ -1192,7 +1192,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 		if (appointment.getStatus() == null){
 			appointment.setStatus(AppointmentStatus.SCHEDULED);
 		}
-		
+
 		Context.getService(AppointmentService.class).saveAppointment(appointment);
 
 		AppointmentStatusHistory history = new AppointmentStatusHistory(appointment, appointment.getStatus(), getAppointmentCurrentStatusStartDate(appointment), null);
@@ -1210,7 +1210,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
     public AppointmentStatusHistory getMostRecentAppointmentStatusHistory(Appointment appointment) {
         return getAppointmentStatusHistoryDAO().getMostRecentAppointmentStatusHistory(appointment);
     }
-	
+
 	//provider schedules
 
 	@Override
