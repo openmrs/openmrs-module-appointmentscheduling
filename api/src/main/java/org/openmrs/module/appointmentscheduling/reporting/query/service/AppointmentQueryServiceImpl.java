@@ -20,7 +20,7 @@ public class AppointmentQueryServiceImpl extends BaseDefinitionService<Appointme
 
     /**
      * @see org.openmrs.module.reporting.definition.service.DefinitionService#evaluate(org.openmrs.module.reporting.evaluation.Definition, org.openmrs.module.reporting.evaluation.EvaluationContext)
-     * @should evaluate an encounter query
+     * <strong>Should</strong> evaluate an encounter query
      */
     @Transactional(readOnly = true)
     public AppointmentQueryResult evaluate(AppointmentQuery query, EvaluationContext context) throws EvaluationException {

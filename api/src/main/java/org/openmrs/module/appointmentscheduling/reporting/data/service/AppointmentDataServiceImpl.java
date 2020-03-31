@@ -20,7 +20,7 @@ public class AppointmentDataServiceImpl extends BaseDefinitionService<Appointmen
 
     /**
      * @see org.openmrs.module.reporting.definition.service.DefinitionService#evaluate(org.openmrs.module.reporting.evaluation.Definition, org.openmrs.module.reporting.evaluation.EvaluationContext)
-     * @should evaluate a Appointment data definition
+     * <strong>Should</strong> evaluate a Appointment data definition
      */
     @Transactional(readOnly = true)
     public EvaluatedAppointmentData evaluate(AppointmentDataDefinition definition, EvaluationContext context) throws EvaluationException {

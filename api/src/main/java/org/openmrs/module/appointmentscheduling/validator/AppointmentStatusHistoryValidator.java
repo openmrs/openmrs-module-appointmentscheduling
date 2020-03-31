@@ -45,7 +45,7 @@ public class AppointmentStatusHistoryValidator implements Validator {
 	 * 
 	 * @see org.springframework.validation.Validator#validate(java.lang.Object,
 	 *      org.springframework.validation.Errors)
-	 * @should pass validation if all required fields have proper values
+	 * <strong>Should</strong> pass validation if all required fields have proper values
 	 */
 	
 	public void validate(Object obj, Errors errors) {

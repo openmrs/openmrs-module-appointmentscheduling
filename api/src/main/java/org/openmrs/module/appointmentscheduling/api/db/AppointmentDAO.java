@@ -65,7 +65,7 @@ public interface AppointmentDAO extends SingleClassDAO {
 	 * 
 	 * @param timeSlot - The time slot to look into.
 	 * @return a list of the appointments in the given time slot.
-	 * @should not return voided time slots
+	 * <strong>Should</strong> not return voided time slots
 	 */
 	List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot);
 	
@@ -74,7 +74,7 @@ public interface AppointmentDAO extends SingleClassDAO {
 	 * 
 	 * @param timeSlot - The time slot to look into.
 	 * @return a count of the appointments in the given time slot.
-	 * @should not return voided time slots
+	 * <strong>Should</strong> not return voided time slots
 	 */
 	Integer getCountOfAppointmentsInTimeSlot(TimeSlot timeSlot);
 	
@@ -84,7 +84,7 @@ public interface AppointmentDAO extends SingleClassDAO {
 	 * @param timeSlot - The time slot to look into.
 	 * @param statuses - statues to match against
 	 * @return a list of the appointments in the given time slot.
-	 * @should not return voided time slots
+	 * <strong>Should</strong> not return voided time slots
 	 */
 	List<Appointment> getAppointmentsInTimeSlotByStatus(TimeSlot timeSlot, List<AppointmentStatus> statuses);
 	
@@ -94,7 +94,7 @@ public interface AppointmentDAO extends SingleClassDAO {
 	 * @param timeSlot - The time slot to look into.
 	 * @param statuses - statues to match against
 	 * @return a cont of the appointments in the given time slot.
-	 * @should not return voided time slots
+	 * <strong>Should</strong> not return voided time slots
 	 */
 	Integer getCountOfAppointmentsInTimeSlotByStatus(TimeSlot timeSlot, List<AppointmentStatus> statuses);
 
