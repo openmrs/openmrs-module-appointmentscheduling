@@ -36,8 +36,8 @@ public class ProviderScheduleValidator implements Validator {
     /**
      * Checks the form object for any inconsistencies/errors
      *
-     * @should pass validation if all required fields have proper values
-     * @should fail validation if start date is not before end date
+     * <strong>Should</strong> pass validation if all required fields have proper values
+     * <strong>Should</strong> fail validation if start date is not before end date
      * @see org.springframework.validation.Validator#validate(java.lang.Object,
      * org.springframework.validation.Errors)
      */

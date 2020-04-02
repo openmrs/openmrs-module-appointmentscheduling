@@ -43,7 +43,7 @@ public interface TimeSlotDAO extends SingleClassDAO {
 	 * @param appointmentBlock - a given appointment block.
 	 * @return List of TimeSlots that are associated with the given Appointment Block, null if
 	 *         illegal values (null appointmentBlock)
-	 * @should not return voided time slots
+	 * <strong>Should</strong> not return voided time slots
 	 */
 	List<TimeSlot> getTimeSlotsByAppointmentBlock(AppointmentBlock appointmentBlock);
 }
