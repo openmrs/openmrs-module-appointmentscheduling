@@ -149,7 +149,7 @@ public class AppointmentSettingsFormController {
 
 	//
 	
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value = "/module/appointmentscheduling/appointmentSettingsForm", method = RequestMethod.POST)
 	public String onSubmit(HttpServletRequest request,
 	        @RequestParam(value = "visitTypeSelect", required = true) VisitType visitType,
 	        @RequestParam(value = "personAttributeTypeSelect", required = true) PersonAttributeType attributeType,

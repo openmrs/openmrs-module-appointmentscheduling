@@ -64,7 +64,7 @@ public class AppointmentTypeFormController {
 		return appointmentType;
 	}
 	
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value = "/module/appointmentscheduling/appointmentTypeForm", method = RequestMethod.POST)
 	public String onSubmit(HttpServletRequest request, AppointmentType appointmentType, BindingResult result)
 	        throws Exception {
 		

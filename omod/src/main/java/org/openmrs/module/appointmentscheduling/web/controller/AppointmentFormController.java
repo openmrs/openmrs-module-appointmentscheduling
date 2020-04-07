@@ -182,7 +182,7 @@ public class AppointmentFormController {
 		return Context.getService(AppointmentService.class).getAllAppointmentTypesSorted(false);
 	}
 	
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value = "/module/appointmentscheduling/appointmentForm", method = RequestMethod.POST)
 	public String onSubmit(HttpServletRequest request, Appointment appointment, BindingResult result,
 	        @RequestParam(value = "fromDate", required = false) Date fromDate,
 	        @RequestParam(value = "toDate", required = false) Date toDate,

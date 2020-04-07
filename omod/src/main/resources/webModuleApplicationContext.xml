@@ -22,9 +22,6 @@
 
 	<!-- Add here beans related to the web context -->
     <context:component-scan base-package="@MODULE_PACKAGE@" />
-	 
-	<!-- Annotation based controllers -->
-	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
 	
 	<context:component-scan base-package="org.openmrs.module.appointmentscheduling.web.controller" />
  

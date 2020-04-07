@@ -150,7 +150,7 @@ public class AppointmentBlockFormController {
 		return appointmentService.getAllAppointmentTypesSorted(false);
 	}
 	
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value = "/module/appointmentscheduling/appointmentBlockForm", method = RequestMethod.POST)
 	public String onSubmit(HttpServletRequest request, ModelMap model, AppointmentBlock appointmentBlock,
 	        BindingResult result, @RequestParam(value = "timeSlotLength", required = false) String timeSlotLength,
 	        @RequestParam(value = "emptyTypes", required = false) String emptyTypes,

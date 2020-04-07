@@ -37,7 +37,7 @@ public class AppointmentStatisticsFormController {
 		
 	}
 	
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value = "/module/appointmentscheduling/appointmentStatisticsForm", method = RequestMethod.POST)
 	public String onSubmit(HttpServletRequest request, AppointmentType appointmentType, BindingResult result)
 	        throws Exception {
 		

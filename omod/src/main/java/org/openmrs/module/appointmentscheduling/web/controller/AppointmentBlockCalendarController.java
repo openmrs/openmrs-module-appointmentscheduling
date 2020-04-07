@@ -130,7 +130,7 @@ public class AppointmentBlockCalendarController {
 		return Context.getService(AppointmentService.class).getAllProvidersSorted(false);
 	}
 	
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value = "/module/appointmentscheduling/appointmentBlockCalendar", method = RequestMethod.POST)
 	public String loadForm(HttpServletRequest request, ModelMap model,
 	        @RequestParam(value = "action", required = false) String action,
 	        @RequestParam(value = "locationId", required = false) Location location,

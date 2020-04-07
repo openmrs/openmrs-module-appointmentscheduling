@@ -131,7 +131,7 @@ public class AppointmentBlockListController {
 			return null;
 	}
 	
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value = "/module/appointmentscheduling/appointmentBlockList", method = RequestMethod.POST)
 	public String onSubmit(HttpServletRequest request, ModelMap model,
 	        @RequestParam(value = "fromDate", required = false) Date fromDate,
 	        @RequestParam(value = "toDate", required = false) Date toDate,
