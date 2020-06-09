@@ -94,7 +94,17 @@ public class AppointmentTypeValidatorTest {
 		
 		Mockito.verify(errors).rejectValue("name", "appointmentscheduling.AppointmentType.longName.errorMessage");
 	}
-	
+
+	@Test
+	public void mustRejectAppointmentTypeNameWithXSS() throws Exception {
+		String evilName = "<script>alert(1)</script>";
+		AppointmentType appointmentTypeEvilName = new AppointmentType(evilName, "", 10);
+
+		appointmentTypeValidator.validate(appointmentTypeEvilName, errors);
+
+		Mockito.verify(errors).rejectValue("name", "appointmentscheduling.AppointmentType.unsafeName.errorMessage");
+	}
+
 	@Test
 	public void mustRejectAppointmentTypeDescriptionWithMoreThan1024Characters() throws Exception {
 		String longDescription = StringUtils.repeat("*", 1025);

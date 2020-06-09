@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
+import org.openmrs.web.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.Errors;
@@ -82,6 +83,9 @@ public class AppointmentTypeValidator implements Validator {
 		if (verifyIfNameHasMoreThan100Characters(appointmentType.getName())) {
 			errors.rejectValue("name", "appointmentscheduling.AppointmentType.longName.errorMessage");
 		}
+		if(verifyIfNameHasHtmlEncodableChars(appointmentType.getName())){
+			errors.rejectValue("name", "appointmentscheduling.AppointmentType.unsafeName.errorMessage");
+		}
 	}
 	
 	private boolean verifyIfNameHasMoreThan100Characters(String appointmentName) {
@@ -107,6 +111,13 @@ public class AppointmentTypeValidator implements Validator {
 	private boolean verifyIfDescriptionHasMoreThan1024Characters(String description) {
 		if (description != null) {
 			return (description.length() > 1024) ? true : false;
+		}
+		return false;
+	}
+
+	private boolean verifyIfNameHasHtmlEncodableChars(String appointmentName) {
+		if(appointmentName != null){
+			return !WebUtil.escapeHTML(appointmentName).equals(appointmentName);
 		}
 		return false;
 	}
