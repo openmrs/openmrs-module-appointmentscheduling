@@ -7,7 +7,9 @@
 
 	<class name="AppointmentStatusHistory" table="${project.parent.artifactId}_appointment_status_history">
 		<id name="appointmentStatusHistoryId" type="int" column="appointment_status_history_id" unsaved-value="0">
-			<generator class="native" />
+			<generator class="native">
+				<param name="sequence">appointmentscheduling_appoint_appointment_status_history_id_seq</param>
+			</generator>
 		</id>
 		
 		<discriminator column="appointment_status_history_id" insert="false" />
