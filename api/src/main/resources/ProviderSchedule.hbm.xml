@@ -8,7 +8,10 @@
     <class name="ProviderSchedule" table="${project.parent.artifactId}_provider_schedule">
         <id name="providerScheduleId" type="int" column="provider_schedule_id" unsaved-value="0">
             <generator class="native">
-                <param name="sequence">provider_schedule_provider_schedule_id_seq</param>
+            	<!-- Due to limit on max length of sequence on PostgreSQL, the table name gets sliced from the end
+				Original Sequence Name as Expected - appointmentscheduling_provider_schedule_provider_schedule_id_seq
+				Current Sequence Name for PostgreSQL - appointmentscheduling_provider_schedul_provider_schedule_id_seq -->
+                <param name="sequence">appointmentscheduling_provider_schedul_provider_schedule_id_seq</param>
             </generator>
         </id>
 

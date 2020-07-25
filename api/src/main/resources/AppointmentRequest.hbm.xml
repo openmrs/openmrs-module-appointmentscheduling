@@ -7,7 +7,12 @@
 
     <class name="AppointmentRequest" table="appointmentscheduling_appointment_request">
         <id name="appointmentRequestId" type="int" column="appointment_request_id" unsaved-value="0">
-            <generator class="native" />
+			<generator class="native">
+			<!-- Due to limit on max length of sequence on PostgreSQL, the table name gets sliced from the end
+				Original Sequence Name as Expected - appointmentscheduling_appointment_request_appointment_request_id_seq
+				Current Sequence Name for PostgreSQL - appointmentscheduling_appointment_re_appointment_request_id_seq -->
+				<param name="sequence">appointmentscheduling_appointment_re_appointment_request_id_seq</param>
+			</generator>
         </id>
 
         <discriminator column="appointment_request_id" insert="false" />

@@ -7,7 +7,9 @@
 
 	<class name="TimeSlot" table="${project.parent.artifactId}_time_slot">
 		<id name="timeSlotId" type="int" column="time_slot_id" unsaved-value="0">
-			<generator class="native" />
+			<generator class="native">
+				<param name="sequence">appointmentscheduling_time_slot_time_slot_id_seq</param>
+			</generator>
 		</id>
 		
 		<discriminator column="time_slot_id" insert="false" />
