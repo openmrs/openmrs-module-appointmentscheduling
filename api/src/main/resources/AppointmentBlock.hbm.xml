@@ -8,6 +8,9 @@
 	<class name="AppointmentBlock" table="${project.parent.artifactId}_appointment_block">
 		<id name="appointmentBlockId" type="int" column="appointment_block_id" unsaved-value="0">
 			<generator class="native">
+				<!-- Due to limit on max length of sequence on PostgreSQL, the table name gets sliced from the end
+				Original Sequence Name as Expected - appointmentscheduling_appointment_block_appointment_block_id_seq
+				Current Sequence Name for PostgreSQL - appointmentscheduling_appointment_bloc_appointment_block_id_seq -->
 				<param name="sequence">appointmentscheduling_appointment_bloc_appointment_block_id_seq</param>
 			</generator>
 		</id>
