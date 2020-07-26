@@ -36,7 +36,7 @@
 			</column>
 			<column name="changed_by" type="int" />
 			<column name="date_changed" type="datetime" />
-			<column name="retired" type="tinyint" defaultValueNumeric="0">
+			<column name="retired" type="boolean" defaultValue="0">
 				<constraints nullable="false"/>
 			</column>
 			<column name="retired_by" type="int" />
@@ -88,7 +88,7 @@
 			</column>
 			<column name="changed_by" type="int" />
 			<column name="date_changed" type="datetime" />
-			<column name="voided" type="tinyint" defaultValueNumeric="0">
+			<column name="voided" type="boolean" defaultValue="0">
 				<constraints nullable="false"/>
 			</column>
 			<column name="voided_by" type="int" />
@@ -144,7 +144,7 @@
 			</column>
 			<column name="changed_by" type="int" />
 			<column name="date_changed" type="datetime" />
-			<column name="voided" type="tinyint" defaultValueNumeric="0">
+			<column name="voided" type="boolean" defaultValue="0">
 				<constraints nullable="false"/>
 			</column>
 			<column name="voided_by" type="int" />
@@ -227,7 +227,7 @@
 			</column>
 			<column name="changed_by" type="int" />
 			<column name="date_changed" type="datetime" />
-			<column name="voided" type="tinyint" defaultValueNumeric="0">
+			<column name="voided" type="boolean" defaultValue="0">
 				<constraints nullable="false"/>
 			</column>
 			<column name="voided_by" type="int" />
@@ -361,7 +361,7 @@
             <column name="changed_by" type="int" />
             <column name="date_changed" type="datetime" />
 
-            <column name="voided" type="tinyint" defaultValueNumeric="0">
+            <column name="voided" type="boolean" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
 
@@ -406,7 +406,7 @@
         </preConditions>
         <comment>Adding confidential column to appointmentscheduling_appointment_type table</comment>
         <addColumn tableName="appointmentscheduling_appointment_type">
-            <column name="confidential" type="tinyint" defaultValueNumeric="0">
+            <column name="confidential" type="boolean" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
         </addColumn>
@@ -466,7 +466,7 @@
 			</column>
 			<column name="changed_by" type="int"/>
 			<column name="date_changed" type="datetime"/>
-			<column name="voided" type="tinyint" defaultValueNumeric="0">
+			<column name="voided" type="boolean" defaultValue="0">
 				<constraints nullable="false"/>
 			</column>
 			<column name="voided_by" type="int"/>
