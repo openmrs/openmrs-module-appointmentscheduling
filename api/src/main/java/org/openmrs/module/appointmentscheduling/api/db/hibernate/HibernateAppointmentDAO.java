@@ -101,7 +101,7 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO
 			throw new APIException("fromDate can not be later than toDate");
 
 		else {
-			String stringQuery = "SELECT appointment FROM Appointment AS appointment WHERE appointment.voided = '0'";
+			String stringQuery = "SELECT appointment FROM Appointment AS appointment WHERE appointment.voided = false";
 
 			if (fromDate != null)
 				stringQuery += " AND appointment.timeSlot.startDate >= :fromDate";
