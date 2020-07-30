@@ -8,6 +8,8 @@
         for a list of supported elements and attributes
     -->
    	 <changeSet id="10000000-1000-appointment-type" author="dkayiwa">
+	    <validCheckSum>3:58a9440e09242029258de5a5e0030d57</validCheckSum> <!-- old checksum before changing retire type to boolean -->
+	    <validCheckSum>3:6586a6a4c7bf076eb95070e6ebf385b0</validCheckSum> <!-- new checksum after changing retire type to boolean -->
 		<preConditions onFail="MARK_RAN">
 			<not><tableExists tableName="appointmentscheduling_appointment_type"/></not>
 		</preConditions>
@@ -54,6 +56,8 @@
 			referencedTableName="users" referencedColumnNames="user_id"/>
 	</changeSet>
         <changeSet id="10000000-1000-appointment-block" author="yony258">
+	    <validCheckSum>3:fc3edaed1b54e11dbe639b41e2fc3b04</validCheckSum> <!-- old checksum before changing voided type to boolean -->
+	    <validCheckSum>3:bd8acc06a66e072492adda93a649b21f</validCheckSum> <!-- new checksum after changing voided type to boolean -->
 		<preConditions onFail="MARK_RAN">
 			<not><tableExists tableName="appointmentscheduling_appointment_block"/></not>
 		</preConditions>
@@ -113,6 +117,8 @@
 			referencedTableName="provider" referencedColumnNames="provider_id"/>
 	</changeSet>
     	<changeSet id="10000000-1000-appointment-time-slot" author="yony258">
+	    <validCheckSum>3:444794d6c7637eda96851852e5872898</validCheckSum> <!-- old checksum before changing voided type to boolean -->
+	    <validCheckSum>3:45b1d22afda9efc46c41c76fc70cd3e9</validCheckSum> <!-- new checksum after changing voided type to boolean -->
 		<preConditions onFail="MARK_RAN">
 			<not><tableExists tableName="appointmentscheduling_time_slot"/></not>
 		</preConditions>
@@ -188,6 +194,8 @@
 			referencedTableName="appointmentscheduling_appointment_block" referencedColumnNames="appointment_block_id"/>
 	</changeSet>
 	<changeSet id="10000000-1000-appointment-appointment" author="yony258">
+	    <validCheckSum>3:3dd6540810cbe6effb18ef106756bcf9</validCheckSum> <!-- old checksum before changing voided type to boolean -->
+	    <validCheckSum>3:6be1672b50a42e934df6f99afd72a0be</validCheckSum> <!-- new checksum after changing voided type to boolean -->
 		<preConditions onFail="MARK_RAN">
 			<not><tableExists tableName="appointmentscheduling_appointment"/></not>
 		</preConditions>
@@ -307,6 +315,8 @@
     </changeSet>
 
     <changeSet id="20140917-1-appointmentmentscheduling_appointment_request" author="mogoodrich">
+	    <validCheckSum>3:e325fa7e42b1dd1886e56b5893064c8d</validCheckSum> <!-- old checksum before changing retire type to boolean -->
+	    <validCheckSum>3:fa20db7f80104a1b97b4bc973b85fb71</validCheckSum> <!-- new checksum after changing retire type to boolean -->
         <preConditions onFail="MARK_RAN">
             <not><tableExists tableName="appointmentscheduling_appointment_request"/></not>
         </preConditions>
@@ -401,6 +411,8 @@
     </changeSet>
 
     <changeSet id="201409251456-appointmentscheduling-confidential" author="djazayeri">
+	    <validCheckSum>3:1d17191b84034b89b6402f9e0853a100</validCheckSum> <!-- old checksum before changing confidential type to boolean -->
+	    <validCheckSum>3:db8b9e93b02fc0ae7c1a81fdea1084f0</validCheckSum> <!-- new checksum after changing confidential type to boolean -->
         <preConditions onFail="MARK_RAN">
             <not><columnExists tableName="appointmentscheduling_appointment_type" columnName="confidential" /></not>
         </preConditions>
@@ -428,6 +440,8 @@
 	</changeSet>
 
 	<changeSet id="2019_appointmentscheduling_provider_schedule" author="jecihjoy">
+	    <validCheckSum>3:b954869e54fcdd9980586a04e7164120</validCheckSum> <!-- old checksum before changing voided type to boolean -->
+	    <validCheckSum>3:d8ac50bc13954f4d61ff503d7cc89b67</validCheckSum> <!-- new checksum after changing voided type to boolean -->
 		<preConditions onFail="MARK_RAN">
 			<not>
 				<tableExists tableName="appointmentscheduling_provider_schedule"/>
