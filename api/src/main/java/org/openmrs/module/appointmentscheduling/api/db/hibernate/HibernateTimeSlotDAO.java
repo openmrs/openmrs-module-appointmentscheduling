@@ -37,7 +37,7 @@ public class HibernateTimeSlotDAO extends HibernateSingleClassDAO implements Tim
 			Date startDate = (fromDate == null) ? new Date() : fromDate;
 			
 			String stringQuery = "SELECT timeSlot FROM TimeSlot AS timeSlot WHERE timeSlot.appointmentBlock IN("
-			        + " FROM AppointmentBlock WHERE :appointmentType IN elements(types)) AND voided = 0 AND endDate > :startDate";
+			        + " FROM AppointmentBlock WHERE :appointmentType IN elements(types)) AND voided = false AND endDate > :startDate";
 
 			if (toDate != null) {
 				stringQuery += " AND endDate <= :endDate";
