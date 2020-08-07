@@ -32,7 +32,7 @@ public class HibernateProviderScheduleDAO extends HibernateSingleClassDAO
     public List<ProviderSchedule> getProviderScheduleByConstraints(Location location, Provider provider, Date appointmentDate) throws DAOException {
 
         if (location != null) {
-            String stringQuery = "SELECT providerSchedule FROM ProviderSchedule AS providerSchedule WHERE providerSchedule.voided = 0";
+			String stringQuery = "SELECT providerSchedule FROM ProviderSchedule AS providerSchedule WHERE providerSchedule.voided = false";
 
             if (location != null)
                 stringQuery += " AND providerSchedule.location=:location";
