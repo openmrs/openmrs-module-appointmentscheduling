@@ -160,7 +160,7 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO
 	@Transactional(readOnly = true)
 	public List<Appointment> getAppointmentsByStates(
 			List<AppointmentStatus> states) {
-		String sQuery = "from Appointment as appointment where appointment.voided = 0 and appointment.status in (:states)";
+		String sQuery = "from Appointment as appointment where appointment.voided = false and appointment.status in (:states)";
 
 		Query query = super.sessionFactory.getCurrentSession().createQuery(
 				sQuery);
@@ -173,7 +173,7 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO
 	@Transactional(readOnly = true)
 	public List<Appointment> getPastAppointmentsByStates(
 			List<AppointmentStatus> states) {
-		String sQuery = "from Appointment as appointment where appointment.timeSlot.endDate <= :endDate and appointment.voided = 0 and appointment.status in (:states)";
+		String sQuery = "from Appointment as appointment where appointment.timeSlot.endDate <= :endDate and appointment.voided = false and appointment.status in (:states)";
 
 		Query query = super.sessionFactory.getCurrentSession().createQuery(
 				sQuery);
@@ -265,7 +265,7 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO
 				+ "LEFT JOIN  appointmentscheduling_time_slot `ts` ON (ap.time_slot_id = ts.time_slot_id)  "
 				+ "LEFT JOIN  appointmentscheduling_appointment_block `bl` ON (ts.appointment_block_id = bl.appointment_block_id)  "
 				+ "LEFT JOIN  location `loc` ON (bl.location_id = loc.location_id)   "
-				+ "LEFT JOIN  provider `pr` ON (bl.provider_id = pr.provider_id)  WHERE ap.voided = 0  ";
+		        + "LEFT JOIN  provider `pr` ON (bl.provider_id = pr.provider_id)  WHERE ap.voided = false  ";
 
 		if (fromDate != null && toDate != null)
 			stringQuery += "AND date_format(ts.start_date,'%Y-%m-%d') between ? AND ?  ";
