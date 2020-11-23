@@ -295,4 +295,14 @@ public class AppointmentRequestServiceTest extends BaseModuleContextSensitiveTes
 
     }
 
+    @Test
+    @Verifies(value="The text for notes should be sanitized", method="sanitizeNotes(String)")
+    public void sanitizeAppointmentRequest_shouldSanitizeTheTextInputForAppointmentNotes() throws Exception {
+        final String note = "<iframe>";
+        final String sanitizedNote = "&lt;iframe&gt;";
+        AppointmentRequest appointmentRequest = new AppointmentRequest();
+        appointmentRequest.setNotes(note);
+        assertEquals(appointmentRequest.getNotes(), sanitizedNote);
+    }
+
 }

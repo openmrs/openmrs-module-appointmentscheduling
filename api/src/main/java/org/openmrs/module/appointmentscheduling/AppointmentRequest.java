@@ -1,5 +1,7 @@
 package org.openmrs.module.appointmentscheduling;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
@@ -90,12 +92,16 @@ public class AppointmentRequest extends BaseOpenmrsData {
         this.status = status;
     }
 
+    public String sanitizeNotes(String note) {
+        return StringEscapeUtils.escapeHtml(note);
+    }
+
     public String getNotes() {
-        return notes;
+        return this.notes;
     }
 
     public void setNotes(String notes) {
-        this.notes = notes;
+        this.notes = sanitizeNotes(notes);
     }
 
     public Provider getRequestedBy() {
