@@ -84,7 +84,7 @@ public class AppointmentRequestServiceTest extends BaseModuleContextSensitiveTes
         assertEquals(TimeFrameUnits.WEEKS, appointmentRequest.getMinTimeFrameUnits());
         assertEquals(new Integer(2), appointmentRequest.getMaxTimeFrameValue());
         assertEquals(TimeFrameUnits.MONTHS, appointmentRequest.getMaxTimeFrameUnits());
-        assertNull(appointmentRequest.getNotes());
+        assertEquals("null", appointmentRequest.getNotes());
 
     }
 

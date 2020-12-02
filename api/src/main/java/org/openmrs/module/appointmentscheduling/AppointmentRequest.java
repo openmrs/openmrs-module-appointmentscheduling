@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
+import org.owasp.encoder.Encode;
 
 import java.util.Date;
 
@@ -93,11 +94,11 @@ public class AppointmentRequest extends BaseOpenmrsData {
     }
 
     public String sanitizeNotes(String note) {
-        return StringEscapeUtils.escapeHtml(note);
+        return Encode.forHtml(note);
     }
 
     public String getNotes() {
-        return this.notes;
+        return notes;
     }
 
     public void setNotes(String notes) {
