@@ -1,11 +1,9 @@
 package org.openmrs.module.appointmentscheduling;
 
-import org.apache.commons.lang.StringEscapeUtils;
-
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
-import org.owasp.encoder.Encode;
+import org.openmrs.web.WebUtil;
 
 import java.util.Date;
 
@@ -94,7 +92,7 @@ public class AppointmentRequest extends BaseOpenmrsData {
     }
 
     public String sanitizeNotes(String note) {
-        return Encode.forHtml(note);
+        return WebUtil.escapeHTML(note);
     }
 
     public String getNotes() {
