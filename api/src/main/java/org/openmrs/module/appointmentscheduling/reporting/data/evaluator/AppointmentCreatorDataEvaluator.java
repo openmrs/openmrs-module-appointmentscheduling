@@ -8,7 +8,7 @@ public class AppointmentCreatorDataEvaluator extends AppointmentPropertyDataEval
 
     @Override
     public String getPropertyName() {
-        return "timeSlot.appointmentBlock.creator";
+        return "creator";
     }
 
 }
