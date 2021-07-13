@@ -1,5 +1,6 @@
 package org.openmrs.module.appointmentscheduling.reporting.data.definition;
 
+import org.openmrs.User;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
@@ -31,7 +32,7 @@ public class AppointmentCreatorDataDefinition extends BaseDataDefinition impleme
      * @see org.openmrs.module.reporting.data.DataDefinition#getDataType()
      */
     public Class<?> getDataType() {
-        return String.class;
+        return User.class;
     }
 
 }
