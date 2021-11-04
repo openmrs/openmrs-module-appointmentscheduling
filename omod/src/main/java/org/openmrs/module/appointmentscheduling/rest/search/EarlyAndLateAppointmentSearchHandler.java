@@ -30,7 +30,7 @@ public class EarlyAndLateAppointmentSearchHandler  implements SearchHandler {
 
 
     private final SearchConfig searchConfig = new SearchConfig("appointmentSearch", RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE + "/appointment",
-            Arrays.asList("1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*"),
+            Arrays.asList("1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*"),
             Arrays.asList(new SearchQuery.Builder("Allows retrieval of late and early appointments")
                     .withRequiredParameters("statusValue", "fromDate", "toDate").withOptionalParameters("location", "provider", "appointmentType").build()));
 
