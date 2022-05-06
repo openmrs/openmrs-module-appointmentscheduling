@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE + "/appointmentblock", supportedClass = AppointmentBlock.class,
-        supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*"})
+        supportedOpenmrsVersions = {"1.9.* - 9.*"})
 public class AppointmentBlockResource1_9 extends DataDelegatingCrudResource<AppointmentBlock> {
 
 	@Override
