@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 
 import junit.framework.Assert;
-import net.sf.cglib.core.Local;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Location;
