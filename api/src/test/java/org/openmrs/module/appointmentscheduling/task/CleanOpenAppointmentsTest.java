@@ -1,21 +1,21 @@
 package org.openmrs.module.appointmentscheduling.task;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class CleanOpenAppointmentsTest extends BaseModuleContextSensitiveTest {
 
     @Autowired
     private AppointmentService appointmentService;
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         executeDataSet("appointmentTestDataset.xml");
 

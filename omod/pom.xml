@@ -41,12 +41,42 @@
 
         <!-- Begin OpenMRS modules -->
 
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>legacyui-omod</artifactId>
+			<version>${legacyuiVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>4.0.1</version>
+			<scope>test</scope>
+		</dependency>
+
+
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>webservices.rest-omod</artifactId>
             <version>${webservicesRestVersion}</version>
             <scope>provided</scope>
         </dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>webservices.rest-omod-2.4</artifactId>
+			<version>${webservicesRestVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>webservices.rest-omod-2.4</artifactId>
+			<version>${webservicesRestVersion}</version>
+			<type>test-jar</type>
+			<scope>provided</scope>
+		</dependency>
 
         <dependency>
             <groupId>org.openmrs.module</groupId>
@@ -62,6 +92,8 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
+
+
 
 	</dependencies>
 
@@ -106,8 +138,6 @@
 						<includeEmptyDirs>true</includeEmptyDirs>
 					</configuration>
 				</plugin>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>

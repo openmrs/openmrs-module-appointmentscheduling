@@ -10,6 +10,7 @@ import org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9.util.Ap
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -145,8 +146,9 @@ public class AppointmentBlockResource1_9 extends DataDelegatingCrudResource<Appo
 
 	}
 
+	@PropertyGetter("display")
 	public String getDisplayString(AppointmentBlock appointmentBlock) {
-		return appointmentBlock.getProvider() + ", " + appointmentBlock.getLocation() + ": "
+		return appointmentBlock.getProvider().getName() + ", " + appointmentBlock.getLocation() + ": "
 		        + appointmentBlock.getStartDate() + " - " + appointmentBlock.getEndDate();
 	}
 

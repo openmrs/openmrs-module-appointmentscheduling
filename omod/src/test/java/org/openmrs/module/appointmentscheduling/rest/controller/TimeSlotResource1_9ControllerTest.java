@@ -5,9 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
@@ -15,19 +14,24 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.jupiter.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.openmrs.module.appointmentscheduling.rest.test.SameDatetimeMatcher.sameDatetime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTest {
 	
 	private AppointmentService appointmentService;
 	
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		appointmentService = Context.getService(AppointmentService.class);
 		executeDataSet("standardWebAppointmentTestDataset.xml");
@@ -41,38 +45,38 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		
 		TimeSlot timeSlot = appointmentService.getTimeSlotByUuid(getUuid());
 		
-		Assert.assertNotNull(result);
-		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		assertNotNull(result);
+		assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		assertThat((String) PropertyUtils.getProperty(result, "startDate"), sameDatetime(timeSlot.getStartDate()));
 		assertThat((String) PropertyUtils.getProperty(result, "endDate"), sameDatetime(timeSlot.getEndDate()));
-		Assert.assertEquals("Hippocrates of Cos, Xanadu: 2007-01-01 00:00:00.2 - 2007-01-01 01:00:00.0",
+		assertEquals("Hippocrates of Cos, Xanadu: 2007-01-01 00:00:00.2 - 2007-01-01 01:00:00.0",
 		    PropertyUtils.getProperty(result, "display"));
 		
-		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183599", Util.getByPath(result, "appointmentBlock/uuid"));
-		Assert.assertEquals(true, PropertyUtils.getProperty(result, "voided"));
-		Assert.assertEquals(1, PropertyUtils.getProperty(result, "countOfAppointments"));
+		assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183599", Util.getByPath(result, "appointmentBlock/uuid"));
+		assertEquals(true, PropertyUtils.getProperty(result, "voided"));
+		assertEquals(1, PropertyUtils.getProperty(result, "countOfAppointments"));
 	}
 	
 	@Test
 	public void shouldGetFullTimeSlotByUuid() throws Exception {
 		
-		MockHttpServletRequest req = newGetRequest(getURI() + "/" + getUuid(), new MainResourceControllerTest.Parameter(
+		MockHttpServletRequest req = newGetRequest(getURI() + "/" + getUuid(), new org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest.Parameter(
 		        RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL));
 		SimpleObject result = deserialize(handle(req));
 		
 		TimeSlot timeSlot = appointmentService.getTimeSlotByUuid(getUuid());
 		
-		Assert.assertNotNull(result);
-		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		assertNotNull(result);
+		assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		assertThat((String) PropertyUtils.getProperty(result, "startDate"), sameDatetime(timeSlot.getStartDate()));
 		assertThat((String) PropertyUtils.getProperty(result, "endDate"), sameDatetime(timeSlot.getEndDate()));
-		Assert.assertEquals("Hippocrates of Cos, Xanadu: 2007-01-01 00:00:00.2 - 2007-01-01 01:00:00.0",
+		assertEquals("Hippocrates of Cos, Xanadu: 2007-01-01 00:00:00.2 - 2007-01-01 01:00:00.0",
 		    PropertyUtils.getProperty(result, "display"));
 		
-		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183599", Util.getByPath(result, "appointmentBlock/uuid"));
-		Assert.assertEquals(true, PropertyUtils.getProperty(result, "voided"));
-		Assert.assertEquals(1, PropertyUtils.getProperty(result, "countOfAppointments"));
-		Assert.assertEquals(49, PropertyUtils.getProperty(result, "unallocatedMinutes")); // 59 min slot minus one 10 minute appt
+		assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183599", Util.getByPath(result, "appointmentBlock/uuid"));
+		assertEquals(true, PropertyUtils.getProperty(result, "voided"));
+		assertEquals(1, PropertyUtils.getProperty(result, "countOfAppointments"));
+		assertEquals(49, PropertyUtils.getProperty(result, "unallocatedMinutes")); // 59 min slot minus one 10 minute appt
 	}
 	
 	@Test
@@ -86,12 +90,12 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		req.setContent(json.getBytes());
 		
 		Object appt = deserialize(handle(req));
-		Assert.assertNotNull(PropertyUtils.getProperty(appt, "uuid"));
+		assertNotNull(PropertyUtils.getProperty(appt, "uuid"));
 		assertThat((String) PropertyUtils.getProperty(appt, "startDate"), sameDatetime("2005-01-03T09:00:00.000-0500"));
 		assertThat((String) PropertyUtils.getProperty(appt, "endDate"), sameDatetime("2005-01-03T10:00:00.000-0500"));
-		Assert.assertEquals("759799ab-c9a5-435e-b671-77773ada7499",
+		assertEquals("759799ab-c9a5-435e-b671-77773ada7499",
 		    PropertyUtils.getProperty(PropertyUtils.getProperty(appt, "appointmentBlock"), "uuid"));
-		Assert.assertEquals(originalCount + 1, appointmentService.getAllTimeSlots().size());
+		assertEquals(originalCount + 1, appointmentService.getAllTimeSlots().size());
 		
 	}
 	
@@ -104,7 +108,7 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		handle(req);
 		
 		TimeSlot updated = appointmentService.getTimeSlotByUuid("c0c579b0-8e59-401d-8a4a-976a0b183606");
-		Assert.assertNotNull(updated);
+		assertNotNull(updated);
 		assertThat(updated.getEndDate(), is(date("2005-01-03T11:00:00.000-0500")));
 	}
 	
@@ -121,8 +125,8 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		handle(req);
 		
 		TimeSlot voided = appointmentService.getTimeSlotByUuid("c0c579b0-8e59-401d-8a4a-976a0b183607");
-		Assert.assertTrue(voided.isVoided());
-		Assert.assertEquals("really ridiculous random reason", voided.getVoidReason());
+		assertTrue(voided.isVoided());
+		assertEquals("really ridiculous random reason", voided.getVoidReason());
 	}
 	
 	@Test
@@ -135,8 +139,8 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		req.addParameter("reason", "really ridiculous random reason");
 		handle(req);
 		
-		Assert.assertNull(appointmentService.getTimeSlotByUuid("c0c579b0-8e59-401d-8a4a-976a0b183607"));
-		Assert.assertEquals(originalCount - 1, appointmentService.getAllTimeSlots().size());
+		assertNull(appointmentService.getTimeSlotByUuid("c0c579b0-8e59-401d-8a4a-976a0b183607"));
+		assertEquals(originalCount - 1, appointmentService.getAllTimeSlots().size());
 		
 	}
 	
@@ -149,8 +153,8 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		handle(req);
 		
 		List<Map<String, String>> timeSlots = (List<Map<String, String>>) deserialize(handle(req)).get("results");
-		Assert.assertEquals(1, timeSlots.size());
-		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183607", timeSlots.get(0).get("uuid"));
+		assertEquals(1, timeSlots.size());
+		assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183607", timeSlots.get(0).get("uuid"));
 	}
 	
 	@Test
@@ -163,8 +167,8 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		handle(req);
 		
 		List<Map<String, String>> timeSlots = (List<Map<String, String>>) deserialize(handle(req)).get("results");
-		Assert.assertEquals(1, timeSlots.size());
-		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183607", timeSlots.get(0).get("uuid"));
+		assertEquals(1, timeSlots.size());
+		assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183607", timeSlots.get(0).get("uuid"));
 		
 	}
 	
@@ -179,10 +183,10 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		handle(req);
 		
 		List<Map<String, String>> timeSlots = (List<Map<String, String>>) deserialize(handle(req)).get("results");
-		Assert.assertEquals(1, timeSlots.size());
+		assertEquals(1, timeSlots.size());
 		
 		// note that the first two time slots are full, so it is not returned here
-		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183607", timeSlots.get(0).get("uuid"));
+		assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183607", timeSlots.get(0).get("uuid"));
 		
 	}
 	
@@ -197,8 +201,8 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		handle(req);
 		
 		List<Map<String, String>> timeSlots = (List<Map<String, String>>) deserialize(handle(req)).get("results");
-		Assert.assertEquals(1, timeSlots.size());
-		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183610", timeSlots.get(0).get("uuid"));
+		assertEquals(1, timeSlots.size());
+		assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183610", timeSlots.get(0).get("uuid"));
 	}
 	
 	@Test
@@ -214,8 +218,8 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		handle(req);
 		
 		List<Map<String, String>> timeSlots = (List<Map<String, String>>) deserialize(handle(req)).get("results");
-		Assert.assertEquals(1, timeSlots.size());
-		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183607", timeSlots.get(0).get("uuid"));
+		assertEquals(1, timeSlots.size());
+		assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183607", timeSlots.get(0).get("uuid"));
 	}
 	
 	@Test
@@ -230,10 +234,10 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		handle(req);
 		
 		List<Map<String, String>> timeSlots = (List<Map<String, String>>) deserialize(handle(req)).get("results");
-		Assert.assertEquals(3, timeSlots.size());
-		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183604", timeSlots.get(0).get("uuid"));
-		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183605", timeSlots.get(1).get("uuid"));
-		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183607", timeSlots.get(2).get("uuid"));
+		assertEquals(3, timeSlots.size());
+		assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183604", timeSlots.get(0).get("uuid"));
+		assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183605", timeSlots.get(1).get("uuid"));
+		assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183607", timeSlots.get(2).get("uuid"));
 		
 	}
 
@@ -250,9 +254,9 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
         handle(req);
 
         List<Map<String, String>> timeSlots = (List<Map<String, String>>) deserialize(handle(req)).get("results");
-        Assert.assertEquals(2, timeSlots.size());
-        Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183605", timeSlots.get(0).get("uuid"));
-        Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183607", timeSlots.get(1).get("uuid"));
+        assertEquals(2, timeSlots.size());
+        assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183605", timeSlots.get(0).get("uuid"));
+        assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183607", timeSlots.get(1).get("uuid"));
 
     }
 

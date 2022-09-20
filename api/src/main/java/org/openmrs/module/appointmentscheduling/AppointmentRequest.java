@@ -12,7 +12,9 @@ import java.util.Date;
  */
 public class AppointmentRequest extends BaseOpenmrsData {
 
-    public enum AppointmentRequestStatus { PENDING, FULFILLED, CANCELLED };
+    public enum AppointmentRequestStatus {PENDING, FULFILLED, CANCELLED}
+
+    ;
 
     private Integer appointmentRequestId;
 

@@ -1,20 +1,22 @@
 package org.openmrs.module.appointmentscheduling.validator;
 
 import org.joda.time.DateTime;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 
 import java.util.Arrays;
 import java.util.HashSet;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class AppointmentBlockValidatorComponentTest extends BaseModuleContextSensitiveTest {
 	
@@ -23,7 +25,7 @@ public class AppointmentBlockValidatorComponentTest extends BaseModuleContextSen
 	
 	private Errors errors;
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		executeDataSet("standardAppointmentTestDataset.xml");
 	}
@@ -44,9 +46,8 @@ public class AppointmentBlockValidatorComponentTest extends BaseModuleContextSen
 		errors = new BindException(appointmentBlock, "test");
 		appointmentBlockValidator.validate(appointmentBlock, errors);
 		
-		Assert.assertEquals(1, errors.getFieldErrorCount());
-		Assert.assertEquals("appointmentscheduling.AppointmentBlock.error.appointmentBlockOverlap",
-		    errors.getFieldError("provider").getCode());
+		assertThat(errors.getFieldErrorCount(),is(1));
+		assertThat(errors.getFieldError("provider").getCode(), is("appointmentscheduling.AppointmentBlock.error.appointmentBlockOverlap"));
 	}
 	
 	@Test
@@ -64,7 +65,7 @@ public class AppointmentBlockValidatorComponentTest extends BaseModuleContextSen
 		errors = new BindException(appointmentBlock, "test");
 		appointmentBlockValidator.validate(appointmentBlock, errors);
 		
-		Assert.assertEquals(0, errors.getFieldErrorCount());
+		assertThat(errors.getFieldErrorCount(), is(0));
 	}
 
     @Test
@@ -78,9 +79,8 @@ public class AppointmentBlockValidatorComponentTest extends BaseModuleContextSen
         errors = new BindException(appointmentBlock, "test");
         appointmentBlockValidator.validate(appointmentBlock, errors);
 
-        Assert.assertEquals(2, errors.getFieldErrorCount());
-        Assert.assertEquals("appointmentscheduling.AppointmentBlock.error.cannotRemoveTypeFromBlockIfAppointmentScheduled",
-                errors.getFieldError("types").getCode());
+        assertThat(errors.getFieldErrorCount(),is(2));
+        assertThat(errors.getFieldError("types").getCode(),is("appointmentscheduling.AppointmentBlock.error.cannotRemoveTypeFromBlockIfAppointmentScheduled"));
 
     }
 
@@ -96,7 +96,7 @@ public class AppointmentBlockValidatorComponentTest extends BaseModuleContextSen
         errors = new BindException(appointmentBlock, "test");
         appointmentBlockValidator.validate(appointmentBlock, errors);
 
-        Assert.assertEquals(0, errors.getFieldErrorCount());
+        assertThat(errors.getFieldErrorCount(),is(0));
     }
 
     @Test
@@ -115,7 +115,7 @@ public class AppointmentBlockValidatorComponentTest extends BaseModuleContextSen
         appointmentBlockValidator.validate(appointmentBlock, errors);
 
         // should be no errors after cancelling
-        Assert.assertEquals(0, errors.getFieldErrorCount());
+        assertThat(errors.getFieldErrorCount(),is(0));
     }
 
 }

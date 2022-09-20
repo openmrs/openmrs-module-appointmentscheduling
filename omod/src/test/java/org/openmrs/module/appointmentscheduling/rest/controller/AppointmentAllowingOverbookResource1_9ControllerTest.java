@@ -1,22 +1,24 @@
 package org.openmrs.module.appointmentscheduling.rest.controller;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.openmrs.api.context.Context;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.jupiter.MainResourceControllerTest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 public class AppointmentAllowingOverbookResource1_9ControllerTest extends MainResourceControllerTest {
-	
+
+	@Autowired
 	private AppointmentService appointmentService;
 	
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
-		appointmentService = Context.getService(AppointmentService.class);
 		executeDataSet("standardWebAppointmentTestDataset.xml");
 	}
 	
@@ -31,15 +33,15 @@ public class AppointmentAllowingOverbookResource1_9ControllerTest extends MainRe
 		req.setContent(json.getBytes());
 		
 		Object appt = deserialize(handle(req));
-		Assert.assertNotNull(PropertyUtils.getProperty(appt, "uuid"));
-		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183604",
+		assertNotNull(PropertyUtils.getProperty(appt, "uuid"));
+		assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183604",
 		    PropertyUtils.getProperty(PropertyUtils.getProperty(appt, "timeSlot"), "uuid"));
-		Assert.assertEquals("31e09960-8f52-11e3-baa8-0800200c9a66",
+		assertEquals("31e09960-8f52-11e3-baa8-0800200c9a66",
 		    PropertyUtils.getProperty(PropertyUtils.getProperty(appt, "patient"), "uuid"));
-		Assert.assertEquals("SCHEDULED", PropertyUtils.getProperty(appt, "status.code"));
-		Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183519",
+		assertEquals("SCHEDULED", PropertyUtils.getProperty(appt, "status.code"));
+		assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183519",
 		    PropertyUtils.getProperty(PropertyUtils.getProperty(appt, "appointmentType"), "uuid"));
-		Assert.assertEquals(getAllCount() + 1, appointmentService.getAllAppointments(false).size());
+		assertEquals(getAllCount() + 1, appointmentService.getAllAppointments(false).size());
 		
 	}
 	

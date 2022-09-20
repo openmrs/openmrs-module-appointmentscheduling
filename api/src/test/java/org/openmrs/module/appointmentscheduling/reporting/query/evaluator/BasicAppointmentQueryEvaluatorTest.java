@@ -1,8 +1,8 @@
 package org.openmrs.module.appointmentscheduling.reporting.query.evaluator;
 
 import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.LocationService;
 import org.openmrs.module.appointmentscheduling.reporting.context.AppointmentEvaluationContext;
@@ -11,14 +11,14 @@ import org.openmrs.module.appointmentscheduling.reporting.query.AppointmentQuery
 import org.openmrs.module.appointmentscheduling.reporting.query.definition.BasicAppointmentQuery;
 import org.openmrs.module.appointmentscheduling.reporting.query.service.AppointmentQueryService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BasicAppointmentQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 
@@ -28,7 +28,7 @@ public class BasicAppointmentQueryEvaluatorTest extends BaseModuleContextSensiti
     @Autowired
     private LocationService locationService;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         executeDataSet("standardAppointmentTestDataset.xml");
     }

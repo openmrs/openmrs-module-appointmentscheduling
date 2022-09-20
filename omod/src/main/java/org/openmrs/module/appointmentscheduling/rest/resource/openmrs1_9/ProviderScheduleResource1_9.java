@@ -10,6 +10,7 @@ import org.openmrs.module.appointmentscheduling.rest.controller.AppointmentRestC
 import org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9.util.AppointmentRestUtils;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -131,6 +132,7 @@ public class ProviderScheduleResource1_9 extends DataDelegatingCrudResource<Prov
 
     }
 
+    @PropertyGetter("display")
     public String getDisplayString(ProviderSchedule schedule) {
         return schedule.getLocation() + ": "
                 + schedule.getStartTime() + " - " + schedule.getEndTime();

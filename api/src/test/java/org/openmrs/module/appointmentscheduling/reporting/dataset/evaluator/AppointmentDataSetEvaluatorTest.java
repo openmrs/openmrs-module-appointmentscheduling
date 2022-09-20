@@ -1,7 +1,7 @@
 package org.openmrs.module.appointmentscheduling.reporting.dataset.evaluator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.reporting.data.definition.AppointmentEndDateDataDefinition;
 import org.openmrs.module.appointmentscheduling.reporting.data.definition.AppointmentReasonDataDefinition;
@@ -13,7 +13,7 @@ import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetUtil;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class AppointmentDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
@@ -22,7 +22,7 @@ public class AppointmentDataSetEvaluatorTest extends BaseModuleContextSensitiveT
     AppointmentDataService appointmentDataService;
 
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         executeDataSet("standardAppointmentTestDataset.xml");
     }

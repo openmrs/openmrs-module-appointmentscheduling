@@ -1,25 +1,30 @@
 package org.openmrs.module.appointmentscheduling.rest.controller;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.commons.lang3.ArrayUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.jupiter.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 public class AppointmentTypeResource1_9ControllerTest extends MainResourceControllerTest {
 	
 	private AppointmentService appointmentService;
 	
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		appointmentService = Context.getService(AppointmentService.class);
 		executeDataSet("standardWebAppointmentTestDataset.xml");
@@ -31,33 +36,33 @@ public class AppointmentTypeResource1_9ControllerTest extends MainResourceContro
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(result);
-		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(result, "name"));
-		Assert.assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(result, "display"));
-		Assert.assertEquals("Initial HIV Clinic Appointment Description", PropertyUtils.getProperty(result, "description"));
-		Assert.assertEquals(45, PropertyUtils.getProperty(result, "duration"));
-		Assert.assertEquals(true, PropertyUtils.getProperty(result, "confidential"));
-		Assert.assertEquals(false, PropertyUtils.getProperty(result, "retired"));
+		assertNotNull(result);
+		assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(result, "name"));
+		assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(result, "display"));
+		assertEquals("Initial HIV Clinic Appointment Description", PropertyUtils.getProperty(result, "description"));
+		assertEquals(45, PropertyUtils.getProperty(result, "duration"));
+		assertEquals(true, PropertyUtils.getProperty(result, "confidential"));
+		assertEquals(false, PropertyUtils.getProperty(result, "retired"));
 	}
 	
 	@Test
 	public void shouldGetFullAppointmentTypeByUuid() throws Exception {
 		
-		MockHttpServletRequest req = newGetRequest(getURI() + "/" + getUuid(), new Parameter(
+		MockHttpServletRequest req = newGetRequest(getURI() + "/" + getUuid(), new org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest.Parameter(
 		        RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL));
 		
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(result);
-		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(result, "name"));
-		Assert.assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(result, "display"));
-		Assert.assertEquals("Initial HIV Clinic Appointment Description", PropertyUtils.getProperty(result, "description"));
-		Assert.assertEquals(45, PropertyUtils.getProperty(result, "duration"));
-        Assert.assertEquals(true, PropertyUtils.getProperty(result, "confidential"));
-		Assert.assertEquals(false, PropertyUtils.getProperty(result, "retired"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
+		assertNotNull(result);
+		assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(result, "name"));
+		assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(result, "display"));
+		assertEquals("Initial HIV Clinic Appointment Description", PropertyUtils.getProperty(result, "description"));
+		assertEquals(45, PropertyUtils.getProperty(result, "duration"));
+        assertEquals(true, PropertyUtils.getProperty(result, "confidential"));
+		assertEquals(false, PropertyUtils.getProperty(result, "retired"));
+		assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 	
 	@Test
@@ -70,11 +75,11 @@ public class AppointmentTypeResource1_9ControllerTest extends MainResourceContro
 		req.setContent(json.getBytes());
 		
 		Object appt = deserialize(handle(req));
-		Assert.assertNotNull(PropertyUtils.getProperty(appt, "uuid"));
-		Assert.assertEquals(PropertyUtils.getProperty(appt, "name"), "new type");
-		Assert.assertEquals(PropertyUtils.getProperty(appt, "description"), "new description");
-		Assert.assertEquals(PropertyUtils.getProperty(appt, "duration"), 24);
-		Assert.assertEquals(originalCount + 1, appointmentService.getAllAppointmentTypes().size());
+		assertNotNull(PropertyUtils.getProperty(appt, "uuid"));
+		assertEquals(PropertyUtils.getProperty(appt, "name"), "new type");
+		assertEquals(PropertyUtils.getProperty(appt, "description"), "new description");
+		assertEquals(PropertyUtils.getProperty(appt, "duration"), 24);
+		assertEquals(originalCount + 1, appointmentService.getAllAppointmentTypes().size());
 	}
 	
 	@Test
@@ -85,8 +90,8 @@ public class AppointmentTypeResource1_9ControllerTest extends MainResourceContro
 		handle(req);
 		
 		AppointmentType updated = appointmentService.getAppointmentTypeByUuid("c0c579b0-8e59-401d-8a4a-976a0b183519");
-		Assert.assertNotNull(updated);
-		Assert.assertEquals("new name", updated.getName());
+		assertNotNull(updated);
+		assertEquals("new name", updated.getName());
 	}
 	
 	@Test
@@ -98,8 +103,8 @@ public class AppointmentTypeResource1_9ControllerTest extends MainResourceContro
 		handle(req);
 		
 		AppointmentType retired = appointmentService.getAppointmentTypeByUuid("c0c579b0-8e59-401d-8a4a-976a0b183519");
-		Assert.assertTrue(retired.isRetired());
-		Assert.assertEquals("really ridiculous random reason", retired.getRetireReason());
+		assertTrue(retired.isRetired());
+		assertEquals("really ridiculous random reason", retired.getRetireReason());
 	}
 	
 	@Test
@@ -112,8 +117,8 @@ public class AppointmentTypeResource1_9ControllerTest extends MainResourceContro
 		req.addParameter("reason", "really ridiculous random reason");
 		handle(req);
 		
-		Assert.assertNull(appointmentService.getAppointmentTypeByUuid("759799ab-c9a5-435e-b671-77373ada74e6"));
-		Assert.assertEquals(originalCount - 1, appointmentService.getAllAppointmentTypes().size());
+		assertNull(appointmentService.getAppointmentTypeByUuid("759799ab-c9a5-435e-b671-77373ada74e6"));
+		assertEquals(originalCount - 1, appointmentService.getAllAppointmentTypes().size());
 		
 	}
 	
@@ -122,13 +127,13 @@ public class AppointmentTypeResource1_9ControllerTest extends MainResourceContro
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.setParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_DEFAULT);
 		SimpleObject result = deserialize(handle(req));
-		Assert.assertNotNull(result);
+		assertNotNull(result);
 		
 		List<Object> types = (List<Object>) result.get("results");
-		Assert.assertEquals(3, types.size());
-		Assert.assertEquals("Hospitalization2", PropertyUtils.getProperty(types.get(0), "name"));
-		Assert.assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(types.get(1), "name"));
-		Assert.assertEquals("Return TB Clinic Appointment", PropertyUtils.getProperty(types.get(2), "name"));
+		assertEquals(3, types.size());
+		assertEquals("Hospitalization2", PropertyUtils.getProperty(types.get(0), "name"));
+		assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(types.get(1), "name"));
+		assertEquals("Return TB Clinic Appointment", PropertyUtils.getProperty(types.get(2), "name"));
 	}
 	
 	@Test
@@ -140,11 +145,11 @@ public class AppointmentTypeResource1_9ControllerTest extends MainResourceContro
 		SimpleObject result = deserialize(handle(req));
 		
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(3, hits.size());
-		Assert.assertEquals("Hospitalization", PropertyUtils.getProperty(hits.get(0), "display"));
-		Assert.assertEquals(true, PropertyUtils.getProperty(hits.get(0), "retired"));
-		Assert.assertEquals("Hospitalization2", PropertyUtils.getProperty(hits.get(1), "display"));
-		Assert.assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(hits.get(2), "display"));
+		assertEquals(3, hits.size());
+		assertEquals("Hospitalization", PropertyUtils.getProperty(hits.get(0), "display"));
+		assertEquals(true, PropertyUtils.getProperty(hits.get(0), "retired"));
+		assertEquals("Hospitalization2", PropertyUtils.getProperty(hits.get(1), "display"));
+		assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(hits.get(2), "display"));
 	}
 	
 	@Test
@@ -155,9 +160,9 @@ public class AppointmentTypeResource1_9ControllerTest extends MainResourceContro
 		SimpleObject result = deserialize(handle(req));
 		
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(2, hits.size());
-		Assert.assertEquals("Hospitalization2", PropertyUtils.getProperty(hits.get(0), "display"));
-		Assert.assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(hits.get(1), "display"));
+		assertEquals(2, hits.size());
+		assertEquals("Hospitalization2", PropertyUtils.getProperty(hits.get(0), "display"));
+		assertEquals("Initial HIV Clinic Appointment", PropertyUtils.getProperty(hits.get(1), "display"));
 	}
 	
 	@Override

@@ -1,29 +1,33 @@
 package org.openmrs.module.appointmentscheduling.rest.controller;
 
+
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.AppointmentRequest;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.jupiter.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.openmrs.module.appointmentscheduling.rest.test.SameDatetimeMatcher.sameDatetime;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class AppointmentRequestResource1_9ControllerTest extends MainResourceControllerTest {
 
     private AppointmentService appointmentService;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         appointmentService = Context.getService(AppointmentService.class);
         executeDataSet("standardWebAppointmentTestDataset.xml");
@@ -38,21 +42,21 @@ public class AppointmentRequestResource1_9ControllerTest extends MainResourceCon
                 + getUuid());
         SimpleObject result = deserialize(handle(req));
 
-        Assert.assertNotNull(result);
-        Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
-        Assert.assertEquals("PENDING", PropertyUtils.getProperty(result, "status"));
-        Assert.assertEquals("Initial HIV Clinic Appointment : PENDING", PropertyUtils.getProperty(result, "display"));
-        Assert.assertEquals(0, PropertyUtils.getProperty(result, "minTimeFrameValue"));
-        Assert.assertEquals("DAYS", PropertyUtils.getProperty(result, "minTimeFrameUnits"));
-        Assert.assertEquals(7, PropertyUtils.getProperty(result, "maxTimeFrameValue"));
-        Assert.assertEquals("DAYS", PropertyUtils.getProperty(result, "maxTimeFrameUnits"));
-        Assert.assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183519", Util.getByPath(result, "appointmentType/uuid"));
-        Assert.assertEquals("31e09960-8f52-11e3-baa8-0800200c9a66", Util.getByPath(result, "patient/uuid"));
-        Assert.assertEquals("c0c549b0-8e59-401d-8a4a-976a0b183599", Util.getByPath(result, "provider/uuid"));
-        Assert.assertEquals("c0c549b0-8e59-401d-8a4a-976a0b183599", Util.getByPath(result, "requestedBy/uuid"));
-        Assert.assertEquals("ASAP", PropertyUtils.getProperty(result, "notes"));
+        assertNotNull(result);
+        assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
+        assertEquals("PENDING", PropertyUtils.getProperty(result, "status"));
+        assertEquals("Initial HIV Clinic Appointment : PENDING", PropertyUtils.getProperty(result, "display"));
+        assertEquals(0, PropertyUtils.getProperty(result, "minTimeFrameValue"));
+        assertEquals("DAYS", PropertyUtils.getProperty(result, "minTimeFrameUnits"));
+        assertEquals(7, PropertyUtils.getProperty(result, "maxTimeFrameValue"));
+        assertEquals("DAYS", PropertyUtils.getProperty(result, "maxTimeFrameUnits"));
+        assertEquals("c0c579b0-8e59-401d-8a4a-976a0b183519", Util.getByPath(result, "appointmentType/uuid"));
+        assertEquals("31e09960-8f52-11e3-baa8-0800200c9a66", Util.getByPath(result, "patient/uuid"));
+        assertEquals("c0c549b0-8e59-401d-8a4a-976a0b183599", Util.getByPath(result, "provider/uuid"));
+        assertEquals("c0c549b0-8e59-401d-8a4a-976a0b183599", Util.getByPath(result, "requestedBy/uuid"));
+        assertEquals("ASAP", PropertyUtils.getProperty(result, "notes"));
         assertThat((String) PropertyUtils.getProperty(result, "requestedOn"), sameDatetime(appointmentRequest.getRequestedOn()));
-        Assert.assertEquals(false, PropertyUtils.getProperty(result, "voided"));
+        assertEquals(false, PropertyUtils.getProperty(result, "voided"));
 
     }
 
@@ -70,19 +74,19 @@ public class AppointmentRequestResource1_9ControllerTest extends MainResourceCon
         req.setContent(json.getBytes());
 
         Object result = deserialize(handle(req));
-        Assert.assertNotNull(PropertyUtils.getProperty(result, "uuid"));
-        Assert.assertEquals("FULFILLED", PropertyUtils.getProperty(result, "status"));
-        Assert.assertEquals("Return TB Clinic Appointment : FULFILLED", PropertyUtils.getProperty(result, "display"));
-        Assert.assertEquals(0, PropertyUtils.getProperty(result, "minTimeFrameValue"));
-        Assert.assertEquals("DAYS", PropertyUtils.getProperty(result, "minTimeFrameUnits"));
-        Assert.assertEquals(7, PropertyUtils.getProperty(result, "maxTimeFrameValue"));
-        Assert.assertEquals("DAYS", PropertyUtils.getProperty(result, "maxTimeFrameUnits"));
-        Assert.assertEquals("759799ab-c9a5-435e-b671-77773ada74e4", Util.getByPath(result, "appointmentType/uuid"));
-        Assert.assertEquals("22b47970-8f52-11e3-baa8-0800200c9a66", Util.getByPath(result, "patient/uuid"));
-        Assert.assertEquals("c0c549b0-8e59-401d-8a4a-976a0b183599", Util.getByPath(result, "provider/uuid"));
-        Assert.assertEquals("c0c54sd0-8e59-401d-8a4a-976a0b183599", Util.getByPath(result, "requestedBy/uuid"));
-        Assert.assertEquals("Test", PropertyUtils.getProperty(result, "notes"));
-        Assert.assertEquals(false, PropertyUtils.getProperty(result, "voided"));
+        assertNotNull(PropertyUtils.getProperty(result, "uuid"));
+        assertEquals("FULFILLED", PropertyUtils.getProperty(result, "status"));
+        assertEquals("Return TB Clinic Appointment : FULFILLED", PropertyUtils.getProperty(result, "display"));
+        assertEquals(0, PropertyUtils.getProperty(result, "minTimeFrameValue"));
+        assertEquals("DAYS", PropertyUtils.getProperty(result, "minTimeFrameUnits"));
+        assertEquals(7, PropertyUtils.getProperty(result, "maxTimeFrameValue"));
+        assertEquals("DAYS", PropertyUtils.getProperty(result, "maxTimeFrameUnits"));
+        assertEquals("759799ab-c9a5-435e-b671-77773ada74e4", Util.getByPath(result, "appointmentType/uuid"));
+        assertEquals("22b47970-8f52-11e3-baa8-0800200c9a66", Util.getByPath(result, "patient/uuid"));
+        assertEquals("c0c549b0-8e59-401d-8a4a-976a0b183599", Util.getByPath(result, "provider/uuid"));
+        assertEquals("c0c54sd0-8e59-401d-8a4a-976a0b183599", Util.getByPath(result, "requestedBy/uuid"));
+        assertEquals("Test", PropertyUtils.getProperty(result, "notes"));
+        assertEquals(false, PropertyUtils.getProperty(result, "voided"));
 
     }
 
@@ -98,12 +102,12 @@ public class AppointmentRequestResource1_9ControllerTest extends MainResourceCon
         req.setContent(json.getBytes());
 
         Object result = deserialize(handle(req));
-        Assert.assertNotNull(PropertyUtils.getProperty(result, "uuid"));
-        Assert.assertEquals("PENDING", PropertyUtils.getProperty(result, "status"));
-        Assert.assertEquals("Return TB Clinic Appointment : PENDING", PropertyUtils.getProperty(result, "display"));
-        Assert.assertEquals("759799ab-c9a5-435e-b671-77773ada74e4", Util.getByPath(result, "appointmentType/uuid"));
-        Assert.assertEquals("22b47970-8f52-11e3-baa8-0800200c9a66", Util.getByPath(result, "patient/uuid"));
-        Assert.assertEquals(false, PropertyUtils.getProperty(result, "voided"));
+        assertNotNull(PropertyUtils.getProperty(result, "uuid"));
+        assertEquals("PENDING", PropertyUtils.getProperty(result, "status"));
+        assertEquals("Return TB Clinic Appointment : PENDING", PropertyUtils.getProperty(result, "display"));
+        assertEquals("759799ab-c9a5-435e-b671-77773ada74e4", Util.getByPath(result, "appointmentType/uuid"));
+        assertEquals("22b47970-8f52-11e3-baa8-0800200c9a66", Util.getByPath(result, "patient/uuid"));
+        assertEquals(false, PropertyUtils.getProperty(result, "voided"));
 
     }
 
@@ -116,8 +120,8 @@ public class AppointmentRequestResource1_9ControllerTest extends MainResourceCon
         handle(req);
 
         AppointmentRequest appointmentRequest = appointmentService.getAppointmentRequestByUuid(getUuid());
-        Assert.assertNotNull(appointmentRequest);
-        Assert.assertEquals(AppointmentRequest.AppointmentRequestStatus.FULFILLED, appointmentRequest.getStatus());
+        assertNotNull(appointmentRequest);
+        assertEquals(AppointmentRequest.AppointmentRequestStatus.FULFILLED, appointmentRequest.getStatus());
 
     }
 
@@ -130,8 +134,8 @@ public class AppointmentRequestResource1_9ControllerTest extends MainResourceCon
         handle(req);
 
         AppointmentRequest voided = appointmentService.getAppointmentRequestByUuid(getUuid()) ;
-        Assert.assertTrue(voided.isVoided());
-        Assert.assertEquals("really ridiculous random reason",voided.getVoidReason());
+        assertTrue(voided.isVoided());
+        assertEquals("really ridiculous random reason",voided.getVoidReason());
     }
 
     @Test
@@ -142,8 +146,8 @@ public class AppointmentRequestResource1_9ControllerTest extends MainResourceCon
         req.addParameter("reason", "really ridiculous random reason");
         handle(req);
 
-        Assert.assertNull(appointmentService.getAppointmentRequestByUuid(getUuid()));
-        Assert.assertEquals(getAllCount() - 1, appointmentService.getAllAppointmentRequests(false).size());
+        assertNull(appointmentService.getAppointmentRequestByUuid(getUuid()));
+        assertEquals(getAllCount() - 1, appointmentService.getAllAppointmentRequests(false).size());
 
     }
 
@@ -155,8 +159,8 @@ public class AppointmentRequestResource1_9ControllerTest extends MainResourceCon
         handle(req);
 
         List<Map<String, String>> appointmentRequests = (List<Map<String, String>>) deserialize(handle(req)).get("results");
-        Assert.assertEquals(1, appointmentRequests.size());
-        Assert.assertEquals("862c94f1-3dae-11e4-916c-0800200c9a66", appointmentRequests.get(0).get("uuid"));
+        assertEquals(1, appointmentRequests.size());
+        assertEquals("862c94f1-3dae-11e4-916c-0800200c9a66", appointmentRequests.get(0).get("uuid"));
 
     }
 
@@ -168,8 +172,8 @@ public class AppointmentRequestResource1_9ControllerTest extends MainResourceCon
         handle(req);
 
         List<Map<String, String>> appointmentRequests = (List<Map<String, String>>) deserialize(handle(req)).get("results");
-        Assert.assertEquals(1, appointmentRequests.size());
-        Assert.assertEquals("862c94f0-3dae-11e4-916c-0800200c9a66", appointmentRequests.get(0).get("uuid"));
+        assertEquals(1, appointmentRequests.size());
+        assertEquals("862c94f0-3dae-11e4-916c-0800200c9a66", appointmentRequests.get(0).get("uuid"));
 
     }
 
@@ -181,8 +185,8 @@ public class AppointmentRequestResource1_9ControllerTest extends MainResourceCon
         handle(req);
 
         List<Map<String, String>> appointmentRequests = (List<Map<String, String>>) deserialize(handle(req)).get("results");
-        Assert.assertEquals(2, appointmentRequests.size());
-        Assert.assertTrue( (appointmentRequests.get(0).get("uuid").equals("862c94f0-3dae-11e4-916c-0800200c9a66")
+        assertEquals(2, appointmentRequests.size());
+        assertTrue( (appointmentRequests.get(0).get("uuid").equals("862c94f0-3dae-11e4-916c-0800200c9a66")
                                 && appointmentRequests.get(1).get("uuid").equals("862c94f1-3dae-11e4-916c-0800200c9a66")
                             || (appointmentRequests.get(1).get("uuid").equals("862c94f0-3dae-11e4-916c-0800200c9a66")
                                 && appointmentRequests.get(0).get("uuid").equals("862c94f1-3dae-11e4-916c-0800200c9a66"))) );
@@ -197,8 +201,8 @@ public class AppointmentRequestResource1_9ControllerTest extends MainResourceCon
         handle(req);
 
         List<Map<String, String>> appointmentRequests = (List<Map<String, String>>) deserialize(handle(req)).get("results");
-        Assert.assertEquals(1, appointmentRequests.size());
-        Assert.assertEquals("862c94f0-3dae-11e4-916c-0800200c9a66", appointmentRequests.get(0).get("uuid"));
+        assertEquals(1, appointmentRequests.size());
+        assertEquals("862c94f0-3dae-11e4-916c-0800200c9a66", appointmentRequests.get(0).get("uuid"));
 
     }
 

@@ -50,7 +50,7 @@ public class AppointmentBlockResource1_9Test extends BaseDelegatingResourceTest<
 	
 	@Override
 	public String getDisplayProperty() {
-		return "Mr. Horatio Test Hornblower Esq., Xanadu: 2005-01-03 00:00:00.0 - 2005-01-03 11:00:00.0";
+		return "Horatio Test Hornblower, Xanadu: 2005-01-03 00:00:00.0 - 2005-01-03 11:00:00.0";
 	}
 	
 	@Override

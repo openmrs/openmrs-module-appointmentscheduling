@@ -1,18 +1,19 @@
 package org.openmrs.module.appointmentscheduling.reporting.data.evaluator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.reporting.context.AppointmentEvaluationContext;
 import org.openmrs.module.appointmentscheduling.reporting.data.EvaluatedAppointmentData;
 import org.openmrs.module.appointmentscheduling.reporting.data.definition.AppointmentTypeDataDefinition;
 import org.openmrs.module.appointmentscheduling.reporting.data.service.AppointmentDataService;
 import org.openmrs.module.appointmentscheduling.reporting.query.AppointmentIdSet;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class AppointmentTypeDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 
@@ -20,7 +21,7 @@ public class AppointmentTypeDataEvaluatorTest extends BaseModuleContextSensitive
     AppointmentDataService appointmentDataService;
 
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         executeDataSet("standardAppointmentTestDataset.xml");
     }

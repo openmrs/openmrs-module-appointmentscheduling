@@ -1,7 +1,7 @@
 package org.openmrs.module.appointmentscheduling.reporting.data.evaluator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointmentscheduling.reporting.context.AppointmentEvaluationContext;
@@ -11,19 +11,18 @@ import org.openmrs.module.appointmentscheduling.reporting.data.service.Appointme
 import org.openmrs.module.appointmentscheduling.reporting.query.AppointmentIdSet;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class PatientToAppointmentDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 
     @Autowired
     AppointmentDataService appointmentDataService;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         executeDataSet("standardAppointmentTestDataset.xml");
     }
@@ -42,7 +41,6 @@ public class PatientToAppointmentDataEvaluatorTest extends BaseModuleContextSens
     }
 
     @Test
-    @DirtiesContext
     public void evaluate_shouldReturnPatientDataForNonConfidentialAppointments() throws Exception {
         Context.becomeUser("butch");
 

@@ -1,18 +1,18 @@
 package org.openmrs.module.appointmentscheduling.rest.controller;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
-import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.openmrs.module.appointmentscheduling.rest.test.SameDatetimeMatcher.sameDatetime;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class AppointmentBlockWithTimeSlotResource1_9ControllerTest extends AppointmentBlockResource1_9ControllerTest {
 	
@@ -29,22 +29,22 @@ public class AppointmentBlockWithTimeSlotResource1_9ControllerTest extends Appoi
 		req.setContent(json.getBytes());
 		
 		Object appt = deserialize(handle(req));
-		Assert.assertNotNull(PropertyUtils.getProperty(appt, "uuid"));
+		assertNotNull(PropertyUtils.getProperty(appt, "uuid"));
 		assertThat((String) PropertyUtils.getProperty(appt, "startDate"), sameDatetime("2005-03-01T00:00:00.000-0500"));
 		assertThat((String) PropertyUtils.getProperty(appt, "endDate"), sameDatetime("2005-03-01T11:00:00.000-0500"));
-		Assert.assertEquals("c0c54sd0-8e59-401d-8a4a-976a0b183599",
+		assertEquals("c0c54sd0-8e59-401d-8a4a-976a0b183599",
 		    PropertyUtils.getProperty(PropertyUtils.getProperty(appt, "provider"), "uuid"));
-		Assert.assertEquals("9356400c-a5a2-4532-8f2b-2361b3446eb8",
+		assertEquals("9356400c-a5a2-4532-8f2b-2361b3446eb8",
 		    PropertyUtils.getProperty(PropertyUtils.getProperty(appt, "location"), "uuid"));
 		
 		// make sure a time slot has been created for the appointment block
 		AppointmentBlock appointmentBlock = appointmentService.getAppointmentBlockByUuid(PropertyUtils.getProperty(appt,
 		    "uuid").toString());
-		Assert.assertNotNull(appointmentBlock);
+		assertNotNull(appointmentBlock);
 		TimeSlot timeSlot = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock).get(0);
-		Assert.assertNotNull(timeSlot);
-		Assert.assertEquals(appointmentBlock.getStartDate(), timeSlot.getStartDate());
-		Assert.assertEquals(appointmentBlock.getEndDate(), timeSlot.getEndDate());
+		assertNotNull(timeSlot);
+		assertEquals(appointmentBlock.getStartDate(), timeSlot.getStartDate());
+		assertEquals(appointmentBlock.getEndDate(), timeSlot.getEndDate());
 		
 	}
 	
@@ -57,16 +57,16 @@ public class AppointmentBlockWithTimeSlotResource1_9ControllerTest extends Appoi
 		handle(req);
 		
 		AppointmentBlock updated = appointmentService.getAppointmentBlockByUuid("c0c579b0-8e59-401d-8a4a-976a0b183599");
-		Assert.assertNotNull(updated);
-		Assert.assertEquals("c0c54sd0-8e59-401d-8a4a-976a0b183599", updated.getProvider().getUuid());
+		assertNotNull(updated);
+		assertEquals("c0c54sd0-8e59-401d-8a4a-976a0b183599", updated.getProvider().getUuid());
 		
 		// make sure a time slot has been updated for the appointment block
 		List<TimeSlot> timeSlots = appointmentService.getTimeSlotsInAppointmentBlock(updated);
-		Assert.assertEquals(1, timeSlots.size());
+		assertEquals(1, timeSlots.size());
 		TimeSlot timeSlot = timeSlots.get(0);
-		Assert.assertNotNull(timeSlot);
-		Assert.assertEquals(updated.getStartDate(), timeSlot.getStartDate());
-		Assert.assertEquals(updated.getEndDate(), timeSlot.getEndDate());
+		assertNotNull(timeSlot);
+		assertEquals(updated.getStartDate(), timeSlot.getStartDate());
+		assertEquals(updated.getEndDate(), timeSlot.getEndDate());
 	}
 	
 	@Override

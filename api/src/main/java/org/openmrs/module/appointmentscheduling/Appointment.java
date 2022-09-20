@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.appointmentscheduling;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.BaseOpenmrsObject;

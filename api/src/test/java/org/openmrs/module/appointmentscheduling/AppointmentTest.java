@@ -3,11 +3,14 @@ package org.openmrs.module.appointmentscheduling;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatusType;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.Matchers.is;
 
 public class AppointmentTest {
 
@@ -16,12 +19,12 @@ public class AppointmentTest {
 
 		List<AppointmentStatus> statuses = AppointmentStatus
 				.getAppointmentsStatusByType(AppointmentStatusType.ACTIVE);
-		Assert.assertEquals(3, statuses.size());
-		Assert.assertTrue(statuses
+		assertThat(statuses.size(),is(3));
+		assertTrue(statuses
 				.contains(AppointmentStatus.WAITING));
-		Assert.assertTrue(statuses
+		assertTrue(statuses
 				.contains(AppointmentStatus.INCONSULTATION));
-		Assert.assertTrue(statuses
+		assertTrue(statuses
 				.contains(AppointmentStatus.WALKIN));
 
 	}
@@ -33,12 +36,12 @@ public class AppointmentTest {
 				.getAppointmentsStatusByTypes(Arrays.asList(
 						AppointmentStatusType.CANCELLED,
 						AppointmentStatusType.MISSED));
-		Assert.assertEquals(3, statuses.size());
-		Assert.assertTrue(statuses
+		assertThat(statuses.size(),is(3));
+		assertTrue(statuses
 				.contains(AppointmentStatus.CANCELLED));
-		Assert.assertTrue(statuses
+		assertTrue(statuses
 				.contains(AppointmentStatus.CANCELLED_AND_NEEDS_RESCHEDULE));
-		Assert.assertTrue(statuses
+		assertTrue(statuses
 				.contains(AppointmentStatus.MISSED));
 
 	}
@@ -48,20 +51,20 @@ public class AppointmentTest {
 
 		List<AppointmentStatus> statuses = AppointmentStatus
 				.getNotCancelledAppointmentStatuses();
-		Assert.assertEquals(7, statuses.size());
-		Assert.assertTrue(statuses
+		assertThat(statuses.size(),is(7));
+		assertTrue(statuses
 				.contains(AppointmentStatus.WAITING));
-		Assert.assertTrue(statuses
+		assertTrue(statuses
 				.contains(AppointmentStatus.INCONSULTATION));
-		Assert.assertTrue(statuses
+		assertTrue(statuses
 				.contains(AppointmentStatus.WALKIN));
-		Assert.assertTrue(statuses
+		assertTrue(statuses
 				.contains(AppointmentStatus.MISSED));
-		Assert.assertTrue(statuses
+		assertTrue(statuses
 				.contains(AppointmentStatus.SCHEDULED));
-		Assert.assertTrue(statuses
+		assertTrue(statuses
 				.contains(AppointmentStatus.RESCHEDULED));
-		Assert.assertTrue(statuses
+		assertTrue(statuses
 				.contains(AppointmentStatus.COMPLETED));
 
 	}

@@ -1,8 +1,8 @@
 package org.openmrs.module.appointmentscheduling.validator;
 
 import org.apache.commons.lang.StringUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
@@ -22,7 +22,7 @@ public class AppointmentTypeValidatorTest {
 	
 	private Errors errors;
 	
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		appointmentService = mock(AppointmentService.class);
 		appointmentType = new AppointmentType("name", "desciption", 10);

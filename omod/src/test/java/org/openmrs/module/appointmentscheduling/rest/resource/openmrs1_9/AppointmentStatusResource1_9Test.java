@@ -2,13 +2,13 @@ package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Test;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
 
 public class AppointmentStatusResource1_9Test extends BaseModuleWebContextSensitiveTest {
