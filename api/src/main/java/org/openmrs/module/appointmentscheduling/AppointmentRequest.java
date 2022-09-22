@@ -91,10 +91,6 @@ public class AppointmentRequest extends BaseOpenmrsData {
         this.status = status;
     }
 
-    public String sanitizeNotes(String note) {
-        return WebUtil.escapeHTML(note);
-    }
-
     public String getNotes() {
         return notes;
     }
