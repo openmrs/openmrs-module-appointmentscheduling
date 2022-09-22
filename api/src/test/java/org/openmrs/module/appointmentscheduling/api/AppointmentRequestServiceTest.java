@@ -84,8 +84,6 @@ public class AppointmentRequestServiceTest extends BaseModuleContextSensitiveTes
         assertEquals(TimeFrameUnits.WEEKS, appointmentRequest.getMinTimeFrameUnits());
         assertEquals(new Integer(2), appointmentRequest.getMaxTimeFrameValue());
         assertEquals(TimeFrameUnits.MONTHS, appointmentRequest.getMaxTimeFrameUnits());
-        assertNull(appointmentRequest.getNotes());
-
     }
 
     @Test
@@ -293,6 +291,16 @@ public class AppointmentRequestServiceTest extends BaseModuleContextSensitiveTes
         assertEquals(1, requests.size());
         assertEquals(new Integer(1), requests.get(0).getId());
 
+    }
+
+    @Test
+    @Verifies(value="The text for notes should be sanitized", method="sanitizeNotes(String)")
+    public void sanitizeAppointmentRequest_shouldSanitizeTheTextInputForAppointmentNotes() throws Exception {
+        final String note = "<iframe>";
+        final String sanitizedNote = "&lt;iframe&gt;";
+        AppointmentRequest appointmentRequest = new AppointmentRequest();
+        appointmentRequest.setNotes(note);
+        assertEquals(appointmentRequest.getNotes(), sanitizedNote);
     }
 
 }
