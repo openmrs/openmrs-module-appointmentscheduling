@@ -13,13 +13,11 @@
  */
 package org.openmrs.module.appointmentscheduling;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
-import org.openmrs.module.appointmentscheduling.serialize.AppointmentStatusSerializer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,7 +39,6 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 
 	// TODO confirm that "WALK-IN" should be considered active and "RESCHEDULED"
 	// should be scheduled
-	@JsonSerialize(using = AppointmentStatusSerializer.class)
 	public enum AppointmentStatus {
 
 		SCHEDULED("Scheduled", AppointmentStatusType.SCHEDULED),

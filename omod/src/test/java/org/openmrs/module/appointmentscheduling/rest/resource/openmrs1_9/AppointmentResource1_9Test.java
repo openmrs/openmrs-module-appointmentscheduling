@@ -30,30 +30,32 @@ public class AppointmentResource1_9Test extends BaseDelegatingResourceTest<Appoi
 	
 	public void validateRefRepresentation() throws Exception {
 		super.validateRefRepresentation();
+		assertPropNotPresent("status");
 		assertPropNotPresent("voided"); // note that the voided property is only present if the property is voided
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
 		super.validateDefaultRepresentation();
-		assertPropEquals("status", getObject().getStatus());
+		Object obj = getObject();
 		assertPropEquals("reason", getObject().getReason());
 		assertPropEquals("voided", getObject().isVoided());
 		assertPropPresent("visit");
 		assertPropPresent("patient");
 		assertPropPresent("appointmentType");
+		assertPropPresent("status");
 		assertPropNotPresent("auditInfo");
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
 		super.validateFullRepresentation();
-		assertPropEquals("status", getObject().getStatus());
 		assertPropEquals("reason", getObject().getReason());
 		assertPropEquals("voided", getObject().isVoided());
 		assertPropPresent("visit");
 		assertPropPresent("patient");
 		assertPropPresent("appointmentType");
+		assertPropPresent("status");
 		assertPropPresent("auditInfo");
 	}
 }
