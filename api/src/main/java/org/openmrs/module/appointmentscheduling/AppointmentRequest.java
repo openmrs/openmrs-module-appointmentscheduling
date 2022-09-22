@@ -96,7 +96,7 @@ public class AppointmentRequest extends BaseOpenmrsData {
     }
 
     public void setNotes(String notes) {
-        this.notes = sanitizeNotes(notes);
+        this.notes = WebUtil.escapeHTML(notes);
     }
 
     public Provider getRequestedBy() {
