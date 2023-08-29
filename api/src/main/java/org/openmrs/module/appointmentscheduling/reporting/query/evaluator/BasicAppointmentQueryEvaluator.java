@@ -28,7 +28,8 @@ public class BasicAppointmentQueryEvaluator implements AppointmentQueryEvaluator
         HqlQueryBuilder query = new HqlQueryBuilder();
 
         // query builder excludes voided by default
-        query.select("appointment.appointmentId").from(Appointment.class, "appointment")
+        query.select("appointment.appointmentId").from("AppointmentSchedulingAppointment", "appointment")
+                .whereEqual("appointment.voided", false)
                 .whereLessOrEqualTo("appointment.timeSlot.startDate", q.getOnOrBefore())
                 .whereGreaterOrEqualTo("appointment.timeSlot.endDate", q.getOnOrAfter())
                 .whereEqual("appointment.timeSlot.appointmentBlock.location", q.getLocation());

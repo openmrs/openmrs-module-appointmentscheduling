@@ -28,7 +28,8 @@ public abstract class AppointmentPropertyDataEvaluator implements AppointmentDat
         EvaluatedAppointmentData appointmentData = new EvaluatedAppointmentData(definition, context);
         HqlQueryBuilder q = new HqlQueryBuilder();
         q.select("a.appointmentId", "a."+getPropertyName());
-        q.from(Appointment.class, "a");
+        q.from("AppointmentSchedulingAppointment", "a");
+        q.whereEqual("a.voided", false);
 
         if (context != null) {
             Set<Integer> appointmentIds = AppointmentDataUtil.getAppointmentIdsForContext(context, true);

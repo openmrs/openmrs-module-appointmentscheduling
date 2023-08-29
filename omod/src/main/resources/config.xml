@@ -157,11 +157,11 @@
 	</extension>
 	<!-- Maps hibernate file's, if present -->
 	<mappingFiles>
-		Appointment.hbm.xml
+		AppointmentSchedulingAppointment.hbm.xml
 		AppointmentType.hbm.xml
 		AppointmentBlock.hbm.xml
 		TimeSlot.hbm.xml
-		AppointmentStatusHistory.hbm.xml
+		AppointmentSchedulingAppointmentStatusHistory.hbm.xml
         AppointmentRequest.hbm.xml
 		ProviderSchedule.hbm.xml
 	</mappingFiles>

@@ -31,7 +31,7 @@ public class HibernateAppointmentTypeDAO extends HibernateSingleClassDAO impleme
 	}
 	
 	public Integer getAppointmentTypeCount(Date fromDate, Date endDate, AppointmentType type) {
-		String stringQuery = "SELECT count(*) As counter FROM Appointment AS appointment"
+		String stringQuery = "SELECT count(*) As counter from AppointmentSchedulingAppointment AS appointment"
 		        + " WHERE appointment.voided = false "
 		        + "AND appointment.timeSlot.startDate >= :fromDate " + "AND appointment.timeSlot.endDate <= :endDate "
 		        + "AND appointment.appointmentType=:appointmentType";
@@ -43,7 +43,7 @@ public class HibernateAppointmentTypeDAO extends HibernateSingleClassDAO impleme
 	}
 	
 	public List<AppointmentType> getAppointmentTypes(String fuzzySearchPhrase, boolean includeRetired) {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mappedClass);
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mappedEntity);
 		criteria.add(Restrictions.ilike("name", fuzzySearchPhrase, MatchMode.ANYWHERE));
 		if (!includeRetired)
 			criteria.add(Restrictions.eq("retired", includeRetired));
@@ -53,7 +53,7 @@ public class HibernateAppointmentTypeDAO extends HibernateSingleClassDAO impleme
 	
 	@Override
 	public boolean verifyDuplicatedAppointmentTypeName(AppointmentType appointmentType) {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mappedClass);
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mappedEntity);
 		criteria.add(Restrictions.eq("name", appointmentType.getName()).ignoreCase());
 		criteria.add(Restrictions.eq("retired", false));
 		criteria.add(Restrictions.not(Restrictions.eq("uuid", appointmentType.getUuid())));

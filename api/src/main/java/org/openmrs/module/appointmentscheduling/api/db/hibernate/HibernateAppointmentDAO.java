@@ -51,14 +51,14 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO
 			AppointmentDAO {
 
 	public HibernateAppointmentDAO() {
-		super(Appointment.class);
+		super("AppointmentSchedulingAppointment");
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public List<Appointment> getAppointmentsByPatient(Patient patient) {
 		return super.sessionFactory.getCurrentSession()
-				.createCriteria(Appointment.class)
+				.createCriteria(mappedEntity)
 				.add(Restrictions.eq("patient", patient)).list();
 	}
 
@@ -68,7 +68,7 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO
 		return (Appointment) super.sessionFactory
 				.getCurrentSession()
 				.createQuery(
-						"from " + mappedClass.getSimpleName()
+						"from " + mappedEntity
 								+ " at where at.visit = :visit")
 				.setParameter("visit", visit).uniqueResult();
 	}
@@ -76,9 +76,9 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO
 	@Override
 	@Transactional(readOnly = true)
 	public Appointment getLastAppointment(Patient patient) {
-		String query = "select appointment from Appointment as appointment"
+		String query = "select appointment from " + mappedEntity + " as appointment"
 				+ " where appointment.patient = :patient and appointment.timeSlot.startDate ="
-				+ " (select max(ap.timeSlot.startDate) from Appointment as ap inner join ap.timeSlot"
+				+ " (select max(ap.timeSlot.startDate) from " + mappedEntity + " as ap inner join ap.timeSlot"
 				+ " where ap.patient = :patient)";
 
 		List<Appointment> appointment = super.sessionFactory
@@ -101,7 +101,7 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO
 			throw new APIException("fromDate can not be later than toDate");
 
 		else {
-			String stringQuery = "SELECT appointment FROM Appointment AS appointment WHERE appointment.voided = false";
+			String stringQuery = "SELECT appointment from " + mappedEntity + " AS appointment WHERE appointment.voided = false";
 
 			if (fromDate != null)
 				stringQuery += " AND appointment.timeSlot.startDate >= :fromDate";
@@ -160,7 +160,7 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO
 	@Transactional(readOnly = true)
 	public List<Appointment> getAppointmentsByStates(
 			List<AppointmentStatus> states) {
-		String sQuery = "from Appointment as appointment where appointment.voided = false and appointment.status in (:states)";
+		String sQuery = "from " + mappedEntity + " as appointment where appointment.voided = false and appointment.status in (:states)";
 
 		Query query = super.sessionFactory.getCurrentSession().createQuery(
 				sQuery);
@@ -173,7 +173,7 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO
 	@Transactional(readOnly = true)
 	public List<Appointment> getPastAppointmentsByStates(
 			List<AppointmentStatus> states) {
-		String sQuery = "from Appointment as appointment where appointment.timeSlot.endDate <= :endDate and appointment.voided = false and appointment.status in (:states)";
+		String sQuery = "from " + mappedEntity + " as appointment where appointment.timeSlot.endDate <= :endDate and appointment.voided = false and appointment.status in (:states)";
 
 		Query query = super.sessionFactory.getCurrentSession().createQuery(
 				sQuery);
@@ -186,7 +186,7 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO
 	@Override
 	public List<Appointment> getScheduledAppointmentsForPatient(Patient patient) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
-				mappedClass);
+				mappedEntity);
 		criteria.add(Restrictions.eq("patient", patient));
 		criteria.add(Restrictions.or(Restrictions.eq("status", SCHEDULED),
 				Restrictions.eq("status", RESCHEDULED)));
@@ -202,7 +202,7 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO
 			AppointmentBlock appointmentBlock,
 			List<AppointmentType> appointmentTypes) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
-				mappedClass);
+				mappedEntity);
 		criteria.createAlias("timeSlot", "time_slot");
 		criteria.add(Restrictions.eq("time_slot.appointmentBlock",
 				appointmentBlock));
@@ -243,8 +243,7 @@ public class HibernateAppointmentDAO extends HibernateSingleClassDAO
 	}
 
 	private Criteria createAppointmentsInTimeSlotCriteria(TimeSlot timeSlot) {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(
-				Appointment.class);
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mappedEntity);
 		criteria.add(Restrictions.eq("timeSlot", timeSlot));
 		criteria.add(Restrictions.eq("voided", false));
 		return criteria;

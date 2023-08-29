@@ -38,7 +38,8 @@ public class PersonToAppointmentDataEvaluator implements AppointmentDataEvaluato
         // create a map of appointment ids -> patient (person) ids
         HqlQueryBuilder q = new HqlQueryBuilder();
         q.select("a.appointmentId", "a.patient.patientId");
-        q.from(Appointment.class, "a");
+        q.from("AppointmentSchedulingAppointment", "a");
+        q.whereEqual("a.voided", false);
 
         if (context != null) {
             Set<Integer> appointmentIds = AppointmentDataUtil.getAppointmentIdsForContext(context, true);
@@ -51,7 +52,8 @@ public class PersonToAppointmentDataEvaluator implements AppointmentDataEvaluato
             // build a map of appointment ids to whether it is confidential
             HqlQueryBuilder confidentialQuery = new HqlQueryBuilder();
             confidentialQuery.select("a.appointmentId", "case a.appointmentType.confidential when 0 then false else true end");
-            confidentialQuery.from(Appointment.class, "a");
+            confidentialQuery.from("AppointmentSchedulingAppointment", "a");
+            confidentialQuery.whereEqual("a.voided", false);
 
             if (context != null) {
                 Set<Integer> appointmentIds = AppointmentDataUtil.getAppointmentIdsForContext(context, true);

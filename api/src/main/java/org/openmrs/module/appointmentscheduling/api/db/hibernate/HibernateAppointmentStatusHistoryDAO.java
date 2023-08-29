@@ -35,7 +35,7 @@ public class HibernateAppointmentStatusHistoryDAO extends HibernateSingleClassDA
 	@Override
 	@Transactional(readOnly = true)
 	public List<AppointmentStatusHistory> getAll(AppointmentStatus status) {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mappedClass);
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(mappedEntity);
 		criteria.add(Restrictions.eq("status", status));
 		criteria.addOrder(Order.asc("status"));
 		return criteria.list();

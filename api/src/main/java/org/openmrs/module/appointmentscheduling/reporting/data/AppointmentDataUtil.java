@@ -54,7 +54,9 @@ public class AppointmentDataUtil {
             context.setBaseCohort(new Cohort(patientIds));
         }
         HqlQueryBuilder qb = new HqlQueryBuilder();
-        qb.select("a.appointmentId").from(Appointment.class, "a").wherePatientIn("a.patient.patientId", context);
+        qb.select("a.appointmentId").from("AppointmentSchedulingAppointment", "a");
+        qb.whereEqual("a.voided", false);
+        qb.wherePatientIn("a.patient.patientId", context);
         List<Integer> ids = Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class, context);
         return new HashSet<Integer>(ids);
     }
