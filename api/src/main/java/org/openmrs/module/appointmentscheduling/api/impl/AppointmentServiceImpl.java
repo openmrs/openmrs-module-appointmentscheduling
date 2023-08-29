@@ -26,8 +26,8 @@ import org.openmrs.VisitType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.appointmentscheduling.Appointment;
-import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
+import org.openmrs.module.appointmentscheduling.AppointmentData;
+import org.openmrs.module.appointmentscheduling.AppointmentData.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentDailyCount;
 import org.openmrs.module.appointmentscheduling.AppointmentRequest;
@@ -371,64 +371,64 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Appointment> getAllAppointments() {
+	public List<AppointmentData> getAllAppointmentDatas() {
 		return getAppointmentDAO().getAll();
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Appointment> getAllAppointments(boolean includeVoided) {
+	public List<AppointmentData> getAllAppointmentDatas(boolean includeVoided) {
 		return getAppointmentDAO().getAllData(includeVoided);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public Appointment getAppointment(Integer appointmentId) {
-		return (Appointment) getAppointmentDAO().getById(appointmentId);
+	public AppointmentData getAppointmentData(Integer appointmentId) {
+		return (AppointmentData) getAppointmentDAO().getById(appointmentId);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public Appointment getAppointmentByUuid(String uuid) {
-		return (Appointment) getAppointmentDAO().getByUuid(uuid);
+	public AppointmentData getAppointmentDataByUuid(String uuid) {
+		return (AppointmentData) getAppointmentDAO().getByUuid(uuid);
 	}
 
 	@Override
 	@Transactional
-	public Appointment saveAppointment(Appointment appointment)
+	public AppointmentData saveAppointmentData(AppointmentData appointment)
 			throws APIException {
 		ValidateUtil.validate(appointment);
-		return (Appointment) getAppointmentDAO().saveOrUpdate(appointment);
+		return (AppointmentData) getAppointmentDAO().saveOrUpdate(appointment);
 	}
 
 	@Override
 	@Transactional
-	public Appointment voidAppointment(Appointment appointment, String reason) {
-		return saveAppointment(appointment);
+	public AppointmentData voidAppointmentData(AppointmentData appointment, String reason) {
+		return saveAppointmentData(appointment);
 	}
 
 	@Override
 	@Transactional
-	public Appointment unvoidAppointment(Appointment appointment) {
-		return saveAppointment(appointment);
+	public AppointmentData unvoidAppointmentData(AppointmentData appointment) {
+		return saveAppointmentData(appointment);
 	}
 
 	@Override
 	@Transactional
-	public void purgeAppointment(Appointment appointment) {
+	public void purgeAppointmentData(AppointmentData appointment) {
 		getAppointmentStatusHistoryDAO().purgeHistoryBy(appointment);
 		getAppointmentDAO().delete(appointment);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Appointment> getAppointmentsOfPatient(Patient patient) {
+	public List<AppointmentData> getAppointmentsOfPatient(Patient patient) {
 		return getAppointmentDAO().getAppointmentsByPatient(patient);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public Appointment getAppointmentByVisit(Visit visit) {
+	public AppointmentData getAppointmentByVisit(Visit visit) {
 		return getAppointmentDAO().getAppointmentByVisit(visit);
 	}
 
@@ -485,13 +485,13 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Appointment> getAppointmentsInTimeSlot(TimeSlot timeSlot) {
+	public List<AppointmentData> getAppointmentsInTimeSlot(TimeSlot timeSlot) {
 		return getAppointmentDAO().getAppointmentsInTimeSlot(timeSlot);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Appointment> getAppointmentsInTimeSlotThatAreNotCancelled(
+	public List<AppointmentData> getAppointmentsInTimeSlotThatAreNotCancelled(
 			TimeSlot timeSlot) {
 		return getAppointmentDAO().getAppointmentsInTimeSlotByStatus(timeSlot,
 				AppointmentStatus.getNotCancelledAppointmentStatuses());
@@ -621,7 +621,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 
     @Override
 	@Transactional(readOnly = true)
-	public Appointment getLastAppointment(Patient patient) {
+	public AppointmentData getLastAppointment(Patient patient) {
 		return getAppointmentDAO().getLastAppointment(patient);
 	}
 
@@ -681,8 +681,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 
         // generate the set of time slots to exclude that the specified patient already has an appointment for of the specified type
         if (excludeTimeSlotsWithPatient != null) {
-            for (Appointment appointment: getAppointmentsOfPatient(excludeTimeSlotsWithPatient)) {
-                if (appointment.getAppointmentType() == appointmentType && appointment.getStatus().getType() != Appointment.AppointmentStatusType.CANCELLED) {
+            for (AppointmentData appointment: getAppointmentsOfPatient(excludeTimeSlotsWithPatient)) {
+                if (appointment.getAppointmentType() == appointmentType && appointment.getStatus().getType() != AppointmentData.AppointmentStatusType.CANCELLED) {
                     timeSlotsToExclude.add(appointment.getTimeSlot());
                 }
             }
@@ -738,7 +738,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 				new DateTime(timeSlot.getStartDate()),
 				new DateTime(timeSlot.getEndDate())).getMinutes();
 
-		for (Appointment appointment : Context.getService(
+		for (AppointmentData appointment : Context.getService(
 				AppointmentService.class)
 				.getAppointmentsInTimeSlotThatAreNotCancelled(timeSlot)) {
 			minutes = minutes - appointment.getAppointmentType().getDuration();
@@ -766,18 +766,18 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 
 	@Override
-	public List<Appointment> getAppointmentsByConstraints(Date fromDate,
-			Date toDate, Location location, Provider provider,
-			AppointmentType type, AppointmentStatus status) throws APIException {
+	public List<AppointmentData> getAppointmentsByConstraints(Date fromDate,
+															  Date toDate, Location location, Provider provider,
+															  AppointmentType type, AppointmentStatus status) throws APIException {
 		return getAppointmentsByConstraints(fromDate, toDate, location,
 				provider, type, null, status);
 	}
 
 	@Override
-	public List<Appointment> getAppointmentsByConstraints(Date fromDate,
-			  Date toDate, Location location, Provider provider,
-			  AppointmentType type, Patient patient,
-			  List<AppointmentStatus> statuses) {
+	public List<AppointmentData> getAppointmentsByConstraints(Date fromDate,
+															  Date toDate, Location location, Provider provider,
+															  AppointmentType type, Patient patient,
+															  List<AppointmentStatus> statuses) {
 
 		if (statuses == null) {
 			return getAppointmentsByConstraints(fromDate, toDate, location,
@@ -790,16 +790,16 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 
 	@Override
-	public List<Appointment> getAppointmentsByConstraints(Date fromDate,
-			  Date toDate, Location location, Provider provider,
-			  AppointmentType type, Patient patient, List<AppointmentStatus> statuses,
-			  VisitType visitType, Visit visit) throws APIException{
+	public List<AppointmentData> getAppointmentsByConstraints(Date fromDate,
+															  Date toDate, Location location, Provider provider,
+															  AppointmentType type, Patient patient, List<AppointmentStatus> statuses,
+															  VisitType visitType, Visit visit) throws APIException{
 
-		List<Appointment> appointments = appointmentDAO
+		List<AppointmentData> appointments = appointmentDAO
 				.getAppointmentsByConstraints(fromDate, toDate, provider, type,
 						statuses, patient, visitType, visit);
 
-		List<Appointment> appointmentsInLocation = new LinkedList<Appointment>();
+		List<AppointmentData> appointmentsInLocation = new LinkedList<AppointmentData>();
 
 		// Used to update the session to the correct one
 		if (location != null)
@@ -810,7 +810,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 				null);
 		relevantLocations.add(location);
 
-		for (Appointment appointment : appointments) {
+		for (AppointmentData appointment : appointments) {
 			boolean satisfyingConstraints = true;
 
 			// Filter by location
@@ -829,9 +829,9 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Appointment> getAppointmentsByConstraints(Date fromDate,
-			Date toDate, Location location, Provider provider,
-			AppointmentType type, Patient patient, AppointmentStatus status)
+	public List<AppointmentData> getAppointmentsByConstraints(Date fromDate,
+															  Date toDate, Location location, Provider provider,
+															  AppointmentType type, Patient patient, AppointmentStatus status)
 			throws APIException {
 
 		if (status == null) {
@@ -845,15 +845,15 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 
 	@Override
 	@Transactional(readOnly = true)
-	public Date getAppointmentCurrentStatusStartDate(Appointment appointment) {
+	public Date getAppointmentCurrentStatusStartDate(AppointmentData appointment) {
 		return appointmentStatusHistoryDAO
 				.getStartDateOfCurrentStatus(appointment);
 	}
 
 	@Override
 	@Transactional
-	public void changeAppointmentStatus(Appointment appointment,
-			AppointmentStatus newStatus) {
+	public void changeAppointmentStatus(AppointmentData appointment,
+										AppointmentStatus newStatus) {
 		if (appointment != null) {
 
 			Date currentDate = new Date();
@@ -881,7 +881,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 
 			// now update the appointment itself
 			appointment.setStatus(newStatus);
-			saveAppointment(appointment);
+			saveAppointmentData(appointment);
 
 			// create an entry for the new status
 			AppointmentStatusHistory history = new AppointmentStatusHistory();
@@ -938,14 +938,14 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Appointment> getAppointmentsByStatus(
+	public List<AppointmentData> getAppointmentsByStatus(
 			List<AppointmentStatus> states) {
 		return appointmentDAO.getAppointmentsByStates(states);
 	}
 
 	@Override
 	@Transactional
-	public List<Appointment> cleanOpenAppointments() {
+	public List<AppointmentData> cleanOpenAppointments() {
 		List<AppointmentStatus> states = new LinkedList<AppointmentStatus>();
 		states.add(AppointmentStatus.SCHEDULED);
 		states.add(AppointmentStatus.WAITING);
@@ -954,13 +954,13 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 
 		Date endOfYesterday = new DateTime().withTime(23, 59, 59, 999).minusDays(1).toDate();
 
-		List<Appointment> appointmentsInStates = appointmentDAO
+		List<AppointmentData> appointmentsInStates = appointmentDAO
 				.getPastAppointmentsByStates(states);
 		if (appointmentsInStates == null)
-			return new LinkedList<Appointment>();
-		Iterator<Appointment> iter = appointmentsInStates.iterator();
+			return new LinkedList<AppointmentData>();
+		Iterator<AppointmentData> iter = appointmentsInStates.iterator();
 		while (iter.hasNext()) {
-			Appointment appointment = iter.next();
+			AppointmentData appointment = iter.next();
 			// Check if past appointment
 			if (appointment.getTimeSlot().getEndDate().before(endOfYesterday)) {
 				AppointmentStatus status = appointment.getStatus();
@@ -999,7 +999,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Appointment> getScheduledAppointmentsForPatient(Patient patient) {
+	public List<AppointmentData> getScheduledAppointmentsForPatient(Patient patient) {
 		return appointmentDAO.getScheduledAppointmentsForPatient(patient);
 	}
 
@@ -1168,8 +1168,8 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 
 	@Override
 	@Transactional
-	public Appointment bookAppointment(Appointment appointment,
-			Boolean allowOverbook) throws TimeSlotFullException {
+	public AppointmentData bookAppointment(AppointmentData appointment,
+										   Boolean allowOverbook) throws TimeSlotFullException {
 
 		// can only book new appointments
 		if (appointment.getId() != null) {
@@ -1193,7 +1193,7 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 			appointment.setStatus(AppointmentStatus.SCHEDULED);
 		}
 
-		Context.getService(AppointmentService.class).saveAppointment(appointment);
+		Context.getService(AppointmentService.class).saveAppointmentData(appointment);
 
 		AppointmentStatusHistory history = new AppointmentStatusHistory(appointment, appointment.getStatus(), getAppointmentCurrentStatusStartDate(appointment), null);
 		Context.getService(AppointmentService.class).saveAppointmentStatusHistory(history);
@@ -1202,12 +1202,12 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 
 	@Override
 	@Transactional
-	public List<AppointmentStatusHistory> getAppointmentStatusHistories(Appointment appointment) {
+	public List<AppointmentStatusHistory> getAppointmentStatusHistories(AppointmentData appointment) {
 		return getAppointmentStatusHistoryDAO().getAppointmentStatusHistories(appointment);
 	}
 
     @Override
-    public AppointmentStatusHistory getMostRecentAppointmentStatusHistory(Appointment appointment) {
+    public AppointmentStatusHistory getMostRecentAppointmentStatusHistory(AppointmentData appointment) {
         return getAppointmentStatusHistoryDAO().getMostRecentAppointmentStatusHistory(appointment);
     }
 
@@ -1311,17 +1311,17 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 
 	@Override
-	public List<Appointment> getEarlyAppointments(Date fromDate, Date toDate, Location location,
-												  Provider provider, AppointmentType appointmentType) throws APIException {
+	public List<AppointmentData> getEarlyAppointments(Date fromDate, Date toDate, Location location,
+													  Provider provider, AppointmentType appointmentType) throws APIException {
 		List<AppointmentStatus> statuses = new ArrayList<AppointmentStatus>();
 		statuses.add(AppointmentStatus.COMPLETED);
 		statuses.add(AppointmentStatus.INCONSULTATION);
 
-		List<Appointment> allCompletedAppointments = getAppointmentsByConstraints(fromDate,
+		List<AppointmentData> allCompletedAppointments = getAppointmentsByConstraints(fromDate,
 				toDate, location, provider, appointmentType, null, statuses);
 
-		List<Appointment> earlyAppointments = new ArrayList<Appointment>();
-		for (Appointment ap : allCompletedAppointments) {
+		List<AppointmentData> earlyAppointments = new ArrayList<AppointmentData>();
+		for (AppointmentData ap : allCompletedAppointments) {
 			if (ap.getVisit().getStartDatetime().before(ap.getTimeSlot().getEndDate())) {
 				earlyAppointments.add(ap);
 			}
@@ -1330,17 +1330,17 @@ public class AppointmentServiceImpl extends BaseOpenmrsService implements Appoin
 	}
 
 	@Override
-	public List<Appointment> getLateAppointments(Date fromDate, Date toDate, Location location,
-												 Provider provider, AppointmentType appointmentType) throws APIException {
+	public List<AppointmentData> getLateAppointments(Date fromDate, Date toDate, Location location,
+													 Provider provider, AppointmentType appointmentType) throws APIException {
 		List<AppointmentStatus> statuses = new ArrayList<AppointmentStatus>();
 		statuses.add(AppointmentStatus.COMPLETED);
 		statuses.add(AppointmentStatus.INCONSULTATION);
 
-		List<Appointment> allCompletedAppointments = getAppointmentsByConstraints(fromDate,
+		List<AppointmentData> allCompletedAppointments = getAppointmentsByConstraints(fromDate,
 				toDate, location, provider, appointmentType, null, statuses);
 
-		List<Appointment> lateAppointments = new ArrayList<Appointment>();
-		for (Appointment ap : allCompletedAppointments) {
+		List<AppointmentData> lateAppointments = new ArrayList<AppointmentData>();
+		for (AppointmentData ap : allCompletedAppointments) {
 			if (ap.getVisit().getStartDatetime().after(ap.getTimeSlot().getEndDate())) {
 				lateAppointments.add(ap);
 			}

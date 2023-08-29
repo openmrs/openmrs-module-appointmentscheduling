@@ -1,6 +1,6 @@
 package org.openmrs.module.appointmentscheduling.reporting.data.evaluator;
 
-import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.AppointmentData;
 import org.openmrs.module.appointmentscheduling.reporting.data.AppointmentDataUtil;
 import org.openmrs.module.appointmentscheduling.reporting.data.EvaluatedAppointmentData;
 import org.openmrs.module.appointmentscheduling.reporting.data.definition.AppointmentDataDefinition;
@@ -28,7 +28,7 @@ public abstract class AppointmentPropertyDataEvaluator implements AppointmentDat
         EvaluatedAppointmentData appointmentData = new EvaluatedAppointmentData(definition, context);
         HqlQueryBuilder q = new HqlQueryBuilder();
         q.select("a.appointmentId", "a."+getPropertyName());
-        q.from(Appointment.class, "a");
+        q.from(AppointmentData.class, "a");
 
         if (context != null) {
             Set<Integer> appointmentIds = AppointmentDataUtil.getAppointmentIdsForContext(context, true);

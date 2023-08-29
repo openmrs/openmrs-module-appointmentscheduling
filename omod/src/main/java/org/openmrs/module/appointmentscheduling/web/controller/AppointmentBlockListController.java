@@ -29,8 +29,8 @@ import org.openmrs.Location;
 import org.openmrs.Provider;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.Appointment;
-import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
+import org.openmrs.module.appointmentscheduling.AppointmentData;
+import org.openmrs.module.appointmentscheduling.AppointmentData.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
@@ -193,15 +193,15 @@ public class AppointmentBlockListController {
 					return null;
 				}
 				List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
-				List<Appointment> appointments = new ArrayList<Appointment>();
+				List<AppointmentData> appointments = new ArrayList<AppointmentData>();
 				for (TimeSlot timeSlot : currentTimeSlots) {
-					List<Appointment> appointmentsInSlot = appointmentService.getAppointmentsInTimeSlot(timeSlot);
-					for (Appointment appointment : appointmentsInSlot) {
+					List<AppointmentData> appointmentsInSlot = appointmentService.getAppointmentsInTimeSlot(timeSlot);
+					for (AppointmentData appointment : appointmentsInSlot) {
 						appointments.add(appointment);
 					}
 				}
 				//set appointments statuses from "Scheduled" to "Cancelled".
-				for (Appointment appointment : appointments) {
+				for (AppointmentData appointment : appointments) {
 					if (appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.SCHEDULED.toString())) {
 						appointmentService.changeAppointmentStatus(appointment, AppointmentStatus.CANCELLED);
 					}
@@ -245,10 +245,10 @@ public class AppointmentBlockListController {
 			// if the user is unvoiding the AppointmentBlock
 			else if (request.getParameter("unvoid") != null) {
 				List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
-				List<Appointment> appointmentsThatShouldBeUnvoided = new ArrayList<Appointment>();
+				List<AppointmentData> appointmentsThatShouldBeUnvoided = new ArrayList<AppointmentData>();
 				for (TimeSlot timeSlot : currentTimeSlots) {
-					List<Appointment> currentAppointments = appointmentService.getAppointmentsInTimeSlot(timeSlot);
-					for (Appointment appointment : currentAppointments) {
+					List<AppointmentData> currentAppointments = appointmentService.getAppointmentsInTimeSlot(timeSlot);
+					for (AppointmentData appointment : currentAppointments) {
 						if (!appointmentsThatShouldBeUnvoided.contains(appointment))
 							appointmentsThatShouldBeUnvoided.add(appointment);
 					}
@@ -256,8 +256,8 @@ public class AppointmentBlockListController {
 				//unvoiding the appointment block
 				appointmentService.unvoidAppointmentBlock(appointmentBlock);
 				//unvoiding the appointments
-				for (Appointment appointment : appointmentsThatShouldBeUnvoided) {
-					appointmentService.unvoidAppointment(appointment);
+				for (AppointmentData appointment : appointmentsThatShouldBeUnvoided) {
+					appointmentService.unvoidAppointmentData(appointment);
 				}
 				//unvoiding the time slots
 				for (TimeSlot timeSlot : currentTimeSlots) {

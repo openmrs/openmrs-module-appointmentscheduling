@@ -7,7 +7,7 @@
     <session-factory>
        <mapping resource="AppointmentType.hbm.xml" />
        <mapping resource="AppointmentBlock.hbm.xml"/>
-       <mapping resource="Appointment.hbm.xml"/>
+       <mapping resource="AppointmentData.hbm.xml"/>
        <mapping resource="TimeSlot.hbm.xml"/>
        <mapping resource="AppointmentStatusHistory.hbm.xml"/>
        <mapping resource="AppointmentRequest.hbm.xml"/>

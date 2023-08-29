@@ -27,8 +27,8 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Provider;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.Appointment;
-import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
+import org.openmrs.module.appointmentscheduling.AppointmentData;
+import org.openmrs.module.appointmentscheduling.AppointmentData.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.AppointmentUtils;
@@ -174,15 +174,15 @@ public class AppointmentBlockFormController {
 					return null;
 				}
 				List<TimeSlot> currentTimeSlots = appointmentService.getTimeSlotsInAppointmentBlock(appointmentBlock);
-				List<Appointment> appointments = new ArrayList<Appointment>();
+				List<AppointmentData> appointments = new ArrayList<AppointmentData>();
 				for (TimeSlot timeSlot : currentTimeSlots) {
-					List<Appointment> appointmentsInSlot = appointmentService.getAppointmentsInTimeSlot(timeSlot);
-					for (Appointment appointment : appointmentsInSlot) {
+					List<AppointmentData> appointmentsInSlot = appointmentService.getAppointmentsInTimeSlot(timeSlot);
+					for (AppointmentData appointment : appointmentsInSlot) {
 						appointments.add(appointment);
 					}
 				}
 				//set appointments statuses from "Scheduled" to "Cancelled".
-				for (Appointment appointment : appointments) {
+				for (AppointmentData appointment : appointments) {
 					if (appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.SCHEDULED.toString())) {
 						appointmentService.changeAppointmentStatus(appointment, AppointmentStatus.CANCELLED);
 					}

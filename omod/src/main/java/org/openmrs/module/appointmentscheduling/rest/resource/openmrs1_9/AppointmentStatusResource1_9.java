@@ -1,6 +1,6 @@
 package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 
-import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.AppointmentData;
 import org.openmrs.module.appointmentscheduling.rest.controller.AppointmentRestController;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -16,11 +16,11 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
+import static org.openmrs.module.appointmentscheduling.AppointmentData.AppointmentStatus;
 
 @Resource(name = RestConstants.VERSION_1
 		+ AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE
-		+ "/appointmentstatus", supportedClass = Appointment.AppointmentStatus.class,
+		+ "/appointmentstatus", supportedClass = AppointmentData.AppointmentStatus.class,
 		supportedOpenmrsVersions = {"1.9.* - 9.*"})
 public class AppointmentStatusResource1_9 implements Listable, Searchable , Converter {
 

@@ -2,11 +2,11 @@ package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 
 import org.junit.Before;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.AppointmentData;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
-public class AppointmentResource1_9Test extends BaseDelegatingResourceTest<AppointmentResource1_9, Appointment> {
+public class AppointmentResource1_9Test extends BaseDelegatingResourceTest<AppointmentResource1_9, AppointmentData> {
 	
 	@Before
 	public void setup() throws Exception {
@@ -14,8 +14,8 @@ public class AppointmentResource1_9Test extends BaseDelegatingResourceTest<Appoi
 	}
 	
 	@Override
-	public Appointment newObject() {
-		return Context.getService(AppointmentService.class).getAppointmentByUuid(getUuidProperty());
+	public AppointmentData newObject() {
+		return Context.getService(AppointmentService.class).getAppointmentDataByUuid(getUuidProperty());
 	}
 	
 	@Override
