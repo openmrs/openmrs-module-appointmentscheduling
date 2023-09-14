@@ -23,8 +23,8 @@ import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.db.DAOException;
-import org.openmrs.module.appointmentscheduling.AppointmentDetail;
-import org.openmrs.module.appointmentscheduling.AppointmentDetail.AppointmentStatus;
+import org.openmrs.module.appointmentscheduling.PatientAppointment;
+import org.openmrs.module.appointmentscheduling.PatientAppointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentDailyCount;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
@@ -37,28 +37,28 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface AppointmentDAO extends SingleClassDAO {
 	
-	List<AppointmentDetail> getAppointmentsByPatient(Patient patient);
+	List<PatientAppointment> getAppointmentsByPatient(Patient patient);
 	
-	AppointmentDetail getAppointmentByVisit(Visit visit);
+	PatientAppointment getAppointmentByVisit(Visit visit);
 	
-	AppointmentDetail getLastAppointment(Patient patient);
+	PatientAppointment getLastAppointment(Patient patient);
 	
 	@Transactional(readOnly = true)
-	List<AppointmentDetail> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider,
-														 AppointmentType appointmentType, List<AppointmentStatus> statuses, Patient patient,
-														 VisitType visitType, Visit visit) throws APIException;
+	List<PatientAppointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider,
+                                                          AppointmentType appointmentType, List<AppointmentStatus> statuses, Patient patient,
+                                                          VisitType visitType, Visit visit) throws APIException;
 	
-	List<AppointmentDetail> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider, AppointmentType type,
-														 AppointmentStatus status, Patient patient) throws APIException;
+	List<PatientAppointment> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider, AppointmentType type,
+                                                          AppointmentStatus status, Patient patient) throws APIException;
 	
-	List<AppointmentDetail> getAppointmentsByStates(List<AppointmentStatus> states);
+	List<PatientAppointment> getAppointmentsByStates(List<AppointmentStatus> states);
 	
-	List<AppointmentDetail> getPastAppointmentsByStates(List<AppointmentStatus> states);
+	List<PatientAppointment> getPastAppointmentsByStates(List<AppointmentStatus> states);
 	
-	List<AppointmentDetail> getScheduledAppointmentsForPatient(Patient patient);
+	List<PatientAppointment> getScheduledAppointmentsForPatient(Patient patient);
 	
-	List<AppointmentDetail> getAppointmentsByAppointmentBlockAndAppointmentTypes(AppointmentBlock appointmentBlock,
-																				 List<AppointmentType> appointmentTypes);
+	List<PatientAppointment> getAppointmentsByAppointmentBlockAndAppointmentTypes(AppointmentBlock appointmentBlock,
+                                                                                  List<AppointmentType> appointmentTypes);
 	
 	/**
 	 * Retrieve all appointments in a given time slot.
@@ -67,7 +67,7 @@ public interface AppointmentDAO extends SingleClassDAO {
 	 * @return a list of the appointments in the given time slot.
 	 * <strong>Should</strong> not return voided time slots
 	 */
-	List<AppointmentDetail> getAppointmentsInTimeSlot(TimeSlot timeSlot);
+	List<PatientAppointment> getAppointmentsInTimeSlot(TimeSlot timeSlot);
 	
 	/**
 	 * Retrieve a count of appointments in a given time slot.
@@ -86,7 +86,7 @@ public interface AppointmentDAO extends SingleClassDAO {
 	 * @return a list of the appointments in the given time slot.
 	 * <strong>Should</strong> not return voided time slots
 	 */
-	List<AppointmentDetail> getAppointmentsInTimeSlotByStatus(TimeSlot timeSlot, List<AppointmentStatus> statuses);
+	List<PatientAppointment> getAppointmentsInTimeSlotByStatus(TimeSlot timeSlot, List<AppointmentStatus> statuses);
 	
 	/**
 	 * Retrieve a count of all appointments in a given time slot, filtered by status

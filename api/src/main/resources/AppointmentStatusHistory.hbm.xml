@@ -18,14 +18,14 @@
 		<discriminator column="appointment_status_history_id" insert="false" />
 		<property name="status" column="status" not-null="true" length="255" >
 			<type name="org.hibernate.type.EnumType">
-				<param name="enumClass">org.openmrs.module.appointmentscheduling.AppointmentDetail$AppointmentStatus</param>
+				<param name="enumClass">org.openmrs.module.appointmentscheduling.PatientAppointment$AppointmentStatus</param>
 				<param name="type">12</param>
 			</type>
 		</property>
 		<property name="startDate" column="start_date" type="java.util.Date" not-null="true" length="255" />
 		<property name="endDate" column="end_date" type="java.util.Date" not-null="false" length="255" />
 		
-		<many-to-one name="appointment" column="appointment_id" class="org.openmrs.module.appointmentscheduling.AppointmentDetail" not-null="true" />
+		<many-to-one name="appointment" column="appointment_id" class="PatientAppointment" not-null="true" />
 	</class> 
 
 </hibernate-mapping>

@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.AppointmentDetail;
+import org.openmrs.module.appointmentscheduling.PatientAppointment;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.List;
 import java.util.Map;
 
-import static org.openmrs.module.appointmentscheduling.AppointmentDetail.AppointmentStatus.COMPLETED;
+import static org.openmrs.module.appointmentscheduling.PatientAppointment.AppointmentStatus.COMPLETED;
 
 public class AppointmentResource1_9ControllerTest
 		extends
@@ -83,7 +83,7 @@ public class AppointmentResource1_9ControllerTest
 						PropertyUtils.getProperty(appt, "appointmentType"),
 						"uuid"));
 		Assert.assertEquals(getAllCount() + 1, appointmentService
-				.getAllAppointmentDetails(false).size());
+				.getAllPatientAppointments(false).size());
 
 	}
 
@@ -115,7 +115,7 @@ public class AppointmentResource1_9ControllerTest
 						PropertyUtils.getProperty(appt, "appointmentType"),
 						"uuid"));
 		Assert.assertEquals(getAllCount() + 1, appointmentService
-				.getAllAppointmentDetails(false).size());
+				.getAllPatientAppointments(false).size());
 
 	}
 
@@ -141,8 +141,8 @@ public class AppointmentResource1_9ControllerTest
 		req.setContent(json.getBytes());
 		handle(req);
 
-		AppointmentDetail appointment = appointmentService
-				.getAppointmentDetailByUuid(getUuid());
+		PatientAppointment appointment = appointmentService
+				.getPatientAppointmentByUuid(getUuid());
 		Assert.assertNotNull(appointment);
 		Assert.assertEquals(COMPLETED, appointment.getStatus());
 
@@ -157,7 +157,7 @@ public class AppointmentResource1_9ControllerTest
 		req.addParameter("reason", "really ridiculous random reason");
 		handle(req);
 
-		AppointmentDetail voided = appointmentService.getAppointmentDetailByUuid(getUuid());
+		PatientAppointment voided = appointmentService.getPatientAppointmentByUuid(getUuid());
 		Assert.assertTrue(voided.isVoided());
 		Assert.assertEquals("really ridiculous random reason",
 				voided.getVoidReason());
@@ -174,7 +174,7 @@ public class AppointmentResource1_9ControllerTest
 
 		Assert.assertNull(appointmentService.getTimeSlotByUuid(getUuid()));
 		Assert.assertEquals(getAllCount() - 1, appointmentService
-				.getAllAppointmentDetails(false).size());
+				.getAllPatientAppointments(false).size());
 
 	}
 

@@ -6,7 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Location;
 import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.AppointmentDetail;
+import org.openmrs.module.appointmentscheduling.PatientAppointment;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.appointmentscheduling.rest.controller.AppointmentRestController;
@@ -61,10 +61,10 @@ public class EarlyAndLateAppointmentSearchHandler  implements SearchHandler {
 
         if (StringUtils.isNotBlank(statusValue)) {
             if (statusValue.equals("LATE")){
-                return new NeedsPaging<AppointmentDetail>(Context.getService(AppointmentService.class).getLateAppointments(
+                return new NeedsPaging<PatientAppointment>(Context.getService(AppointmentService.class).getLateAppointments(
                         fromDate, toDate, location, provider, appointmentType), context);
             }else if (statusValue.equals("EARLY")){
-                return new NeedsPaging<AppointmentDetail>(Context.getService(AppointmentService.class).getEarlyAppointments(
+                return new NeedsPaging<PatientAppointment>(Context.getService(AppointmentService.class).getEarlyAppointments(
                         fromDate, toDate, location, provider, appointmentType), context);
             }else {
                 return null;

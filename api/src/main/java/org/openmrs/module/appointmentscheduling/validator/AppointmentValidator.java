@@ -16,16 +16,16 @@ package org.openmrs.module.appointmentscheduling.validator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.appointmentscheduling.AppointmentDetail;
+import org.openmrs.module.appointmentscheduling.PatientAppointment;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 /**
- * Validates attributes on the {@link AppointmentDetail} object.
+ * Validates attributes on the {@link PatientAppointment} object.
  */
-@Handler(supports = { AppointmentDetail.class }, order = 50)
+@Handler(supports = { PatientAppointment.class }, order = 50)
 public class AppointmentValidator implements Validator {
 	
 	/** Log for this class and subclasses */
@@ -38,7 +38,7 @@ public class AppointmentValidator implements Validator {
 	 */
 	@SuppressWarnings("unchecked")
 	public boolean supports(Class c) {
-		return c.equals(AppointmentDetail.class);
+		return c.equals(PatientAppointment.class);
 	}
 	
 	/**
@@ -50,7 +50,7 @@ public class AppointmentValidator implements Validator {
 	 * <strong>Should</strong> pass validation if all required fields have proper values
 	 */
 	public void validate(Object obj, Errors errors) {
-		AppointmentDetail appointment = (AppointmentDetail) obj;
+		PatientAppointment appointment = (PatientAppointment) obj;
 		if (appointment == null) {
 			errors.rejectValue("appointment", "error.general");
 		} else {

@@ -16,9 +16,9 @@ package org.openmrs.module.appointmentscheduling.api.db;
 import java.util.Date;
 import java.util.List;
 
-import org.openmrs.module.appointmentscheduling.AppointmentDetail;
+import org.openmrs.module.appointmentscheduling.PatientAppointment;
 import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
-import org.openmrs.module.appointmentscheduling.AppointmentDetail.AppointmentStatus;
+import org.openmrs.module.appointmentscheduling.PatientAppointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +34,7 @@ public interface AppointmentStatusHistoryDAO extends SingleClassDAO {
 	 * @return the start date of the current status of a given appointment.
 	 */
 	@Transactional(readOnly = true)
-	public Date getStartDateOfCurrentStatus(AppointmentDetail appointment);
+	public Date getStartDateOfCurrentStatus(PatientAppointment appointment);
 	
 	@Transactional(readOnly = true)
 	public List<AppointmentStatusHistory> getAll(AppointmentStatus status);
@@ -57,7 +57,7 @@ public interface AppointmentStatusHistoryDAO extends SingleClassDAO {
 	 * @param appointment The appointment which the story should be deleted.
 	 * @return
 	 */
-	public void purgeHistoryBy(AppointmentDetail appointment);
+	public void purgeHistoryBy(PatientAppointment appointment);
 
 	/**
 	 * retrieves all the statuses of an appointment
@@ -65,7 +65,7 @@ public interface AppointmentStatusHistoryDAO extends SingleClassDAO {
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	List<AppointmentStatusHistory> getAppointmentStatusHistories(AppointmentDetail appointment);
+	List<AppointmentStatusHistory> getAppointmentStatusHistories(PatientAppointment appointment);
 
 	/**
 	 * retrieves the most recent status of an appointment
@@ -73,6 +73,6 @@ public interface AppointmentStatusHistoryDAO extends SingleClassDAO {
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	AppointmentStatusHistory getMostRecentAppointmentStatusHistory(AppointmentDetail appointment);
+	AppointmentStatusHistory getMostRecentAppointmentStatusHistory(PatientAppointment appointment);
 
 }

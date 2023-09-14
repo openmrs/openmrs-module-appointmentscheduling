@@ -1,12 +1,12 @@
 package org.openmrs.module.appointmentscheduling.reporting.query;
 
-import org.openmrs.module.appointmentscheduling.AppointmentDetail;
+import org.openmrs.module.appointmentscheduling.PatientAppointment;
 import org.openmrs.module.reporting.query.BaseIdSet;
 
 import java.util.List;
 import java.util.Set;
 
-public class AppointmentIdSet extends BaseIdSet<AppointmentDetail> {
+public class AppointmentIdSet extends BaseIdSet<PatientAppointment> {
 
     public AppointmentIdSet() {
         super();

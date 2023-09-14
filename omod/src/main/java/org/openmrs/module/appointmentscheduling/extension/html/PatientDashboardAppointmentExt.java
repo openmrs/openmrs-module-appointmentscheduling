@@ -5,9 +5,9 @@ import java.util.Map;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.Extension;
-import org.openmrs.module.appointmentscheduling.AppointmentDetail;
+import org.openmrs.module.appointmentscheduling.PatientAppointment;
 import org.openmrs.module.appointmentscheduling.AppointmentUtils;
-import org.openmrs.module.appointmentscheduling.AppointmentDetail.AppointmentStatus;
+import org.openmrs.module.appointmentscheduling.PatientAppointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 
 public class PatientDashboardAppointmentExt extends Extension {
@@ -27,7 +27,7 @@ public class PatientDashboardAppointmentExt extends Extension {
 	@Override
 	public String getOverrideContent(String bodyContent) {
 		Patient patient = Context.getPatientService().getPatient(Integer.parseInt(patientId));
-		AppointmentDetail appointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
+		PatientAppointment appointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
 		
 		if (!Context.hasPrivilege(AppointmentUtils.PRIV_UPDATE_APPOINTMENT_STATES))
 			return "";

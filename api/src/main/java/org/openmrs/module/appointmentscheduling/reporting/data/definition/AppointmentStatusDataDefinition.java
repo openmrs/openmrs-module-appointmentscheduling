@@ -1,6 +1,6 @@
 package org.openmrs.module.appointmentscheduling.reporting.data.definition;
 
-import org.openmrs.module.appointmentscheduling.AppointmentDetail;
+import org.openmrs.module.appointmentscheduling.PatientAppointment;
 import org.openmrs.module.reporting.common.Localized;
 import org.openmrs.module.reporting.data.BaseDataDefinition;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
@@ -32,7 +32,7 @@ public class AppointmentStatusDataDefinition extends BaseDataDefinition implemen
      * @see org.openmrs.module.reporting.data.DataDefinition#getDataType()
      */
     public Class<?> getDataType() {
-        return AppointmentDetail.AppointmentStatus.class;
+        return PatientAppointment.AppointmentStatus.class;
     }
 
 }

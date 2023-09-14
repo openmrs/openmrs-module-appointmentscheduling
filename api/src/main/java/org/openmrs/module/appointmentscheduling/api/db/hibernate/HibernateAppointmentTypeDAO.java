@@ -31,7 +31,7 @@ public class HibernateAppointmentTypeDAO extends HibernateSingleClassDAO impleme
 	}
 	
 	public Integer getAppointmentTypeCount(Date fromDate, Date endDate, AppointmentType type) {
-		String stringQuery = "SELECT count(*) As counter from AppointmentDetail AS appointment"
+		String stringQuery = "SELECT count(*) As counter from PatientAppointment AS appointment"
 		        + " WHERE appointment.voided = false "
 		        + "AND appointment.timeSlot.startDate >= :fromDate " + "AND appointment.timeSlot.endDate <= :endDate "
 		        + "AND appointment.appointmentType=:appointmentType";

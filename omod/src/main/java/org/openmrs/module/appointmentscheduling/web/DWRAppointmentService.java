@@ -19,8 +19,8 @@ import org.openmrs.PersonAttribute;
 import org.openmrs.Provider;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.AppointmentDetail;
-import org.openmrs.module.appointmentscheduling.AppointmentDetail.AppointmentStatus;
+import org.openmrs.module.appointmentscheduling.PatientAppointment;
+import org.openmrs.module.appointmentscheduling.PatientAppointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.AppointmentUtils;
@@ -50,7 +50,7 @@ public class DWRAppointmentService {
 		if (phoneAttribute != null)
 			patientData.setPhoneNumber(phoneAttribute.getValue());
 		//Checks if patient missed his/her last appointment.
-		AppointmentDetail lastAppointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
+		PatientAppointment lastAppointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
 		if (lastAppointment != null && lastAppointment.getStatus() == AppointmentStatus.MISSED)
 			patientData.setDateMissedLastAppointment(Context.getDateFormat().format(
 			    lastAppointment.getTimeSlot().getStartDate()));
@@ -147,8 +147,8 @@ public class DWRAppointmentService {
 				//Getting the timeslots of the given appointment block
 				List<TimeSlot> timeSlots = as.getTimeSlotsInAppointmentBlock(appointmentBlock);
 				for (TimeSlot timeSlot : timeSlots) {
-					List<AppointmentDetail> appointmentsInTimeSlot = as.getAppointmentsInTimeSlot(timeSlot);
-					for (AppointmentDetail appointment : appointmentsInTimeSlot) {
+					List<PatientAppointment> appointmentsInTimeSlot = as.getAppointmentsInTimeSlot(timeSlot);
+					for (PatientAppointment appointment : appointmentsInTimeSlot) {
 						//Create an AppointmentData object
 						PatientData patientDescription = this.getPatientDescription(appointment.getPatient().getPatientId());
 						TimeSlot appointmentTimeSlot = appointment.getTimeSlot();
@@ -227,10 +227,10 @@ public class DWRAppointmentService {
 		if (appointmentId == null)
 			return false;
 		else {
-			AppointmentDetail appointment = Context.getService(AppointmentService.class).getAppointmentDetail(appointmentId);
+			PatientAppointment appointment = Context.getService(AppointmentService.class).getPatientAppointment(appointmentId);
 			Provider provider = appointment.getTimeSlot().getAppointmentBlock().getProvider();
 			
-			List<AppointmentDetail> inconsultationAppointments = Context.getService(AppointmentService.class)
+			List<PatientAppointment> inconsultationAppointments = Context.getService(AppointmentService.class)
 			        .getAppointmentsByConstraints(null, null, null, provider, null, AppointmentStatus.INCONSULTATION);
 			
 			return (inconsultationAppointments.size() != 0);
@@ -248,11 +248,11 @@ public class DWRAppointmentService {
 		if (patientId == null)
 			return false;
 		else {
-			AppointmentDetail appointment = Context.getService(AppointmentService.class).getLastAppointment(
+			PatientAppointment appointment = Context.getService(AppointmentService.class).getLastAppointment(
 			    Context.getPatientService().getPatient(patientId));
 			Provider provider = appointment.getTimeSlot().getAppointmentBlock().getProvider();
 			
-			List<AppointmentDetail> inconsultationAppointments = Context.getService(AppointmentService.class)
+			List<PatientAppointment> inconsultationAppointments = Context.getService(AppointmentService.class)
 			        .getAppointmentsByConstraints(null, null, null, provider, null, AppointmentStatus.INCONSULTATION);
 			
 			return (inconsultationAppointments.size() != 0);

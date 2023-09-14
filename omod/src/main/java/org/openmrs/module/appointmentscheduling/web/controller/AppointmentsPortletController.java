@@ -22,7 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.AppointmentDetail;
+import org.openmrs.module.appointmentscheduling.PatientAppointment;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.web.controller.PortletController;
 import org.springframework.stereotype.Controller;
@@ -40,7 +40,7 @@ public class AppointmentsPortletController extends PortletController {
 	@Override
 	protected void populateModel(HttpServletRequest request, Map<String, Object> model) {
 		int patientId = ServletRequestUtils.getIntParameter(request, "patientId", 0);
-		List<AppointmentDetail> patientAppointments = null;
+		List<PatientAppointment> patientAppointments = null;
 		if (Context.isAuthenticated()) {
 			Patient patient = Context.getPatientService().getPatient(patientId);
 			AppointmentService appointmentService = Context.getService(AppointmentService.class);

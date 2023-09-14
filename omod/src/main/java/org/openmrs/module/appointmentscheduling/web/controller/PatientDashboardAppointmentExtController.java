@@ -7,8 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.AppointmentDetail;
-import org.openmrs.module.appointmentscheduling.AppointmentDetail.AppointmentStatus;
+import org.openmrs.module.appointmentscheduling.PatientAppointment;
+import org.openmrs.module.appointmentscheduling.PatientAppointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +23,7 @@ public class PatientDashboardAppointmentExtController {
 		//End the consulation
 		if (action.equals("endConsult")) {
 			Patient patient = Context.getPatientService().getPatient(patientId);
-			AppointmentDetail appointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
+			PatientAppointment appointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
 			Visit visit = appointment.getVisit();
 			
 			//Check if was ended already
@@ -33,15 +33,15 @@ public class PatientDashboardAppointmentExtController {
 			}
 			
 			appointment.setStatus(AppointmentStatus.COMPLETED);
-			Context.getService(AppointmentService.class).saveAppointmentDetail(appointment);
+			Context.getService(AppointmentService.class).savePatientAppointment(appointment);
 			
 			return "redirect:/module/appointmentscheduling/appointmentList.list";
 		} else if (action.equals("startConsult")) {
 			Patient patient = Context.getPatientService().getPatient(patientId);
-			AppointmentDetail appointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
+			PatientAppointment appointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
 			
 			appointment.setStatus(AppointmentStatus.INCONSULTATION);
-			Context.getService(AppointmentService.class).saveAppointmentDetail(appointment);
+			Context.getService(AppointmentService.class).savePatientAppointment(appointment);
 			
 			return "redirect:/patientDashboard.form?patientId=" + patientId;
 		}

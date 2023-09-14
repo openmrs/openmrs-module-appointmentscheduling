@@ -3,7 +3,7 @@ package org.openmrs.module.appointmentscheduling.web.controller;
 import org.openmrs.Location;
 import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.AppointmentDetail;
+import org.openmrs.module.appointmentscheduling.PatientAppointment;
 import org.openmrs.module.appointmentscheduling.AppointmentDailyCount;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.appointmentscheduling.rest.controller.AppointmentRestController;
@@ -27,7 +27,7 @@ public class AppointmentDailyCountController {
             @RequestParam(value = "toDate", required = true) String toDate,
             @RequestParam(value = "location", required = false) Location location,
             @RequestParam(value = "provider", required = false) Provider provider,
-            @RequestParam(value = "status", required = false) AppointmentDetail.AppointmentStatus status
+            @RequestParam(value = "status", required = false) PatientAppointment.AppointmentStatus status
     )
     {
         List<AppointmentDailyCount> dailyCounts = Context.getService(AppointmentService.class)
