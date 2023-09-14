@@ -16,7 +16,7 @@ package org.openmrs.module.appointmentscheduling;
 import java.util.Date;
 
 import org.openmrs.BaseOpenmrsData;
-import org.openmrs.module.appointmentscheduling.AppointmentData.AppointmentStatus;
+import org.openmrs.module.appointmentscheduling.AppointmentDetail.AppointmentStatus;
 
 public class AppointmentStatusHistory extends BaseOpenmrsData {
 	
@@ -24,7 +24,7 @@ public class AppointmentStatusHistory extends BaseOpenmrsData {
 	
 	private Integer appointmentStatusHistoryId;
 	
-	private AppointmentData appointment;
+	private AppointmentDetail appointment;
 	
 	private AppointmentStatus status;
 	
@@ -36,7 +36,7 @@ public class AppointmentStatusHistory extends BaseOpenmrsData {
 		
 	}
 	
-	public AppointmentStatusHistory(AppointmentData appointment, AppointmentStatus status, Date startDate, Date endDate) {
+	public AppointmentStatusHistory(AppointmentDetail appointment, AppointmentStatus status, Date startDate, Date endDate) {
 		setAppointment(appointment);
 		setStatus(status);
 		setStartDate(startDate);
@@ -91,11 +91,11 @@ public class AppointmentStatusHistory extends BaseOpenmrsData {
 		this.endDate = endDate;
 	}
 	
-	public AppointmentData getAppointment() {
+	public AppointmentDetail getAppointment() {
 		return appointment;
 	}
 	
-	public void setAppointment(AppointmentData appointment) {
+	public void setAppointment(AppointmentDetail appointment) {
 		this.appointment = appointment;
 	}
 	

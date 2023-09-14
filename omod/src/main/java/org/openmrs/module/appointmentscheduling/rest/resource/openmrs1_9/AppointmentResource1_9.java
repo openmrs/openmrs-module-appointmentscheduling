@@ -6,7 +6,7 @@ import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.AppointmentData;
+import org.openmrs.module.appointmentscheduling.AppointmentDetail;
 import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
@@ -33,13 +33,13 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import static org.openmrs.module.appointmentscheduling.AppointmentData.AppointmentStatus;
-import static org.openmrs.module.appointmentscheduling.AppointmentData.AppointmentStatus.getAppointmentsStatusByType;
-import static org.openmrs.module.appointmentscheduling.AppointmentData.AppointmentStatusType;
+import static org.openmrs.module.appointmentscheduling.AppointmentDetail.AppointmentStatus;
+import static org.openmrs.module.appointmentscheduling.AppointmentDetail.AppointmentStatus.getAppointmentsStatusByType;
+import static org.openmrs.module.appointmentscheduling.AppointmentDetail.AppointmentStatusType;
 
 @Resource(name = RestConstants.VERSION_1 + AppointmentRestController.APPOINTMENT_SCHEDULING_REST_NAMESPACE + "/appointment",
-    supportedClass = AppointmentData.class, supportedOpenmrsVersions = {"1.9.* - 9.*"})
-public class AppointmentResource1_9 extends DataDelegatingCrudResource<AppointmentData> {
+    supportedClass = AppointmentDetail.class, supportedOpenmrsVersions = {"1.9.* - 9.*"})
+public class AppointmentResource1_9 extends DataDelegatingCrudResource<AppointmentDetail> {
 
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation representation) {
@@ -103,29 +103,29 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 	}
 
 	@Override
-	public AppointmentData getByUniqueId(String uuid) {
-		return Context.getService(AppointmentService.class).getAppointmentDataByUuid(uuid);
+	public AppointmentDetail getByUniqueId(String uuid) {
+		return Context.getService(AppointmentService.class).getAppointmentDetailByUuid(uuid);
 	}
 
 	@Override
-	protected void delete(AppointmentData appointment, String reason, RequestContext requestContext) throws ResponseException {
+	protected void delete(AppointmentDetail appointment, String reason, RequestContext requestContext) throws ResponseException {
 		if (appointment.isVoided()) {
 			return;
 		}
-		Context.getService(AppointmentService.class).voidAppointmentData(appointment, reason);
+		Context.getService(AppointmentService.class).voidAppointmentDetail(appointment, reason);
 	}
 
 	@Override
-	public AppointmentData newDelegate() {
-		return new AppointmentData();
+	public AppointmentDetail newDelegate() {
+		return new AppointmentDetail();
 	}
 
 	@Override
-	public AppointmentData save(AppointmentData appointment) {
+	public AppointmentDetail save(AppointmentDetail appointment) {
 		return save(appointment, false);
 	}
 
-	protected AppointmentData save(AppointmentData appointment, Boolean allowOverbook) {
+	protected AppointmentDetail save(AppointmentDetail appointment, Boolean allowOverbook) {
 		if (appointment.getId() != null) {
 			// existing appointments get updated
 			AppointmentStatusHistory statusHistory = Context.getService(AppointmentService.class).getMostRecentAppointmentStatusHistory(appointment);
@@ -133,7 +133,7 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 				Context.getService(AppointmentService.class).changeAppointmentStatus(appointment, appointment.getStatus());
 				return appointment;
 			}
-			return Context.getService(AppointmentService.class).saveAppointmentData(appointment);
+			return Context.getService(AppointmentService.class).saveAppointmentDetail(appointment);
 		} else {
 			// new appointments get booked
 			try {
@@ -148,17 +148,17 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 	}
 
 	@Override
-	public void purge(AppointmentData appointment, RequestContext requestContext) throws ResponseException {
+	public void purge(AppointmentDetail appointment, RequestContext requestContext) throws ResponseException {
 		if (appointment == null) {
 			return;
 		}
-		Context.getService(AppointmentService.class).purgeAppointmentData(appointment);
+		Context.getService(AppointmentService.class).purgeAppointmentDetail(appointment);
 	}
 
 	@Override
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
 		AppointmentService service = Context.getService(AppointmentService.class);
-		return new NeedsPaging<AppointmentData>(service.getAllAppointmentDatas(context.getIncludeAll()), context);
+		return new NeedsPaging<AppointmentDetail>(service.getAllAppointmentDetails(context.getIncludeAll()), context);
 	}
 
 	/**
@@ -203,7 +203,7 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 		Visit visit = context.getParameter("visit") != null ? Context.getVisitService().getVisitByUuid(
 				context.getParameter("visit")) : null;
 
-		return new NeedsPaging<AppointmentData>(Context.getService(AppointmentService.class).getAppointmentsByConstraints(
+		return new NeedsPaging<AppointmentDetail>(Context.getService(AppointmentService.class).getAppointmentsByConstraints(
 		    fromDate, toDate, location, provider, appointmentType, patient, statuses, visitType, visit), context);
 
 	}
@@ -253,7 +253,7 @@ public class AppointmentResource1_9 extends DataDelegatingCrudResource<Appointme
 		return statusList;
 	}
 
-	public String getDisplayString(AppointmentData appointment) {
+	public String getDisplayString(AppointmentDetail appointment) {
 		return appointment.getAppointmentType().getName() + " : " + appointment.getStatus();
 	}
 }

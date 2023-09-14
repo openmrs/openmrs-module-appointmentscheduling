@@ -3,7 +3,7 @@ package org.openmrs.module.appointmentscheduling.web.controller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.AppointmentData;
+import org.openmrs.module.appointmentscheduling.AppointmentDetail;
 import org.openmrs.module.appointmentscheduling.AppointmentRequisition;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
@@ -33,9 +33,9 @@ public class AppointmentRequisitionController {
     @ResponseBody
     public AppointmentRequisition createAppointment(@RequestBody AppointmentRequisition appointmentRequisition) throws ParseException {
         AppointmentService service = Context.getService(AppointmentService.class);
-        AppointmentData appointment = new AppointmentData();
+        AppointmentDetail appointment = new AppointmentDetail();
         appointment.setPatient(Context.getPatientService().getPatientByUuid(appointmentRequisition.getPatient()));
-        appointment.setStatus(AppointmentData.AppointmentStatus.valueOf(appointmentRequisition.getStatus()));
+        appointment.setStatus(AppointmentDetail.AppointmentStatus.valueOf(appointmentRequisition.getStatus()));
         appointment.setAppointmentType(Context.getService(AppointmentService.class).getAppointmentTypeByUuid(appointmentRequisition.getAppointmentType()));
         appointment.setVisit(Context.getVisitService().getVisitByUuid(appointmentRequisition.getVisit()));
 

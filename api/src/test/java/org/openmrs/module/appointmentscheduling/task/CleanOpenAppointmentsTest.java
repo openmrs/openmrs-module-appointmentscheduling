@@ -2,7 +2,7 @@ package org.openmrs.module.appointmentscheduling.task;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.appointmentscheduling.AppointmentData;
+import org.openmrs.module.appointmentscheduling.AppointmentDetail;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,19 +27,19 @@ public class CleanOpenAppointmentsTest extends BaseModuleContextSensitiveTest {
         new CleanOpenAppointmentsTask().execute();
 
         //should mark Scheduled, Waiting and Walkin as missed
-        assertThat(appointmentService.getAppointmentData(1).getStatus(), is(AppointmentData.AppointmentStatus.MISSED));
-        assertThat(appointmentService.getAppointmentData(2).getStatus(), is(AppointmentData.AppointmentStatus.MISSED));
-        assertThat(appointmentService.getAppointmentData(7).getStatus(), is(AppointmentData.AppointmentStatus.MISSED));
-        assertThat(appointmentService.getAppointmentData(8).getStatus(), is(AppointmentData.AppointmentStatus.MISSED));
+        assertThat(appointmentService.getAppointmentDetail(1).getStatus(), is(AppointmentDetail.AppointmentStatus.MISSED));
+        assertThat(appointmentService.getAppointmentDetail(2).getStatus(), is(AppointmentDetail.AppointmentStatus.MISSED));
+        assertThat(appointmentService.getAppointmentDetail(7).getStatus(), is(AppointmentDetail.AppointmentStatus.MISSED));
+        assertThat(appointmentService.getAppointmentDetail(8).getStatus(), is(AppointmentDetail.AppointmentStatus.MISSED));
 
 
         //should mark In-consultation as completed
-        assertThat(appointmentService.getAppointmentData(4).getStatus(), is(AppointmentData.AppointmentStatus.COMPLETED));
+        assertThat(appointmentService.getAppointmentDetail(4).getStatus(), is(AppointmentDetail.AppointmentStatus.COMPLETED));
 
         // status of other appointments should not be changed
-        assertThat(appointmentService.getAppointmentData(3).getStatus(), is(AppointmentData.AppointmentStatus.COMPLETED));
-        assertThat(appointmentService.getAppointmentData(5).getStatus(), is(AppointmentData.AppointmentStatus.CANCELLED));
-        assertThat(appointmentService.getAppointmentData(6).getStatus(), is(AppointmentData.AppointmentStatus.CANCELLED_AND_NEEDS_RESCHEDULE));
+        assertThat(appointmentService.getAppointmentDetail(3).getStatus(), is(AppointmentDetail.AppointmentStatus.COMPLETED));
+        assertThat(appointmentService.getAppointmentDetail(5).getStatus(), is(AppointmentDetail.AppointmentStatus.CANCELLED));
+        assertThat(appointmentService.getAppointmentDetail(6).getStatus(), is(AppointmentDetail.AppointmentStatus.CANCELLED_AND_NEEDS_RESCHEDULE));
 
     }
 
@@ -48,8 +48,8 @@ public class CleanOpenAppointmentsTest extends BaseModuleContextSensitiveTest {
 
         new CleanOpenAppointmentsTask().execute();
 
-        assertThat(appointmentService.getAppointmentData(9).getStatus(), is(AppointmentData.AppointmentStatus.SCHEDULED));
-        assertThat(appointmentService.getAppointmentData(10).getStatus(), is(AppointmentData.AppointmentStatus.WAITING));
+        assertThat(appointmentService.getAppointmentDetail(9).getStatus(), is(AppointmentDetail.AppointmentStatus.SCHEDULED));
+        assertThat(appointmentService.getAppointmentDetail(10).getStatus(), is(AppointmentDetail.AppointmentStatus.WAITING));
 
     }
 }

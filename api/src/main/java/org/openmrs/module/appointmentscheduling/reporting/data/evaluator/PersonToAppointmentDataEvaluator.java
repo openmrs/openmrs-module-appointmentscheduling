@@ -3,7 +3,7 @@ package org.openmrs.module.appointmentscheduling.reporting.data.evaluator;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.AppointmentData;
+import org.openmrs.module.appointmentscheduling.AppointmentDetail;
 import org.openmrs.module.appointmentscheduling.AppointmentSchedulingConstants;
 import org.openmrs.module.appointmentscheduling.reporting.data.AppointmentDataUtil;
 import org.openmrs.module.appointmentscheduling.reporting.data.EvaluatedAppointmentData;
@@ -38,7 +38,7 @@ public class PersonToAppointmentDataEvaluator implements AppointmentDataEvaluato
         // create a map of appointment ids -> patient (person) ids
         HqlQueryBuilder q = new HqlQueryBuilder();
         q.select("a.appointmentId", "a.patient.patientId");
-        q.from(AppointmentData.class, "a");
+        q.from(AppointmentDetail.class, "a");
 
         if (context != null) {
             Set<Integer> appointmentIds = AppointmentDataUtil.getAppointmentIdsForContext(context, true);
@@ -51,7 +51,7 @@ public class PersonToAppointmentDataEvaluator implements AppointmentDataEvaluato
             // build a map of appointment ids to whether it is confidential
             HqlQueryBuilder confidentialQuery = new HqlQueryBuilder();
             confidentialQuery.select("a.appointmentId", "case a.appointmentType.confidential when 0 then false else true end");
-            confidentialQuery.from(AppointmentData.class, "a");
+            confidentialQuery.from(AppointmentDetail.class, "a");
 
             if (context != null) {
                 Set<Integer> appointmentIds = AppointmentDataUtil.getAppointmentIdsForContext(context, true);

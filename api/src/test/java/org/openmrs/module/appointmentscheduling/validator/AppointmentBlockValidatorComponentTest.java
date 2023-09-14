@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.AppointmentData;
+import org.openmrs.module.appointmentscheduling.AppointmentDetail;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -103,9 +103,9 @@ public class AppointmentBlockValidatorComponentTest extends BaseModuleContextSen
     public void shouldAllowEditingAnAppointmentBlockToRemoveAnAppointmentTypeIfAppointmentsOfThatTypeHaveBeenCancelled() {
 
         // first the appointment associated with this block
-        AppointmentData appointment = Context.getService(AppointmentService.class).getAppointmentData(12);
-        appointment.setStatus(AppointmentData.AppointmentStatus.CANCELLED_AND_NEEDS_RESCHEDULE);
-        Context.getService(AppointmentService.class).saveAppointmentData(appointment);
+        AppointmentDetail appointment = Context.getService(AppointmentService.class).getAppointmentDetail(12);
+        appointment.setStatus(AppointmentDetail.AppointmentStatus.CANCELLED_AND_NEEDS_RESCHEDULE);
+        Context.getService(AppointmentService.class).saveAppointmentDetail(appointment);
         Context.flushSession();
 
         AppointmentBlock appointmentBlock = Context.getService(AppointmentService.class).getAppointmentBlock(5);

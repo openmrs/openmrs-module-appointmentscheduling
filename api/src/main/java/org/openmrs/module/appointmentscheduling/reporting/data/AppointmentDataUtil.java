@@ -2,7 +2,7 @@ package org.openmrs.module.appointmentscheduling.reporting.data;
 
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.AppointmentData;
+import org.openmrs.module.appointmentscheduling.AppointmentDetail;
 import org.openmrs.module.appointmentscheduling.reporting.context.AppointmentEvaluationContext;
 import org.openmrs.module.appointmentscheduling.reporting.query.AppointmentIdSet;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -54,7 +54,7 @@ public class AppointmentDataUtil {
             context.setBaseCohort(new Cohort(patientIds));
         }
         HqlQueryBuilder qb = new HqlQueryBuilder();
-        qb.select("a.appointmentId").from(AppointmentData.class, "a").wherePatientIn("a.patient.patientId", context);
+        qb.select("a.appointmentId").from(AppointmentDetail.class, "a").wherePatientIn("a.patient.patientId", context);
         List<Integer> ids = Context.getService(EvaluationService.class).evaluateToList(qb, Integer.class, context);
         return new HashSet<Integer>(ids);
     }

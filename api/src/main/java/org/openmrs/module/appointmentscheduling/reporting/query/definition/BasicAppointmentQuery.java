@@ -14,7 +14,7 @@
 package org.openmrs.module.appointmentscheduling.reporting.query.definition;
 
 import org.openmrs.Location;
-import org.openmrs.module.appointmentscheduling.AppointmentData;
+import org.openmrs.module.appointmentscheduling.AppointmentDetail;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
@@ -26,7 +26,7 @@ import java.util.Date;
  * Returns all (non-voided) visits within the specified time frame
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class BasicAppointmentQuery extends BaseQuery<AppointmentData> implements AppointmentQuery {
+public class BasicAppointmentQuery extends BaseQuery<AppointmentDetail> implements AppointmentQuery {
 
     public static final long serialVersionUID = 1L;
 

@@ -19,8 +19,8 @@ import org.openmrs.PersonAttribute;
 import org.openmrs.Provider;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.AppointmentData;
-import org.openmrs.module.appointmentscheduling.AppointmentData.AppointmentStatus;
+import org.openmrs.module.appointmentscheduling.AppointmentDetail;
+import org.openmrs.module.appointmentscheduling.AppointmentDetail.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.AppointmentUtils;
@@ -50,7 +50,7 @@ public class DWRAppointmentService {
 		if (phoneAttribute != null)
 			patientData.setPhoneNumber(phoneAttribute.getValue());
 		//Checks if patient missed his/her last appointment.
-		org.openmrs.module.appointmentscheduling.AppointmentData lastAppointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
+		AppointmentDetail lastAppointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
 		if (lastAppointment != null && lastAppointment.getStatus() == AppointmentStatus.MISSED)
 			patientData.setDateMissedLastAppointment(Context.getDateFormat().format(
 			    lastAppointment.getTimeSlot().getStartDate()));
@@ -133,29 +133,29 @@ public class DWRAppointmentService {
 		return appointmentBlockDatalist;
 	}
 	
-	public List<List<org.openmrs.module.appointmentscheduling.web.AppointmentData>> getPatientsInAppointmentBlock(Integer appointmentBlockId) {
-		List<List<org.openmrs.module.appointmentscheduling.web.AppointmentData>> patients = null;
+	public List<List<AppointmentData>> getPatientsInAppointmentBlock(Integer appointmentBlockId) {
+		List<List<AppointmentData>> patients = null;
 		if (Context.isAuthenticated()) {
 			AppointmentService as = Context.getService(AppointmentService.class);
 			if (appointmentBlockId != null) {
-				patients = new ArrayList<List<org.openmrs.module.appointmentscheduling.web.AppointmentData>>();
-				patients.add(new ArrayList<org.openmrs.module.appointmentscheduling.web.AppointmentData>()); //active appointments
-				patients.add(new ArrayList<org.openmrs.module.appointmentscheduling.web.AppointmentData>()); //scheduled appointments
-				patients.add(new ArrayList<org.openmrs.module.appointmentscheduling.web.AppointmentData>()); //Missed/Cancelled/Complete appointments
+				patients = new ArrayList<List<AppointmentData>>();
+				patients.add(new ArrayList<AppointmentData>()); //active appointments
+				patients.add(new ArrayList<AppointmentData>()); //scheduled appointments
+				patients.add(new ArrayList<AppointmentData>()); //Missed/Cancelled/Complete appointments
 				//Assumption - Exists such an appointment block in the data base with the given Id
 				AppointmentBlock appointmentBlock = as.getAppointmentBlock(appointmentBlockId);
 				//Getting the timeslots of the given appointment block
 				List<TimeSlot> timeSlots = as.getTimeSlotsInAppointmentBlock(appointmentBlock);
 				for (TimeSlot timeSlot : timeSlots) {
-					List<AppointmentData> appointmentsInTimeSlot = as.getAppointmentsInTimeSlot(timeSlot);
-					for (AppointmentData appointment : appointmentsInTimeSlot) {
+					List<AppointmentDetail> appointmentsInTimeSlot = as.getAppointmentsInTimeSlot(timeSlot);
+					for (AppointmentDetail appointment : appointmentsInTimeSlot) {
 						//Create an AppointmentData object
 						PatientData patientDescription = this.getPatientDescription(appointment.getPatient().getPatientId());
 						TimeSlot appointmentTimeSlot = appointment.getTimeSlot();
 						String dateOnly = Context.getDateFormat().format(appointment.getTimeSlot().getStartDate());
 						String startTimeOnly = Context.getTimeFormat().format(appointment.getTimeSlot().getStartDate());
 						String endTimeOnly = Context.getTimeFormat().format(appointment.getTimeSlot().getEndDate());
-						org.openmrs.module.appointmentscheduling.web.AppointmentData appointmentdata = new org.openmrs.module.appointmentscheduling.web.AppointmentData(patientDescription, appointment
+						AppointmentData appointmentdata = new AppointmentData(patientDescription, appointment
 						        .getAppointmentType().getName(), dateOnly, startTimeOnly, endTimeOnly,
 						        appointment.getReason());
 						if (appointment.getStatus().toString().equalsIgnoreCase(AppointmentStatus.INCONSULTATION.toString())
@@ -227,10 +227,10 @@ public class DWRAppointmentService {
 		if (appointmentId == null)
 			return false;
 		else {
-			AppointmentData appointment = Context.getService(AppointmentService.class).getAppointmentData(appointmentId);
+			AppointmentDetail appointment = Context.getService(AppointmentService.class).getAppointmentDetail(appointmentId);
 			Provider provider = appointment.getTimeSlot().getAppointmentBlock().getProvider();
 			
-			List<AppointmentData> inconsultationAppointments = Context.getService(AppointmentService.class)
+			List<AppointmentDetail> inconsultationAppointments = Context.getService(AppointmentService.class)
 			        .getAppointmentsByConstraints(null, null, null, provider, null, AppointmentStatus.INCONSULTATION);
 			
 			return (inconsultationAppointments.size() != 0);
@@ -248,11 +248,11 @@ public class DWRAppointmentService {
 		if (patientId == null)
 			return false;
 		else {
-			org.openmrs.module.appointmentscheduling.AppointmentData appointment = Context.getService(AppointmentService.class).getLastAppointment(
+			AppointmentDetail appointment = Context.getService(AppointmentService.class).getLastAppointment(
 			    Context.getPatientService().getPatient(patientId));
 			Provider provider = appointment.getTimeSlot().getAppointmentBlock().getProvider();
 			
-			List<AppointmentData> inconsultationAppointments = Context.getService(AppointmentService.class)
+			List<AppointmentDetail> inconsultationAppointments = Context.getService(AppointmentService.class)
 			        .getAppointmentsByConstraints(null, null, null, provider, null, AppointmentStatus.INCONSULTATION);
 			
 			return (inconsultationAppointments.size() != 0);

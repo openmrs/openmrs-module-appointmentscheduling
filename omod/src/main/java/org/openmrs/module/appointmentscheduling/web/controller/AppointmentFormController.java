@@ -31,11 +31,11 @@ import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.AppointmentData;
+import org.openmrs.module.appointmentscheduling.AppointmentDetail;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.AppointmentUtils;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
-import org.openmrs.module.appointmentscheduling.AppointmentData.AppointmentStatus;
+import org.openmrs.module.appointmentscheduling.AppointmentDetail.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.appointmentscheduling.validator.AppointmentValidator;
 import org.openmrs.module.appointmentscheduling.web.AppointmentTypeEditor;
@@ -87,18 +87,18 @@ public class AppointmentFormController {
 	}
 	
 	@ModelAttribute("appointment")
-	public AppointmentData getAppointment(@RequestParam(value = "appointmentId", required = false) Integer appointmentId,
-										  @RequestParam(value = "patientId", required = false) Integer patientId) {
-		AppointmentData appointment = null;
+	public AppointmentDetail getAppointment(@RequestParam(value = "appointmentId", required = false) Integer appointmentId,
+											@RequestParam(value = "patientId", required = false) Integer patientId) {
+		AppointmentDetail appointment = null;
 		
 		if (Context.isAuthenticated()) {
 			AppointmentService as = Context.getService(AppointmentService.class);
 			if (appointmentId != null)
-				appointment = as.getAppointmentData(appointmentId);
+				appointment = as.getAppointmentDetail(appointmentId);
 		}
 		
 		if (appointment == null) {
-			appointment = new AppointmentData();
+			appointment = new AppointmentDetail();
 			if (patientId != null)
 				appointment.setPatient(Context.getPatientService().getPatient(patientId));
 		}
@@ -107,7 +107,7 @@ public class AppointmentFormController {
 	}
 	
 	@ModelAttribute("availableTimes")
-	public List<TimeSlot> getAvailableTimes(ModelMap model, HttpServletRequest request, AppointmentData appointment,
+	public List<TimeSlot> getAvailableTimes(ModelMap model, HttpServletRequest request, AppointmentDetail appointment,
 	        @RequestParam(value = "fromDate", required = false) Date fromDate,
 	        @RequestParam(value = "toDate", required = false) Date toDate,
 	        @RequestParam(value = "providerSelect", required = false) Provider provider,
@@ -183,7 +183,7 @@ public class AppointmentFormController {
 	}
 	
 	@RequestMapping(value = "/module/appointmentscheduling/appointmentForm", method = RequestMethod.POST)
-	public String onSubmit(HttpServletRequest request, AppointmentData appointment, BindingResult result,
+	public String onSubmit(HttpServletRequest request, AppointmentDetail appointment, BindingResult result,
 						   @RequestParam(value = "fromDate", required = false) Date fromDate,
 						   @RequestParam(value = "toDate", required = false) Date toDate,
 						   @RequestParam(value = "flow", required = false) String flow,
@@ -214,7 +214,7 @@ public class AppointmentFormController {
 						appointment.setVisit(visit);
 					} else
 						appointment.setStatus(AppointmentStatus.SCHEDULED);
-					appointmentService.saveAppointmentData(appointment);
+					appointmentService.saveAppointmentDetail(appointment);
 					httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "appointmentscheduling.Appointment.saved");
 					//Check whether to redirect to appointments manage form (origin=null) or to patientDashboard (origin=dashboard)
 					if (origin == null)

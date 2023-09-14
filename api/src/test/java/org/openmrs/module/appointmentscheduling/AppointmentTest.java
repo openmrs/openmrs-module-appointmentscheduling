@@ -6,8 +6,8 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.openmrs.module.appointmentscheduling.AppointmentData.AppointmentStatus;
-import static org.openmrs.module.appointmentscheduling.AppointmentData.AppointmentStatusType;
+import static org.openmrs.module.appointmentscheduling.AppointmentDetail.AppointmentStatus;
+import static org.openmrs.module.appointmentscheduling.AppointmentDetail.AppointmentStatusType;
 
 public class AppointmentTest {
 

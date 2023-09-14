@@ -23,8 +23,8 @@ import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.db.DAOException;
-import org.openmrs.module.appointmentscheduling.AppointmentData;
-import org.openmrs.module.appointmentscheduling.AppointmentData.AppointmentStatus;
+import org.openmrs.module.appointmentscheduling.AppointmentDetail;
+import org.openmrs.module.appointmentscheduling.AppointmentDetail.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentDailyCount;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
@@ -37,28 +37,28 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface AppointmentDAO extends SingleClassDAO {
 	
-	List<AppointmentData> getAppointmentsByPatient(Patient patient);
+	List<AppointmentDetail> getAppointmentsByPatient(Patient patient);
 	
-	AppointmentData getAppointmentByVisit(Visit visit);
+	AppointmentDetail getAppointmentByVisit(Visit visit);
 	
-	AppointmentData getLastAppointment(Patient patient);
+	AppointmentDetail getLastAppointment(Patient patient);
 	
 	@Transactional(readOnly = true)
-	List<AppointmentData> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider,
-													   AppointmentType appointmentType, List<AppointmentStatus> statuses, Patient patient,
-													   VisitType visitType, Visit visit) throws APIException;
+	List<AppointmentDetail> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider,
+														 AppointmentType appointmentType, List<AppointmentStatus> statuses, Patient patient,
+														 VisitType visitType, Visit visit) throws APIException;
 	
-	List<AppointmentData> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider, AppointmentType type,
-													   AppointmentStatus status, Patient patient) throws APIException;
+	List<AppointmentDetail> getAppointmentsByConstraints(Date fromDate, Date toDate, Provider provider, AppointmentType type,
+														 AppointmentStatus status, Patient patient) throws APIException;
 	
-	List<AppointmentData> getAppointmentsByStates(List<AppointmentStatus> states);
+	List<AppointmentDetail> getAppointmentsByStates(List<AppointmentStatus> states);
 	
-	List<AppointmentData> getPastAppointmentsByStates(List<AppointmentStatus> states);
+	List<AppointmentDetail> getPastAppointmentsByStates(List<AppointmentStatus> states);
 	
-	List<AppointmentData> getScheduledAppointmentsForPatient(Patient patient);
+	List<AppointmentDetail> getScheduledAppointmentsForPatient(Patient patient);
 	
-	List<AppointmentData> getAppointmentsByAppointmentBlockAndAppointmentTypes(AppointmentBlock appointmentBlock,
-																			   List<AppointmentType> appointmentTypes);
+	List<AppointmentDetail> getAppointmentsByAppointmentBlockAndAppointmentTypes(AppointmentBlock appointmentBlock,
+																				 List<AppointmentType> appointmentTypes);
 	
 	/**
 	 * Retrieve all appointments in a given time slot.
@@ -67,7 +67,7 @@ public interface AppointmentDAO extends SingleClassDAO {
 	 * @return a list of the appointments in the given time slot.
 	 * <strong>Should</strong> not return voided time slots
 	 */
-	List<AppointmentData> getAppointmentsInTimeSlot(TimeSlot timeSlot);
+	List<AppointmentDetail> getAppointmentsInTimeSlot(TimeSlot timeSlot);
 	
 	/**
 	 * Retrieve a count of appointments in a given time slot.
@@ -86,7 +86,7 @@ public interface AppointmentDAO extends SingleClassDAO {
 	 * @return a list of the appointments in the given time slot.
 	 * <strong>Should</strong> not return voided time slots
 	 */
-	List<AppointmentData> getAppointmentsInTimeSlotByStatus(TimeSlot timeSlot, List<AppointmentStatus> statuses);
+	List<AppointmentDetail> getAppointmentsInTimeSlotByStatus(TimeSlot timeSlot, List<AppointmentStatus> statuses);
 	
 	/**
 	 * Retrieve a count of all appointments in a given time slot, filtered by status
