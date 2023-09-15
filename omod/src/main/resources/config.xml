@@ -82,7 +82,7 @@
 			<convert converter="bean" match="org.openmrs.module.appointmentscheduling.TimeSlot"/>
 			<convert converter="bean" match="org.openmrs.module.appointmentscheduling.AppointmentBlock"/>
 			<convert converter="bean" match="org.openmrs.module.appointmentscheduling.AppointmentType"/>
-			<convert converter="bean" match="org.openmrs.module.appointmentscheduling.Appointment"/>
+			<convert converter="bean" match="org.openmrs.module.appointmentscheduling.PatientAppointment"/>
 			<convert converter="bean" match="org.openmrs.Provider"/>
 			<convert converter="bean" match="org.openmrs.Person"/>
 			<convert converter="bean" match="org.openmrs.PersonName"/>
@@ -157,7 +157,7 @@
 	</extension>
 	<!-- Maps hibernate file's, if present -->
 	<mappingFiles>
-		Appointment.hbm.xml
+		PatientAppointment.hbm.xml
 		AppointmentType.hbm.xml
 		AppointmentBlock.hbm.xml
 		TimeSlot.hbm.xml

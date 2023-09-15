@@ -4,12 +4,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Provider;
 import org.openmrs.api.APIException;
-import org.openmrs.module.appointmentscheduling.Appointment;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.TimeSlot;

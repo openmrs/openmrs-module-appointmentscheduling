@@ -20,8 +20,8 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.openmrs.module.appointmentscheduling.Appointment;
-import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
+import org.openmrs.module.appointmentscheduling.PatientAppointment;
+import org.openmrs.module.appointmentscheduling.PatientAppointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.api.db.AppointmentStatusHistoryDAO;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +43,7 @@ public class HibernateAppointmentStatusHistoryDAO extends HibernateSingleClassDA
 	
 	@Override
 	@Transactional(readOnly = true)
-	public Date getStartDateOfCurrentStatus(Appointment appointment) {
+	public Date getStartDateOfCurrentStatus(PatientAppointment appointment) {
 		String query = "Select Max(endDate) from AppointmentStatusHistory where appointment=:appointment";
 		Date endDate = (Date) super.sessionFactory.getCurrentSession().createQuery(query)
 		        .setParameter("appointment", appointment).uniqueResult();
@@ -71,14 +71,14 @@ public class HibernateAppointmentStatusHistoryDAO extends HibernateSingleClassDA
 	}
 	
 	@Override
-	public void purgeHistoryBy(Appointment appointment) {
+	public void purgeHistoryBy(PatientAppointment appointment) {
 		String hql = "delete from AppointmentStatusHistory where appointment= :appointment";
 		Query query = super.sessionFactory.getCurrentSession().createQuery(hql);
 		query.setParameter("appointment", appointment).executeUpdate();
 	}
 
 	@Override
-	public List<AppointmentStatusHistory> getAppointmentStatusHistories(Appointment appointment) {
+	public List<AppointmentStatusHistory> getAppointmentStatusHistories(PatientAppointment appointment) {
 		String query = "Select appointmentHistory from AppointmentStatusHistory AS appointmentHistory where appointmentHistory.appointment=:appointment";
 		return  (List<AppointmentStatusHistory>) super.sessionFactory.getCurrentSession().createQuery(query)
 				.setParameter("appointment", appointment).list();
@@ -86,7 +86,7 @@ public class HibernateAppointmentStatusHistoryDAO extends HibernateSingleClassDA
 	}
 
 	@Override
-	public AppointmentStatusHistory getMostRecentAppointmentStatusHistory(Appointment appointment) {
+	public AppointmentStatusHistory getMostRecentAppointmentStatusHistory(PatientAppointment appointment) {
 
 		String stringQuery = "Select history from AppointmentStatusHistory AS history  " +
 				"WHERE history.startDate = (select max(statusHistory.startDate) from AppointmentStatusHistory AS statusHistory " +

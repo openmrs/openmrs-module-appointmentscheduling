@@ -20,9 +20,9 @@ import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.PatientAppointment;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
-import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
+import org.openmrs.module.appointmentscheduling.PatientAppointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentUtils;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.appointmentscheduling.web.AppointmentEditor;
@@ -51,7 +51,7 @@ public class AppointmentListController {
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(AppointmentType.class, new AppointmentTypeEditor());
-		binder.registerCustomEditor(Appointment.class, new AppointmentEditor());
+		binder.registerCustomEditor(PatientAppointment.class, new AppointmentEditor());
 		binder.registerCustomEditor(Provider.class, new ProviderEditor());
 	}
 	
@@ -117,19 +117,19 @@ public class AppointmentListController {
 	
 	//Filter the appointments by the given filters and save in list
 	@ModelAttribute("appointmentList")
-	public List<Appointment> getAppointmentList(HttpServletRequest request, HttpSession session, ModelMap model,
-	        @RequestParam(value = "includeCancelled", required = false) String includeCancelled,
-	        @RequestParam(value = "fromDate", required = false) Date fromDate,
-	        @RequestParam(value = "toDate", required = false) Date toDate,
-	        @RequestParam(value = "locationId", required = false) Location location,
-	        @RequestParam(value = "providerSelect", required = false) Provider provider,
-	        @RequestParam(value = "appointmentTypeSelect", required = false) AppointmentType appointmentType,
-	        @RequestParam(value = "appointmentStatusSelect", required = false) AppointmentStatus status) {
+	public List<PatientAppointment> getAppointmentList(HttpServletRequest request, HttpSession session, ModelMap model,
+													   @RequestParam(value = "includeCancelled", required = false) String includeCancelled,
+													   @RequestParam(value = "fromDate", required = false) Date fromDate,
+													   @RequestParam(value = "toDate", required = false) Date toDate,
+													   @RequestParam(value = "locationId", required = false) Location location,
+													   @RequestParam(value = "providerSelect", required = false) Provider provider,
+													   @RequestParam(value = "appointmentTypeSelect", required = false) AppointmentType appointmentType,
+													   @RequestParam(value = "appointmentStatusSelect", required = false) AppointmentStatus status) {
 		
-		List<Appointment> filteredAppointments = new LinkedList<Appointment>();
+		List<PatientAppointment> filteredAppointments = new LinkedList<PatientAppointment>();
 		
 		if (Context.isAuthenticated()) {
-			List<Appointment> appointments = new LinkedList<Appointment>();
+			List<PatientAppointment> appointments = new LinkedList<PatientAppointment>();
 			if (RequestMethod.GET.toString().equalsIgnoreCase(request.getMethod())) {
 				//Set Default date filter on GET request - today 00:00 till 23:59
 				fromDate = new Date();
@@ -146,11 +146,11 @@ public class AppointmentListController {
 				    location, provider, appointmentType, status);
 			}
 			catch (APIException ex) {
-				return new LinkedList<Appointment>();
+				return new LinkedList<PatientAppointment>();
 			}
 			
 			//Filter appointments by includeCancelled checkbox
-			for (Appointment appointment : appointments) {
+			for (PatientAppointment appointment : appointments) {
 				boolean valid = true;
 				if (includeCancelled == null) {
 					if (appointment.getStatus() == AppointmentStatus.CANCELLED)
@@ -168,7 +168,7 @@ public class AppointmentListController {
 			return filteredAppointments;
 	}
 	
-	public void getWaitingTimes(ModelMap model, List<Appointment> appointments) {
+	public void getWaitingTimes(ModelMap model, List<PatientAppointment> appointments) {
 		//Mapping of waiting times to use in the "Waiting Time" column
 		
 		//Mapping appointment Id to waiting time left string
@@ -178,7 +178,7 @@ public class AppointmentListController {
 		Map<Integer, Integer> sortableTimes = new HashMap<Integer, Integer>();
 		
 		//Calculate for each waiting appointment the waiting time
-		for (Appointment appointment : appointments) {
+		for (PatientAppointment appointment : appointments) {
 			if (appointment.getStatus() == AppointmentStatus.WAITING || appointment.getStatus() == AppointmentStatus.WALKIN) {
 				Date lastChanged = Context.getService(AppointmentService.class).getAppointmentCurrentStatusStartDate(
 				    appointment);
@@ -226,8 +226,8 @@ public class AppointmentListController {
 	}
 	
 	@RequestMapping(value = "/module/appointmentscheduling/appointmentList", method = RequestMethod.POST)
-	public String onSubmit(HttpServletRequest request, @ModelAttribute("appointmentList") List<Appointment> appointmentList,
-	        Errors errors, @RequestParam(value = "selectAppointment", required = false) Appointment selectedAppointment,
+	public String onSubmit(HttpServletRequest request, @ModelAttribute("appointmentList") List<PatientAppointment> appointmentList,
+	        Errors errors, @RequestParam(value = "selectAppointment", required = false) PatientAppointment selectedAppointment,
 	        ModelMap model, @RequestParam(value = "fromDate", required = false) Date fromDate,
 	        @RequestParam(value = "toDate", required = false) Date toDate) {
 		
@@ -272,7 +272,7 @@ public class AppointmentListController {
 				visit.setLocation(selectedAppointment.getTimeSlot().getAppointmentBlock().getLocation());
 				visit = Context.getVisitService().saveVisit(visit);
 				selectedAppointment.setVisit(visit);
-				Context.getService(AppointmentService.class).saveAppointment(selectedAppointment);
+				Context.getService(AppointmentService.class).savePatientAppointment(selectedAppointment);
 				
 				Context.getService(AppointmentService.class).changeAppointmentStatus(selectedAppointment,
 				    AppointmentStatus.WAITING);

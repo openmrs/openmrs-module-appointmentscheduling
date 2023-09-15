@@ -5,7 +5,7 @@
 
 <hibernate-mapping package="org.openmrs.module.appointmentscheduling">
 
-	<class name="Appointment" table="${project.parent.artifactId}_appointment">
+	<class name="org.openmrs.module.appointmentscheduling.PatientAppointment" table="${project.parent.artifactId}_appointment">
 		<id name="appointmentId" type="int" column="appointment_id" unsaved-value="0">
 			<generator class="native">
 				<param name="sequence">appointmentscheduling_appointment_appointment_id_seq</param>
@@ -19,7 +19,7 @@
 		
 		<property name="status" column="status" length="255" not-null="true">
 			<type name="org.hibernate.type.EnumType">
-				<param name="enumClass">org.openmrs.module.appointmentscheduling.Appointment$AppointmentStatus</param>
+				<param name="enumClass">org.openmrs.module.appointmentscheduling.PatientAppointment$AppointmentStatus</param>
 				<param name="type">12</param>
 			</type>
 		</property>

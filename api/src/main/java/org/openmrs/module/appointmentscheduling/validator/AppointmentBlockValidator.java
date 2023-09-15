@@ -17,7 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.PatientAppointment;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.TimeSlot;
@@ -76,7 +76,7 @@ public class AppointmentBlockValidator implements Validator {
 
             if (appointmentBlock.getId() != null) {   // only test this on appointment blocks that have previously been saved (otherwise will get transient exception)
                 for (TimeSlot timeSlot : Context.getService(AppointmentService.class).getTimeSlotsInAppointmentBlock(appointmentBlock)) {
-                    for (Appointment appointment : Context.getService(AppointmentService.class).getAppointmentsInTimeSlotThatAreNotCancelled(timeSlot)) {
+                    for (PatientAppointment appointment : Context.getService(AppointmentService.class).getAppointmentsInTimeSlotThatAreNotCancelled(timeSlot)) {
                         if (!types.contains(appointment.getAppointmentType())) {
                             errors.rejectValue("types", "appointmentscheduling.AppointmentBlock.error.cannotRemoveTypeFromBlockIfAppointmentScheduled");
                         }

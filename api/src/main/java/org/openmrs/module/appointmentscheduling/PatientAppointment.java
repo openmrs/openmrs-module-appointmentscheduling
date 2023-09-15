@@ -29,7 +29,7 @@ import java.util.List;
  * It is a model class. It should extend either {@link BaseOpenmrsObject} or
  * {@link BaseOpenmrsMetadata}.
  */
-public class Appointment extends BaseOpenmrsData implements Serializable {
+public class PatientAppointment extends BaseOpenmrsData implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -121,16 +121,16 @@ public class Appointment extends BaseOpenmrsData implements Serializable {
 
 	private AppointmentType appointmentType;
 
-	public Appointment() {
+	public PatientAppointment() {
 
 	}
 
-	public Appointment(Integer appointmentId) {
+	public PatientAppointment(Integer appointmentId) {
 		setId(appointmentId);
 	}
 
-	public Appointment(TimeSlot timeSlot, Visit visit, Patient patient,
-			AppointmentType appointmentType, AppointmentStatus status) {
+	public PatientAppointment(TimeSlot timeSlot, Visit visit, Patient patient,
+							  AppointmentType appointmentType, AppointmentStatus status) {
 		setTimeSlot(timeSlot);
 		setVisit(visit);
 		setPatient(patient);

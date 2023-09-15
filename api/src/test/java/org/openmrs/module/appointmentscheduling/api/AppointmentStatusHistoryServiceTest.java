@@ -24,8 +24,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.Appointment;
-import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
+import org.openmrs.module.appointmentscheduling.PatientAppointment;
+import org.openmrs.module.appointmentscheduling.PatientAppointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
@@ -37,7 +37,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 
 /**
- * Tests Appointment Status History methods in the {@link $ AppointmentService} .
+ * Tests Appointment Status History methods in the {@link AppointmentService} .
  */
 public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensitiveTest {
 	
@@ -97,7 +97,7 @@ public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensit
 	public void saveAppointmentStatusHistory_shouldSaveNewAppointmentStatusHistory() throws Exception {
 		AppointmentBlock appointmentBlock = service.getAppointmentBlock(1);
 		TimeSlot timeSlot = new TimeSlot(appointmentBlock, new Date(), new Date());
-		Appointment appointment = service.getAppointment(1);
+		PatientAppointment appointment = service.getPatientAppointment(1);
 		AppointmentStatusHistory appointmentStatusHistory = new AppointmentStatusHistory(appointment,
 		        AppointmentStatus.SCHEDULED, new Date(), new Date());
 		service.saveAppointmentStatusHistory(appointmentStatusHistory);
@@ -134,7 +134,7 @@ public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensit
 		Date startDate = service.getAppointmentCurrentStatusStartDate(null);
 		Assert.assertNull(startDate);
 		
-		Appointment appointment = service.getAppointment(1);
+		PatientAppointment appointment = service.getPatientAppointment(1);
 		assertNotNull(appointment);
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 		startDate = format.parse("2005-01-01 02:00:00.0");
@@ -144,7 +144,7 @@ public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensit
 	@Test
 	@Verifies(value = "Should change appointment status correctly", method = "changeAppointmentStatus(Appointment, String)")
 	public void changeAppointmentStatus_shouldChangeCorrectly() {
-		Appointment appointment = service.getAppointment(1);
+		PatientAppointment appointment = service.getPatientAppointment(1);
 		assertNotNull(appointment);
 		
 		service.changeAppointmentStatus(appointment, AppointmentStatus.COMPLETED);
@@ -152,7 +152,7 @@ public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensit
 		assertEquals(4, service.getAllAppointmentStatusHistories().size());
 		
 		//Should not add new appointment
-		assertEquals(TOTAL_APPOINTMENTS, service.getAllAppointments().size());
+		assertEquals(TOTAL_APPOINTMENTS, service.getAllPatientAppointments().size());
 	}
 	
 	@Test
@@ -235,7 +235,7 @@ public class AppointmentStatusHistoryServiceTest extends BaseModuleContextSensit
 	@Verifies(value = "should get all status histories of a given appointment", method = "getAppointmentStatusHistories()")
 	public void getAppointmentStatusHistories_shouldGetAllAppointmentStatusHistories() throws Exception {
 		List<AppointmentStatusHistory> appointmentStatusHistories = service.getAppointmentStatusHistories(
-				service.getAppointment(1)		);
+				service.getPatientAppointment(1)		);
 		assertEquals(2, appointmentStatusHistories.size());
 	}
 }

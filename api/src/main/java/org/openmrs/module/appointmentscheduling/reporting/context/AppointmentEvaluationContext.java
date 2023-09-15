@@ -1,7 +1,7 @@
 package org.openmrs.module.appointmentscheduling.reporting.context;
 
 import org.openmrs.OpenmrsData;
-import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.PatientAppointment;
 import org.openmrs.module.appointmentscheduling.reporting.query.AppointmentIdSet;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.query.IdSet;
@@ -59,7 +59,7 @@ public class AppointmentEvaluationContext extends EvaluationContext {
     public Map<Class<? extends OpenmrsData>, IdSet<?>> getAllBaseIdSets() {
         Map<Class<? extends OpenmrsData>, IdSet<?>> ret = super.getAllBaseIdSets();
         if (getBaseAppointments() != null) {
-            ret.put(Appointment.class, getBaseAppointments());
+            ret.put(PatientAppointment.class, getBaseAppointments());
         }
         return ret;
     }

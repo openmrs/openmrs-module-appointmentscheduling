@@ -2,7 +2,7 @@ package org.openmrs.module.appointmentscheduling.reporting.data.evaluator;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.PatientAppointment;
 import org.openmrs.module.appointmentscheduling.reporting.context.AppointmentEvaluationContext;
 import org.openmrs.module.appointmentscheduling.reporting.data.EvaluatedAppointmentData;
 import org.openmrs.module.appointmentscheduling.reporting.data.definition.AppointmentStatusDataDefinition;
@@ -34,7 +34,7 @@ public class AppointmentStatusDataEvaluatorTest extends BaseModuleContextSensiti
         EvaluatedAppointmentData result = appointmentDataService.evaluate(new AppointmentStatusDataDefinition(), context);
 
         assertThat(result.getData().size(), is(1));
-        assertThat((Appointment.AppointmentStatus) result.getData().get(8), is(Appointment.AppointmentStatus.CANCELLED));
+        assertThat((PatientAppointment.AppointmentStatus) result.getData().get(8), is(PatientAppointment.AppointmentStatus.CANCELLED));
 
     }
 }

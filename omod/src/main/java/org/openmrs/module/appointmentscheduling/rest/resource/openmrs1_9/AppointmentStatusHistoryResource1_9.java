@@ -1,7 +1,7 @@
 package org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.PatientAppointment;
 import org.openmrs.module.appointmentscheduling.AppointmentStatusHistory;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.appointmentscheduling.rest.controller.AppointmentRestController;
@@ -77,8 +77,8 @@ public class AppointmentStatusHistoryResource1_9 extends DataDelegatingCrudResou
     @Override
     protected PageableResult doSearch(RequestContext context) {
 
-        Appointment appointment = context.getParameter("appointment") != null ? Context.getService(AppointmentService.class)
-                .getAppointmentByUuid(context.getParameter("appointment")) : null;
+        PatientAppointment appointment = context.getParameter("appointment") != null ? Context.getService(AppointmentService.class)
+                .getPatientAppointmentByUuid(context.getParameter("appointment")) : null;
         return new NeedsPaging<AppointmentStatusHistory>(Context.getService(AppointmentService.class).getAppointmentStatusHistories(appointment), context);
     }
 

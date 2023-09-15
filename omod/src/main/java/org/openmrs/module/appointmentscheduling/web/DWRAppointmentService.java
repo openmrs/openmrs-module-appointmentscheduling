@@ -19,8 +19,8 @@ import org.openmrs.PersonAttribute;
 import org.openmrs.Provider;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.Appointment;
-import org.openmrs.module.appointmentscheduling.Appointment.AppointmentStatus;
+import org.openmrs.module.appointmentscheduling.PatientAppointment;
+import org.openmrs.module.appointmentscheduling.PatientAppointment.AppointmentStatus;
 import org.openmrs.module.appointmentscheduling.AppointmentBlock;
 import org.openmrs.module.appointmentscheduling.AppointmentType;
 import org.openmrs.module.appointmentscheduling.AppointmentUtils;
@@ -50,7 +50,7 @@ public class DWRAppointmentService {
 		if (phoneAttribute != null)
 			patientData.setPhoneNumber(phoneAttribute.getValue());
 		//Checks if patient missed his/her last appointment.
-		Appointment lastAppointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
+		PatientAppointment lastAppointment = Context.getService(AppointmentService.class).getLastAppointment(patient);
 		if (lastAppointment != null && lastAppointment.getStatus() == AppointmentStatus.MISSED)
 			patientData.setDateMissedLastAppointment(Context.getDateFormat().format(
 			    lastAppointment.getTimeSlot().getStartDate()));
@@ -147,8 +147,8 @@ public class DWRAppointmentService {
 				//Getting the timeslots of the given appointment block
 				List<TimeSlot> timeSlots = as.getTimeSlotsInAppointmentBlock(appointmentBlock);
 				for (TimeSlot timeSlot : timeSlots) {
-					List<Appointment> appointmentsInTimeSlot = as.getAppointmentsInTimeSlot(timeSlot);
-					for (Appointment appointment : appointmentsInTimeSlot) {
+					List<PatientAppointment> appointmentsInTimeSlot = as.getAppointmentsInTimeSlot(timeSlot);
+					for (PatientAppointment appointment : appointmentsInTimeSlot) {
 						//Create an AppointmentData object
 						PatientData patientDescription = this.getPatientDescription(appointment.getPatient().getPatientId());
 						TimeSlot appointmentTimeSlot = appointment.getTimeSlot();
@@ -227,10 +227,10 @@ public class DWRAppointmentService {
 		if (appointmentId == null)
 			return false;
 		else {
-			Appointment appointment = Context.getService(AppointmentService.class).getAppointment(appointmentId);
+			PatientAppointment appointment = Context.getService(AppointmentService.class).getPatientAppointment(appointmentId);
 			Provider provider = appointment.getTimeSlot().getAppointmentBlock().getProvider();
 			
-			List<Appointment> inconsultationAppointments = Context.getService(AppointmentService.class)
+			List<PatientAppointment> inconsultationAppointments = Context.getService(AppointmentService.class)
 			        .getAppointmentsByConstraints(null, null, null, provider, null, AppointmentStatus.INCONSULTATION);
 			
 			return (inconsultationAppointments.size() != 0);
@@ -240,7 +240,7 @@ public class DWRAppointmentService {
 	/**
 	 * Checks whether a provider has an ongoing open consultation
 	 * 
-	 * @param appointmentId - The patient id from which we will its most recent appointment's
+	 * @param patientId - The patient id from which we will its most recent appointment's
 	 *            provider
 	 * @return True if has any open consultation, False otherwise
 	 */
@@ -248,11 +248,11 @@ public class DWRAppointmentService {
 		if (patientId == null)
 			return false;
 		else {
-			Appointment appointment = Context.getService(AppointmentService.class).getLastAppointment(
+			PatientAppointment appointment = Context.getService(AppointmentService.class).getLastAppointment(
 			    Context.getPatientService().getPatient(patientId));
 			Provider provider = appointment.getTimeSlot().getAppointmentBlock().getProvider();
 			
-			List<Appointment> inconsultationAppointments = Context.getService(AppointmentService.class)
+			List<PatientAppointment> inconsultationAppointments = Context.getService(AppointmentService.class)
 			        .getAppointmentsByConstraints(null, null, null, provider, null, AppointmentStatus.INCONSULTATION);
 			
 			return (inconsultationAppointments.size() != 0);
@@ -263,7 +263,7 @@ public class DWRAppointmentService {
 	 * Computes the average duration (in Minutes) of a status history by appointment type
 	 * 
 	 * @param fromDate The lower bound of the date interval.
-	 * @param endDate The upper bound of the date interval.
+	 * @param toDate The upper bound of the date interval.
 	 * @param status The AppointmentStatus status to filter histories by.
 	 * @return An array of <String, Double> appointment_type_name, average_history_status_time
 	 * @throws ParseException
@@ -295,7 +295,7 @@ public class DWRAppointmentService {
 	 * Computes the average duration (in Minutes) of a "waiting" history by appointment type
 	 * 
 	 * @param fromDate The lower bound of the date interval.
-	 * @param endDate The upper bound of the date interval.
+	 * @param toDate The upper bound of the date interval.
 	 * @return An array of <String, Double> appointment_type_name, average_history_waiting_time
 	 * @throws ParseException
 	 */
@@ -307,7 +307,7 @@ public class DWRAppointmentService {
 	 * Computes the average duration (in Minutes) of a "in-consultation" history by appointment type
 	 * 
 	 * @param fromDate The lower bound of the date interval.
-	 * @param endDate The upper bound of the date interval.
+	 * @param toDate The upper bound of the date interval.
 	 * @return An array of <String, Double> appointment_type_name,
 	 *         average_history_inconsultation_time
 	 * @throws ParseException
@@ -320,7 +320,7 @@ public class DWRAppointmentService {
 	 * Retrieves the amount of status history objects in the given criteria
 	 * 
 	 * @param fromDate The lower bound of the date interval.
-	 * @param endDate The upper bound of the date interval.
+	 * @param toDate The upper bound of the date interval.
 	 * @param status The AppointmentStatus status to filter histories by.
 	 * @return The amount of status history objects in the given criteria
 	 * @throws ParseException
@@ -338,7 +338,7 @@ public class DWRAppointmentService {
 	 * Retrieves the amount of "waiting" status history objects in the given criteria
 	 * 
 	 * @param fromDate The lower bound of the date interval.
-	 * @param endDate The upper bound of the date interval.
+	 * @param toDate The upper bound of the date interval.
 	 * @return The amount of status history objects in the given criteria
 	 * @throws ParseException
 	 */
@@ -350,7 +350,7 @@ public class DWRAppointmentService {
 	 * Retrieves the amount of "in-consultation" status history objects in the given criteria
 	 * 
 	 * @param fromDate The lower bound of the date interval.
-	 * @param endDate The upper bound of the date interval.
+	 * @param toDate The upper bound of the date interval.
 	 * @return The amount of status history objects in the given criteria
 	 * @throws ParseException
 	 */
@@ -408,7 +408,7 @@ public class DWRAppointmentService {
 	 * Computes the average duration (in Minutes) of a status history by provider
 	 * 
 	 * @param fromDate The lower bound of the date interval.
-	 * @param endDate The upper bound of the date interval.
+	 * @param toDate The upper bound of the date interval.
 	 * @param status The AppointmentStatus status to filter histories by.
 	 * @return An array of <String, Double> provider_name, average_history_status_time
 	 * @throws ParseException
@@ -440,7 +440,7 @@ public class DWRAppointmentService {
 	 * Computes the average duration (in Minutes) of a "waiting" history by provider
 	 * 
 	 * @param fromDate The lower bound of the date interval.
-	 * @param endDate The upper bound of the date interval.
+	 * @param toDate The upper bound of the date interval.
 	 * @return An array of <String, Double> provider_name, average_history_waiting_time
 	 * @throws ParseException
 	 */
@@ -452,7 +452,7 @@ public class DWRAppointmentService {
 	 * Computes the average duration (in Minutes) of a "in-consultation" history by provider
 	 * 
 	 * @param fromDate The lower bound of the date interval.
-	 * @param endDate The upper bound of the date interval.
+	 * @param toDate The upper bound of the date interval.
 	 * @return An array of <String, Double> provider_name, average_history_inconsultation_time
 	 * @throws ParseException
 	 */

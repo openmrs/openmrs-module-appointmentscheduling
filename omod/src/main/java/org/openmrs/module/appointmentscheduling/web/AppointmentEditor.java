@@ -18,7 +18,7 @@ import java.beans.PropertyEditorSupport;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.appointmentscheduling.Appointment;
+import org.openmrs.module.appointmentscheduling.PatientAppointment;
 import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.springframework.util.StringUtils;
 
@@ -37,10 +37,10 @@ public class AppointmentEditor extends PropertyEditorSupport {
 		AppointmentService as = Context.getService(AppointmentService.class);
 		if (StringUtils.hasText(text)) {
 			try {
-				setValue(as.getAppointment(Integer.valueOf(text)));
+				setValue(as.getPatientAppointment(Integer.valueOf(text)));
 			}
 			catch (Exception ex) {
-				Appointment ts = as.getAppointmentByUuid(text);
+				PatientAppointment ts = as.getPatientAppointmentByUuid(text);
 				setValue(ts);
 				if (ts == null) {
 					log.error("Error setting text: " + text, ex);
@@ -53,7 +53,7 @@ public class AppointmentEditor extends PropertyEditorSupport {
 	}
 	
 	public String getAsText() {
-		Appointment t = (Appointment) getValue();
+		PatientAppointment t = (PatientAppointment) getValue();
 		if (t == null) {
 			return "";
 		} else {
