@@ -69,6 +69,11 @@
 		<description>Clean open appointments at end of the day.
 		</description>
 	</globalProperty>
+	    <globalProperty>
+        <property>${project.parent.artifactId}.serializer.whitelist.types</property>
+        <defaultValue>org.openmrs.module.appointmentschedulingui.reporting.converter.AppointmentStatusToLocalizedStatusTypeConverter,org.openmrs.module.appointmentscheduling.reporting.dataset.definition.AppointmentDataSetDefinition</defaultValue>
+        <description>Add whitelisting for components loaded via XStream TRUNK-6188</description>
+    </globalProperty>
 
 	<!-- Module Activator -->
 	<activator>${project.parent.groupId}.${project.parent.artifactId}.AppointmentActivator
