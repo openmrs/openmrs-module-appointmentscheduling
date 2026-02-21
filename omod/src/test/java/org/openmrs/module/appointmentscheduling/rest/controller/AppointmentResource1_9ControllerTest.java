@@ -168,7 +168,7 @@ public class AppointmentResource1_9ControllerTest
 
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI()
 				+ "/" + getUuid());
-		req.addParameter("purge", "");
+		req.addParameter("purge", "true");
 		req.addParameter("reason", "really ridiculous random reason");
 		handle(req);
 

@@ -11,6 +11,7 @@ import org.openmrs.module.appointmentscheduling.rest.controller.AppointmentRestC
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -157,8 +158,21 @@ public class TimeSlotResource1_9 extends DataDelegatingCrudResource<TimeSlot> {
 
 	}
 
+	@PropertyGetter("display")
 	public String getDisplayString(TimeSlot timeSlot) {
-		return timeSlot.getAppointmentBlock().getProvider() + ", " + timeSlot.getAppointmentBlock().getLocation() + ": "
+		String providerName = "";
+		if (timeSlot.getAppointmentBlock().getProvider() != null
+		        && timeSlot.getAppointmentBlock().getProvider().getPerson() != null
+		        && timeSlot.getAppointmentBlock().getProvider().getPerson().getPersonName() != null) {
+			String fullName = timeSlot.getAppointmentBlock().getProvider().getPerson().getPersonName().getFullName();
+			String suffix = timeSlot.getAppointmentBlock().getProvider().getPerson().getPersonName().getFamilyNameSuffix();
+			if (suffix != null && suffix.trim().length() > 0) {
+				providerName = fullName + " " + suffix.trim();
+			} else {
+				providerName = fullName;
+			}
+		}
+		return providerName + ", " + timeSlot.getAppointmentBlock().getLocation() + ": "
 		        + timeSlot.getStartDate() + " - " + timeSlot.getEndDate();
 	}
 

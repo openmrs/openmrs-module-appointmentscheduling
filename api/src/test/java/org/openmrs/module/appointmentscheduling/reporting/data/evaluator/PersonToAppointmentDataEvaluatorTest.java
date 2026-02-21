@@ -41,7 +41,6 @@ public class PersonToAppointmentDataEvaluatorTest extends BaseModuleContextSensi
     }
 
     @Test
-    @DirtiesContext
     public void evaluate_shouldReturnPersonDataForNonConfidentialAppointments() throws Exception {
         Context.becomeUser("butch");
 

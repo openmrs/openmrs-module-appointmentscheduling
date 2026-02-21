@@ -7,6 +7,7 @@ import org.openmrs.module.appointmentscheduling.api.AppointmentService;
 import org.openmrs.module.appointmentscheduling.rest.controller.AppointmentRestController;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -82,6 +83,7 @@ public class AppointmentStatusHistoryResource1_9 extends DataDelegatingCrudResou
         return new NeedsPaging<AppointmentStatusHistory>(Context.getService(AppointmentService.class).getAppointmentStatusHistories(appointment), context);
     }
 
+    @PropertyGetter("display")
     public String getDisplayString(AppointmentStatusHistory statusHistory) {
         return statusHistory.getStartDate() + "  "+statusHistory.getEndDate();
     }

@@ -138,7 +138,7 @@ public class AppointmentRequestResource1_9ControllerTest extends MainResourceCon
     public void shouldPurgeAnAppointment() throws Exception {
 
         MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
-        req.addParameter("purge", "");
+        req.addParameter("purge", "true");
         req.addParameter("reason", "really ridiculous random reason");
         handle(req);
 

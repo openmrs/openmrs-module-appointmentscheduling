@@ -131,7 +131,7 @@ public class TimeSlotResource1_9ControllerTest extends MainResourceControllerTes
 		int originalCount = 8;
 		
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/c0c579b0-8e59-401d-8a4a-976a0b183607");
-		req.addParameter("purge", "");
+		req.addParameter("purge", "true");
 		req.addParameter("reason", "really ridiculous random reason");
 		handle(req);
 		
