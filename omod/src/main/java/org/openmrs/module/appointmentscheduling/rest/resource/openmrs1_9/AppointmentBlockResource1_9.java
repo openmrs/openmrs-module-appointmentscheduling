@@ -10,6 +10,7 @@ import org.openmrs.module.appointmentscheduling.rest.resource.openmrs1_9.util.Ap
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -145,8 +146,20 @@ public class AppointmentBlockResource1_9 extends DataDelegatingCrudResource<Appo
 
 	}
 
+	@PropertyGetter("display")
 	public String getDisplayString(AppointmentBlock appointmentBlock) {
-		return appointmentBlock.getProvider() + ", " + appointmentBlock.getLocation() + ": "
+		String providerName = "";
+		if (appointmentBlock.getProvider() != null && appointmentBlock.getProvider().getPerson() != null
+		        && appointmentBlock.getProvider().getPerson().getPersonName() != null) {
+			String fullName = appointmentBlock.getProvider().getPerson().getPersonName().getFullName();
+			String suffix = appointmentBlock.getProvider().getPerson().getPersonName().getFamilyNameSuffix();
+			if (suffix != null && suffix.trim().length() > 0) {
+				providerName = fullName + " " + suffix.trim();
+			} else {
+				providerName = fullName;
+			}
+		}
+		return providerName + ", " + appointmentBlock.getLocation() + ": "
 		        + appointmentBlock.getStartDate() + " - " + appointmentBlock.getEndDate();
 	}
 

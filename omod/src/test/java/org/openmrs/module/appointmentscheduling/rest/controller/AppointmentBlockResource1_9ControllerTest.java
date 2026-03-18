@@ -149,7 +149,7 @@ public class AppointmentBlockResource1_9ControllerTest extends MainResourceContr
 		int originalCount = 5;
 		
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/759799ab-c9a5-435e-b671-77773ada7410");
-		req.addParameter("purge", "");
+		req.addParameter("purge", "true");
 		req.addParameter("reason", "really ridiculous random reason");
 		handle(req);
 		
